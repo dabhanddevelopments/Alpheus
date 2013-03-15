@@ -1,0 +1,146 @@
+<html>
+<head>
+<title>Alpheus</title>
+
+<style>
+
+    #loading-mask{
+        position:absolute;
+        left:0;
+        top:0;
+        width:100%;
+        height:100%;
+        z-index:20000;
+        background-color:white;
+    }
+    #loading{
+        position:absolute;
+        left:45%;
+        top:40%;
+        padding:2px;
+        z-index:20001;
+        height:auto;
+    }
+    #loading a {
+        color:#225588;
+    }
+    #loading .loading-indicator{
+        background:white;
+        color:#444;
+        font:bold 13px tahoma,arial,helvetica;
+        padding:10px;
+        margin:0;
+        height:auto;
+    }
+    #loading-msg {
+        font: normal 10px arial,tahoma,sans-serif;
+    }
+</style>
+
+</head>
+<body>
+
+
+
+
+
+<div id="loading-mask" style=""></div> 
+<div id="loading"> 
+    <div id="loading-ind" class="loading-indicator">
+    	Alpheus Advisors<br>
+        <img id="loading-image" src="{{ STATIC_URL }}images/ajax_indicator.gif" width="32" height="32" style="margin-left:8px; margin-right:8px; margin-top:8px;float:left;vertical-align:top;"/><br>
+        <span id="loading-msg">Loading styles and images...</span>
+    </div> 
+</div> 
+ 
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jqplot/jquery.jqplot.css" />
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery.gridster.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}style.css">   
+<link id="theme" rel="stylesheet" type="text/css" href="{{ STATIC_URL }}extjs/resources/css/ext-all.css" />
+<link rel="stylesheet" type="text/css" href="http://examples.extjs.eu/css/icons.css" />
+
+
+
+<script type="text/javascript">document.getElementById('loading-msg').innerHTML = 'Loading UI Components...';</script> 
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="{{ STATIC_URL }}gridster/jquery.gridster.js" type="text/javascript" charset="utf-8"></script>
+<script src="{{ STATIC_URL }}gridster/jquery.collision.js" type="text/javascript" charset="utf-8"></script>
+<script src="{{ STATIC_URL }}gridster/jquery.coords.js" type="text/javascript" charset="utf-8"></script>
+<script src="{{ STATIC_URL }}gridster/jquery.draggable.js" type="text/javascript" charset="utf-8"></script>
+<script src="{{ STATIC_URL }}gridster/jquery.gridster.extras.js" type="text/javascript" charset="utf-8"></script>
+<script src="{{ STATIC_URL }}gridster/utils.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jquery.cookie.js"></script>
+
+<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="{{ STATIC_URL }}jqplot/excanvas.js"></script><![endif]-->
+
+<script type="text/javascript" src="{{ STATIC_URL }}extjs/ext-all.js"></script>
+<script language="javascript" type="text/javascript" src="{{ STATIC_URL }}jqplot/jquery.jqplot.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jqplot/plugins/jqplot.canvasTextRenderer.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jqplot/plugins/jqplot.barRenderer.min.js"></script>
+
+<script type="text/javascript" src="{{ STATIC_URL }}jqplot/plugins/jqplot.pieRenderer.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jqplot/plugins/jqplot.donutRenderer.min.js"></script>
+
+
+
+
+<style>
+    p {
+        margin:5px;
+    }
+
+    .x-tree-icon-parent  {
+        width: 0px;
+        background-image: '';
+    }
+
+    .x-tree-icon-leaf {
+        width: 0px;
+        background-image: '';
+    }
+
+    .widget_desc {
+       margin: 20px 20px 20px 20px;
+       font-size: 12px;
+       font-family: tahoma,arial,verdana,sans-serif;
+    }
+
+    .widget_desc h1 {
+        margin-top: 30px;
+        margin-bottom: 10px;
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    .widget_preview {
+        color: gray; 
+        font-weight: italic; 
+        text-align:center;
+        margin-top:40%;     
+    }
+
+</style>
+
+<script type="text/javascript">document.getElementById('loading-msg').innerHTML = 'Loading Application...';</script> 
+<script type="text/javascript" src="{{ STATIC_URL }}app.js"></script>
+
+
+
+    <script type="text/javascript">
+    // eliminate the loading indicators
+    var loading=document.getElementById("loading");
+    if(loading)document.body.removeChild(loading);
+    // eliminate the loading mask so application shows
+    var mask=document.getElementById("loading-mask");
+    if(mask)document.body.removeChild(mask);
+    </script> 
+
+
+</body>
+</html>
+

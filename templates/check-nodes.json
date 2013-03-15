@@ -1,0 +1,45 @@
+[{
+    "id": "home",
+    "text": "Home", 
+    "cls": "folder",
+    "leaf": true
+},{
+    "id": "overview",
+    "text": "Overview",
+    "cls": "folder",
+    "expanded": true,
+    "children": [{
+        "id": "hsbc_0",
+        "text": "HSBC",
+        "expanded": true,
+        "checked": true,
+        "children": [{
+            "id": "hsbc_1",
+            "text": "HSBC1",
+            "leaf": true,
+            "checked": true
+        },{
+            "id": "hsbc_2",
+            "text": "HSBC2",
+            "leaf": true,
+            "checked": true
+        }]
+    },{
+        "id": "cs_0",
+        "text": "Credit Suisse",
+        "cls": "folder",
+        "expanded": true,
+        "checked": true,
+        "children": [{
+            "id": "cs_1",
+            "text": "CS1",
+            "leaf": true,
+            "checked": true
+        },{
+            "id": "cs_2",
+            "text": "CS2",
+            "leaf": true,
+            "checked": true
+        }]
+    }]
+}]

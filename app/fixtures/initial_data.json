@@ -1,0 +1,2818 @@
+[
+    {
+        "pk": 33, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "alarm", 
+            "name": "alarm", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "apiaccess", 
+            "name": "api access", 
+            "app_label": "tastypie"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "apikey", 
+            "name": "api key", 
+            "app_label": "tastypie"
+        }
+    }, 
+    {
+        "pk": 34, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "benchmark", 
+            "name": "benchmark", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "client", 
+            "name": "client", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "contenttype", 
+            "name": "content type", 
+            "app_label": "contenttypes"
+        }
+    }, 
+    {
+        "pk": 29, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "counterparty", 
+            "name": "counter party", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "country", 
+            "name": "country", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "currency", 
+            "name": "currency", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "entry", 
+            "name": "entry", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "expense", 
+            "name": "expense", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "fee", 
+            "name": "fee", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "fund", 
+            "name": "fund", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "fundtype", 
+            "name": "fund type", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "group", 
+            "name": "group", 
+            "app_label": "auth"
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "historicclient", 
+            "name": "historic client", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "historicfund", 
+            "name": "historic fund", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "historicalexpense", 
+            "name": "historical expense", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "historicalfee", 
+            "name": "historical fee", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 32, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "historicalholding", 
+            "name": "historical holding", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 30, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "holding", 
+            "name": "holding", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "holdingtype", 
+            "name": "holding type", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "logentry", 
+            "name": "log entry", 
+            "app_label": "admin"
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "menu", 
+            "name": "menu", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "page", 
+            "name": "page", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "pagewidget", 
+            "name": "page widget", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "permission", 
+            "name": "permission", 
+            "app_label": "auth"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "session", 
+            "name": "session", 
+            "app_label": "sessions"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "site", 
+            "name": "site", 
+            "app_label": "sites"
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "trade", 
+            "name": "trade", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "tradetype", 
+            "name": "trade type", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "user", 
+            "name": "user", 
+            "app_label": "auth"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "widget", 
+            "name": "widget", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "widgettype", 
+            "name": "widget type", 
+            "app_label": "app"
+        }
+    }, 
+    {
+        "pk": "b16905207c6834d6548943e1be766ef9", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2013-03-26T07:38:02Z", 
+            "session_data": "ZjIxNzE1NmJjNGMxM2IxZWI0ODllZDViMTFjMjI2YjI0MDI5NzUzYTqAAn1xAShVEl9hdXRoX3Vz\nZXJfYmFja2VuZHECVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZHED\nVQ1fYXV0aF91c2VyX2lkcQSKAQF1Lg==\n"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "sites.site", 
+        "fields": {
+            "domain": "example.com", 
+            "name": "example.com"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "app.widgettype", 
+        "fields": {
+            "name": "Pie Chart", 
+            "key": "pie_chart"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "app.widgettype", 
+        "fields": {
+            "name": "Data Table", 
+            "key": "data_table"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "app.widgettype", 
+        "fields": {
+            "name": "Graph", 
+            "key": "graph"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "app.widgettype", 
+        "fields": {
+            "name": "Bar Chart", 
+            "key": "bar_chart"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 2, 
+            "parent": null, 
+            "level": 0, 
+            "title": "Home Page", 
+            "lft": 1, 
+            "tree_id": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 10, 
+            "parent": null, 
+            "level": 0, 
+            "title": "Table", 
+            "lft": 1, 
+            "tree_id": 2
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 3, 
+            "parent": 2, 
+            "level": 1, 
+            "title": "Performance", 
+            "lft": 2, 
+            "tree_id": 2
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 5, 
+            "parent": 2, 
+            "level": 1, 
+            "title": "Asset Allocation", 
+            "lft": 4, 
+            "tree_id": 2
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 7, 
+            "parent": 2, 
+            "level": 1, 
+            "title": "Clients", 
+            "lft": 6, 
+            "tree_id": 2
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 9, 
+            "parent": 2, 
+            "level": 1, 
+            "title": "Holdings", 
+            "lft": 8, 
+            "tree_id": 2
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 6, 
+            "parent": null, 
+            "level": 0, 
+            "title": "Performance", 
+            "lft": 1, 
+            "tree_id": 3
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 3, 
+            "parent": 7, 
+            "level": 1, 
+            "title": "Fund Holdings Trades", 
+            "lft": 2, 
+            "tree_id": 3
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 5, 
+            "parent": 7, 
+            "level": 1, 
+            "title": "Analysis", 
+            "lft": 4, 
+            "tree_id": 3
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 6, 
+            "parent": null, 
+            "level": 0, 
+            "title": "Asset Allocation", 
+            "lft": 1, 
+            "tree_id": 4
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 3, 
+            "parent": 10, 
+            "level": 1, 
+            "title": "Fund Holdings Trades", 
+            "lft": 2, 
+            "tree_id": 4
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 5, 
+            "parent": 10, 
+            "level": 1, 
+            "title": "Data", 
+            "lft": 4, 
+            "tree_id": 4
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 12, 
+            "parent": null, 
+            "level": 0, 
+            "title": "Fund Performance", 
+            "lft": 1, 
+            "tree_id": 5
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 3, 
+            "parent": 13, 
+            "level": 1, 
+            "title": "Asset Allocation", 
+            "lft": 2, 
+            "tree_id": 5
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 5, 
+            "parent": 13, 
+            "level": 1, 
+            "title": "Fund Holdings - Trade History", 
+            "lft": 4, 
+            "tree_id": 5
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 7, 
+            "parent": 13, 
+            "level": 1, 
+            "title": "Share Holder Register", 
+            "lft": 6, 
+            "tree_id": 5
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 9, 
+            "parent": 13, 
+            "level": 1, 
+            "title": "Fund Configuration", 
+            "lft": 8, 
+            "tree_id": 5
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 11, 
+            "parent": 13, 
+            "level": 1, 
+            "title": "Add Trade", 
+            "lft": 10, 
+            "tree_id": 5
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 12, 
+            "parent": null, 
+            "level": 0, 
+            "title": "Client Performance", 
+            "lft": 1, 
+            "tree_id": 6
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 3, 
+            "parent": 19, 
+            "level": 1, 
+            "title": "Asset Allocation", 
+            "lft": 2, 
+            "tree_id": 6
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 5, 
+            "parent": 19, 
+            "level": 1, 
+            "title": "Client Holdings - Trade History", 
+            "lft": 4, 
+            "tree_id": 6
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 7, 
+            "parent": 19, 
+            "level": 1, 
+            "title": "Statement", 
+            "lft": 6, 
+            "tree_id": 6
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 9, 
+            "parent": 19, 
+            "level": 1, 
+            "title": "Client Configuration", 
+            "lft": 8, 
+            "tree_id": 6
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "app.page", 
+        "fields": {
+            "rght": 11, 
+            "parent": 19, 
+            "level": 1, 
+            "title": "Add Trade", 
+            "lft": 10, 
+            "tree_id": 6
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_logentry", 
+            "name": "Can add log entry", 
+            "content_type": 7
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_logentry", 
+            "name": "Can change log entry", 
+            "content_type": 7
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_logentry", 
+            "name": "Can delete log entry", 
+            "content_type": 7
+        }
+    }, 
+    {
+        "pk": 97, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_alarm", 
+            "name": "Can add alarm", 
+            "content_type": 33
+        }
+    }, 
+    {
+        "pk": 98, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_alarm", 
+            "name": "Can change alarm", 
+            "content_type": 33
+        }
+    }, 
+    {
+        "pk": 99, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_alarm", 
+            "name": "Can delete alarm", 
+            "content_type": 33
+        }
+    }, 
+    {
+        "pk": 100, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_benchmark", 
+            "name": "Can add benchmark", 
+            "content_type": 34
+        }
+    }, 
+    {
+        "pk": 101, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_benchmark", 
+            "name": "Can change benchmark", 
+            "content_type": 34
+        }
+    }, 
+    {
+        "pk": 102, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_benchmark", 
+            "name": "Can delete benchmark", 
+            "content_type": 34
+        }
+    }, 
+    {
+        "pk": 55, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_client", 
+            "name": "Can add client", 
+            "content_type": 19
+        }
+    }, 
+    {
+        "pk": 56, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_client", 
+            "name": "Can change client", 
+            "content_type": 19
+        }
+    }, 
+    {
+        "pk": 57, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_client", 
+            "name": "Can delete client", 
+            "content_type": 19
+        }
+    }, 
+    {
+        "pk": 85, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_counterparty", 
+            "name": "Can add counter party", 
+            "content_type": 29
+        }
+    }, 
+    {
+        "pk": 86, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_counterparty", 
+            "name": "Can change counter party", 
+            "content_type": 29
+        }
+    }, 
+    {
+        "pk": 87, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_counterparty", 
+            "name": "Can delete counter party", 
+            "content_type": 29
+        }
+    }, 
+    {
+        "pk": 64, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_country", 
+            "name": "Can add country", 
+            "content_type": 22
+        }
+    }, 
+    {
+        "pk": 65, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_country", 
+            "name": "Can change country", 
+            "content_type": 22
+        }
+    }, 
+    {
+        "pk": 66, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_country", 
+            "name": "Can delete country", 
+            "content_type": 22
+        }
+    }, 
+    {
+        "pk": 61, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_currency", 
+            "name": "Can add currency", 
+            "content_type": 21
+        }
+    }, 
+    {
+        "pk": 62, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_currency", 
+            "name": "Can change currency", 
+            "content_type": 21
+        }
+    }, 
+    {
+        "pk": 63, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_currency", 
+            "name": "Can delete currency", 
+            "content_type": 21
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_entry", 
+            "name": "Can add entry", 
+            "content_type": 10
+        }
+    }, 
+    {
+        "pk": 29, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_entry", 
+            "name": "Can change entry", 
+            "content_type": 10
+        }
+    }, 
+    {
+        "pk": 30, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_entry", 
+            "name": "Can delete entry", 
+            "content_type": 10
+        }
+    }, 
+    {
+        "pk": 79, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_expense", 
+            "name": "Can add expense", 
+            "content_type": 27
+        }
+    }, 
+    {
+        "pk": 80, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_expense", 
+            "name": "Can change expense", 
+            "content_type": 27
+        }
+    }, 
+    {
+        "pk": 81, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_expense", 
+            "name": "Can delete expense", 
+            "content_type": 27
+        }
+    }, 
+    {
+        "pk": 73, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_fee", 
+            "name": "Can add fee", 
+            "content_type": 25
+        }
+    }, 
+    {
+        "pk": 74, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_fee", 
+            "name": "Can change fee", 
+            "content_type": 25
+        }
+    }, 
+    {
+        "pk": 75, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_fee", 
+            "name": "Can delete fee", 
+            "content_type": 25
+        }
+    }, 
+    {
+        "pk": 49, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_fund", 
+            "name": "Can add fund", 
+            "content_type": 17
+        }
+    }, 
+    {
+        "pk": 50, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_fund", 
+            "name": "Can change fund", 
+            "content_type": 17
+        }
+    }, 
+    {
+        "pk": 51, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_fund", 
+            "name": "Can delete fund", 
+            "content_type": 17
+        }
+    }, 
+    {
+        "pk": 46, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_fundtype", 
+            "name": "Can add fund type", 
+            "content_type": 16
+        }
+    }, 
+    {
+        "pk": 47, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_fundtype", 
+            "name": "Can change fund type", 
+            "content_type": 16
+        }
+    }, 
+    {
+        "pk": 48, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_fundtype", 
+            "name": "Can delete fund type", 
+            "content_type": 16
+        }
+    }, 
+    {
+        "pk": 82, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_historicalexpense", 
+            "name": "Can add historical expense", 
+            "content_type": 28
+        }
+    }, 
+    {
+        "pk": 83, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_historicalexpense", 
+            "name": "Can change historical expense", 
+            "content_type": 28
+        }
+    }, 
+    {
+        "pk": 84, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_historicalexpense", 
+            "name": "Can delete historical expense", 
+            "content_type": 28
+        }
+    }, 
+    {
+        "pk": 76, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_historicalfee", 
+            "name": "Can add historical fee", 
+            "content_type": 26
+        }
+    }, 
+    {
+        "pk": 77, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_historicalfee", 
+            "name": "Can change historical fee", 
+            "content_type": 26
+        }
+    }, 
+    {
+        "pk": 78, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_historicalfee", 
+            "name": "Can delete historical fee", 
+            "content_type": 26
+        }
+    }, 
+    {
+        "pk": 94, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_historicalholding", 
+            "name": "Can add historical holding", 
+            "content_type": 32
+        }
+    }, 
+    {
+        "pk": 95, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_historicalholding", 
+            "name": "Can change historical holding", 
+            "content_type": 32
+        }
+    }, 
+    {
+        "pk": 96, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_historicalholding", 
+            "name": "Can delete historical holding", 
+            "content_type": 32
+        }
+    }, 
+    {
+        "pk": 58, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_historicclient", 
+            "name": "Can add historic client", 
+            "content_type": 20
+        }
+    }, 
+    {
+        "pk": 59, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_historicclient", 
+            "name": "Can change historic client", 
+            "content_type": 20
+        }
+    }, 
+    {
+        "pk": 60, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_historicclient", 
+            "name": "Can delete historic client", 
+            "content_type": 20
+        }
+    }, 
+    {
+        "pk": 52, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_historicfund", 
+            "name": "Can add historic fund", 
+            "content_type": 18
+        }
+    }, 
+    {
+        "pk": 53, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_historicfund", 
+            "name": "Can change historic fund", 
+            "content_type": 18
+        }
+    }, 
+    {
+        "pk": 54, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_historicfund", 
+            "name": "Can delete historic fund", 
+            "content_type": 18
+        }
+    }, 
+    {
+        "pk": 88, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_holding", 
+            "name": "Can add holding", 
+            "content_type": 30
+        }
+    }, 
+    {
+        "pk": 89, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_holding", 
+            "name": "Can change holding", 
+            "content_type": 30
+        }
+    }, 
+    {
+        "pk": 90, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_holding", 
+            "name": "Can delete holding", 
+            "content_type": 30
+        }
+    }, 
+    {
+        "pk": 91, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_holdingtype", 
+            "name": "Can add holding type", 
+            "content_type": 31
+        }
+    }, 
+    {
+        "pk": 92, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_holdingtype", 
+            "name": "Can change holding type", 
+            "content_type": 31
+        }
+    }, 
+    {
+        "pk": 93, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_holdingtype", 
+            "name": "Can delete holding type", 
+            "content_type": 31
+        }
+    }, 
+    {
+        "pk": 43, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_menu", 
+            "name": "Can add menu", 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 44, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_menu", 
+            "name": "Can change menu", 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 45, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_menu", 
+            "name": "Can delete menu", 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 37, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_page", 
+            "name": "Can add page", 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 38, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_page", 
+            "name": "Can change page", 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 39, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_page", 
+            "name": "Can delete page", 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 40, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_pagewidget", 
+            "name": "Can add page widget", 
+            "content_type": 14
+        }
+    }, 
+    {
+        "pk": 41, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_pagewidget", 
+            "name": "Can change page widget", 
+            "content_type": 14
+        }
+    }, 
+    {
+        "pk": 42, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_pagewidget", 
+            "name": "Can delete page widget", 
+            "content_type": 14
+        }
+    }, 
+    {
+        "pk": 70, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_trade", 
+            "name": "Can add trade", 
+            "content_type": 24
+        }
+    }, 
+    {
+        "pk": 71, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_trade", 
+            "name": "Can change trade", 
+            "content_type": 24
+        }
+    }, 
+    {
+        "pk": 72, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_trade", 
+            "name": "Can delete trade", 
+            "content_type": 24
+        }
+    }, 
+    {
+        "pk": 67, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_tradetype", 
+            "name": "Can add trade type", 
+            "content_type": 23
+        }
+    }, 
+    {
+        "pk": 68, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_tradetype", 
+            "name": "Can change trade type", 
+            "content_type": 23
+        }
+    }, 
+    {
+        "pk": 69, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_tradetype", 
+            "name": "Can delete trade type", 
+            "content_type": 23
+        }
+    }, 
+    {
+        "pk": 34, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_widget", 
+            "name": "Can add widget", 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 35, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_widget", 
+            "name": "Can change widget", 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 36, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_widget", 
+            "name": "Can delete widget", 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_widgettype", 
+            "name": "Can add widget type", 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 32, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_widgettype", 
+            "name": "Can change widget type", 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 33, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_widgettype", 
+            "name": "Can delete widget type", 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_group", 
+            "name": "Can add group", 
+            "content_type": 2
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_group", 
+            "name": "Can change group", 
+            "content_type": 2
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_group", 
+            "name": "Can delete group", 
+            "content_type": 2
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_permission", 
+            "name": "Can add permission", 
+            "content_type": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_permission", 
+            "name": "Can change permission", 
+            "content_type": 1
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_permission", 
+            "name": "Can delete permission", 
+            "content_type": 1
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_user", 
+            "name": "Can add user", 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_user", 
+            "name": "Can change user", 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_user", 
+            "name": "Can delete user", 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_contenttype", 
+            "name": "Can add content type", 
+            "content_type": 4
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_contenttype", 
+            "name": "Can change content type", 
+            "content_type": 4
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_contenttype", 
+            "name": "Can delete content type", 
+            "content_type": 4
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_session", 
+            "name": "Can add session", 
+            "content_type": 5
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_session", 
+            "name": "Can change session", 
+            "content_type": 5
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_session", 
+            "name": "Can delete session", 
+            "content_type": 5
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_site", 
+            "name": "Can add site", 
+            "content_type": 6
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_site", 
+            "name": "Can change site", 
+            "content_type": 6
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_site", 
+            "name": "Can delete site", 
+            "content_type": 6
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_apiaccess", 
+            "name": "Can add api access", 
+            "content_type": 8
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_apiaccess", 
+            "name": "Can change api access", 
+            "content_type": 8
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_apiaccess", 
+            "name": "Can delete api access", 
+            "content_type": 8
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_apikey", 
+            "name": "Can add api key", 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_apikey", 
+            "name": "Can change api key", 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_apikey", 
+            "name": "Can delete api key", 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "auth.group", 
+        "fields": {
+            "name": "Managers", 
+            "permissions": [
+                19, 
+                20, 
+                21, 
+                97, 
+                98, 
+                99, 
+                100, 
+                101, 
+                102, 
+                55, 
+                56, 
+                57, 
+                85, 
+                86, 
+                87, 
+                64, 
+                65, 
+                66, 
+                61, 
+                62, 
+                63, 
+                28, 
+                29, 
+                30, 
+                79, 
+                80, 
+                81, 
+                73, 
+                74, 
+                75, 
+                49, 
+                50, 
+                51, 
+                46, 
+                47, 
+                48, 
+                82, 
+                83, 
+                84, 
+                76, 
+                77, 
+                78, 
+                94, 
+                95, 
+                96, 
+                58, 
+                59, 
+                60, 
+                52, 
+                53, 
+                54, 
+                88, 
+                89, 
+                90, 
+                91, 
+                92, 
+                93, 
+                43, 
+                44, 
+                45, 
+                37, 
+                38, 
+                39, 
+                40, 
+                41, 
+                42, 
+                70, 
+                71, 
+                72, 
+                67, 
+                68, 
+                69, 
+                34, 
+                35, 
+                36, 
+                31, 
+                32, 
+                33, 
+                4, 
+                5, 
+                6, 
+                1, 
+                2, 
+                3, 
+                7, 
+                8, 
+                9, 
+                10, 
+                11, 
+                12, 
+                13, 
+                14, 
+                15, 
+                16, 
+                17, 
+                18, 
+                22, 
+                23, 
+                24, 
+                25, 
+                26, 
+                27
+            ]
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "auth.group", 
+        "fields": {
+            "name": "test", 
+            "permissions": [
+                19, 
+                20, 
+                21, 
+                97, 
+                98, 
+                99, 
+                100, 
+                101, 
+                102, 
+                55, 
+                56, 
+                57, 
+                85, 
+                86, 
+                87, 
+                64, 
+                65, 
+                66, 
+                61, 
+                62, 
+                63, 
+                28, 
+                29, 
+                30, 
+                79, 
+                80, 
+                81, 
+                73, 
+                74, 
+                75, 
+                49, 
+                50, 
+                51, 
+                46, 
+                47, 
+                48, 
+                82, 
+                83, 
+                84, 
+                76, 
+                77, 
+                78, 
+                94, 
+                95, 
+                96, 
+                58, 
+                59, 
+                60, 
+                52, 
+                53, 
+                54, 
+                88, 
+                89, 
+                90, 
+                91, 
+                92, 
+                93, 
+                43, 
+                44, 
+                45, 
+                37, 
+                38, 
+                39, 
+                40, 
+                41, 
+                42, 
+                70, 
+                71, 
+                72, 
+                67, 
+                68, 
+                69, 
+                34, 
+                35, 
+                36, 
+                31, 
+                32, 
+                33, 
+                4, 
+                5, 
+                6, 
+                1, 
+                2, 
+                3, 
+                7, 
+                8, 
+                9, 
+                10, 
+                11, 
+                12, 
+                13, 
+                14, 
+                15, 
+                16, 
+                17, 
+                18, 
+                22, 
+                23, 
+                24, 
+                25, 
+                26, 
+                27
+            ]
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "dan", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": true, 
+            "is_staff": true, 
+            "last_login": "2013-03-12T07:38:02Z", 
+            "groups": [
+                1
+            ], 
+            "user_permissions": [], 
+            "password": "pbkdf2_sha256$10000$BJYFbeb5rRjB$6bMDch1QqefV9NRW5GQp5IqiEFXO/EcYYiZoKz2mfic=", 
+            "email": "dan@dabhand.net", 
+            "date_joined": "2013-03-12T01:03:22Z"
+        }
+    }, 
+    {
+        "pk": 57, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-03-12T15:59:26Z", 
+            "object_repr": "Pie Chart", 
+            "object_id": "4", 
+            "change_message": "Changed access.", 
+            "user": 1, 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 56, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T15:58:09Z", 
+            "object_repr": "test", 
+            "object_id": "2", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 2
+        }
+    }, 
+    {
+        "pk": 55, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-03-12T14:15:51Z", 
+            "object_repr": "dan", 
+            "object_id": "1", 
+            "change_message": "Changed password and groups.", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 54, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T04:07:39Z", 
+            "object_repr": "Home Page / Pie Chart", 
+            "object_id": "4", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 14
+        }
+    }, 
+    {
+        "pk": 53, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T04:07:15Z", 
+            "object_repr": "Home Page / ExampleTable1", 
+            "object_id": "3", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 14
+        }
+    }, 
+    {
+        "pk": 52, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T04:06:50Z", 
+            "object_repr": "Home Page / Concern Occurrance", 
+            "object_id": "2", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 14
+        }
+    }, 
+    {
+        "pk": 51, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T04:06:26Z", 
+            "object_repr": "Home Page / Graph", 
+            "object_id": "1", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 14
+        }
+    }, 
+    {
+        "pk": 50, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T03:54:57Z", 
+            "object_repr": "Pie Chart", 
+            "object_id": "4", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 49, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-03-12T03:54:19Z", 
+            "object_repr": "Concern Occurrance", 
+            "object_id": "2", 
+            "change_message": "No fields changed.", 
+            "user": 1, 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 48, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T03:53:11Z", 
+            "object_repr": "ExampleTable1", 
+            "object_id": "3", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 47, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T03:52:48Z", 
+            "object_repr": "Concern Occurrance", 
+            "object_id": "2", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 46, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T03:50:45Z", 
+            "object_repr": "Graph", 
+            "object_id": "1", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 45, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T03:46:29Z", 
+            "object_repr": "Clients", 
+            "object_id": "10", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 44, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T03:45:59Z", 
+            "object_repr": "Funds", 
+            "object_id": "9", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 43, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T03:45:13Z", 
+            "object_repr": "Asset Allocation / By Client", 
+            "object_id": "8", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 42, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T03:44:59Z", 
+            "object_repr": "Asset Allocation / By Fund", 
+            "object_id": "7", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 41, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T03:44:44Z", 
+            "object_repr": "Asset Allocation", 
+            "object_id": "6", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 40, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T03:16:35Z", 
+            "object_repr": "bar_chart", 
+            "object_id": "4", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 39, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T03:16:25Z", 
+            "object_repr": "graph", 
+            "object_id": "3", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 38, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T03:16:16Z", 
+            "object_repr": "data_table", 
+            "object_id": "2", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 37, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T03:16:01Z", 
+            "object_repr": "pie_chart", 
+            "object_id": "1", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 36, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T02:47:52Z", 
+            "object_repr": "Performance / By Client", 
+            "object_id": "5", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 35, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T02:47:40Z", 
+            "object_repr": "Performance / By Fund", 
+            "object_id": "4", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 34, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T02:47:23Z", 
+            "object_repr": "Performance", 
+            "object_id": "3", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 33, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-03-12T02:45:40Z", 
+            "object_repr": "Overview", 
+            "object_id": "2", 
+            "change_message": "Changed page.", 
+            "user": 1, 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 32, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T02:44:24Z", 
+            "object_repr": "Overview", 
+            "object_id": "2", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T02:44:10Z", 
+            "object_repr": "Home", 
+            "object_id": "1", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 30, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T02:40:54Z", 
+            "object_repr": "Managers", 
+            "object_id": "1", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 2
+        }
+    }, 
+    {
+        "pk": 29, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T02:23:37Z", 
+            "object_repr": "Client Performance / Add Trade", 
+            "object_id": "24", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T02:23:26Z", 
+            "object_repr": "Client Performance / Client Configuration", 
+            "object_id": "23", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T02:23:07Z", 
+            "object_repr": "Client Performance / Statement", 
+            "object_id": "22", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T02:22:55Z", 
+            "object_repr": "Client Performance / Client Holdings - Trade History", 
+            "object_id": "21", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T02:22:39Z", 
+            "object_repr": "Client Performance / Asset Allocation", 
+            "object_id": "20", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T02:22:27Z", 
+            "object_repr": "Client Performance", 
+            "object_id": "19", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T02:21:14Z", 
+            "object_repr": "Fund Performance / Add Trade", 
+            "object_id": "18", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T02:20:57Z", 
+            "object_repr": "Fund Performance / Fund Configuration", 
+            "object_id": "17", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T02:20:36Z", 
+            "object_repr": "Fund Performance / Share Holder Register", 
+            "object_id": "16", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T02:20:16Z", 
+            "object_repr": "Fund Performance / Fund Holdings - Trade History", 
+            "object_id": "15", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T02:19:53Z", 
+            "object_repr": "Fund Performance / Asset Allocation", 
+            "object_id": "14", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T02:19:41Z", 
+            "object_repr": "Fund Performance", 
+            "object_id": "13", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-03-12T01:31:25Z", 
+            "object_repr": "Asset Allocation / Data", 
+            "object_id": "12", 
+            "change_message": "Changed title.", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-03-12T01:31:17Z", 
+            "object_repr": "Asset Allocation / Fund Holdings Trades", 
+            "object_id": "11", 
+            "change_message": "Changed title.", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-03-12T01:30:30Z", 
+            "object_repr": "Performance / Analysis", 
+            "object_id": "9", 
+            "change_message": "Changed title.", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-03-12T01:30:07Z", 
+            "object_repr": "Performance / Fund Holdings Trades", 
+            "object_id": "8", 
+            "change_message": "Changed title.", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-03-12T01:29:45Z", 
+            "object_repr": "Performance / Fund Holdings", 
+            "object_id": "8", 
+            "change_message": "Changed title.", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T01:24:05Z", 
+            "object_repr": "Asset Allocation / By Client", 
+            "object_id": "12", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T01:23:56Z", 
+            "object_repr": "Asset Allocation / By Fund", 
+            "object_id": "11", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T01:23:42Z", 
+            "object_repr": "Asset Allocation", 
+            "object_id": "10", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T01:23:19Z", 
+            "object_repr": "Performance / By Client", 
+            "object_id": "9", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T01:23:09Z", 
+            "object_repr": "Performance / By Fund", 
+            "object_id": "8", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T01:22:55Z", 
+            "object_repr": "Performance", 
+            "object_id": "7", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T01:21:16Z", 
+            "object_repr": "Table / Holdings", 
+            "object_id": "6", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T01:21:05Z", 
+            "object_repr": "Table / Clients", 
+            "object_id": "5", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T01:20:54Z", 
+            "object_repr": "Table / Asset Allocation", 
+            "object_id": "4", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T01:20:34Z", 
+            "object_repr": "Table / Performance", 
+            "object_id": "3", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T01:20:16Z", 
+            "object_repr": "Table", 
+            "object_id": "2", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-03-12T01:19:39Z", 
+            "object_repr": "Home Page", 
+            "object_id": "1", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "app.widget", 
+        "fields": {
+            "access": [
+                1
+            ], 
+            "description": "Some graph", 
+            "widget_type": 3, 
+            "size_x": 3, 
+            "size_y": 3, 
+            "key": "graph", 
+            "name": "Graph"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "app.widget", 
+        "fields": {
+            "access": [
+                1
+            ], 
+            "description": "A bar chart...", 
+            "widget_type": 4, 
+            "size_x": 3, 
+            "size_y": 3, 
+            "key": "concernoccurrance", 
+            "name": "Concern Occurrance"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "app.widget", 
+        "fields": {
+            "access": [
+                1
+            ], 
+            "description": "SOme data table", 
+            "widget_type": 2, 
+            "size_x": 3, 
+            "size_y": 3, 
+            "key": "exampletable1", 
+            "name": "ExampleTable1"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "app.widget", 
+        "fields": {
+            "access": [
+                1, 
+                2
+            ], 
+            "description": "Mmm Pie", 
+            "widget_type": 1, 
+            "size_x": 3, 
+            "size_y": 3, 
+            "key": "piechart", 
+            "name": "Pie Chart"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "app.pagewidget", 
+        "fields": {
+            "widget": 1, 
+            "page": 1, 
+            "size_x": 3, 
+            "size_y": 3, 
+            "row": 1, 
+            "col": 1, 
+            "user": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "app.pagewidget", 
+        "fields": {
+            "widget": 2, 
+            "page": 1, 
+            "size_x": 3, 
+            "size_y": 3, 
+            "row": 1, 
+            "col": 4, 
+            "user": 1
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "app.pagewidget", 
+        "fields": {
+            "widget": 3, 
+            "page": 1, 
+            "size_x": 3, 
+            "size_y": 3, 
+            "row": 4, 
+            "col": 1, 
+            "user": 1
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "app.pagewidget", 
+        "fields": {
+            "widget": 4, 
+            "page": 1, 
+            "size_x": 4, 
+            "size_y": 3, 
+            "row": 4, 
+            "col": 4, 
+            "user": 1
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "app.menu", 
+        "fields": {
+            "rght": 2, 
+            "name": "Home", 
+            "parent": null, 
+            "level": 0, 
+            "access": [
+                1
+            ], 
+            "lft": 1, 
+            "tree_id": 1, 
+            "page": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "app.menu", 
+        "fields": {
+            "rght": 2, 
+            "name": "Overview", 
+            "parent": null, 
+            "level": 0, 
+            "access": [
+                1
+            ], 
+            "lft": 1, 
+            "tree_id": 2, 
+            "page": 2
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "app.menu", 
+        "fields": {
+            "rght": 6, 
+            "name": "Performance", 
+            "parent": null, 
+            "level": 0, 
+            "access": [
+                1
+            ], 
+            "lft": 1, 
+            "tree_id": 3, 
+            "page": 7
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "app.menu", 
+        "fields": {
+            "rght": 3, 
+            "name": "By Fund", 
+            "parent": 3, 
+            "level": 1, 
+            "access": [
+                1
+            ], 
+            "lft": 2, 
+            "tree_id": 3, 
+            "page": null
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "app.menu", 
+        "fields": {
+            "rght": 5, 
+            "name": "By Client", 
+            "parent": 3, 
+            "level": 1, 
+            "access": [
+                1
+            ], 
+            "lft": 4, 
+            "tree_id": 3, 
+            "page": null
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "app.menu", 
+        "fields": {
+            "rght": 6, 
+            "name": "Asset Allocation", 
+            "parent": null, 
+            "level": 0, 
+            "access": [
+                1
+            ], 
+            "lft": 1, 
+            "tree_id": 4, 
+            "page": 10
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "app.menu", 
+        "fields": {
+            "rght": 3, 
+            "name": "By Fund", 
+            "parent": 6, 
+            "level": 1, 
+            "access": [
+                1
+            ], 
+            "lft": 2, 
+            "tree_id": 4, 
+            "page": null
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "app.menu", 
+        "fields": {
+            "rght": 5, 
+            "name": "By Client", 
+            "parent": 6, 
+            "level": 1, 
+            "access": [
+                1
+            ], 
+            "lft": 4, 
+            "tree_id": 4, 
+            "page": null
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "app.menu", 
+        "fields": {
+            "rght": 2, 
+            "name": "Funds", 
+            "parent": null, 
+            "level": 0, 
+            "access": [
+                1
+            ], 
+            "lft": 1, 
+            "tree_id": 5, 
+            "page": 13
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "app.menu", 
+        "fields": {
+            "rght": 2, 
+            "name": "Clients", 
+            "parent": null, 
+            "level": 0, 
+            "access": [
+                1
+            ], 
+            "lft": 1, 
+            "tree_id": 6, 
+            "page": 19
+        }
+    }
+]

@@ -1,0 +1,21 @@
+{% load mptt_tags %}
+[{% load last_comma %}
+
+{% recursetree nodes %}
+    {
+        "id": "{{ node.id }}",   
+        "name": "{{ node.name }}"  
+        {% if not node.is_leaf_node %} 
+        , "children": [
+            {% recursetree node.children %}
+            {
+                 "id": "{{ node.id }}",   
+                "name": "{{ node.name }}"
+                {{ node.index }}                 
+            }
+            {% endrecursetree %}
+        ]
+        {% endif %}
+    }{% if not forloop.last %},{% endif %}
+{% endrecursetree %}
+]

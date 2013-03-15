@@ -1,0 +1,186 @@
+// Unless you want to include all components, you must set $include-default to false
+// IF you set this to true, you can also remove lines 10 to 38 of this file
+$include-default: false;
+
+
+//Base Colors
+$edge-light-grey: #f5f5f5;
+$edge-mid-grey: #eeeeee;
+$edge-dark-grey: #555555;
+$edge-blue: #4D90FE;
+
+//Base Variables
+$base-color: $edge-light-grey;
+$font-family: Helvetica;
+$font-weight: bold;
+$panel-body-color: #414141 !default;
+
+//Button Groups
+$btn-group-header-color:black;
+$btn-group-background-color: #ffffff;
+$btn-group-header-background-color: #efefef;
+$btn-group-border-color: #DFDFDF;
+$btn-group-border-width: 1px !default;
+$btn-group-padding: 0 0px !default;
+$btn-group-inner-border-color: #DFDFDF;
+
+//ProgressBar
+$progress-bar-background-color:$edge-blue;
+
+//Grids
+$grid-row-cell-selected-background-color: #cfe0fe;
+$grid-header-over-background-gradient: null !default;
+$grid-header-over-background-color: white !default;
+
+//Dropdown lists
+$boundlist-item-over-background-color: $edge-blue;
+
+//Forms
+$form-field-invalid-background-image: none !default;
+$form-field-focus-border-color: $edge-blue;
+$form-trigger-border-bottom-width:0;
+$form-exclamation-icon: 'form/exclamation.png' !default;
+
+//Menus
+$menu-background-color: white !default;
+$menu-item-active-background-color: $edge-mid-grey;
+$menu-item-active-background-image: none;
+
+//Date Picker
+$datepicker-header-background-gradient:null;
+$datepicker-footer-background-gradient:null;
+$datepicker-footer-background-color:white;
+$datepicker-header-background-color:$edge-blue;
+$datepicker-monthpicker-item-color:$edge-dark-grey;
+$datepicker-monthpicker-item-selected-background-color:white;
+$datepicker-today-item-border-color:$edge-dark-grey;
+$datepicker-th-background-gradient:null;
+$datepicker-th-background-color:$edge-dark-grey;
+$datepicker-th-color:white;
+$datepicker-selected-item-border-color: $edge-blue;
+$datepicker-next-image: 'shared/right-btn.png' !default;
+$datepicker-prev-image: 'shared/left-btn.png' !default;
+$datepicker-tool-sprite-image: 'tools/tool-sprites.png' !default;
+
+//Panels
+$panel-shadow: #CACACA -2px 2px 5px 0px;
+$panel-border-color: #ACACAC;
+$panel-header-background-gradient: #4D90FE, #3172b3;
+$panel-header-inner-border: false;
+$panel-header-inner-border-width: 0px 0 0 !default;
+$panel-header-font-size: 15px !default;
+$panel-header-color: #ffffff;
+
+//Framed Panels
+$panel-frame-border-radius: 5px !default;
+$panel-frame-border-color: #ACACAC !default;
+
+//Windows
+$window-header-padding: 5px 5px 0 !default; //Doesn't appear to be used
+$window-header-font-size: 17px !default; //11px
+$window-header-line-height: 24px !default;
+$window-header-color: black !default;
+$window-header-font-weight: normal !default;
+$window-border-width: 1px !default;
+$window-border-radius: 15px 15px !default;
+$window-header-line-height: 24px !default;
+$window-border-color: #ACACAC !default;
+$window-shadow: #CACACA -2px 2px 5px 0px;
+
+//Tabs
+$tab-base-color-active: white;
+$tab-color-active: #494949;
+$tab-font-size: 14px !default; //11px
+$tabbar-background-gradient: none !default;
+$tabbar-base-color: white;
+$tabbar-top-body-border-width: 0px;
+$tab-height: 30px !default;
+$tab-spacing: 0px !default;
+$tab-color: #797979;
+$tab-background-gradient: #F0F0F0, #efefef;
+$tab-closable-icon: 'tab/tab-default-close.png' !default;
+$tab-background-gradient-active:null;
+$tab-base-color-active: white;
+//Force specificity of white gradient in IE
+$tab-background-gradient-active: white;
+
+//Buttons
+$button-default-base-color: $edge-light-grey;
+$button-default-background-gradient: null;
+$button-small-border-radius: 5px !default;
+$button-small-font-weight: bold !default;
+$button-default-border-color-over: #8d8d8d;
+$button-default-base-color-over: #cccccc;
+$button-default-background-gradient-over: null;
+$button-default-background-gradient-pressed: null;
+
+//Toolbar Buttons
+$button-toolbar-background-color: transparent !default;
+$button-toolbar-background-color-over:  #cccccc;
+$button-toolbar-background-color-focus: $button-toolbar-background-color-over !default;
+$button-toolbar-background-color-pressed: white;
+$button-toolbar-background-color-disabled: transparent !default;
+$button-toolbar-background-gradient: null !default;
+$button-toolbar-background-gradient-over: null;
+$button-toolbar-background-gradient-focus: null;
+$button-toolbar-background-gradient-pressed: null;
+$button-toolbar-background-gradient-disabled: null !default;
+
+//Accordion
+$accordion-header-color:#555;
+
+@import 'bluebay/default/all';
+
+// You may remove any of the following modules that you
+// do not use in order to create a smaller css file.
+@include extjs-boundlist;
+@include extjs-button;
+@include extjs-btn-group;
+@include extjs-datepicker;
+@include extjs-colorpicker;
+@include extjs-menu;
+@include extjs-grid;
+@include extjs-form;
+@include extjs-form-field;
+@include extjs-form-fieldset;
+@include extjs-form-file;
+@include extjs-form-checkboxfield;
+@include extjs-form-checkboxgroup;
+@include extjs-form-triggerfield;
+@include extjs-form-htmleditor;
+@include extjs-panel;
+@include extjs-qtip;
+@include extjs-slider;
+@include extjs-progress;
+@include extjs-toolbar;
+@include extjs-window;
+@include extjs-messagebox;
+@include extjs-tabbar;
+@include extjs-tab;
+
+//Select panel elements which immediately follow a tabbar element
+.x-tab-bar~.x-panel-body{
+  border-top-width: 0px;
+}
+
+//Remove radius on checkbox
+.x-form-checkbox{
+  border-radius: 0px;
+}
+
+//Boundlist item color
+.x-boundlist-item.x-boundlist-item-over{
+  color:white;
+}
+
+@include extjs-tree;
+@include extjs-drawcomponent;
+@include extjs-viewport;
+
+// This line changes the location of your images when creating UIs to be relative instead of within the ExtJS directory.
+// You MUST set this to true/string value if you are creating new UIs + supporting legacy browsers.
+// This only applies to new UIs. It does not apply to default component images (i.e. when changing $base-color)
+// The value can either be true, in which case the image path will be "../images/"
+// or a string, of where the path is
+$relative-image-path-for-uis: true; // defaults to "../images/" when true
+
