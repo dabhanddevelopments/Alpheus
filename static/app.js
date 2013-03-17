@@ -27,28 +27,35 @@ Ext.onReady(function() {
         for(i=0; i<pages.length; i++) {
 
             if(pages[i].id == id) {
+            //    var page = pages[i];
     
-                el = 'main' + id;
+                el = 'page' + id;
 
                 // If a page has children, it means it's the first
                 // tab in a collection of tabs
                 if(pages[i].children !== undefined) {
 
-                    var panel = panelTab('tab_panel' + id);
+//console.log('has children, creating panel tab');
+                    var panel = panelTab();
 
                     switchPanel(panel, el);
                     appendTabs(pages[i]);
 
                 } else {
 
-                    var panel = panelStandard(el);
+//console.log('does not have children, creating standard panel');
+                    var panel = panelStandard();
                     switchPanel(panel, el);
+
+                    $('#data').data('grid' + id, '');
+                    $('<div id="page' + id + '"></div>').appendTo('#menu');
 
                 }
                     
                 // stops all widgets to auto reload/refresh
                 //clearAllIntervals();
 
+                
                 initGrid(id);
             }
         }
@@ -61,14 +68,15 @@ Ext.onReady(function() {
         var panel = Ext.getCmp('panel-tab');
 
         panel.removeAll();
+        $('<div id="page' + tabs.id + '" class="gridster"></div>').appendTo('body');
+        $('#data').data('grid' + tabs.id, '');
 
-        //$('<div id="main' + tabs.id + '" class="gridster"></div>').appendTo('#main');
-
+//console.log('adding div page' + tabs.id);
         // The root is the first tab
         panel.add({
             id: tabs.id,
             title: tabs.title,
-            contentEl: 'main' + tabs.id,
+            contentEl: 'page' + tabs.id,
             listeners: {
                 activate: function(tab){
                     initGrid(tab.id);
@@ -80,12 +88,15 @@ Ext.onReady(function() {
 
             id = tabs.children[x].id;
 
-            //$('<div id="main' + id + '" class="gridster"></div>').appendTo('#main');
+            $('<div id="page' + id + '" class="gridster"></div>').appendTo('body');
+            $('#data').data('grid' + id, '');
+
+//console.log('adding div page' + id);
 
             panel.add({
                 title: tabs.children[x].title,
                 id: id,
-                contentEl: 'main' + id,
+                contentEl: 'page' + id,
                 listeners: {
                     activate: function(tab){
                         initGrid(tab.id);
@@ -106,16 +117,7 @@ Ext.onReady(function() {
             //$('<div id="' + el + '"></div>').appendTo('body');
         }
 
-        //var ws = Ext.getCmp(active);
-        //ws.setVisible(false);
-        //ws.doLayout();  
-
-        //var ws = Ext.getCmp(el);
-        //ws.setVisible(true);
-        //ws.doLayout();  
-
-
-        var ws = Ext.getCmp(active);
+        var ws = Ext.getCmp('viewport');
 
         try {
             //console.log('removing: ' + active);
@@ -130,7 +132,7 @@ Ext.onReady(function() {
         // The 'main' DOM element gets destroyed on remove() with autoDestroy
         // set to true, so we have to re-add it
         ////console.log('CREATING dOM: ' + el);
-        //    $('<div id="' + el + '"></div>').appendTo('body');
+        $('<div id="menu" class="gridster"></div>').appendTo('body');
 
 
         try {
@@ -153,27 +155,39 @@ Ext.onReady(function() {
 //console.log('initiating grid');
 //console.log(page);
 
+        $('#data').data('page_id', page);
+
         $.ajax({
             type: "GET",
             url: '/api/pagewidget/?page=' + page,
             success: function(data) {
 
+//console.log("page length: ");
+//console.log($('#page1').length);
+
                 // if we have a grid for this page, it means it's already 
                 // loaded and we do not need to fetch it again
-                if($('#data').data('grid' + page) !== undefined) {
-////console.log('skipping gridster');
+                if($('#data').data('grid' + page) !== undefined && $('#data').data('grid' + page) !== '') {
+
+                    //console.log('skipping gridster: grid' + page);
                     return;
                 }
+                //if($('#page' + page).length !== 0) {
+        //console.log('skipping');
+        //            return
+        //        }
 
 
-                var grid = $("#main" + page).gridster({
+                //$('<div id="page' + page + '"></div>').appendTo('body');
+
+                var grid = $("#page" + page).gridster({
                     widget_margins: [10, 10],
                     widget_base_dimensions: [140, 140],
                     max_size_x: 10,
                     max_size_y: 10,
                     draggable: {
                         stop: function(event, ui){ 
-                            $.cookie("grid-data", JSON.stringify(grid.serialize()));
+                            saveWidgetPositions(JSON.stringify(grid.serialize()));
                             //console.log('widget stopped');
                         }
                     },
@@ -184,7 +198,7 @@ Ext.onReady(function() {
                             row: wgd.row,
                             size_y: wgd.size_y,
                             size_x: wgd.size_x,
-                            //id: $($w).attr('data-id'),
+                            pagewidget: $w.context.attributes.pagewidget.value,
                         } 
                     }
                 }).data('gridster');
@@ -194,20 +208,20 @@ Ext.onReady(function() {
 
                 $('#data').data('grid' + page, grid);
                 $('#data').data('grid_data' + page, data);
-                $('#data').data('page_id', page);
+                
 
     //console.log('starting loop');
                 for(i=0; i<data.length; i++) {
 
                     var row = data[i];
     //console.log('CREATING ');
-                    var widget = '<div id="' + row.widget.key + '" class="layout_block"></div>';
+                    var widget = '<div id="' + page + '_' + row.widget.key + '" pagewidget="' + row.id + '" class="layout_block"></div>';
 
                     grid.add_widget(widget, row.size_x, row.size_y, row.col, row.row);
 
                     createWidget(row.widget, page);
 
-                    widgetWindow(row.widget.key, row.widget.name, row.size_x, row.size_y, row.id);
+                    widgetWindow(row.widget.key, page, row.widget.name, row.size_x, row.size_y, row.id);
                 }       
 //console.log('finishing loop');
             }
@@ -215,9 +229,9 @@ Ext.onReady(function() {
         });
     }
 
-    function widgetWindow(key, title, size_x, size_y, grid_id) {
+    function widgetWindow(key, page, title, size_x, size_y, pagewidget) {
 
-//console.log('creating widget window');
+//console.log('creating widget window: ' + key);
         Ext.create('Ext.window.Window', {
             title: title,
             // there's gotta be a better way to do this
@@ -227,10 +241,10 @@ Ext.onReady(function() {
             floatable: false,
             draggable: false,
             closable: false, 
-            contentEl: "widget" + key,
+            contentEl: "widget" + page + '_' + key,
             x: 0,
             y: 0,
-            renderTo: key,
+            renderTo: page + '_' + key,
             tools: [{
                type: 'close',
                handler: function(e, toolEl, panel, tc) {
@@ -242,9 +256,12 @@ Ext.onReady(function() {
                          fn:function (buttonId) {
                              //console.log('buttonId:' + buttonId);
                              if (buttonId == "ok") {
-                                var grid = $('#data').data('grid')
-                                grid.remove_widget( $('#widget' + key) );
-                                removeWidget(grid_id);
+
+                                var grid = $('#data').data('grid' + page);
+
+                                grid.remove_widget($('#' + page + '_' + key));
+
+                                removeWidget(pagewidget);
                             }
                          }
                     });
@@ -267,20 +284,21 @@ Ext.onReady(function() {
         });          
     }
 
-    function createWidget(widget) {
+    function createWidget(widget, page) {
 
 //console.log('creating widget');
 //console.log(widget);
 
-        $('<div id="widget' + widget.key + '"></div>').appendTo('body');
+        var div = 'widget' + page + '_' + widget.key;
+        $('<div id="' + div + '"></div>').appendTo('body');
 
         try {
             $.getJSON('/api/widget/' + widget.key + '/', function(data) {
                 switch(widget.type) {
-                  case 'data_table': dataTable(widget, data); break;
-                  case 'graph':      graph(widget, data); break;
-                  case 'pie_chart':  pieChart(widget, data); break;
-                  case 'bar_chart':  barChart(widget, data); break;
+                  case 'data_table': dataTable(widget, data, div); break;
+                  case 'graph':      graph(widget, data, div); break;
+                  case 'pie_chart':  pieChart(widget, data, div); break;
+                  case 'bar_chart':  barChart(widget, data, div); break;
                 }
 
                 // enables ajax auto reload/refresh for this widget
@@ -291,11 +309,11 @@ Ext.onReady(function() {
         }
     }
 
-    function graph(widget, data) {
+    function graph(widget, data, div) {
 
-////console.log('creating graph');
+//console.log('creating graph');
         try {
-            $.jqplot("widget" + widget.key, data, 
+            $.jqplot(div, data, 
                 { 
                   axes:{yaxis:{min:-10, max:240}}, 
                   series:[{color:'#5FAB78'}]
@@ -305,11 +323,11 @@ Ext.onReady(function() {
         }
     }
 
-    function barChart(widget, data) {
+    function barChart(widget, data, div) {
 
-////console.log('creating bar chart');
+//console.log('creating bar chart');
         try {
-            var plot1 = $.jqplot("widget" + widget.key, data, {
+            var plot1 = $.jqplot(div, data, {
                 
                 series:[{renderer:$.jqplot.BarRenderer}],
                 axesDefaults: {
@@ -332,10 +350,10 @@ Ext.onReady(function() {
 
     }
 
-    function dataTable(widget, data) {
+    function dataTable(widget, data, div) {
 
-////console.log('creating datatable');
-////console.log(data);
+//console.log('creating datatable');
+//console.log(data);
         try {
 
             var table = Ext.create('Ext.data.Store', {
@@ -364,7 +382,7 @@ Ext.onReady(function() {
                 border: false,
                 enableLocking: true,
                 autoScroll: true,
-                renderTo: "widget" + widget.key,
+                renderTo: div,
 
             });
 
@@ -374,12 +392,12 @@ Ext.onReady(function() {
 
     }
 
-    function pieChart(widget, data) {
+    function pieChart(widget, data, div) {
 
-////console.log('creating pie chart');
-////console.log(data);
+//console.log('creating pie chart');
+//console.log(data);
 
-        var plot1 = jQuery.jqplot('widget' + widget.key, data, 
+        var plot1 = jQuery.jqplot(div, data, 
         { 
             seriesDefaults: {
                 renderer: jQuery.jqplot.PieRenderer, 
@@ -417,7 +435,7 @@ Ext.onReady(function() {
         }
     }
 
-
+/*
     var overviewStore = Ext.create('Ext.data.Store', {
         storeId:'overview_table',
         fields:['name', 'aum', 'mtd', 'ytd', 'one_day_var', 'total_cash', 'usd_hedge', 'checks', 'unsettled', ],
@@ -475,9 +493,10 @@ Ext.onReady(function() {
         }
     });
 
+
     // So the window dimensions stay 100% when the window is resized
     Ext.EventManager.onWindowResize(overviewGrid.doLayout, overviewGrid); 
-
+*/
 
     Ext.QuickTips.init();
 
@@ -556,7 +575,7 @@ Ext.onReady(function() {
         //console.log(data);
                                     $('#data').data('widget', data);
 
-                                    html = '<div class="widget_desc"><img src="{{ STATIC_URL }}widget-images/' + data.key + '.png"></img><h1>' + data.name + '</h1>' + data.desc + '</div>'
+                                    html = '<div class="widget_desc"><img src="' + STATIC_URL + 'widget-images/' + data.key + '.png"></img><h1>' + data.name + '</h1>' + data.description + '</div>'
                                     var preview = Ext.getCmp('widget_desc');
                                     preview.update(html);
                                 },
@@ -611,23 +630,43 @@ Ext.onReady(function() {
                             data = $('#data').data('widget');
                             page = $('#data').data('page_id');
 
-                            var div = '<div id="' + data.key + '" class="layout_block"></div>';
-                            var grid = $('#data').data('grid' + page);
+                            grid = {};
+                            grid.widget = data.resource_uri;
+                            grid.page = "/api/page/" + page + "/";
+                            grid.row = 1;
+                            grid.col = 1;     
+                            grid.size_y = data.size_y;
+                            grid.size_x = data.size_x;
 
-                            grid.add_widget(div, data.size_x, data.size_y, 1, 1);
+                            $.ajax({
+                                type: "POST",
+                                url: "/api/pagewidget/",
+                                data: JSON.stringify(grid),
+                                dataType: "json",
+                                contentType: "application/json",
+                                success: function(pagewidget) {
+console.log('adding widget');
 
-                            addGrid(data);
+                                    var div = '<div id="' + page + '_' + data.key + '" pagewidget="' + pagewidget.id + '" class="layout_block"></div>';
+                                    var grid = $('#data').data('grid' + page);
 
-                            createWidget(data);
+                                    grid.add_widget(div, data.size_x, data.size_y, 1, 1);
 
-                            widgetWindow(data.key, data.name, data.size_x, data.size_y);
+                                    createWidget(data, page);
 
-                            win.close();
+                                    widgetWindow(data.key, page, data.name, data.size_x, data.size_y);
+
+        //console.log('finished, closing add widget window');
+
+                                    win.close();
+
+                                },
+                            });
 		                }
                     }],
                 }).show();
                 // So the window dimensions stay 100% when the window is resized
-                Ext.EventManager.onWindowResize(overviewGrid.doLayout, win); 
+                //Ext.EventManager.onWindowResize(overviewGrid.doLayout, win); 
 
             }, 
             error: function(data) {
@@ -637,62 +676,50 @@ Ext.onReady(function() {
 
     }
 
-    function addGrid(widget) {
 
-        page = $('#data').data('page_id');
 
-        grid = {};
-        grid.widget = widget.resource_uri;
-        grid.page = "/api/page/" + page + "/";
-        grid.row = 1;
-        grid.col = 1;     
-        grid.size_y = widget.size_y;
-        grid.size_x = widget.size_x;
+    function saveWidgetPositions(grid) {
 
-//console.log('adding grid');
-//console.log(grid);
+        var grid = $.parseJSON(grid);
 
-        $.ajax({
-            type: "POST",
-            //headers: {'X-HTTP-Method-Override': 'POST'},
-            url: "/api/pagewidget/",
-            data: JSON.stringify(grid),
-            success: function() {
-                //console.log('success');
-            },
-            error: function(err) {
-                //console.log('error');
-                //console.log(err);
-            },
-            dataType: "json",
-            contentType: "application/json",
-            //processData: false
-        });
+        for(i=0; i<grid.length; i++) {
+
+            data = {
+                col: grid[i].col,
+                row: grid[i].row,
+            }
+    
+            $.ajax({
+                type: "PATCH",
+                url: "/api/pagewidget/" + grid[i].pagewidget + '/',
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType: "application/json",
+                error: function(err) {
+                    //console.log('problem saving widget position');
+                    //console.log(err);
+                },
+            });  
+        }
     }
 
-
-
-
-
-    function panelStandard(el) {
-////console.log('creating standard panel with el: ' + el);
+    function panelStandard() {
         return Ext.create('Ext.panel.Panel', {
-            stateId: 'asdf',
             region: 'center', 
             id: 'panel-home', 
-            contentEl: el, 
-            //autoDestroy: true,
+            contentEl: 'menu', 
+            autoDestroy: true,
             autoScroll: true,
         });
     }
 
-    function panelTab(el) {
+    function panelTab() {
 ////console.log('creating tab panel with el: ' + el);
         return Ext.create('Ext.tab.Panel', {
             region: 'center',
-            contentEl: el, 
+            contentEl: 'menu', 
             id: 'panel-tab', 
-            //autoDestroy: true,
+            autoDestroy: true,
             autoScroll: true,
         });
     }
@@ -803,7 +830,7 @@ Ext.onReady(function() {
             var theme = "extjs/resources/css/ext-all.css";
         }
 
-        Ext.util.CSS.swapStyleSheet("theme", "static/" + theme);
+        Ext.util.CSS.swapStyleSheet("theme", STATIC_URL + theme);
 
     }
 
@@ -827,7 +854,7 @@ Ext.onReady(function() {
             url: '/api/menu/',
             success: function(data) {
 
-
+//console.log('menu loaded');
                 var tree_model = Ext.define('tree', {
                     extend: 'Ext.data.Model',
                     fields: [
@@ -869,7 +896,7 @@ Ext.onReady(function() {
                                 }
 
                                 if(record.raw.page !== null) {
-                                    //initPage(record.raw.page.replace(/\D/g, ''));
+                                    initPage(record.raw.page.replace(/\D/g, ''));
                                 }
 
                                 nodeId = record.data.id;
@@ -897,11 +924,13 @@ Ext.onReady(function() {
                 Ext.create('Ext.container.Viewport', {
                     layout: 'border',
                     id: 'viewport', 
-                    items: [panel_west, panelStandard('main1')]
+                    items: [panel_west, panelStandard()]
                 });
 
                 //$('#data').data('active-panel', 'panel-home');
-            }
+
+
+             }
         });
     }
 
@@ -988,6 +1017,8 @@ Ext.onReady(function() {
     }
 
 
+
+
 // sending a csrftoken with every ajax request
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
@@ -1002,43 +1033,7 @@ $.ajaxSetup({
     }
 });
 
-// only called once on load
-function initDOM() {
 
-    $.ajax({
-        type: "GET",
-        url: '/api/page/',
-        success: function(page) {
-
-            $('#data').data('page', page);
-
-            for(i=0; i<page.length; i++) {
-
-                //@TODO: change this to native to make it faster
-
-                // page elements
-                $('<div id="main' + page[i].id + '" class="gridster"></div>').appendTo('body');
-////console.log('creating: main' + page[i].id);
-
-                // the children are tab pages
-                if(page[i].children !== undefined) {
-                 
-                    // the tab panel element
-                    $('<div id="tab_panel' + page[i].id + '"></div>').appendTo('body');
-////console.log('creating: tab_panel' + page[i].id);
-
-                    for(x=0; x<page[i].children.length; x++) {
-
-                        // element for this tab
-                        $('<div id="main' + page[i].children[x].id + '" class="gridster"></div>').appendTo('#tab_panel' + page[i].id);
-////console.log('creating tab: main' + page[i].children[x].id);
-
-                    }
-                }
-            }
-        }
-    });
-}
 
 // create a DOM for all pages on load, including children
 // 1. set root: #main1
@@ -1056,13 +1051,14 @@ $.ajax({
 
         //setGlobal('client'); not implemented yet
         setGlobal('fund');
-        //setGlobal('page');
-        initDOM();
+        setGlobal('page');
 
+        $('<div id="menu" class="gridster"></div>').appendTo('body');
         viewPort();
 
-        //$('<div id="main1" class="gridster"></div>').appendTo('body');
+        $('<div id="page1"></div>').appendTo('#menu');
         initGrid(1);
+
 
     },
     error: function() {

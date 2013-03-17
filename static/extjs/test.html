@@ -22,15 +22,15 @@ Ext.onReady(function() {
 
         var ws = Ext.getCmp('viewport');
 
-        try {
-            var active = $('#data').data('active-panel'); 
-        } catch(err) {
-            console.log("'active-panel' is not set");
+        var active = $('#data').data('active-panel'); 
+
+        if(active === undefined) {
+            active = 'panel-home'
         }
 
         try {
 console.log('removing: ' + active);
-            ws.remove(active, false);
+            ws.remove(active);
         } catch(err) {
             console.log("Failed to remove panel");
 console.log(err);
@@ -40,20 +40,13 @@ console.log(err);
         //$('<div id="main" class="gridster"></div>').appendTo('body');
 
 
-        var panel_standard = Ext.create('Ext.panel.Panel', {
-            region: 'center', 
-            id: 'panel-home', 
-            contentEl: 'main', 
-            autoDestroy: true,
-            autoScroll: true,
-        });
 
-console.log(panel);
         try {
-            ws.add(panelTab());
+            ws.add(panel);
 console.log('panel added');
         } catch(err) {
             console.log("Failed to add panel");
+            console.log(err);
         }
         
         ws.doLayout();  
@@ -70,7 +63,7 @@ function panelStandard() {
     return Ext.create('Ext.panel.Panel', {
         region: 'center', 
         id: 'panel-home', 
-        contentEl: 'asdf', 
+        contentEl: 'standard', 
         autoDestroy: true,
         autoScroll: true,
     });
@@ -80,11 +73,12 @@ function panelTab() {
     return  Ext.create('Ext.tab.Panel', {
         region: 'center', 
         id: 'panel-overview', 
+        contentEl: 'tab', 
         autoDestroy: true,
         autoScroll: true,
         items: [{
                 title: 'Foo',
-        contentEl: 'asdf', 
+                //html: '<div id="#asdf2">asdf</div>', 
             },{
                 title: 'Bar',
                 html: "2",
@@ -109,9 +103,25 @@ function panelTab() {
 
     
 
-$("#asdf").click(function() {
-    switchPanel("Aasdf");
+$("#standard").click(function() {
+    switchPanel(panelStandard());
 });
+$("#tab").click(function() {
+    switchPanel(panelTab());
+});
+
+
+
+var ws = Ext.getCmp('viewport');
+ws.remove('panel-home');
+ws.add(panelTab());
+ws.remove('panel-overview');
+//$('<div id="standard" class="gridster"></div>').appendTo('body');
+//ws.add(panelStandard());
+//ws.remove('panel-home', true);
+//$('<div id="standard" class="gridster"></div>').appendTo('body');
+//ws.add(panelTab());
+ws.doLayout();  
 
 
 
@@ -120,5 +130,5 @@ $("#asdf").click(function() {
 });
 </script>
 </head>
-<body><div id="asdf"> click me </div><div id="asdf"> click me again</div><div id="data"></div></body>
+<body><div id="standard"> click to go to tab </div><div id="tab"> click to go to standard </div></body>
 </html>

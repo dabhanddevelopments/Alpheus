@@ -25,11 +25,12 @@ class EntryResource(ModelResource):
     class Meta:
         queryset = Entry.objects.all()
         resource_name = 'entry'
-        authentication = SessionAuthentication()
-        authorization = DjangoAuthorization()
+        #authentication = SessionAuthentication()
+        authorization = Authorization()
         filtering = {
             'user': ALL_WITH_RELATIONS,
             'pub_date': ['exact', 'lt', 'lte', 'gte', 'gt'],
         }
-        allowed_methods = ['get', 'post', 'put', 'delete']
+        allowed_methods = ['get', 'post', 'put', 'delete', 'patch']
+        detail_allowed_methods = ['delete', 'patch', 'post']
 

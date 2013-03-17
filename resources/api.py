@@ -7,6 +7,7 @@ from tastypie.exceptions import BadRequest
 from tastypie import fields
 from app.models import Page, PageWidget, Widget, WidgetType, Fund, FundType, Menu
 from base_resources import MainBaseResource, TreeBaseResource
+from widgets import InfoResource
 
 class LoggedInResource(Resource):
     class Meta:
@@ -171,12 +172,13 @@ class PageResource(TreeBaseResource, MainBaseResource):
 class PageWidgetResource(MainBaseResource):
     user = fields.ForeignKey(UserResource, 'user', null=True)
     page = fields.ForeignKey(PageResource, 'page')
-    widget = fields.ForeignKey(WidgetResource, 'widget',full=True,)
+    widget = fields.ForeignKey(InfoResource, 'widget',full=True,)
 
     class Meta(MainBaseResource.Meta):
         queryset = PageWidget.objects.select_related(
             'grid', 'widget', 'widget__widget_type').all()
-        allowed_methods = ['get', 'post', 'put', 'delete']
+        allowed_methods = ['get', 'post', 'put', 'delete', 'patch']
+        always_return_data = True
 
         filtering = {
             "page": ALL_WITH_RELATIONS,

@@ -58,26 +58,25 @@ class InfoResource(WidgetBaseResource):
         # @TODO: Consider getting rid of this
         bundle.data['type'] = bundle.data['widget_type'].data['key']
 
-        # Description is only used for UnusedWidgetBaseResource
-        del bundle.data['description']
-
         return bundle
 
 
-class UnusedResource(InfoResource):
+class UnusedResource(WidgetBaseResource):
 
     """
     Returns unused widgets on the specified page
     """
 
-    class Meta(InfoResource.Meta):
+    widget_type = fields.ForeignKey(TypeResource, 'widget_type',full=True,)
+
+    class Meta(WidgetBaseResource.Meta):
 
         filtering = {
             "page": ALL_WITH_RELATIONS,
         }
 
     def dehydrate(self, bundle):
-        bundle.data['widget_type'] = bundle.data['widget_type'].data['key']
+        bundle.data['widget_type'] = bundle.data['widget_type'].data['name']
         return bundle
 
     def get_object_list(self, request):
