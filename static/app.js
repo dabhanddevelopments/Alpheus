@@ -112,11 +112,6 @@ Ext.onReady(function() {
 
         var active = $('#data').data('active-panel'); 
 
-        if(active === undefined) {
-            active = 'panel-home';
-            //$('<div id="' + el + '"></div>').appendTo('body');
-        }
-
         var ws = Ext.getCmp('viewport');
 
         try {
@@ -972,6 +967,10 @@ console.log('adding widget');
                     },
                     success:function() { 
                         win.close();
+
+                        setGlobal('fund');
+                        setGlobal('page');
+
                     	viewPort();
                     },
                     failure:function(form, action){ 
@@ -1057,11 +1056,17 @@ $.ajax({
         viewPort();
 
         $('<div id="page1"></div>').appendTo('#menu');
+        $('#data').data('active-panel', 'panel-home'); 
         initGrid(1);
 
 
     },
     error: function() {
+
+        $('<div id="menu" class="gridster"></div>').appendTo('body');
+        $('<div id="page1"></div>').appendTo('#menu');
+        $('#data').data('active-panel', 'panel-home'); 
+
         win.show();
     }
 });
