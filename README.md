@@ -1,3 +1,11 @@
+### Install Django
+Some dependencies only work with Django 1.4, so that is what we use for now.
+
+    wget https://www.djangoproject.com/download/1.4.5/tarball/
+    tar xzvf Django-1.4.5.tar.gz
+    cd Django-1.4.5
+    sudo python setup.py install
+
 ### Install django-mptt
     git clone git://github.com/django-mptt/django-mptt.git django-mptt
     cd django-mptt
@@ -14,7 +22,7 @@
     cd django-tastypie
     sudo python setup.py install
 
-####### Install Tastypie dependencies
+##### Install Tastypie dependencies
     sudo apt-get install python-dateutil
     sudo apt-get install python-mimeparse
 
