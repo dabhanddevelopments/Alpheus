@@ -144,6 +144,9 @@
 
     </script> 
 
+{% comment %} This is necessary for Firefox and Opera for some reason{% endcomment %}
+{% csrf_token %}
+
 
 </body>
 </html>
