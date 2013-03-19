@@ -78,6 +78,7 @@ class UserObjectsOnlyAuthorization(DjangoAuthorization):
         # This assumes a ``QuerySet`` from ``ModelResource``.
         return object_list.filter(user=bundle.request.user)
 
+    """
     def read_detail(self, object_list, bundle):
         # Is the requested object owned by the user?
         return bundle.obj.user == bundle.request.user
@@ -108,6 +109,7 @@ class UserObjectsOnlyAuthorization(DjangoAuthorization):
 
     def delete_detail(self, object_list, bundle):
         raise Unauthorized("Sorry, no deletes.")
+    """
 
 
 
