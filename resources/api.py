@@ -168,7 +168,7 @@ class PageResource(TreeBaseResource, MainBaseResource):
 
 
 from tastypie.authentication import SessionAuthentication
-from base_resources import UserObjectsOnlyAuthorization
+from tastypie.authorization import DjangoAuthorization
 from alpheus.serializers import PrettyJSONSerializer
 #curl --dump-header - -H "Content-Type: application/json" -X POST --data '{"page": "/api/page/1/"", "widget": "/api/widget/1/"}' http://localhost:8000/api/pagewidget/
 class PageWidgetResource(ModelResource):
@@ -178,7 +178,7 @@ class PageWidgetResource(ModelResource):
 
     class Meta:
         authentication = SessionAuthentication()
-        authorization = UserObjectsOnlyAuthorization()
+        authorization = DjangoAuthorization()
         serializer = PrettyJSONSerializer()
         include_resource_uri = False
         queryset = PageWidget.objects.select_related(
