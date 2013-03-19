@@ -167,20 +167,15 @@ class PageResource(TreeBaseResource, MainBaseResource):
         return node
 
 
-from tastypie.authentication import SessionAuthentication
-from tastypie.authorization import DjangoAuthorization
-from alpheus.serializers import PrettyJSONSerializer
+from base_resources import UserObjectsOnlyAuthorization
 #curl --dump-header - -H "Content-Type: application/json" -X POST --data '{"page": "/api/page/1/"", "widget": "/api/widget/1/"}' http://localhost:8000/api/pagewidget/
-class PageWidgetResource(ModelResource):
+class PageWidgetResource(MainBaseResource):
     user = fields.ForeignKey(UserResource, 'user', null=True)
     page = fields.ForeignKey(PageResource, 'page')
     widget = fields.ForeignKey(InfoResource, 'widget',full=True,)
 
-    class Meta:
-        authentication = SessionAuthentication()
-        authorization = DjangoAuthorization()
-        serializer = PrettyJSONSerializer()
-        include_resource_uri = False
+    class Meta(MainBaseResource.Meta):
+        authorization = UserObjectsOnlyAuthorization();
         queryset = PageWidget.objects.select_related(
             'grid', 'widget', 'widget__widget_type').all()
         allowed_methods = ['get', 'post', 'put', 'delete', 'patch']
@@ -192,11 +187,7 @@ class PageWidgetResource(ModelResource):
 
     def apply_authorization_limits(self, request, object_list):
 
-        print 'applying auth limits'
-
         qs = object_list.filter(user=request.user)
-
-        print qs
 
         # Use default config if user does not have their own yet
         if not qs:
@@ -216,7 +207,7 @@ class PageWidgetResource(ModelResource):
 
     def obj_create(self, bundle, **kwargs):
 
-        # Add the user to the bundle, why?
+        # Add the user to the bundle
         return super(PageWidgetResource, self).obj_create(
                                     bundle, user=bundle.request.user)
  
@@ -278,14 +269,15 @@ class MenuResource(TreeBaseResource, MainBaseResource):
 
 
     def get_object_list(self, request):
+        print request.user.is_authenticated()
 
         obj = super(MenuResource, self).get_object_list(request)
 
-        """
-        Limiting menus by pre-defined user groups
-        """
-        user_groups = [group.pk for group in request.user.groups.all()]
-        return obj.filter(access__in=user_groups).distinct()
+        # Limiting menus & tabs by pre-defined user groups
+        #user_groups = [group.pk for group in request.user.groups.all()]
+        #obj = obj.filter(access__in=user_groups)
+
+        return obj
 
 
 class MenuParentItemsResource(MainBaseResource):
