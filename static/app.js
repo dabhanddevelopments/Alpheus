@@ -942,6 +942,7 @@ console.log('adding widget');
         monitorValid: true,
         header: false,
         style: 'padding:10px',
+        headers: { 'Content-Type': 'application/json' },
         items:[
             { 
                 fieldLabel:'Username', 
@@ -964,14 +965,18 @@ console.log('adding widget');
                     //waitMsg:'Sending data...',
                     headers: {
                         'Content-Type': 'application/json',
+                        'X-HTTP-Method-Override': 'POST'
                     },
                     success:function() { 
+
+                        //location.reload();
                         win.close();
 
                         setGlobal('fund');
                         setGlobal('page');
 
                     	viewPort();
+                        initGrid(1);
                     },
                     failure:function(form, action){ 
                         Ext.Msg.alert('Login failed!', 'Wrong user name or passsword'); 
@@ -1014,8 +1019,6 @@ console.log('adding widget');
             }
         });
     }
-
-
 
 
 // sending a csrftoken with every ajax request

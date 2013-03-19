@@ -8,14 +8,13 @@ from tastypie import fields
 from app.models import Page, PageWidget, Widget, WidgetType, Fund, FundType, Menu
 from base_resources import MainBaseResource, TreeBaseResource
 from widgets import InfoResource
+from django.http import HttpResponse
 
 class LoggedInResource(Resource):
     class Meta:
         pass
 
     def get_list(self, request, **kwargs):
-
-        from django.http import HttpResponse
 
         if request.user.is_authenticated():
             return HttpResponse(status=200)
@@ -87,19 +86,11 @@ class UserResource(ModelResource):
         if user:
             if user.is_active:
                 login(request, user)
-                return self.create_response(request, {
-                    'success': True
-                })
+                return HttpResponse(status=200)
             else:
-                return self.create_response(request, {
-                    'success': False,
-                    'reason': 'disabled',
-                    }, HttpForbidden )
+                return HttpResponse(status=401)
         else:
-            return self.create_response(request, {
-                'success': False,
-                'reason': 'incorrect',
-                }, HttpUnauthorized )
+            return HttpResponse(status=401)
 
     def logout(self, request, **kwargs):
         self.method_check(request, allowed=['get'])
