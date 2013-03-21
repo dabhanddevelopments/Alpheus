@@ -31,6 +31,14 @@ class EntryResource(ModelResource):
             'user': ALL_WITH_RELATIONS,
             'pub_date': ['exact', 'lt', 'lte', 'gte', 'gt'],
         }
-        allowed_methods = ['get', 'post', 'put', 'delete', 'patch']
-        detail_allowed_methods = ['delete', 'patch', 'post']
+        allowed_methods = ['get', 'post', 'put', 'delete']
+
+    def obj_create(self, bundle, request=None, **kwargs):
+        return super(EnvironmentResource, self).obj_create(bundle, request, user=request.user)
+
+    def apply_authorization_limits(self, request, object_list):
+
+        print 'applying auth limits'
+        object_list.filter(user=request.user)
+
 

@@ -106,10 +106,11 @@ class UserObjectsOnlyAuthorization(DjangoAuthorization):
     def delete_list(self, object_list, bundle):
         # Sorry user, no deletes for you!
         raise Unauthorized("Sorry, no deletes.")
+    """
 
     def delete_detail(self, object_list, bundle):
-        raise Unauthorized("Sorry, no deletes.")
-    """
+        return bundle.obj.user == bundle.request.user
+
 
 
 
