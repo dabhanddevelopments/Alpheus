@@ -77,6 +77,7 @@ Ext.onReady(function() {
             id: tabs.id,
             title: tabs.title,
             contentEl: 'page' + tabs.id,
+            autoScroll:true,
             listeners: {
                 activate: function(tab){
                     initGrid(tab.id);
@@ -97,6 +98,7 @@ Ext.onReady(function() {
                 title: tabs.children[x].title,
                 id: id,
                 contentEl: 'page' + id,
+                autoScroll:true,
                 listeners: {
                     activate: function(tab){
                         initGrid(tab.id);
@@ -115,27 +117,22 @@ Ext.onReady(function() {
         var ws = Ext.getCmp('viewport');
 
         try {
-            //console.log('removing: ' + active);
             ws.remove(active);
         } catch(err) {
-            //console.log("Failed to remove panel");
-            //console.log(err);
+            console.log("Failed to remove panel");
+            console.log(err);
         }
-
-        //$('#' + el).remove();
 
         // The 'main' DOM element gets destroyed on remove() with autoDestroy
         // set to true, so we have to re-add it
-        ////console.log('CREATING dOM: ' + el);
         $('<div id="menu" class="gridster"></div>').appendTo('body');
 
 
         try {
             ws.add(panel);
-            //console.log('panel added');
         } catch(err) {
-            //console.log("Failed to add panel");
-            //console.log(err);
+            console.log("Failed to add panel");
+            console.log(err);
         }
   
         ws.doLayout();  
@@ -167,13 +164,7 @@ Ext.onReady(function() {
                     //console.log('skipping gridster: grid' + page);
                     return;
                 }
-                //if($('#page' + page).length !== 0) {
-        //console.log('skipping');
-        //            return
-        //        }
 
-
-                //$('<div id="page' + page + '"></div>').appendTo('body');
 
                 var grid = $("#page" + page).gridster({
                     widget_margins: [10, 10],
@@ -716,6 +707,9 @@ console.log('adding widget');
             id: 'panel-tab', 
             autoDestroy: true,
             autoScroll: true,
+            //style: 'overflow: auto',
+            layout: 'fit'
+            
         });
     }
 
@@ -916,11 +910,12 @@ console.log('adding widget');
                     }],
                 });
 
-                Ext.create('Ext.container.Viewport', {
+                var viewport = Ext.create('Ext.container.Viewport', {
                     layout: 'border',
                     id: 'viewport', 
                     items: [panel_west, panelStandard()]
                 });
+                Ext.EventManager.onWindowResize(viewport.doLayout, viewport);
 
                 //$('#data').data('active-panel', 'panel-home');
 
