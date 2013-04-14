@@ -151,7 +151,7 @@ class PageResource(TreeBaseResource, MainBaseResource):
             'id': obj.id,
             'title': obj.title
         }
-        
+
         if not obj.is_leaf_node():
             node['children'] = [self.get_node_data(child) \
                                 for child in obj.get_children()]
@@ -201,14 +201,6 @@ class PageWidgetResource(MainBaseResource):
         # Add the user to the bundle
         return super(PageWidgetResource, self).obj_create(
                                     bundle, user=bundle.request.user)
- 
-
-
-class FundTypeFundsResource(MainBaseResource):
-    fund = fields.ToManyField('app.api.FundResource', 'fund', full=True)
-
-    class Meta(MainBaseResource.Meta):
-        queryset = FundType.objects.all()
 
 
 class FundTypeResource(MainBaseResource):
@@ -223,6 +215,14 @@ class FundResource(ModelResource):
     class Meta(MainBaseResource.Meta):
         queryset = Fund.objects.all()
         fields = ['id', 'name']
+
+class FundByTypeResource(MainBaseResource):
+    funds = fields.ToManyField(FundResource, "fund", full=True)
+
+    class Meta(MainBaseResource.Meta):
+        queryset = FundType.objects.all()
+
+
 
 class FundNameResource(MainBaseResource):
 
@@ -288,7 +288,7 @@ api.register(UserResource())
 api.register(LoggedInResource())
 api.register(MenuResource())
 api.register(MenuParentItemsResource())
-api.register(FundTypeFundsResource())
+api.register(FundByTypeResource())
 api.register(FundResource())
 api.register(FundTypeResource(),canonical=True)
 api.register(PageResource(),canonical=True)

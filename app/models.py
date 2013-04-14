@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User, Group
 from mptt.models import MPTTModel, TreeForeignKey
 
+#class Window(models.Model):
 
 
 # Widget types are table, chart, graph etc

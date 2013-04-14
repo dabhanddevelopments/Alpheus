@@ -883,9 +883,72 @@ console.log('adding widget');
             }
         });
     }
+    
+    function appendFundNodes(id, prefix, type_prefix) {
+    
+        $.ajax({
+            type: "GET",
+            url: '/api/fundbytype/',
+            success: function(data) {  
+                
+                appendNodes(id, data, prefix, type_prefix);
+                
+            }
+        });        
+    }
 
 
-
+    function appendNodes(id, data, prefix, type_prefix) {
+                
+        var node = Ext.getCmp('main-menu').getStore().getNodeById(id);
+        
+        // prevent the nodes from being loaded multiple times
+        if(node.hasChildNodes()) {
+            return
+        }
+        
+        node.data.leaf = false;
+        
+        console.log(data);
+        // append types
+        for(i=0; i<data.length; i++) {
+        
+            console.log('appending type' + type_prefix + data[i].id);
+            node.appendChild({
+                page: id,
+                expanded: true,
+                leaf: true,
+                text: data[i].name,
+                id: type_prefix + data[i].id
+            });	
+            
+            // append funds or clients
+            if(data[i].funds !== undefined) {
+            
+                var node2 = Ext.getCmp('main-menu').getStore().getNodeById(type_prefix + data[i].id);
+                
+                for(x=0; x<data[i].funds.length; x++) {
+                
+                console.log('appending fund ' + prefix + data[i].funds[x].id);                
+                
+                    node2.appendChild({
+                        page: id,
+                        expanded: true,
+                        leaf: true,
+                        text: data[i].funds[x].name,
+                        id: prefix + data[i].funds[x].id
+                    });	
+                }
+                                    
+            } else if(data[i].clients !== undefined) {
+            
+                //appendNodes(prefix + data[i].id, data[i].clients, prefix);
+                            
+            }	            
+        }
+        //Ext.getCmp('main-menu').getView().refresh();	    
+    }
+    
     function viewPort() {
 
          $.ajax({
@@ -913,8 +976,16 @@ console.log('adding widget');
                         }
                     },
                 });
+                
+                var PERFORMANCE = 3;
+                var FUNDTYPE_PREFIX = 1000;
+                var PERFORMANCE_PREFIX = 2000;                
+                var PERFORMANCE_BY_FUND = 4;
+                var PERFORMANCE_BY_CLIENT = 5;
+                var CLIENT = 6;
 
                 var tree = Ext.create('Ext.tree.Panel', {
+                    id: 'main-menu',
                     store: store,
                     rootVisible: false,
                     preventHeader: true,
@@ -923,9 +994,20 @@ console.log('adding widget');
                     useArrows: true,
                     height: 1000,
                     listeners: {
+                        itemexpand: {
+                            fn: function(record, opts) {
+                            
+                                nodeId = record.data.id;
+                                
+                                //console.log(nodeId);
+                                
+                                if(nodeId == PERFORMANCE) {
+                                    appendFundNodes(PERFORMANCE_BY_FUND, PERFORMANCE_PREFIX, FUNDTYPE_PREFIX);   
+                                }   
+                            }
+                        },
                         itemclick: {
-                            fn: function(view, record, item, index, event) {
-
+                            fn: function(view, record, item, index, event, opts) {
 
                                 // Expand & collapse node on single click
                                 if(record.isExpanded()) {
@@ -933,17 +1015,22 @@ console.log('adding widget');
                                 } else {
                                     record.expand();
                                 }
+                                
+                                console.log(record.raw.page);
 
                                 if(record.raw.page !== null) {
-                                    initPage(record.raw.page.replace(/\D/g, ''));
+                                    var str = record.raw.page.toString();
+                                    initPage(str.replace(/\D/g, ''));
                                 }
 
-                                nodeId = record.data.id;
-                                checked = record.data.checked;
                             }
                         }
                     }
                 });
+                
+
+
+
 
                 var panel_west = Ext.create('Ext.panel.Panel', {
                     id: 'west',
@@ -966,9 +1053,6 @@ console.log('adding widget');
                     items: [panel_west, panelStandard()]
                 });
                 Ext.EventManager.onWindowResize(viewport.doLayout, viewport);
-
-                //$('#data').data('active-panel', 'panel-home');
-
 
              }
         });
@@ -1097,7 +1181,7 @@ $.ajax({
 
 
         //setGlobal('client'); not implemented yet
-        setGlobal('fund');
+        //setGlobal('fund');
         setGlobal('page');
 
         $('<div id="menu" class="gridster"></div>').appendTo('body');
