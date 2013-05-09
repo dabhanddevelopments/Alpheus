@@ -2,7 +2,22 @@ from django.db import models
 from django.contrib.auth.models import User, Group
 from mptt.models import MPTTModel, TreeForeignKey
 
-#class Window(models.Model):
+class Window(models.Model):
+
+    WINDOW_LAYOUT = (
+        ('v', 'Vertical'),
+        ('h', 'Horizontal')
+    )
+    name = models.CharField(max_length=50)
+    key = models.CharField(max_length=50)
+    access = models.ManyToManyField(Group)
+    size_y = models.SmallIntegerField()
+    size_x = models.SmallIntegerField()
+    layout = models.CharField(max_length=1, choices=WINDOW_LAYOUT,
+            help_text="Layout for multiple widgets on window.")
+
+    def __unicode__(self):
+        return self.name
 
 
 # Widget types are table, chart, graph etc
@@ -13,15 +28,20 @@ class WidgetType(models.Model):
     def __unicode__(self):
         return self.name
 
-
 class Widget(models.Model):
     name = models.CharField(max_length=50)
     key = models.CharField(max_length=50)
     widget_type = models.ForeignKey(WidgetType)
-    access = models.ManyToManyField(Group)
+    window = models.ForeignKey(Window)
+    description = models.TextField(blank=True, null=True)
     size_y = models.SmallIntegerField()
     size_x = models.SmallIntegerField()
-    description = models.TextField()
+    column_width = models.SmallIntegerField(blank=True, null=True,
+                                help_text="Only applicable for data grids")
+    position = models.PositiveSmallIntegerField("Position")
+
+    class Meta:
+        ordering = ['position']
 
     def __unicode__(self):
         return self.name
@@ -40,42 +60,23 @@ class Page(MPTTModel):
         except:
             return self.title
 
-
-class PageWidget(models.Model):
+class PageWindow(models.Model):
 
     # If the user is zero it is the default configuration
     user = models.ForeignKey(User, null=True)
     page = models.ForeignKey(Page)
-    widget = models.ForeignKey(Widget)
-
+    window = models.ForeignKey(Window)
     size_y = models.SmallIntegerField()
     size_x = models.SmallIntegerField()
     col    = models.SmallIntegerField()
     row    = models.SmallIntegerField()
 
     class Meta:
-        verbose_name = "Widget on Page"
-        verbose_name_plural = "Widgets on Page"
+        verbose_name = "Window on page"
+        verbose_name_plural = "Windows on page"
 
     def __unicode__(self):
-        return u'%s / %s' % (self.page.title, self.widget.name)
-
-APPEND_LIST = (
-    ('fund', 'Fund List'),
-    ('client', 'Client List'),
-)
-class Menu(MPTTModel):
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
-    page = models.ForeignKey(Page, blank=True, null=True)
-    name = models.CharField(max_length=50)
-    access = models.ManyToManyField(Group)
-
-    def __unicode__(self):
-        try:
-            self.parent.name
-            return u'%s / %s' % (self.parent.name, self.name)
-        except:
-            return self.name
+        return u'%s / %s' % (self.page.title, self.window.name)
 
 
 class FundType(models.Model):
@@ -102,6 +103,21 @@ class Fund(models.Model):
 
     def __unicode__(self):
         return self.name
+
+class Menu(MPTTModel):
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+    page = models.ForeignKey(Page, blank=True, null=True)
+    fund = models.ForeignKey(Fund, blank=True, null=True)
+    name = models.CharField(max_length=50)
+    access = models.ManyToManyField(Group)
+
+    def __unicode__(self):
+        try:
+            self.parent.name
+            return u'%s / %s' % (self.parent.name, self.name)
+        except:
+            return self.name
+
 
 
 class HistoricFund(models.Model):
@@ -157,7 +173,7 @@ class CounterParty(models.Model):
 
 class Holding(models.Model):
     name = models.CharField(max_length=50)
-    fee = models.ForeignKey(Fee)
+    fee = models.ForeignKey(Fee, blank=True, null=True)
     fund = models.ForeignKey(Fund)
     description = models.TextField()
     nav_date = models.DateTimeField()
@@ -169,12 +185,51 @@ class Holding(models.Model):
     country = models.ForeignKey(Country)
     counter_party = models.ForeignKey('CounterParty')
 
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+            ordering = ["name"]
+
 class HoldingType(models.Model):
     name = models.CharField(max_length=50)
     key = models.CharField(max_length=50)
 
-class HistoricalHolding(models.Model):
-    holding = models.ForeignKey(Holding)
+    def __unicode__(self):
+        return self.name
+
+class FundPerformanceDaily(models.Model):
+    fund = models.ForeignKey(Fund)
+    value = models.DecimalField(max_digits=4, decimal_places=2)
+    date = models.DateField()
+
+    def __unicode__(self):
+        return self.fund.name
+
+
+class FundPerformanceMonthly(models.Model):
+    fund = models.ForeignKey(Fund)
+    value = models.DecimalField(max_digits=4, decimal_places=2)
+    #date = models.DateField()
+    year = models.SmallIntegerField()
+    month = models.SmallIntegerField()
+
+    def __unicode__(self):
+        return self.fund.name
+
+class FundPerformanceYearly(models.Model):
+    fund = models.ForeignKey(Fund)
+    year = models.SmallIntegerField()
+    ytd = models.DecimalField(max_digits=15, decimal_places=5)
+    si = models.DecimalField(max_digits=15, decimal_places=5)
+
+    def __unicode__(self):
+        return self.fund.name
+
+    class Meta:
+            ordering = ['year']
+
+
 
 class Alarm(models.Model):
     pass

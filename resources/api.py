@@ -5,9 +5,8 @@ from tastypie.authorization import Authorization
 #from tastypie.authorization import DjangoAuthorization
 from tastypie.exceptions import BadRequest
 from tastypie import fields
-from app.models import Page, PageWidget, Widget, WidgetType, Fund, FundType, Menu
+from app.models import Page, PageWindow, Window, Widget, WidgetType, Fund, FundType, Menu
 from base_resources import MainBaseResource, TreeBaseResource
-from widgets import InfoResource
 from django.http import HttpResponse
 
 class LoggedInResource(Resource):
@@ -53,6 +52,13 @@ from django.contrib.auth import authenticate, login, logout
 from tastypie.http import HttpUnauthorized, HttpForbidden
 from django.conf.urls import url
 from tastypie.utils import trailing_slash
+
+
+class WindowResource(MainBaseResource):
+    pass
+
+    class Meta(MainBaseResource.Meta):
+        queryset = Window.objects.all()
 
 
 #curl --dump-header - -H "Content-Type: application/json" -X POST --data '{"username" : "me", "password": "l33t"}' http://localhost:8003/api/user/login/
@@ -110,12 +116,19 @@ class WidgetTypeResource(MainBaseResource):
         include_resource_uri = False
 
 
-class WidgetResource(MainBaseResource):
+class WidgetsResource(MainBaseResource):
     widget_type = fields.ForeignKey(WidgetTypeResource, 'widget_type',full=True,)
+    window = fields.ForeignKey(WindowResource, 'window')
 
     class Meta(MainBaseResource.Meta):
         queryset = Widget.objects.select_related('widget_type').all()
         include_resource_uri = True
+
+        filtering = {
+            "window": ALL,
+        }
+
+
 
     def dehydrate(self, bundle):
 
@@ -128,14 +141,16 @@ class WidgetResource(MainBaseResource):
         return bundle
 
 
+    """
     def get_object_list(self, request):
 
-        obj = super(WidgetResource, self).get_object_list(request)
+        obj = super(WidgetsResource, self).get_object_list(request)
 
         # Limiting widgets by pre-defined user groups
         user_groups = [group.pk for group in request.user.groups.all()]
         return obj.filter(access__in=user_groups)
 
+    """
 
 class PageResource(TreeBaseResource, MainBaseResource):
     parent = fields.ForeignKey('self', 'parent', null=True, full=True)
@@ -160,15 +175,15 @@ class PageResource(TreeBaseResource, MainBaseResource):
 
 from base_resources import UserObjectsOnlyAuthorization
 #curl --dump-header - -H "Content-Type: application/json" -X POST --data '{"page": "/api/page/1/"", "widget": "/api/widget/1/"}' http://localhost:8000/api/pagewidget/
-class PageWidgetResource(MainBaseResource):
+class PageWindowResource(MainBaseResource):
     user = fields.ForeignKey(UserResource, 'user', null=True)
     page = fields.ForeignKey(PageResource, 'page')
-    widget = fields.ForeignKey(InfoResource, 'widget',full=True,)
+    window = fields.ForeignKey(WindowResource, 'window', full=True)
 
     class Meta(MainBaseResource.Meta):
-        authorization = UserObjectsOnlyAuthorization();
-        queryset = PageWidget.objects.select_related(
-            'grid', 'widget', 'widget__widget_type').all()
+        # what's this?
+        authorization = UserObjectsOnlyAuthorization()
+        queryset = PageWindow.objects.select_related('window').all()
         allowed_methods = ['get', 'post', 'put', 'delete', 'patch']
         always_return_data = True
 
@@ -191,15 +206,15 @@ class PageWidgetResource(MainBaseResource):
         return qs
 
     def dehydrate(self, bundle):
-        widget_type = bundle.data['widget'].data['widget_type'].data['key']
-        bundle.data['widget'].data['type'] = widget_type
-        del bundle.data['widget'].data['widget_type']
+        #widget_type = bundle.data['widget'].data['widget_type'].data['key']
+        #bundle.data['widget'].data['type'] = widget_type
+        #del bundle.data['widget'].data['widget_type']
         return bundle
 
     def obj_create(self, bundle, **kwargs):
 
         # Add the user to the bundle
-        return super(PageWidgetResource, self).obj_create(
+        return super(PageWindowResource, self).obj_create(
                                     bundle, user=bundle.request.user)
 
 
@@ -208,6 +223,11 @@ class FundTypeResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = FundType.objects.all()
 
+class FundResource2(ModelResource):
+
+    class Meta(MainBaseResource.Meta):
+        queryset = Fund.objects.all()
+        fields = ['id', 'name']
 
 # only used internally
 class FundResource(ModelResource):
@@ -235,7 +255,7 @@ class FundNameResource(MainBaseResource):
 
 
 class MenuResource(TreeBaseResource, MainBaseResource):
-    page = fields.ForeignKey(PageResource, "page", null=True)
+    page = fields.ForeignKey(PageResource, "page", null=True, full=True)
     parent = fields.ForeignKey('self', 'parent', null=True)
 
     class Meta(MainBaseResource.Meta):
@@ -244,10 +264,22 @@ class MenuResource(TreeBaseResource, MainBaseResource):
         fields = ['id', 'name', 'page']
 
     def get_node_data(self, obj):
+
+        try:
+            page = obj.page.id
+        except:
+            page = 0
+
+        try:
+            fund = obj.fund.id
+        except:
+            fund = 0
+
         node = {
             'id': obj.id,
             'name': obj.name,
-            'page': obj.page,
+            'page': page,
+            'fund': fund,
             'expanded': False
         }
 
@@ -285,6 +317,7 @@ from tastypie.api import Api
 
 api = Api(api_name="api")
 api.register(UserResource())
+api.register(WidgetsResource())
 api.register(LoggedInResource())
 api.register(MenuResource())
 api.register(MenuParentItemsResource())
@@ -292,4 +325,4 @@ api.register(FundByTypeResource())
 api.register(FundResource())
 api.register(FundTypeResource(),canonical=True)
 api.register(PageResource(),canonical=True)
-api.register(PageWidgetResource(),canonical=True)
+api.register(PageWindowResource(),canonical=True)

@@ -4,6 +4,8 @@ from tastypie.authentication import SessionAuthentication
 from tastypie.authorization import DjangoAuthorization
 from tastypie.exceptions import BadRequest
 from alpheus.serializers import PrettyJSONSerializer
+from tastypie.exceptions import BadRequest
+from alpheus.serializers import PrettyJSONSerializer
 
 # Base Model Resource
 class MainBaseResource(ModelResource):
@@ -22,7 +24,7 @@ class MainBaseResource(ModelResource):
     def get_list(self, request, **kwargs):
 
         base_bundle = self.build_bundle(request=request)
-        objects = self.obj_get_list(bundle=base_bundle, 
+        objects = self.obj_get_list(bundle=base_bundle,
                                     **self.remove_api_resource_names(kwargs))
         bundles = []
 
@@ -35,6 +37,75 @@ class MainBaseResource(ModelResource):
         serialized = self.alter_list_data_to_serialize(request, serialized)
 
         return self.create_response(request, serialized)
+
+    def month_columns(self, column_names):
+        columns = []
+        for column in column_names:
+            columns.append({
+                'dataIndex': column,
+                'text': column.title(),
+                'width': 50 #this should come from Meta
+            })
+        return columns
+
+
+    def check_params(self, params, filters):
+
+        for param in params:
+            if not param in filters:
+                raise BadRequest("Param '%s' not mandatory" % param)
+
+    # fund param is mandatory
+    def build_filters(self, filters=None):
+        self.check_params(params, filters)
+        return super(FundPerfYearlyResource, self).build_filters(filters)
+
+# Base Model Resource
+class MainBaseResource(ModelResource):
+    class Meta:
+        authentication = SessionAuthentication()
+        authorization = DjangoAuthorization()
+        serializer = PrettyJSONSerializer()
+        include_resource_uri = False
+
+    # Format output
+    def alter_list_data_to_serialize(self, request, data):
+        if isinstance(data,dict):
+            return data['objects']
+
+    # Disables paging
+    def get_list(self, request, **kwargs):
+
+        base_bundle = self.build_bundle(request=request)
+        objects = self.obj_get_list(bundle=base_bundle,
+                                    **self.remove_api_resource_names(kwargs))
+        bundles = []
+
+        for obj in objects:
+            bundle = self.build_bundle(obj=obj, request=request)
+            bundles.append(self.full_dehydrate(bundle))
+
+        serialized = {}
+        serialized[self._meta.collection_name] = bundles
+        serialized = self.alter_list_data_to_serialize(request, serialized)
+
+        return self.create_response(request, serialized)
+
+    def month_columns(self, column_names):
+        columns = []
+        for column in column_names:
+            columns.append({
+                'dataIndex': column,
+                'text': column.title(),
+                'width': 50 #this should come from Meta
+            })
+        return columns
+
+
+    def check_params(self, params, filters):
+        for param in params:
+            if not param in filters:
+                raise BadRequest("Param '%s' not mandatory" % param)
 
 
 from mptt.templatetags.mptt_tags import cache_tree_children
@@ -53,7 +124,7 @@ class TreeBaseResource(ModelResource):
     def get_list(self, request, **kwargs):
 
         base_bundle = self.build_bundle(request=request)
-        objects = self.obj_get_list(bundle=base_bundle, 
+        objects = self.obj_get_list(bundle=base_bundle,
                                     **self.remove_api_resource_names(kwargs))
 
         # Caches the queryset so django-mptt doesn't hit the database

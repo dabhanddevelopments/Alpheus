@@ -7,15 +7,62 @@ Ext.require([
 ]);
 
 
+        //call chart on click
+        function monthlyBar(day) {
+    
+            console.log('clicked');  
+            
+            if(typeof $('#data').data('year') != 'undefined') {
+                var year = $('#data').data('year');
+            } else {
+                var year = new Date().getFullYear();        
+            }
+            if(typeof $('#data').data('month') != 'undefined') {
+                var month = $('#data').data('month');
+            } else {
+                var month = new Date().getMonth() + 1;        
+            }
+        
+            var div = $('#data').data('monthly-bar-div');
+            var chart = $('#' + div).highcharts();
+
+            console.log('/api/widget/dailyhistorical/?date=' + year + '-' + month + '-' + day); 
+            console.log(div);     
+            
+            try {
+                chart.destroy();
+                $.getJSON('/api/widget/dailyhistorical/?date=' + year + '-' + month + '-' + day, function(data2) {
+console.log('works');
+
+                        var chart = new Highcharts.Chart({
+                            chart: {
+                                renderTo: div,
+                                type: 'column',
+                            },
+                            
+                            series: data2
+                        });
+                        console.log(data2);
+                });
+            } catch (err) {
+                //do nothing
+            }
+        };    
+    
+
 Ext.onReady(function() {
 
 
     //$('<div id="main" class="gridster"></div>').appendTo('body');
     $('<div id="data"></div>').appendTo('body');
 
-    function initPage(id) {
-
+    function initPage(obj) {
+    
+        var id = obj.page;
+        console.log(id);
+        console.log(obj);
         // All pages used on the site. This is loaded on start.
+        // @TODO: Redo this
         var pages = $('#data').data('page');
 
         // No need to reload the page if users clicks on a link 
@@ -31,32 +78,30 @@ Ext.onReady(function() {
     
                 el = 'page' + id;
 
-                // If a page has children, it means it's the first
-                // tab in a collection of tabs
+                // Children are tabs
                 if(pages[i].children !== undefined) {
 
-//console.log('has children, creating panel tab');
                     var panel = panelTab();
 
                     switchPanel(panel, el);
                     appendTabs(pages[i]);
+                    
+                    obj.page = pages[i].children[0].id;
+                    
 
                 } else {
 
-//console.log('does not have children, creating standard panel');
                     var panel = panelStandard();
                     switchPanel(panel, el);
 
                     $('#data').data('grid' + id, '');
                     $('<div id="page' + id + '"></div>').appendTo('#menu');
-
                 }
+                
+                initGrid(obj);
                     
                 // stops all widgets to auto reload/refresh
                 //clearAllIntervals();
-
-                
-                initGrid(id);
             }
         }
     }
@@ -68,11 +113,12 @@ Ext.onReady(function() {
         var panel = Ext.getCmp('panel-tab');
 
         panel.removeAll();
-        $('<div id="page' + tabs.id + '" class="gridster"></div>').appendTo('body');
-        $('#data').data('grid' + tabs.id, '');
+        //$('<div id="page' + tabs.id + '" class="gridster"></div>').appendTo('body');
+        //$('#data').data('grid' + tabs.id, ''); // ???
 
 //console.log('adding div page' + tabs.id);
         // The root is the first tab
+        /*
         panel.add({
             id: tabs.id,
             title: tabs.title,
@@ -83,7 +129,8 @@ Ext.onReady(function() {
                     initGrid(tab.id);
                 }
             },
-        }); 
+        });
+        */ 
 
         for(x=0; x<tabs.children.length; x++) {
 
@@ -91,8 +138,6 @@ Ext.onReady(function() {
 
             $('<div id="page' + id + '" class="gridster"></div>').appendTo('body');
             $('#data').data('grid' + id, '');
-
-//console.log('adding div page' + id);
 
             panel.add({
                 title: tabs.children[x].title,
@@ -142,21 +187,23 @@ Ext.onReady(function() {
 
     }
 
-    function initGrid(page) {
+    function initGrid(obj) {
         
-//console.log('initiating grid');
-//console.log(page);
+        var page = obj.page;
+        
+        console.log(page);
+        console.log(obj);        
+        
+console.log('initiating grid');
+console.log(page);
 
         $('#data').data('page_id', page);
 
         $.ajax({
             type: "GET",
-            url: '/api/pagewidget/?page=' + page,
+            url: '/api/pagewindow/?page=' + page,
             success: function(data) {
-
-//console.log("page length: ");
-//console.log($('#page1').length);
-
+            
                 // if we have a grid for this page, it means it's already 
                 // loaded and we do not need to fetch it again
                 if($('#data').data('grid' + page) !== undefined && $('#data').data('grid' + page) !== '') {
@@ -184,40 +231,76 @@ Ext.onReady(function() {
                             row: wgd.row,
                             size_y: wgd.size_y,
                             size_x: wgd.size_x,
-                            pagewidget: $w.context.attributes.pagewidget.value,
+                            pagewindow: $w.context.attributes.pagewindow.value,
                         } 
                     }
                 }).data('gridster');
 
-//console.log('initiated gridster');
                 grid.disable();
 
                 $('#data').data('grid' + page, grid);
                 $('#data').data('grid_data' + page, data);
                 
 
-    //console.log('starting loop');
                 for(i=0; i<data.length; i++) {
 
                     var row = data[i];
-    //console.log('CREATING ');
-                    var widget = '<div id="' + page + '_' + row.widget.key + '" pagewidget="' + row.id + '" class="layout_block"></div>';
+                    
+                    console.log(row);
 
-                    grid.add_widget(widget, row.size_x, row.size_y, row.col, row.row);
+                    var window = '<div id="' + page + '_' + row.window.id + '" pagewindow="' + row.id + '" class="layout_block"></div>';
+                    
+                    console.log(window);
 
-                    createWidget(row.widget, page);
+                    grid.add_widget(window, row.size_x, row.size_y, row.col, row.row);
+                    
+                    // get the widgets for this window
+                    $.ajax({
+                        type: "GET",
+                        url: '/api/widgets/?window=' + row.window.id,
+                        success: function(widgets) {
+                        
+                            // div for window
+                            var window_id = 'page_' + page + '_' + row.window.id;
+                            $('<div id="' + window_id + '"></div>').appendTo('body'); 
 
-                    widgetWindow(row.widget.key, page, row.widget.name, row.size_x, row.size_y, row.id);
+                            // vbox or hbox
+                            var layout = row.window.layout + 'box'; 
+
+                            var items = [];
+                            
+                            for(i=0; i<widgets.length; i++) {
+                            
+                                // div for widget
+                                var widget_id = 'page_' + page + '_win_' + row.window.id + '_widget_' + widgets[i].id;
+                                $('<div id="' + widget_id + '"></div>').appendTo('#' + window_id);
+                                
+                                items[i] = {
+                                    renderTo: widget_id,        
+                                    height: (140 * row.size_y) + (10 * row.size_y) + (10 * (row.size_y - 1)) - 20,
+                                    width:  (140 * row.size_x) + (10 * row.size_x) + (10 * (row.size_x - 1)) - 20,
+                                    border: false,   
+                                }
+                                
+                                createWidget(obj, widgets[i], widget_id);
+                            }
+                            
+                            Ext.create('Ext.container.Container', {
+                                renderTo: window_id,
+                                layout: layout,
+                                items: items
+                            });
+                            
+                            widgetWindow(row.window.id, page, row.window.name, row.window.size_x, row.window.size_y, row.id, window_id);
+                        }
+                    });
                 }       
-//console.log('finishing loop');
             }
-
         });
     }
 
-    function widgetWindow(key, page, title, size_x, size_y, pagewidget) {
+    function widgetWindow(key, page, title, size_x, size_y, pagewindow, window) {
 
-//console.log('creating widget window: ' + key);
         Ext.create('Ext.window.Window', {
             title: title,
             // there's gotta be a better way to do this
@@ -227,7 +310,7 @@ Ext.onReady(function() {
             floatable: false,
             draggable: false,
             closable: false, 
-            contentEl: "widget" + page + '_' + key,
+            contentEl: window,
             x: 0,
             y: 0,
             renderTo: page + '_' + key,
@@ -247,7 +330,7 @@ Ext.onReady(function() {
 
                                 grid.remove_widget($('#' + page + '_' + key));
 
-                                removeWidget(pagewidget);
+                                removePageWindow(pagewindow);
                             }
                          }
                     });
@@ -256,10 +339,10 @@ Ext.onReady(function() {
         }).show();
     }
 
-    function removeWidget(id) {
+    function removePageWindow(id) {
          $.ajax({
             type: "DELETE",
-            url: "/api/pagewidget/" + id + '/',
+            url: "/api/pagewindow/" + id + '/',
             success: function() {
                 //console.log('removed widget');
             },
@@ -270,18 +353,21 @@ Ext.onReady(function() {
         });          
     }
 
-    function createWidget(widget, page) {
+    function createWidget(obj, widget, div) {
+    
+    
 
-//console.log('creating widget');
-//console.log(widget);
-
-        var div = 'widget' + page + '_' + widget.key;
-        $('<div id="' + div + '"></div>').appendTo('body');
+    
+        var q = '';
+        if(typeof obj.fund !== 'undefined') {
+            q = "?fund=" + obj.fund.toString();
+        }
 
         try {
-            $.getJSON('/api/widget/' + widget.key + '/', function(data) {
+            $.getJSON('/api/widget/' + widget.key + '/' + q, function(data) {
                 switch(widget.type) {
                   case 'data_table': dataTable(widget, data, div); break;
+                  case 'month_table': monthTable(widget, data, div); break;
                   case 'graph':      graph(widget, data, div); break;
                   case 'pie_chart':  pieChart(widget, data, div); break;
                   case 'bar_chart':  barChart(widget, data, div); break;
@@ -308,74 +394,289 @@ Ext.onReady(function() {
             //console.log(err);
         }
     }
+    
+    function lineGraph(widget, data, div) {
+    
+    }
 
     function barChart(widget, data, div) {
+    
 
-//console.log('creating bar chart');
         try {
-            var plot1 = $.jqplot(div, data, {
-                
-                series:[{renderer:$.jqplot.BarRenderer}],
-                axesDefaults: {
-                    tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
-                    tickOptions: {
-                      angle: -30,
-                      fontSize: '10pt'
-                    }
+            var chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: div,
+                    type: 'column',
                 },
-                axes: {
-                  xaxis: {
-                    renderer: $.jqplot.CategoryAxisRenderer
-                  }
-                }
+                
+                series: data
             });
+
+
         } catch (err) {
             //console.log(err);
         }
 
+        $('#data').data('monthly-bar-div', div);
+    }
+    
 
+    
+
+    function monthTable(widget, data, div) {
+    
+var month = 0; // January
+var d = new Date(2012, 6, 1);
+console.log(d); 
+
+  console.log(d.getDay());
+
+    
+        var html = '<table class="month_table"><tr>';
+        
+        // first day of month falls on a saturday
+        if(data[1] === '' && data[2] === '') {
+            delete data[1];
+            delete data[2];
+        // ... or a sunday
+        } else if(data[1] === '') {
+            delete data[1];
+        // ... friday
+        } else if(data[2] === '') {
+            html += '<td></td><td></td><td></td><td></td>';
+        // ... thursday
+        } else if(data[3] === '') {
+            html += '<td></td><td></td><td></td>';
+        // ... wednesday
+        } else if(data[4] === '') { 
+            html += '<td></td><td></td>';
+        // ... tuesday
+        } else if(data[5] === '') {
+            html += '<td></td>';
+        } 
+        
+        var barDiv = $('#data').data('div-bar');
+            
+        for(var day in data) {
+        
+            // skipping weekends
+            if(data[day] === '') {
+                html += '</tr><tr>';
+                delete data[day];
+            } else {
+                html += '<td>' + day + '<a href="#" onclick="monthlyBar(' + day + ');">' + data[day] + '</a></td>';
+            }
+        }
+        
+        html += "</tr></table>";
+    
+        Ext.create('Ext.container.Container', {
+            id: 'month-table',
+            width: 400,
+            renderTo: div,
+            items: [{
+                id: 'month-table-content',
+                xtype: 'container',
+                html: html,
+            }]
+        });
+    
     }
 
     function dataTable(widget, data, div) {
-
-//console.log('creating datatable');
-//console.log(data);
+    
+    
+        console.log(widget);
         try {
-
-            var table = Ext.create('Ext.data.Store', {
-                fields:['name', 'email', 'phone'],
-                autoLoad: true,
+        
+            console.log(data);
+            
+            
+            
+            var fund = $('#data').data('fund');
+            
+            fields = [];
+            for(i=0; i < data.columns.length; i++) {
+                fields[i] = data.columns[i].dataIndex;
+            }
+            console.log(fields);
+ 
+            Ext.create('Ext.data.Store', {
+                storeId: widget.key,
+                fields: fields,
+                data: data,
                 proxy: {
-                    type: 'ajax',
-                    url: '/api/widget/' + widget.key + '/',
+                    type: 'memory',
                     reader: {
                         type: 'json',
-                        root: 'items',
+                        root: 'rows'
                     }
-                },
+                }
             });
 
             Ext.create('Ext.grid.Panel', {
-                store: table,
-                columns: [
-                    { text: 'Name',  dataIndex: 'name' },
-                    { text: 'Email', dataIndex: 'email', flex: 1 },
-                    { text: 'Phone', dataIndex: 'phone' }
-                ],
-                height: 290,
-                width: 450,
-                header: false,
-                border: false,
-                enableLocking: true,
-                autoScroll: true,
+                store: Ext.data.StoreManager.lookup(widget.key),
+                columns: data.columns,
                 renderTo: div,
-
+            });
+                
+                /*
+                
+                
+            fields = [];
+            for(i=0; i < data.columns.length; i++) {
+                fields[i] = data.columns[i].text;
+            }
+            
+            Ext.create('Ext.data.Store', {
+                storeId: widget.key,
+                fields: fields,
+                data: data,
+                proxy: {
+                    type: 'memory',
+                    reader: {
+                        type: 'json',
+                        root: 'rows'
+                    }
+                }
             });
 
+            Ext.create('Ext.grid.Panel', {
+                store: Ext.data.StoreManager.lookup(widget.key),
+                columns: data.columns,
+                renderTo: div,
+            });
+                
+                
+                
+                
+                    var table = Ext.create('Ext.data.Store', {
+                        //fields: columns,
+                        autoLoad: true,
+                        proxy: {
+                            type: 'ajax',
+                            url: '/api/widget/' + widget.key + '/',
+                            reader: {
+                                type: 'json',
+                                root: 'objects',
+                            }
+                        },
+                        sorters: [
+                        {
+                            property : 'year',
+                            direction: 'DESC',
+                        }],                    
+                    });
+                  
+                   
+                   
+                    var store = new Ext.data.JsonStore({
+                        url: '/api/widget/' + widget.key + '/',
+                    });
+                    
+                    Ext.create('Ext.grid.Panel', {
+                        store: store,
+                        renderTo: div,
+                    });           
+                   
+                    
+Ext.create('Ext.data.Store', {
+    storeId:'employeeStore',
+    fields:['firstname', 'lastname', 'seniority', 'dep', 'hired'],
+    data:[
+        { seniority: 'asdf', firstname:"Michael", lastname:"Scott"},
+        {firstname:"Dwight", lastname:"Schrute", seniority:2, dep:"Sales", hired:"04/01/2004"},
+        {firstname:"Jim", lastname:"Halpert", seniority:3, dep:"Sales", hired:"02/22/2006"},
+        {seniority:4, dep:"Accounting", hired:"06/10/2007"},
+        {firstname:"Angela", lastname:"Martin", seniority:5, dep:"Accounting", hired:"10/21/2008"}
+    ]
+});
+
+Ext.create('Ext.grid.Panel', {
+    title: 'Column Demo',
+    store: Ext.data.StoreManager.lookup('employeeStore'),
+    columns: [
+        {text: 'First Name',  dataIndex:'firstname'},
+        {text: 'Last Name',  dataIndex:'lastname'},
+        {text: 'Hired Month',  dataIndex:'hired', xtype:'datecolumn', format:'M'},
+        {text: 'Department (Yrs)', xtype:'templatecolumn', tpl:'{dep} ({seniority})'}
+    ],
+    width: 400,
+    forceFit: true,
+    renderTo: div
+});            
+                                      
+                    
+                    console.log('/api/widget/' + widget.key + '/');
+                    ext_columns = new Array();
+                    for(i=0; i<columns.length; i++) {
+                        //ext_columns.push({text: columns[i], dataIndex: columns[i], width: widget.column_width});
+                    }
+
+
+                    Ext.create('Ext.grid.Panel', {
+                        store: table,
+                        //columns: ext_columns,
+                        width: (140 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 100,
+                        height: (140 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 100,
+                        header: false,
+                        border: false,
+                        enableLocking: true,
+                        autoScroll: true,
+                        renderTo: div,
+                        listeners: {
+                            cellclick: function(gridView,htmlElement,columnIndex,dataRecord) {
+                            
+                                year = dataRecord.data.Year;
+                                
+                                // year view
+                                if(columnIndex == 0) {
+                                    
+                                // month view
+                                } else {
+                                    month = columnIndex;
+                                    
+                                    var panel = Ext.getCmp("month-table");
+                                    panel.remove('month-table-content');
+                                    
+                                    console.log(month);
+                                    
+                                    try {
+                                        $.getJSON('/api/widget/monthlyhistorical/?date__year=' + year + '&date__month=' + month, function(data) {
+                                            console.log(data);
+                                            monthTable('', data, panel.renderTo);
+                                            $('#data').data('year', year);
+                                            $('#data').data('month', month);
+                                        })
+                                    } catch (err) {
+                                        //console.log(err);
+                                    }
+                                    
+                                    //panel.doLayout();
+                                    //panel.add([{
+                                    //    id: 'month-table-content',
+                                    //    xtype: 'container',
+                                    //    html: 'asdf',
+                                   // }]);
+                                                    
+                                }
+                                //console.log(htmlElement);
+                                //console.log(gridView);
+                                //console.log(columnIndex);
+                                //console.log(dataRecord);
+                            }
+                        }
+                    });
+                    
+                    
+
+                },
+           });
+*/           
+        
         } catch (err) {
             //console.log(err);
         }
-
     }
 
     function pieChart(widget, data, div) {
@@ -676,14 +977,14 @@ Ext.onReady(function() {
 
                             $.ajax({
                                 type: "POST",
-                                url: "/api/pagewidget/",
+                                url: "/api/pagewindow/",
                                 data: JSON.stringify(grid),
                                 dataType: "json",
                                 contentType: "application/json",
-                                success: function(pagewidget) {
+                                success: function(pagewindow) {
 console.log('adding widget');
 
-                                    var div = '<div id="' + page + '_' + data.key + '" pagewidget="' + pagewidget.id + '" class="layout_block"></div>';
+                                    var div = '<div id="' + page + '_' + data.key + '" pagewindow="' + pagewindow.id + '" class="layout_block"></div>';
                                     var grid = $('#data').data('grid' + page);
 
                                     grid.add_widget(div, data.size_x, data.size_y, 1, 1);
@@ -727,7 +1028,7 @@ console.log('adding widget');
     
             $.ajax({
                 type: "PATCH",
-                url: "/api/pagewidget/" + grid[i].pagewidget + '/',
+                url: "/api/pagewindow/" + grid[i].pagewindow + '/',
                 data: JSON.stringify(data),
                 dataType: "json",
                 contentType: "application/json",
@@ -883,7 +1184,7 @@ console.log('adding widget');
             }
         });
     }
-    
+    /*
     function appendFundNodes(id, prefix, type_prefix) {
     
         $.ajax({
@@ -909,9 +1210,10 @@ console.log('adding widget');
         
         node.data.leaf = false;
         
-        console.log(data);
         // append types
         for(i=0; i<data.length; i++) {
+        
+            var type_id = type_prefix.toString() + '_type_' + data[i].id.toString();
         
             console.log('appending type' + type_prefix + data[i].id);
             node.appendChild({
@@ -919,13 +1221,13 @@ console.log('adding widget');
                 expanded: true,
                 leaf: true,
                 text: data[i].name,
-                id: type_prefix + data[i].id
+                id: type_id
             });	
             
             // append funds or clients
             if(data[i].funds !== undefined) {
             
-                var node2 = Ext.getCmp('main-menu').getStore().getNodeById(type_prefix + data[i].id);
+                var node2 = Ext.getCmp('main-menu').getStore().getNodeById(type_id);
                 
                 for(x=0; x<data[i].funds.length; x++) {
                 
@@ -936,7 +1238,7 @@ console.log('adding widget');
                         expanded: true,
                         leaf: true,
                         text: data[i].funds[x].name,
-                        id: prefix + data[i].funds[x].id
+                        id: prefix.toString() + data[i].funds[x].id.toString()
                     });	
                 }
                                     
@@ -948,6 +1250,8 @@ console.log('adding widget');
         }
         //Ext.getCmp('main-menu').getView().refresh();	    
     }
+    
+    */
     
     function viewPort() {
 
@@ -977,13 +1281,6 @@ console.log('adding widget');
                     },
                 });
                 
-                var PERFORMANCE = 3;
-                var FUNDTYPE_PREFIX = 1000;
-                var PERFORMANCE_PREFIX = 2000;                
-                var PERFORMANCE_BY_FUND = 4;
-                var PERFORMANCE_BY_CLIENT = 5;
-                var CLIENT = 6;
-
                 var tree = Ext.create('Ext.tree.Panel', {
                     id: 'main-menu',
                     store: store,
@@ -1000,10 +1297,7 @@ console.log('adding widget');
                                 nodeId = record.data.id;
                                 
                                 //console.log(nodeId);
-                                
-                                if(nodeId == PERFORMANCE) {
-                                    appendFundNodes(PERFORMANCE_BY_FUND, PERFORMANCE_PREFIX, FUNDTYPE_PREFIX);   
-                                }   
+
                             }
                         },
                         itemclick: {
@@ -1016,20 +1310,25 @@ console.log('adding widget');
                                     record.expand();
                                 }
                                 
-                                console.log(record.raw.page);
-
+                                
+                                
+                                
                                 if(record.raw.page !== null) {
-                                    var str = record.raw.page.toString();
-                                    initPage(str.replace(/\D/g, ''));
+                                
+                                    if (typeof record.raw.page === 'object') {
+                                        record.raw.page = record.raw.page.id;
+                                    } else {
+                                        var str = record.raw.page.toString();
+                                        record.raw.page = str.replace(/\D/g, '');
+                                    }
                                 }
+                                
+                                initPage(record.raw);
 
                             }
                         }
                     }
                 });
-                
-
-
 
 
                 var panel_west = Ext.create('Ext.panel.Panel', {
@@ -1105,7 +1404,10 @@ console.log('adding widget');
                         setGlobal('page');
 
                     	viewPort();
-                        initGrid(1);
+                    	
+                    	page = new Object();
+                    	page.page = 1;
+                        initGrid(page);
                     },
                     failure:function(form, action){ 
                         Ext.Msg.alert('Login failed!', 'Wrong user name or passsword'); 
@@ -1189,7 +1491,9 @@ $.ajax({
 
         $('<div id="page1"></div>').appendTo('#menu');
         $('#data').data('active-panel', 'panel-home'); 
-        initGrid(1);
+    	page = new Object();
+    	page.page = 1;
+        initGrid(page);
 
 
     },
