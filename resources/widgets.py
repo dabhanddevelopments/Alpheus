@@ -4,7 +4,7 @@ from tastypie.authentication import SessionAuthentication
 from tastypie.authorization import DjangoAuthorization
 from tastypie import fields
 from app.models import *
-from resources.api import FundResource
+from resources.api import FundResource, HoldingResource
 from resources.base_resources import MainBaseResource
 #from app import widget_models
 from alpheus.serializers import PrettyJSONSerializer
@@ -146,105 +146,210 @@ class PieChart(WidgetBaseResource):
 
 
 
-class MetaPaginator(Paginator):
-    def page(self):
-        output = super(MetaPaginator, self).page()
-
-        #print 'asdf'
-        #print output
-        # First keep a reference.
-        return output
-
-class FundPerfYearlyResource(MainBaseResource):
-
+class FundYearPerfResource(MainBaseResource):
     fund = fields.ForeignKey(FundResource, 'fund')
 
     class Meta(MainBaseResource.Meta):
-        queryset = FundPerformanceYearly.objects.all()
+        queryset = FundPerfYearly.objects.filter(holding_group='all')
         ordering = ['year', 'month']
-        paginator_class = MetaPaginator
         mandatory_params = ['fund']
 
         filtering = {
             "fund": ALL,
+            "holding": ALL_WITH_RELATIONS,
         }
-
-    # fund param is mandatory
-    def build_filters(self, filters=None):
-        self.check_params(['fund'], filters)
-        return super(FundPerfYearlyResource, self).build_filters(filters)
 
     def get_list(self, request, **kwargs):
-
-        """
-        from django.utils.datastructures import SortedDict
-        select=SortedDict([
-            ('yi', "SELECT AVG(value) FROM app_historicalholding WHERE date > %s and date < %s"),
-            ('si', "SELECT AVG(value) FROM app_historicalholding WHERE date > %s and date < %s"),
-            ('year', "EXTRACT(year FROM date)"),
-            ('month', "EXTRACT(month FROM date)"),
-        ])
-        year = self.obj_get_list(bundle=base_bundle,
-                    **self.remove_api_resource_names(kwargs)).extra(select, \
-                                    select_params=("2012-01-01", "2013-01-01")) \
-                    .values('year', 'month', 'yi').annotate(Avg('value'))
-
-        select = {
-            'year': "EXTRACT(year FROM date)",
-            'month': "EXTRACT(month FROM date)",
-        }
-        """
 
         base_bundle = self.build_bundle(request=request)
         years = self.obj_get_list(bundle=base_bundle,
                     **self.remove_api_resource_names(kwargs))
 
-
         fund = request.GET.get("fund", 0)
         fund = int(fund)
 
         # get the monthly values as well
-        objects = FundPerformanceMonthly.objects.filter(fund__id=fund)
+        objects = FundPerfMonthly.objects.filter(fund__id=fund)
 
-
+        # merge the 2 querysets into a list with dictionaries
         dic = {}
         newlist = []
         for year in years:
             dic = {
+                'year': year.year,
                 'si': year.si,
                 'ytd': year.ytd
             }
             for row in objects:
-                print row
                 if row.year == year.year:
                     abbr = calendar.month_abbr[row.month]
                     dic[abbr.lower()] = row.value
             newlist.append(dic)
 
-        columns = []
+        # create columns
+        columns = ['year']
         for month in range(1, 13):
             abbr = calendar.month_abbr[month]
             columns.append(abbr.lower())
-
-        append = ['si', 'year', 'ytd']
+        append = ['si', 'ytd']
         [columns.append(add) for add in append]
-
         columns = self.month_columns(columns)
 
         dic = {
-            'metaData': {'sorting': 'year', 'root': 'rows', },#'fields': fields},
+            'metaData': {'sorting': 'year', 'root': 'rows', },
             'columns': columns,
             'rows': newlist,
         }
         return JsonResponse(dic)
 
-class FundPerfMonthlyResource(MainBaseResource):
+
+
+
+class HoldPerfResource(MainBaseResource):
+    holding = fields.ForeignKey(HoldingResource, 'holding', full=True,
+                                null=True)
 
     class Meta(MainBaseResource.Meta):
-        queryset = FundPerformanceMonthly.objects.all()
+        queryset = FundPerfDaily.objects.select_related('holding') \
+                                                .filter(holding__isnull=False)
+        ordering = ['name', 'weight']
+        include_resource_uri = False
 
         filtering = {
             "date": ALL,
+            "fund": ALL,
+        }
+
+    def dehydrate(self, bundle):
+
+        bundle.data = {
+            'y': float(bundle.data['value']), #@TODO: Perm fix for float bug
+            'name': bundle.data['holding'].data['name']
+        }
+        return bundle
+
+    # without date we would get thousands of records
+    def build_filters(self, filters=None):
+        self.check_params(['date'], filters)
+        return super(MainBaseResource, self).build_filters(filters)
+
+
+class FundPerfResource(MainBaseResource):
+
+    class Meta(MainBaseResource.Meta):
+        queryset = FundPerfDaily.objects.filter(holding__isnull=True)
+        ordering = ['name', 'weight']
+
+        filtering = {
+            "date": ALL,
+            "fund": ALL,
+        }
+
+
+    def dehydrate(self, bundle):
+        return {
+            'date': bundle.data['date'],
+            'value': bundle.data['value']
+        }
+        return bundle
+
+    def build_filters(self, filters=None):
+        return super(MainBaseResource, self).build_filters(filters)
+
+
+
+class HoldingCategoryResource(MainBaseResource):
+
+    class Meta(MainBaseResource.Meta):
+        queryset = HoldingCategory.objects.all()
+
+class FundGroupPerfResource(MainBaseResource):
+    holding = fields.ForeignKey(HoldingResource, 'holding', full=True)
+    holding_category = fields.ForeignKey(HoldingCategoryResource, 'holding_category', full=True)
+
+    class Meta(MainBaseResource.Meta):
+        queryset = FundPerfYearly.objects.select_related('holding').all()
+        ordering = ['name', 'weight']
+
+        filtering = {
+            "date": ALL,
+            "fund": ALL,
+            "year": ALL,
+            "holding": ALL_WITH_RELATIONS,
+            "holding_group": ALL,
+        }
+
+
+    # without the fund we won't get any results
+    # so we make it mandatory
+    def build_filters(self, filters=None):
+        self.check_params(['fund', 'holding_group'], filters)
+        return super(FundGroupPerfResource, self).build_filters(filters)
+
+    def get_list(self, request, **kwargs):
+
+        base_bundle = self.build_bundle(request=request)
+        cats = self.obj_get_list(bundle=base_bundle,
+                    **self.remove_api_resource_names(kwargs))
+
+        holding_group = request.GET.get("holding_group", 0)
+        fund = request.GET.get("fund", 0)
+        fund = int(fund)
+
+        # get the monthly values as well
+        objects = FundPerfMonthly.objects.filter(
+                            fund=fund, holding_group=holding_group)
+        print holding_group
+        print objects
+
+        if holding_group == 'sec':
+            group = 'sector'
+        elif holding_group == 'sub':
+            group = 'sub_sector'
+        else:
+            group == 'loc'
+
+        # merge the 2 querysets into a list with dictionaries
+        dic = {}
+        newlist = []
+        for cat in cats:
+            print cat.year
+            dic = {
+                group: cat.holding_category.name,
+                'si': cat.si,
+                'ytd': cat.ytd
+            }
+            for row in objects:
+                if row.holding_category == cat.holding_category:
+                    abbr = calendar.month_abbr[row.month]
+                    dic[abbr.lower()] = row.value
+            newlist.append(dic)
+
+        # create columns
+        columns = [group]
+        for month in range(1, 13):
+            abbr = calendar.month_abbr[month]
+            columns.append(abbr.lower())
+        append = ['si', 'ytd']
+        [columns.append(add) for add in append]
+        columns = self.month_columns(columns)
+
+        dic = {
+            'metaData': {'sorting': 'year', 'root': 'rows', },
+            'columns': columns,
+            'rows': newlist,
+        }
+        return JsonResponse(dic)
+
+
+class FundPerfMonthlyResource(MainBaseResource):
+
+    class Meta(MainBaseResource.Meta):
+        queryset = FundPerfDaily.objects.all()
+
+        filtering = {
+            "year": ALL,
+            "month": ALL
         }
 
     # fund param is mandatory
@@ -253,87 +358,18 @@ class FundPerfMonthlyResource(MainBaseResource):
         return super(FundPerfMonthlyResource, self).build_filters(filters)
 
     def get_object_list(self, request):
-        return super(MyResource,
-            self).get_object_list(request).filter(
-                date__year=int(request.GET.get('year',
-                                               datetime.date.today().year())),
-                date__month=int(request.GET.get('month', datetime.date.today().year()))
-                start_date__gte=now
-            )
-    def get_list2(self, request, **kwargs):
-
-        """
-        Create dictionary of days in month
-        Weekends are empty
-        """
+        objects = super(FundPerfMonthlyResource, self).get_object_list(request)
 
         try:
-            year = int(request.GET['year'])
-            month = int(request.GET['month'])
+            # if we got both date params set we let tastypie do all the filtering
+            request.GET['year']
+            request.GET['month']
+            return objects
         except:
-            year = datetime.date.today().year
-            month = datetime.date.today().month
-
-        date = datetime.date(year, month, 1)
-        last_day_of_month = calendar.monthrange(date.year, date.month)[1]
-
-        select={'day': "EXTRACT(day FROM date)"}
-
-        base_bundle = self.build_bundle(request=request)
-        objects = self.obj_get_list(bundle=base_bundle,
-                    **self.remove_api_resource_names(kwargs)).extra(select) \
-                    .filter(date__year=year, date__month=month)
-
-        print objects
-
-        dic = {}
-        d = date
-        end = datetime.date(date.year, date.month, last_day_of_month)
-        delta = datetime.timedelta(days=1)
-        weekend = set([5, 6])
-        while d <= end:
-            for row in objects:
-                if d.day == row['day']:
-                    dic[d.day] = row['value__avg']
-            try:
-                dic[d.day]
-            except:
-                if d.weekday() not in weekend:
-                    dic[d.day] = 0
-                else:
-                    dic[d.day] = '' # weekend
-            d += delta
-
-        return JsonResponse(dic)
-        return HttpResponse(json.dumps(dic))
-
-class FundPerfHoldResource(ModelResource):
-
-    """
-    Get average historical performance for a given day
-    """
-
-    class Meta:
-        queryset = FundPerformanceMonthly.objects.all()
-
-        filtering = {
-            "date": ALL,
-        }
-
-    def get_list(self, request, **kwargs):
-
-        base_bundle = self.build_bundle(request=request)
-        obj = self.obj_get_list(bundle=base_bundle,
-                    **self.remove_api_resource_names(kwargs)) \
-                    .values('holding__name').annotate(Avg('value')).order_by()
-
-        lis = []
-        for row in obj:
-            dic = {}
-            dic['name'] = row['holding__name']
-            dic['data'] = [row['value__avg']]
-            lis.append(dic)
-        return JsonResponse(lis)
+            return objects.filter(
+                year=datetime.date.today().year,
+                month=datetime.date.today().month
+            )
 
 
 widget = Api(api_name="widget")
@@ -343,7 +379,8 @@ widget.register(ConcernOccurrance())
 widget.register(PieChart())
 widget.register(Graph())
 widget.register(ExampleTable1())
-widget.register(FundPerfYearlyResource())
-widget.register(FundPerfMonthlyResource())
-widget.register(FundPerfHoldResource())
+widget.register(FundGroupPerfResource())
+widget.register(FundYearPerfResource())
+widget.register(HoldPerfResource())
+widget.register(FundPerfResource())
 

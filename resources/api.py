@@ -5,7 +5,7 @@ from tastypie.authorization import Authorization
 #from tastypie.authorization import DjangoAuthorization
 from tastypie.exceptions import BadRequest
 from tastypie import fields
-from app.models import Page, PageWindow, Window, Widget, WidgetType, Fund, FundType, Menu
+from app.models import * #Page, PageWindow, Window, Widget, WidgetType, Fund, FundType, Menu, Holding
 from base_resources import MainBaseResource, TreeBaseResource
 from django.http import HttpResponse
 
@@ -115,13 +115,19 @@ class WidgetTypeResource(MainBaseResource):
         queryset = WidgetType.objects.all()
         include_resource_uri = False
 
+class WidgetParamResource(MainBaseResource):
+
+    class Meta(MainBaseResource.Meta):
+        queryset = WidgetParam.objects.all()
+
 
 class WidgetsResource(MainBaseResource):
     widget_type = fields.ForeignKey(WidgetTypeResource, 'widget_type',full=True,)
+    widget_param = fields.ToManyField(WidgetParamResource, 'widget_param',full=True,)
     window = fields.ForeignKey(WindowResource, 'window')
 
     class Meta(MainBaseResource.Meta):
-        queryset = Widget.objects.select_related('widget_type').all()
+        queryset = Widget.objects.select_related('widget_type', 'widget_param').all()
         include_resource_uri = True
 
         filtering = {
@@ -129,11 +135,21 @@ class WidgetsResource(MainBaseResource):
         }
 
 
-
     def dehydrate(self, bundle):
 
         # @TODO: Consider getting rid of this
         bundle.data['type'] = bundle.data['widget_type'].data['key']
+
+        qs = '?'
+        for var in bundle.data['widget_param']:
+            if var.data['value']:
+                val = var.data['value']
+            else:
+                val = var.data['key'].upper()
+            qs += str(var.data['key']) + '=' + str(val) + '&'
+
+        bundle.data['qs'] = qs[:-1]
+        del bundle.data['widget_param']
 
         # Description is only used for UnusedWidgetResource
         del bundle.data['description']
@@ -235,6 +251,9 @@ class FundResource(ModelResource):
     class Meta(MainBaseResource.Meta):
         queryset = Fund.objects.all()
         fields = ['id', 'name']
+        filtering = {
+            "fund": ALL,
+        }
 
 class FundByTypeResource(MainBaseResource):
     funds = fields.ToManyField(FundResource, "fund", full=True)
@@ -253,6 +272,14 @@ class FundNameResource(MainBaseResource):
         fields = ['name', 'fund_type']
 
 
+class HoldingResource(ModelResource):
+    #fund = fields.ForeignKey(FundResource, 'fund')
+
+    class Meta:
+        queryset = Holding.objects.select_related('fund').all()
+        filtering = {
+            "fund": ALL,
+        }
 
 class MenuResource(TreeBaseResource, MainBaseResource):
     page = fields.ForeignKey(PageResource, "page", null=True, full=True)

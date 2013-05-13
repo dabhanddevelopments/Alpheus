@@ -7,47 +7,36 @@ Ext.require([
 ]);
 
 
-        //call chart on click
-        function monthlyBar(day) {
+//call chart on click
+// TODO: rewrite when you figure out how to get the id of the cell clicked
+function monthlyBar(date, fund) {
+
+    var div = $('#data').data('monthly-bar-div');
+    var chart = $('#' + div).highcharts();
     
-            console.log('clicked');  
-            
-            if(typeof $('#data').data('year') != 'undefined') {
-                var year = $('#data').data('year');
-            } else {
-                var year = new Date().getFullYear();        
-            }
-            if(typeof $('#data').data('month') != 'undefined') {
-                var month = $('#data').data('month');
-            } else {
-                var month = new Date().getMonth() + 1;        
-            }
-        
-            var div = $('#data').data('monthly-bar-div');
-            var chart = $('#' + div).highcharts();
+    var url = '/api/widget/holdperf/?date=' + date + '&fund=' + fund + '&order_by=weight';
+    //return monthTable(url, 'fundperfdaily', div);
 
-            console.log('/api/widget/dailyhistorical/?date=' + year + '-' + month + '-' + day); 
-            console.log(div);     
-            
-            try {
-                chart.destroy();
-                $.getJSON('/api/widget/dailyhistorical/?date=' + year + '-' + month + '-' + day, function(data2) {
-console.log('works');
+    try {
+        chart.destroy();
+        $.getJSON(url, function(data) {
 
-                        var chart = new Highcharts.Chart({
-                            chart: {
-                                renderTo: div,
-                                type: 'column',
-                            },
-                            
-                            series: data2
-                        });
-                        console.log(data2);
+                var chart = new Highcharts.Chart({
+                    chart: {
+                        renderTo: div,
+                        type: 'column',
+                    },
+                    
+                    series: [{
+                        data: data
+                    }]
                 });
-            } catch (err) {
-                //do nothing
-            }
-        };    
+                console.log(data);
+        });
+    } catch (err) {
+        //do nothing
+    }
+};    
     
 
 Ext.onReady(function() {
@@ -87,6 +76,9 @@ Ext.onReady(function() {
                     appendTabs(pages[i]);
                     
                     obj.page = pages[i].children[0].id;
+                    console.log('child tabs');
+                    console.log(obj);
+                    console.log(pages[i].children);
                     
 
                 } else {
@@ -195,7 +187,7 @@ Ext.onReady(function() {
         console.log(obj);        
         
 console.log('initiating grid');
-console.log(page);
+
 
         $('#data').data('page_id', page);
 
@@ -203,6 +195,10 @@ console.log(page);
             type: "GET",
             url: '/api/pagewindow/?page=' + page,
             success: function(data) {
+            
+                console.log('page window');
+                console.log(data);
+                console.log('/api/pagewindow/?page=' + page);
             
                 // if we have a grid for this page, it means it's already 
                 // loaded and we do not need to fetch it again
@@ -244,45 +240,46 @@ console.log(page);
 
                 for(i=0; i<data.length; i++) {
 
-                    var row = data[i];
+                    var window = '<div id="' + page + '_' + data[i].window.id + '" pagewindow="' + data[i].id + '" class="layout_block"></div>';
                     
-                    console.log(row);
 
-                    var window = '<div id="' + page + '_' + row.window.id + '" pagewindow="' + row.id + '" class="layout_block"></div>';
+                    grid.add_widget(window, data[i].size_x, data[i].size_y, data[i].col, data[i].row);
                     
-                    console.log(window);
-
-                    grid.add_widget(window, row.size_x, row.size_y, row.col, row.row);
                     
                     // get the widgets for this window
                     $.ajax({
                         type: "GET",
-                        url: '/api/widgets/?window=' + row.window.id,
+                        url: '/api/widgets/?window=' + data[i].window.id,
+                        ajaxI: i,
                         success: function(widgets) {
                         
+                            // now I will be i asynchronously
+                            I = this.ajaxI;
+                        
                             // div for window
-                            var window_id = 'page_' + page + '_' + row.window.id;
+                            var window_id = 'page_' + page + '_' + data[I].window.id;
                             $('<div id="' + window_id + '"></div>').appendTo('body'); 
+                            console.log('window id: ' + window_id);
 
                             // vbox or hbox
-                            var layout = row.window.layout + 'box'; 
+                            var layout = data[I].window.layout + 'box'; 
 
                             var items = [];
                             
-                            for(i=0; i<widgets.length; i++) {
+                            for(x=0; x<widgets.length; x++) {
                             
                                 // div for widget
-                                var widget_id = 'page_' + page + '_win_' + row.window.id + '_widget_' + widgets[i].id;
+                                var widget_id = 'page_' + page + '_win_' + data[I].window.id + '_widget_' + widgets[x].id;
                                 $('<div id="' + widget_id + '"></div>').appendTo('#' + window_id);
                                 
-                                items[i] = {
+                                items[I] = {
                                     renderTo: widget_id,        
-                                    height: (140 * row.size_y) + (10 * row.size_y) + (10 * (row.size_y - 1)) - 20,
-                                    width:  (140 * row.size_x) + (10 * row.size_x) + (10 * (row.size_x - 1)) - 20,
+                                    height: (140 * data[I].size_y) + (10 * data[I].size_y) + (10 * (data[I].size_y - 1)) - 20,
+                                    width:  (140 * data[I].size_x) + (10 * data[I].size_x) + (10 * (data[I].size_x - 1)) - 20,
                                     border: false,   
                                 }
                                 
-                                createWidget(obj, widgets[i], widget_id);
+                                createWidget(obj, widgets[x], widget_id);
                             }
                             
                             Ext.create('Ext.container.Container', {
@@ -291,7 +288,7 @@ console.log(page);
                                 items: items
                             });
                             
-                            widgetWindow(row.window.id, page, row.window.name, row.window.size_x, row.window.size_y, row.id, window_id);
+                            widgetWindow(data[I].window.id, page, data[I].window.name, data[I].size_x, data[I] .size_y, data[I].id, window_id);
                         }
                     });
                 }       
@@ -300,7 +297,7 @@ console.log(page);
     }
 
     function widgetWindow(key, page, title, size_x, size_y, pagewindow, window) {
-
+    
         Ext.create('Ext.window.Window', {
             title: title,
             // there's gotta be a better way to do this
@@ -355,22 +352,43 @@ console.log(page);
 
     function createWidget(obj, widget, div) {
     
-    
+        var d=new Date(); 
+        obj.month = d.getMonth();
+        obj.year = d.getFullYear();
+        
+        widget.div = div; // remove this later
+        widget.url = '/api/widget/' + widget.key + '/';
 
-    
-        var q = '';
-        if(typeof obj.fund !== 'undefined') {
-            q = "?fund=" + obj.fund.toString();
+        $.each(obj, function(key, value) {
+             widget.qs = widget.qs.replace(key.toUpperCase(), value);
+        });
+        
+        if(widget.type == 'month_table') {
+        
+            return monthTable(obj, widget, div);
+            
+        } else if(widget.type == 'data_table') {
+        
+            return dataTable(obj, widget, div);
+            
+        } else if(widget.type == 'bar_chart') {
+        
+            // get last day of last month
+            var d=new Date(); 
+            d.setDate(1); 
+            d.setHours(-1);
+            
+            var formatted_date = obj.year + '-' + obj.month + '-' + d.getDate();
+            widget.qs = widget.qs.replace('DATE', formatted_date);
+            console.log('WIDGET DIV' + widget.div);
+            return barChart(obj, widget, div);
         }
-
+       
         try {
-            $.getJSON('/api/widget/' + widget.key + '/' + q, function(data) {
+            $.getJSON(url, function(data) {
                 switch(widget.type) {
-                  case 'data_table': dataTable(widget, data, div); break;
-                  case 'month_table': monthTable(widget, data, div); break;
                   case 'graph':      graph(widget, data, div); break;
                   case 'pie_chart':  pieChart(widget, data, div); break;
-                  case 'bar_chart':  barChart(widget, data, div); break;
                 }
 
                 // enables ajax auto reload/refresh for this widget
@@ -399,23 +417,37 @@ console.log(page);
     
     }
 
-    function barChart(widget, data, div) {
+    function barChart(obj, widget, div) {
     
+        $.getJSON(widget.url + widget.qs, function(data) {
 
-        try {
-            var chart = new Highcharts.Chart({
-                chart: {
-                    renderTo: div,
-                    type: 'column',
-                },
-                
-                series: data
-            });
+            try {
+                var chart = new Highcharts.Chart({
+                    chart: {
+                        renderTo: div,
+                        type: 'column',
+                    },
+                    labels: {
+                        rotation: -45,
+                        align: 'right',
+                        style: {
+                            fontSize: '10px',
+                            fontFamily: 'Verdana, sans-serif'
+                        }
+                    },
+                    xAxis: {
+                        type: 'category',
+                    },
+                    series: [{
+                        data: data
+                    }]
+                });
 
 
-        } catch (err) {
-            //console.log(err);
-        }
+            } catch (err) {
+                //console.log(err);
+            }
+        });
 
         $('#data').data('monthly-bar-div', div);
     }
@@ -423,76 +455,96 @@ console.log(page);
 
     
 
-    function monthTable(widget, data, div) {
+    function monthTable(obj, widget, div) {
     
-var month = 0; // January
-var d = new Date(2012, 6, 1);
-console.log(d); 
-
-  console.log(d.getDay());
-
-    
-        var html = '<table class="month_table"><tr>';
-        
-        // first day of month falls on a saturday
-        if(data[1] === '' && data[2] === '') {
-            delete data[1];
-            delete data[2];
-        // ... or a sunday
-        } else if(data[1] === '') {
-            delete data[1];
-        // ... friday
-        } else if(data[2] === '') {
-            html += '<td></td><td></td><td></td><td></td>';
-        // ... thursday
-        } else if(data[3] === '') {
-            html += '<td></td><td></td><td></td>';
-        // ... wednesday
-        } else if(data[4] === '') { 
-            html += '<td></td><td></td>';
-        // ... tuesday
-        } else if(data[5] === '') {
-            html += '<td></td>';
-        } 
-        
-        var barDiv = $('#data').data('div-bar');
-            
-        for(var day in data) {
-        
-            // skipping weekends
-            if(data[day] === '') {
-                html += '</tr><tr>';
-                delete data[day];
-            } else {
-                html += '<td>' + day + '<a href="#" onclick="monthlyBar(' + day + ');">' + data[day] + '</a></td>';
-            }
+        if(typeof obj.year == 'undefined' || typeof month == 'undefined') {
+            obj.year = new Date().getFullYear();
+            obj.month = new Date().getMonth() + 1;
         }
         
-        html += "</tr></table>";
-    
-        Ext.create('Ext.container.Container', {
-            id: 'month-table',
-            width: 400,
-            renderTo: div,
-            items: [{
-                id: 'month-table-content',
-                xtype: 'container',
-                html: html,
-            }]
+        $.getJSON(widget.url + widget.qs , function(data) {
+        
+            // first day in first week of month
+            var d = new Date(obj.year, obj.month - 1, 1);
+            var first_weekday = d.getDay();
+            
+            // last day of the month
+            var d2 = new Date(obj.year, obj.month, 0);
+            var last_day_of_month = d2.getDate();
+
+            var html = '<table class="month_table"><tr>';
+            
+            // empty cells for months that do not start on a monday
+            if(first_weekday < 6) {
+                for(i=1; i<first_weekday; i++) {
+                    html += "<td></td>";
+                }
+            }
+            
+            // converting the data object
+            days = {};
+            for(i=0; i < data.length; i++) {
+                var day = data[i].date.substr(8,2);
+                day = parseInt(day, 10);
+                days[day] = data[i].value;
+            }
+            
+            for(i=1; i<=last_day_of_month; i++) {
+            
+                if(typeof days[i] != 'undefined') {
+                    var val = days[i];
+                } else {
+                    var val = 0;
+                }
+                
+                date = obj.year.toString() + '-' + obj.month.toString() + '-' + i;
+
+                // exclude weekends
+                var d = new Date(date);
+                if(d.getDay() == 6 || d.getDay() == 0) {
+                
+                    // first day of month is a sunday
+                    if(d.getDay() == 0 && i == 1) {
+                        continue;
+                    // first day of month is a saturday
+                    } else if(d.getDay() == 6 && i == 1) {
+                        i++;
+                        continue;
+                    // is normal weekend. break row 
+                    } else {
+                        html += "</tr><tr>";
+                        i++;
+                        continue;   
+                    }
+                
+                }
+                html += '<td>' + i + '<a href="#" onclick="monthlyBar(\'' + date + '\', ' + obj.fund + ');">' + val + '</a></td>';
+            }
+            
+            html += "</tr></table>";
+        
+            Ext.create('Ext.container.Container', {
+                id: 'month-table',
+                width: 400,
+                renderTo: div,
+                items: [{
+                    id: 'month-table-content',
+                    xtype: 'container',
+                    html: html,
+                }]
+            });
         });
-    
     }
 
-    function dataTable(widget, data, div) {
+    function dataTable(obj, widget, div) {
     
+        // TODO: get rid of this later
+        if(typeof obj.fund != 'undefined') {
+            $('#data').data('fund', obj.fund);
+        }
     
-        console.log(widget);
-        try {
+        $.getJSON(widget.url + widget.qs, function(data) {
         
-            console.log(data);
-            
-            
-            
             var fund = $('#data').data('fund');
             
             fields = [];
@@ -517,166 +569,42 @@ console.log(d);
             Ext.create('Ext.grid.Panel', {
                 store: Ext.data.StoreManager.lookup(widget.key),
                 columns: data.columns,
+                width: (140 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 100,
+                height: (140 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 100,
+                header: false,
+                border: false,
+                enableLocking: true,
+                autoScroll: true,
                 renderTo: div,
-            });
-                
-                /*
-                
-                
-            fields = [];
-            for(i=0; i < data.columns.length; i++) {
-                fields[i] = data.columns[i].text;
-            }
-            
-            Ext.create('Ext.data.Store', {
-                storeId: widget.key,
-                fields: fields,
-                data: data,
-                proxy: {
-                    type: 'memory',
-                    reader: {
-                        type: 'json',
-                        root: 'rows'
+                forceFit: true,
+                listeners: {
+                    cellclick: function(gridView,htmlElement,columnIndex,dataRecord) {
+                    
+                        year = dataRecord.data.year;
+                        
+                        // year view
+                        if(columnIndex == 0) {
+                            
+                        // month view
+                        } else if(columnIndex < 13) {
+                            month = columnIndex;
+                            
+                            var panel = Ext.getCmp("month-table");
+                            panel.remove('month-table-content');
+                            
+                            obj = {};
+                            obj.month = month;
+                            obj.year = year;
+                            obj.fund = fund;
+                            widget.key = "fundperf";
+                            widget.qs = "?fund=FUND&date__year=YEAR&date__month=MONTH";
+                            widget.type = "month_table";
+                            createWidget(obj, widget, panel.renderTo);
+                        }
                     }
                 }
             });
-
-            Ext.create('Ext.grid.Panel', {
-                store: Ext.data.StoreManager.lookup(widget.key),
-                columns: data.columns,
-                renderTo: div,
-            });
-                
-                
-                
-                
-                    var table = Ext.create('Ext.data.Store', {
-                        //fields: columns,
-                        autoLoad: true,
-                        proxy: {
-                            type: 'ajax',
-                            url: '/api/widget/' + widget.key + '/',
-                            reader: {
-                                type: 'json',
-                                root: 'objects',
-                            }
-                        },
-                        sorters: [
-                        {
-                            property : 'year',
-                            direction: 'DESC',
-                        }],                    
-                    });
-                  
-                   
-                   
-                    var store = new Ext.data.JsonStore({
-                        url: '/api/widget/' + widget.key + '/',
-                    });
-                    
-                    Ext.create('Ext.grid.Panel', {
-                        store: store,
-                        renderTo: div,
-                    });           
-                   
-                    
-Ext.create('Ext.data.Store', {
-    storeId:'employeeStore',
-    fields:['firstname', 'lastname', 'seniority', 'dep', 'hired'],
-    data:[
-        { seniority: 'asdf', firstname:"Michael", lastname:"Scott"},
-        {firstname:"Dwight", lastname:"Schrute", seniority:2, dep:"Sales", hired:"04/01/2004"},
-        {firstname:"Jim", lastname:"Halpert", seniority:3, dep:"Sales", hired:"02/22/2006"},
-        {seniority:4, dep:"Accounting", hired:"06/10/2007"},
-        {firstname:"Angela", lastname:"Martin", seniority:5, dep:"Accounting", hired:"10/21/2008"}
-    ]
-});
-
-Ext.create('Ext.grid.Panel', {
-    title: 'Column Demo',
-    store: Ext.data.StoreManager.lookup('employeeStore'),
-    columns: [
-        {text: 'First Name',  dataIndex:'firstname'},
-        {text: 'Last Name',  dataIndex:'lastname'},
-        {text: 'Hired Month',  dataIndex:'hired', xtype:'datecolumn', format:'M'},
-        {text: 'Department (Yrs)', xtype:'templatecolumn', tpl:'{dep} ({seniority})'}
-    ],
-    width: 400,
-    forceFit: true,
-    renderTo: div
-});            
-                                      
-                    
-                    console.log('/api/widget/' + widget.key + '/');
-                    ext_columns = new Array();
-                    for(i=0; i<columns.length; i++) {
-                        //ext_columns.push({text: columns[i], dataIndex: columns[i], width: widget.column_width});
-                    }
-
-
-                    Ext.create('Ext.grid.Panel', {
-                        store: table,
-                        //columns: ext_columns,
-                        width: (140 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 100,
-                        height: (140 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 100,
-                        header: false,
-                        border: false,
-                        enableLocking: true,
-                        autoScroll: true,
-                        renderTo: div,
-                        listeners: {
-                            cellclick: function(gridView,htmlElement,columnIndex,dataRecord) {
-                            
-                                year = dataRecord.data.Year;
-                                
-                                // year view
-                                if(columnIndex == 0) {
-                                    
-                                // month view
-                                } else {
-                                    month = columnIndex;
-                                    
-                                    var panel = Ext.getCmp("month-table");
-                                    panel.remove('month-table-content');
-                                    
-                                    console.log(month);
-                                    
-                                    try {
-                                        $.getJSON('/api/widget/monthlyhistorical/?date__year=' + year + '&date__month=' + month, function(data) {
-                                            console.log(data);
-                                            monthTable('', data, panel.renderTo);
-                                            $('#data').data('year', year);
-                                            $('#data').data('month', month);
-                                        })
-                                    } catch (err) {
-                                        //console.log(err);
-                                    }
-                                    
-                                    //panel.doLayout();
-                                    //panel.add([{
-                                    //    id: 'month-table-content',
-                                    //    xtype: 'container',
-                                    //    html: 'asdf',
-                                   // }]);
-                                                    
-                                }
-                                //console.log(htmlElement);
-                                //console.log(gridView);
-                                //console.log(columnIndex);
-                                //console.log(dataRecord);
-                            }
-                        }
-                    });
-                    
-                    
-
-                },
-           });
-*/           
-        
-        } catch (err) {
-            //console.log(err);
-        }
+        });
     }
 
     function pieChart(widget, data, div) {

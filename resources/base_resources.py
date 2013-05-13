@@ -93,19 +93,25 @@ class MainBaseResource(ModelResource):
 
     def month_columns(self, column_names):
         columns = []
-        for column in column_names:
-            columns.append({
+        for key, column in enumerate(column_names):
+            dic = {}
+            dic = {
                 'dataIndex': column,
-                'text': column.title(),
-                'width': 50 #this should come from Meta
-            })
+                'text': column.title().replace('_', ''),
+            }
+            if key == 0:
+                dic['width'] = 80
+            else:
+                dic['width'] = 50
+            columns.append(dic)
+
         return columns
 
 
     def check_params(self, params, filters):
         for param in params:
             if not param in filters:
-                raise BadRequest("Param '%s' not mandatory" % param)
+                raise BadRequest("Param '%s' is mandatory" % param)
 
 
 from mptt.templatetags.mptt_tags import cache_tree_children

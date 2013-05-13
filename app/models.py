@@ -28,10 +28,18 @@ class WidgetType(models.Model):
     def __unicode__(self):
         return self.name
 
+class WidgetParam(models.Model):
+    key = models.CharField(max_length=50)
+    value = models.CharField(max_length=50)
+
+    def __unicode__(self):
+        return '%s=%s' % (self.key, self.value)
+
 class Widget(models.Model):
     name = models.CharField(max_length=50)
     key = models.CharField(max_length=50)
     widget_type = models.ForeignKey(WidgetType)
+    widget_param = models.ManyToManyField(WidgetParam)
     window = models.ForeignKey(Window)
     description = models.TextField(blank=True, null=True)
     size_y = models.SmallIntegerField()
@@ -176,7 +184,7 @@ class Holding(models.Model):
     fee = models.ForeignKey(Fee, blank=True, null=True)
     fund = models.ForeignKey(Fund)
     description = models.TextField()
-    nav_date = models.DateTimeField()
+    value_date = models.DateField()
     rep_code = models.CharField(max_length=50)
     currency = models.ForeignKey(Currency)
     isin = models.CharField(max_length=12)
@@ -184,12 +192,20 @@ class Holding(models.Model):
     interest_rate = models.DecimalField(max_digits=20, decimal_places=5)
     country = models.ForeignKey(Country)
     counter_party = models.ForeignKey('CounterParty')
+    weight = models.DecimalField(max_digits=20, decimal_places=5)
 
     def __unicode__(self):
         return self.name
 
     class Meta:
             ordering = ["name"]
+
+class HoldingCategory(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __unicode__(self):
+        return self.name
+
 
 class HoldingType(models.Model):
     name = models.CharField(max_length=50)
@@ -198,27 +214,88 @@ class HoldingType(models.Model):
     def __unicode__(self):
         return self.name
 
-class FundPerformanceDaily(models.Model):
+GROUP_ALL = 'all'
+GROUP_SEC = 'sec'
+GROUP_SUB = 'sub'
+GROUP_LOC = 'loc'
+HOLDING_GROUP = (
+    (GROUP_ALL, 'All'),
+    (GROUP_SEC, 'Sector'),
+    (GROUP_SUB, 'Sub-Sector'),
+    (GROUP_LOC, 'Location'),
+)
+
+class HoldPerfYearly(models.Model):
+    #holding = models.ForeignKey(Holding)
     fund = models.ForeignKey(Fund)
+    holding_group = models.CharField(max_length=3,
+                                choices=HOLDING_GROUP,
+                                default=GROUP_ALL)
+    holding_category = models.ForeignKey(HoldingCategory)
+    si = models.DecimalField(max_digits=4, decimal_places=2)
+    ytd = models.DecimalField(max_digits=4, decimal_places=2)
+    year = models.SmallIntegerField()
+
+    def __unicode__(self):
+        return "%s - %s - %s" % (self.holding.name, \
+                    self.fund.name, self.year)
+
+    class Meta:
+            ordering = ['year']
+
+class HoldPerfMonthly(models.Model):
+    #holding = models.ForeignKey(Holding)
+    fund = models.ForeignKey(Fund)
+    holding_group = models.CharField(max_length=3,
+                                choices=HOLDING_GROUP,
+                                default=GROUP_ALL)
+    holding_category = models.ForeignKey(HoldingCategory)
+    #yearly = models.ForeignKey(HoldPerfYearly)
+    value = models.DecimalField(max_digits=4, decimal_places=2)
+    year = models.SmallIntegerField()
+    month = models.SmallIntegerField()
+
+    #class Meta:
+    #    unique_together = (('holding_group', 'year'), ('year', 'month'))
+
+    def __unicode__(self):
+        return self.name
+
+class FundPerfDaily(models.Model):
+    fund = models.ForeignKey(Fund)
+    holding = models.ForeignKey(Holding, null=True, blank=True)
     value = models.DecimalField(max_digits=4, decimal_places=2)
     date = models.DateField()
 
     def __unicode__(self):
-        return self.fund.name
+        return str(self.value)
 
 
-class FundPerformanceMonthly(models.Model):
+class FundPerfMonthly(models.Model):
     fund = models.ForeignKey(Fund)
+    holding_group = models.CharField(max_length=3,
+                                choices=HOLDING_GROUP,
+                                default=GROUP_ALL)
+    holding_category = models.ForeignKey(HoldingCategory,
+                                        null=True, blank=True)
     value = models.DecimalField(max_digits=4, decimal_places=2)
-    #date = models.DateField()
     year = models.SmallIntegerField()
     month = models.SmallIntegerField()
+
+    class Meta:
+        #unique_together = ('holding_group', 'holding_category',)
+        pass
 
     def __unicode__(self):
         return self.fund.name
 
-class FundPerformanceYearly(models.Model):
+class FundPerfYearly(models.Model):
     fund = models.ForeignKey(Fund)
+    holding_group = models.CharField(max_length=3,
+                                choices=HOLDING_GROUP,
+                                default=GROUP_ALL)
+    holding_category = models.ForeignKey(HoldingCategory,
+                                        null=True, blank=True)
     year = models.SmallIntegerField()
     ytd = models.DecimalField(max_digits=15, decimal_places=5)
     si = models.DecimalField(max_digits=15, decimal_places=5)
@@ -227,7 +304,8 @@ class FundPerformanceYearly(models.Model):
         return self.fund.name
 
     class Meta:
-            ordering = ['year']
+        #unique_together = ('holding_group', 'holding_category',)
+        ordering = ['year']
 
 
 
