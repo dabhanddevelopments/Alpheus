@@ -59,6 +59,9 @@ class WindowResource(MainBaseResource):
 
     class Meta(MainBaseResource.Meta):
         queryset = Window.objects.all()
+        filtering = {
+            'key': ALL,
+        }
 
 
 #curl --dump-header - -H "Content-Type: application/json" -X POST --data '{"username" : "me", "password": "l33t"}' http://localhost:8003/api/user/login/
@@ -124,7 +127,7 @@ class WidgetParamResource(MainBaseResource):
 class WidgetsResource(MainBaseResource):
     widget_type = fields.ForeignKey(WidgetTypeResource, 'widget_type',full=True,)
     widget_param = fields.ToManyField(WidgetParamResource, 'widget_param',full=True,)
-    window = fields.ForeignKey(WindowResource, 'window')
+    window = fields.ForeignKey(WindowResource, 'window',full=True)
 
     class Meta(MainBaseResource.Meta):
         queryset = Widget.objects.select_related('widget_type', 'widget_param').all()
@@ -132,7 +135,7 @@ class WidgetsResource(MainBaseResource):
         exclude = ['description']
 
         filtering = {
-            "window": ALL,
+            "window": ALL_WITH_RELATIONS,
         }
 
 
@@ -207,6 +210,7 @@ class PageWindowResource(MainBaseResource):
 
         filtering = {
             "page": ALL_WITH_RELATIONS,
+            "window": ALL_WITH_RELATIONS,
         }
 
     def apply_authorization_limits(self, request, object_list):

@@ -174,8 +174,15 @@ class CurrencyResource(ModelResource):
     class Meta:
         queryset = Currency.objects.all()
         
+class PurchaseSaleResource(ModelResource):
+
+    class Meta:
+        queryset = PurchaseSale.objects.all()
+        
 class TradeTableResource(MainBaseResource):
     #holding = fields.ForeignKey(HoldingResource, 'holding', null=True)
+    purchase_sale = fields.ForeignKey(PurchaseSaleResource, 'purchase_sale', full=True)
+    
     class Meta(MainBaseResource.Meta):
         queryset = Trade.objects.all()
         fields = [
@@ -185,6 +192,11 @@ class TradeTableResource(MainBaseResource):
         filtering = {
             "identifier": ALL_WITH_RELATIONS,
         }
+
+    def dehydrate(self, bundle):
+        bundle.data['purchase_sale'] = bundle.data['purchase_sale'].data['name']
+        bundle.data['asdf'] = 'asdf'
+        return bundle
         
     def alter_list_data_to_serialize(self, request, data):
     
@@ -578,12 +590,13 @@ class HoldPerfBarGraphResource(MainBaseResource):
             "fund": ALL,
         }
 
-    """
+    """   
     def get_list(self, request, **kwargs):
 
         base_bundle = self.build_bundle(request=request)
         objects = self.obj_get_list(bundle=base_bundle,
                     **self.remove_api_resource_names(kwargs))
+        print objects
 
         line_lis = []
         for hold in holding:
@@ -652,7 +665,8 @@ class FundGroupPerfResource(MainBaseResource):
     holding_category = fields.ForeignKey(HoldingCategoryResource, 'holding_category', full=True)
 
     class Meta(MainBaseResource.Meta):
-        queryset = FundPerfYearly.objects.select_related('holding').all()
+        queryset = FundPerfYearly.objects.select_related('holding').filter(
+                                                holding_category__isnull=False)
         ordering = ['name', 'weight']
 
         filtering = {
@@ -678,11 +692,12 @@ class FundGroupPerfResource(MainBaseResource):
 
         holding_group = request.GET.get("holding_group", 0)
         fund = request.GET.get("fund", 0)
+        year = request.GET.get("year", 0)
         fund = int(fund)
 
         # get the monthly values as well
-        objects = FundPerfMonthly.objects.filter(
-                            fund=fund, holding_group=holding_group)
+        objects = FundPerfMonthly.objects.filter(year=year, fund=fund,\
+            holding_group=holding_group, holding_category__isnull=False)
 
         if holding_group == 'sec':
             group = 'sector'

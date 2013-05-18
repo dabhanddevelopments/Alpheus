@@ -173,6 +173,12 @@ class Country(models.Model):
 class TradeType(models.Model):
     pass
 
+class PurchaseSale(models.Model):
+    name = models.CharField(max_length=50)
+    
+    def __unicode__(self):
+        return self.name
+            
 # Trade does not have a history table
 class Trade(models.Model):
     holding = models.ForeignKey('Holding')
@@ -180,7 +186,7 @@ class Trade(models.Model):
     trade_type = models.ForeignKey(TradeType)
     trade_date = models.DateField()
     settlement_date = models.DateField()
-    purchase_sale = models.BooleanField()
+    purchase_sale = models.ForeignKey(PurchaseSale)
     no_of_units = models.DecimalField(max_digits=20, decimal_places=2,\
                                                 verbose_name="No. of Units")
     purchase_price = models.DecimalField(max_digits=20, decimal_places=5)

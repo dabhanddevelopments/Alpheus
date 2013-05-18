@@ -69,16 +69,16 @@ function lineBarChart(obj, widget) {
 
    $.getJSON(widget.url + widget.qs, function(data) {
      
-        var options = {
+        var options = {     
             chart: {
                 renderTo: div,
+                marginTop: 5,
             },
             navigator:{
-                enabled:true,
-                //margin: 100,
+                enabled:true
             },
             scrollbar: {
-                enabled:false // removes ugly scrollbar
+                enabled:false, //remove ugly scrollbar
             },
 
             rangeSelector: {
@@ -86,7 +86,7 @@ function lineBarChart(obj, widget) {
 	            //selected: 1
             },  
             title: {
-                title: false,
+                text: false,
             },
             xAxis: [{
                 gridLineWidth: 1,
@@ -99,52 +99,42 @@ function lineBarChart(obj, widget) {
                         fontFamily: 'Verdana, sans-serif'
                     }
                 },
-                offset: 100,
-            },
-            {
-                //offset: 200,
-            },
-            ],
+
+            },{ }],
             yAxis: [
             {
-                height: 200,
-                //lineWidth: 2,
+                height: 180,
+                lineWidth: 3,
                 offset: 0,
+                gridLineWidth: 1,
                 title: {
                     text: 'Price',
+                    margin: 5,
                 }
             },
             {
-                top: 250,
-                lineWidth: 0,
+                top: 225,
+                lineWidth: 3,
                 //min: 0,
                 //max: 5,
                 gridLineWidth: 1,
                 offset: 0,
-                height: 50,
+                height: 75,
                 title: {
                     text: 'Volume',
                 }
             },
             ],
-         
-            plotOptions: {
-                series: {
-                    borderWidth: 0,
-                    pointPadding: 0,
-                    shadow: false
-                },
-                column: {
-        //            stacking: 'normal',
-                    pointPadding: "20px;",
-                    //groupPadding: "20px",
-                    pointWidth: 5,
-                },
-                line: {
-                    stacking: 'normal'
-                }
+            
+            legend: {
+                enabled: true,
+                //layout: 'vertical',
+                //align: 'right',
+                verticalAlign: 'top',
+                y: -10,
+                //y: 100,
+                //borderWidth: 0
             },
-      
             series: [
             {
                 yAxis: 0,
@@ -155,7 +145,8 @@ function lineBarChart(obj, widget) {
                 data: data.line,
 		        tooltip: {
 			        valueDecimals: 2
-		        },           
+		        }, 
+		                  
             },
             {
                 name: 'Volume by time',
@@ -169,14 +160,15 @@ function lineBarChart(obj, widget) {
                 marker: {
                     enabled: false
                 },
-
+                pointWidth: 5,
                 type: 'column',
+                
             },
             ]
         };
 
         var chart = new Highcharts.Chart(options);
-        
+
         });
     }
 
@@ -261,7 +253,6 @@ Ext.onReady(function() {
         //if($('#data').data('active-panel') == id) {
         //    return
         //}
-    console.log('ID: ' + id.toString());
         for(i=0; i<pages.length; i++) {
 
             if(pages[i].id == id) {
@@ -279,9 +270,9 @@ Ext.onReady(function() {
                     appendTabs(pages[i]);
                     
                     obj.page = pages[i].children[0].id;
-                    console.log('child tabs');
-                    console.log(obj);
-                    console.log(pages[i].children);
+                    //console.log('child tabs');
+                    //console.log(obj);
+                    //console.log(pages[i].children);
                     
 
                 } else {
@@ -390,51 +381,48 @@ Ext.onReady(function() {
 
 
         $('#data').data('page_id', page);
+    
+        // if we have a grid for this page, it means it's already 
+        // loaded and we do not need to fetch it again
+        if($('#data').data('grid' + page) !== undefined && $('#data').data('grid' + page) !== '') {
+
+            console.log('skipping gridster: grid' + page);
+            return;
+        }
+
+        obj.grid = $("#page" + page).gridster({
+            widget_margins: [10, 10],
+            widget_base_dimensions: [140, 140],
+            max_size_x: 10,
+            max_size_y: 10,
+            draggable: {
+                stop: function(event, ui){ 
+                    saveWidgetPositions(JSON.stringify(grid.serialize()));
+                    //console.log('widget stopped');
+                }
+            },
+            serialize_params: function($w, wgd) { 
+                return { 
+                    id: wgd.el[0].id, 
+                    col: wgd.col, 
+                    row: wgd.row,
+                    size_y: wgd.size_y,
+                    size_x: wgd.size_x,
+                    pagewindow: $w.context.attributes.pagewindow.value,
+                } 
+            }
+        }).data('gridster');
+
+        obj.grid.disable();
+
+        $('#data').data('grid' + page, obj.grid);
 
         $.ajax({
             type: "GET",
             url: '/api/pagewindow/?page=' + page,
             success: function(data) {
-            
-                // if we have a grid for this page, it means it's already 
-                // loaded and we do not need to fetch it again
-                if($('#data').data('grid' + page) !== undefined && $('#data').data('grid' + page) !== '') {
 
-                    //console.log('skipping gridster: grid' + page);
-                    return;
-                }
-
-
-                var grid = $("#page" + page).gridster({
-                    widget_margins: [10, 10],
-                    widget_base_dimensions: [140, 140],
-                    max_size_x: 10,
-                    max_size_y: 10,
-                    draggable: {
-                        stop: function(event, ui){ 
-                            saveWidgetPositions(JSON.stringify(grid.serialize()));
-                            //console.log('widget stopped');
-                        }
-                    },
-                    serialize_params: function($w, wgd) { 
-                        return { 
-                            id: wgd.el[0].id, 
-                            col: wgd.col, 
-                            row: wgd.row,
-                            size_y: wgd.size_y,
-                            size_x: wgd.size_x,
-                            pagewindow: $w.context.attributes.pagewindow.value,
-                        } 
-                    }
-                }).data('gridster');
-
-                grid.disable();
-
-                $('#data').data('grid' + page, grid);
                 $('#data').data('grid_data' + page, data);
-                
-                
-                
                 
                 
                 // get the window id from pagewindow by filtering by page id (of current page)
@@ -445,65 +433,71 @@ Ext.onReady(function() {
 
                 for(i=0; i<data.length; i++) {
                 
-                
-                    //function createWindows(data) {}
-                    
+                    createWindows(data[i], i, obj);
 
-                    var window = '<div id="' + page + '_' + data[i].window.id + '" pagewindow="' + data[i].id + '" class="layout_block"></div>';
-                    
-
-                    grid.add_widget(window, data[i].size_x, data[i].size_y, data[i].col, data[i].row);
-                    
-                    
-                    // get the widgets for this window
-                    $.ajax({
-                        type: "GET",
-                        url: '/api/widgets/?window=' + data[i].window.id,
-                        ajaxI: i,
-                        success: function(widgets) {
-                        
-                            // now I will be i asynchronously
-                            I = this.ajaxI;
-                        
-                            // div for window
-                            var window_id = 'page_' + page + '_' + data[I].window.id;
-                            $('<div id="' + window_id + '"></div>').appendTo('body'); 
-                            console.log('window id: ' + window_id);
-
-                            // vbox or hbox
-                            var layout = data[I].window.layout + 'box'; 
-
-                            var items = [];
-                            
-                            for(x=0; x<widgets.length; x++) {
-                            
-                                // div for widget
-                                var widget_id = 'page_' + page + '_win_' + data[I].window.id + '_widget_' + widgets[x].id;
-                                $('<div id="' + widget_id + '"></div>').appendTo('#' + window_id);
-                                
-                                items[I] = {
-                                    renderTo: widget_id,        
-                                    height: (140 * data[I].size_y) + (10 * data[I].size_y) + (10 * (data[I].size_y - 1)) - 20,
-                                    width:  (140 * data[I].size_x) + (10 * data[I].size_x) + (10 * (data[I].size_x - 1)) - 20,
-                                    border: false,   
-                                }
-                                
-                                createWidget(obj, widgets[x], widget_id);
-                            }
-                            
-                            Ext.create('Ext.container.Container', {
-                                renderTo: window_id,
-                                layout: layout,
-                                items: items
-                            });
-                            
-                            widgetWindow(data[I].window.id, page, data[I].window.name, data[I].size_x, data[I] .size_y, data[I].id, window_id);
-                        }
-                    });
                 }       
             }
         });
     }
+    
+
+    function createWindows(data, i, obj, extra_params) {
+    
+        var page = obj.page;
+        var grid = $('#data').data('grid' + page); // obj.grid;
+        var window = '<div id="' + page + '_' + data.window.id + '" pagewindow="' + data.id + '" class="layout_block"></div>';
+        
+console.log('DAATA win');
+console.log($('#3_5'));
+        grid.add_widget(window, data.size_x, data.size_y, data.col, data.row);
+        
+        
+        // get the widgets for this window
+        $.ajax({
+            type: "GET",
+            url: '/api/widgets/?window=' + data.window.id,
+            ajaxI: i,
+            success: function(widgets) {
+            
+                // now I will be i asynchronously
+                I = this.ajaxI;
+            
+                // div for window
+                var window_id = 'page_' + page + '_' + data.window.id;
+                $('<div id="' + window_id + '"></div>').appendTo('body'); 
+                console.log('window id: ' + window_id);
+
+                // vbox or hbox
+                var layout = data.window.layout + 'box'; 
+
+                var items = [];
+                
+                for(x=0; x<widgets.length; x++) {
+                
+                    // div for widget
+                    var widget_id = 'page_' + page + '_win_' + data.window.id + '_widget_' + widgets[x].id;
+                    $('<div id="' + widget_id + '"></div>').appendTo('#' + window_id);
+                    
+                    items[I] = {
+                        renderTo: widget_id,        
+                        height: (140 * data.size_y) + (10 * data.size_y) + (10 * (data.size_y - 1)) - 20,
+                        width:  (140 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20,
+                        border: false,   
+                    }
+                    
+                    createWidget(obj, widgets[x], widget_id);
+                }
+                
+                Ext.create('Ext.container.Container', {
+                    renderTo: window_id,
+                    layout: layout,
+                    items: items
+                });
+                
+                widgetWindow(data.window.id, page, data.window.name, data.size_x, data .size_y, data.id, window_id);
+            }
+        });
+    } 
 
     function widgetWindow(key, page, title, size_x, size_y, pagewindow, window) {
     
@@ -559,16 +553,20 @@ Ext.onReady(function() {
         });          
     }
 
-    function createWidget(obj, widget, div) {
+    function createWidget(obj, widget, div, extra_params) {
     
     
         // new way
-        console.log(widget.params);
+        if(typeof extra_params != 'undefined') {
+            $.each(extra_params, function(key, value) {
+                 widget.qs = widget.qs.replace(key.toUpperCase(), value);
+            });
+        }
         $.each(widget.params, function(key, value) {
-             console.log(key.toString() + value.toString());
+             //console.log(key.toString() + value.toString());
              widget.qs = widget.qs.replace(key.toUpperCase(), value);
         });
-    
+        
         if(typeof obj.year == 'undefined' || typeof obj.month == 'undefined') {
             obj.year = new Date().getFullYear();
             obj.month = new Date().getMonth() + 1;
@@ -581,7 +579,6 @@ Ext.onReady(function() {
         $.each(obj, function(key, value) {
              widget.qs = widget.qs.replace(key.toUpperCase(), value);
         });
-        
 
         
         if(widget.type == 'month_table') {
@@ -792,10 +789,10 @@ Ext.onReady(function() {
 
         $.getJSON(widget.url + widget.qs, function(data) {
         
-
-        var options = {
+       var options = {     
             chart: {
                 renderTo: div,
+                marginTop: 5,
             },
             navigator:{
                 enabled:true
@@ -811,7 +808,7 @@ Ext.onReady(function() {
             title: {
                 text: false,
             },
-            xAxis: {
+            xAxis: [{
                 gridLineWidth: 1,
                 type : "datetime",
                 labels: {
@@ -821,15 +818,18 @@ Ext.onReady(function() {
                         fontSize: '13px',
                         fontFamily: 'Verdana, sans-serif'
                     }
-                }
-            },
+                },
+
+            },{ }],
             yAxis: [
             {
                 height: 180,
-                //lineWidth: 2,
+                lineWidth: 3,
                 offset: 0,
+                gridLineWidth: 1,
                 title: {
                     text: 'Price',
+                    margin: 5,
                 }
             },
             {
@@ -839,31 +839,22 @@ Ext.onReady(function() {
                 //max: 5,
                 gridLineWidth: 1,
                 offset: 0,
-                height: 100,
+                height: 75,
                 title: {
                     text: 'Volume',
                 }
             },
             ],
             
-    plotOptions: {
-        series: {
-            borderWidth: 0,
-            pointPadding: 0,
-//            groupPadding: 0,
-            shadow: false
-        },
-        column: {
-//            stacking: 'normal',
-            pointPadding: "20px;",
-            groupPadding: "20px",
-            pointWidth: 20,
-        },
-        line: {
-            stacking: 'normal'
-        }
-    },
-    
+            legend: {
+                enabled: true,
+                //layout: 'vertical',
+                //align: 'right',
+                verticalAlign: 'top',
+                y: -10,
+                //y: 100,
+                //borderWidth: 0
+            },
             series: [
             {
                 yAxis: 0,
@@ -874,7 +865,8 @@ Ext.onReady(function() {
                 data: data.line,
 		        tooltip: {
 			        valueDecimals: 2
-		        },           
+		        }, 
+		                  
             },
             {
                 name: 'Volume by time',
@@ -888,13 +880,14 @@ Ext.onReady(function() {
                 marker: {
                     enabled: false
                 },
-                pointWidth: 20,
+                pointWidth: 5,
                 type: 'column',
+                
             },
             ]
         };
 
-        var chart = new Highcharts.StockChart(options);
+        var chart = new Highcharts.Chart(options);
         
         });        
     }
@@ -905,7 +898,7 @@ Ext.onReady(function() {
     function monthTable(obj, widget, div) {
     
         
-        console.log(widget.url + widget.qs);
+        //console.log(widget.url + widget.qs);
         $.getJSON(widget.url + widget.qs , function(data) {
         
             // first day in first week of month
@@ -995,7 +988,7 @@ Ext.onReady(function() {
             for(i=0; i < data.columns.length; i++) {
                 fields[i] = data.columns[i].dataIndex;
             }
-            console.log(fields);
+            //console.log(fields);
  
             Ext.create('Ext.data.Store', {
                 storeId: widget.key,
@@ -1015,6 +1008,7 @@ Ext.onReady(function() {
             });
 
             Ext.create('Ext.grid.Panel', {
+                id: div,
                 store: Ext.data.StoreManager.lookup(widget.key),
                 columns: data.columns,
                 width: (140 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)),
@@ -1030,6 +1024,16 @@ Ext.onReady(function() {
                     
                         year = dataRecord.data.year;
                         
+                        obj.page = $('#data').data('page_id');
+                        obj.grid = $('#data').data('grid' + obj.page);
+                        extra_params = {
+                            year: year,
+                        }
+                        
+                        refreshWindow('w3', obj, extra_params);
+                        refreshWindow('w4', obj, extra_params);
+                        refreshWindow('w5', obj, extra_params);
+                        
                         // year view
                         if(columnIndex == 0) {
                             
@@ -1037,7 +1041,7 @@ Ext.onReady(function() {
                         } else if(columnIndex < 13) {
                             month = columnIndex;
                             
-                            $('#3_5').remove();
+                            
                             
                             var panel = Ext.getCmp("month-table");
                             panel.remove('month-table-content');
@@ -1056,6 +1060,30 @@ Ext.onReady(function() {
                     }
                 }
             });
+        });
+    }
+    
+    function refreshWindow(window_key, obj, extra_params) {
+        $.getJSON('/api/widgets/?window__key=' + window_key, function(widget_data) {
+            
+            for(x=0; x<widget_data.length; x++) {
+            
+                var window_id = 'page_' + obj.page + '_win_' + widget_data[x].window.id;
+                var widget_id = window_id + '_widget_' + widget_data[x].id;
+                
+                if(widget_data[x].type == 'data_table') {
+                    var widget_obj = Ext.getCmp(widget_id);
+                    
+                } else {
+                    var widget_obj = $('#' + widget_id).highcharts();
+                }
+                widget_obj.destroy();
+                
+                $('<div id="' + widget_id + '"></div>').appendTo('#' + window_id);
+                
+                createWidget(obj, widget_data[x], widget_id, extra_params);
+            }
+            
         });
     }
     
@@ -1100,6 +1128,7 @@ Ext.onReady(function() {
                     ]
                 }],
                 header: false,
+                border: 0,
                 iconCls: 'icon-grid',
                 renderTo: div
             });
@@ -1429,7 +1458,7 @@ Ext.onReady(function() {
                                 dataType: "json",
                                 contentType: "application/json",
                                 success: function(pagewindow) {
-console.log('adding widget');
+//console.log('adding widget');
 
                                     var div = '<div id="' + page + '_' + data.key + '" pagewindow="' + pagewindow.id + '" class="layout_block"></div>';
                                     var grid = $('#data').data('grid' + page);
@@ -1540,13 +1569,16 @@ console.log('adding widget');
 
 
     var config_menu = Ext.create('Ext.menu.Menu', {
-        items: [{
-	        text: 'Add Widget',
-            id: 'add_widget',
-        },{
-	        text: 'Settings',
-            id: 'settings',
-        }, {
+        items: [
+        //{
+	    //    text: 'Add Widget',
+        //    id: 'add_widget',
+        //},
+        //{
+	    //    text: 'Settings',
+        //    id: 'settings',
+        //},
+        {
             text: 'Change Theme',
             menu: {      
                 items: [

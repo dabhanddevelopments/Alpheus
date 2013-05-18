@@ -58,7 +58,6 @@ def holding_table (request):
             SELECT * FROM app_holding ORDER BY value_date DESC
         ) AS sub 
         WHERE fund_id = %s
-        AND name != 'Blackrock US'
         GROUP BY name
     """
     holding = Holding.objects.raw(sql, [fund])
