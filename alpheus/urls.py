@@ -20,10 +20,12 @@ urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
     url(r'^check-nodes/$', views.check_nodes),
     url(r'^mainmenu/$', views.mainmenu),
+    url(r'^api/widget/holdtable/$', views.holding_table),
+    url(r'^api/widget/holdlinegraph/$', views.holding_line_graph),
     url(r'api/', include(widget.urls)),
     url(r'', include(api.urls)),
     url(r'admin/', include(admin.site.urls)),
     (r'^grappelli/', include('grappelli.urls')),
     (r'^api/', include(v1_api.urls)),
-)
+    )
 

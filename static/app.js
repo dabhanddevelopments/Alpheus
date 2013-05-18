@@ -1,22 +1,210 @@
 
+Ext.Loader.setPath('Ext.ux', 'static/ext-4.2.0/examples/ux');
 Ext.require([
+    'Ext.ux.RowExpander'
+]);
+
+Ext.require([
+    'Ext.container.Viewport',
+    'Ext.layout.container.Border',
+    'Ext.tab.Panel',
     'Ext.tree.*',
     'Ext.data.*',
     'Ext.menu.*',
-    'Ext.window.MessageBox'
+    'Ext.window.MessageBox',
+    'Ext.grid.*',
 ]);
 
+function displayInnerGrid(renderId) {
+
+    $.getJSON("/api/widget/tradetable/?identifier=" + renderId, function(data) {
+    
+        console.log('render id: ' + renderId.toString());
+    
+        fields = [];
+        for(i=0; i < data.columns.length; i++) {
+            fields[i] = data.columns[i].dataIndex;
+        }
+        
+        var insideGridStore = Ext.create('Ext.data.Store', {
+            //storeId: "inner_" + widget.key,
+            fields: fields,
+            data: data.rows,
+            proxy: {
+                type: 'memory',
+                reader: {
+                    type: 'json',
+                    root: 'objects'
+                }
+            }
+        });
+        
+        var innerGrid = Ext.create('Ext.grid.Panel', {
+            store: insideGridStore,
+            selModel: {
+                selType: 'cellmodel'
+            },
+            columns: data.columns,
+            header: false,
+            width: 500,
+            height: 150,
+            iconCls: 'icon-grid',
+            renderTo: renderId,
+        });
+        innerGrid.getEl().swallowEvent([
+            'mousedown', 'mouseup', 'click',
+            'contextmenu', 'mouseover', 'mouseout',
+            'dblclick', 'mousemove'
+        ]);
+
+    });
+}
+
+
+function lineBarChart(obj, widget) {
+
+    var div = $('#data').data('linebar-div');
+    var chart = $('#' + div).highcharts();
+    chart.destroy();
+
+   $.getJSON(widget.url + widget.qs, function(data) {
+     
+        var options = {
+            chart: {
+                renderTo: div,
+            },
+            navigator:{
+                enabled:true,
+                //margin: 100,
+            },
+            scrollbar: {
+                enabled:false // removes ugly scrollbar
+            },
+
+            rangeSelector: {
+                enabled: true,
+	            //selected: 1
+            },  
+            title: {
+                title: false,
+            },
+            xAxis: [{
+                gridLineWidth: 1,
+                type : "datetime",
+                labels: {
+                    rotation: -45,
+                    align: 'right',
+                    style: {
+                        fontSize: '13px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                },
+                offset: 100,
+            },
+            {
+                //offset: 200,
+            },
+            ],
+            yAxis: [
+            {
+                height: 200,
+                //lineWidth: 2,
+                offset: 0,
+                title: {
+                    text: 'Price',
+                }
+            },
+            {
+                top: 250,
+                lineWidth: 0,
+                //min: 0,
+                //max: 5,
+                gridLineWidth: 1,
+                offset: 0,
+                height: 50,
+                title: {
+                    text: 'Volume',
+                }
+            },
+            ],
+         
+            plotOptions: {
+                series: {
+                    borderWidth: 0,
+                    pointPadding: 0,
+                    shadow: false
+                },
+                column: {
+        //            stacking: 'normal',
+                    pointPadding: "20px;",
+                    //groupPadding: "20px",
+                    pointWidth: 5,
+                },
+                line: {
+                    stacking: 'normal'
+                }
+            },
+      
+            series: [
+            {
+                yAxis: 0,
+                name: 'Price by time',
+                stack: 0,
+
+                //data: [1, 12, 32, 43],       
+                data: data.line,
+		        tooltip: {
+			        valueDecimals: 2
+		        },           
+            },
+            {
+                name: 'Volume by time',
+                yAxis: 1,
+                stack: 0,
+                data: data.bar,
+		        tooltip: {
+			        valueDecimals: 2
+		        },  
+                lineWidth: 3,
+                marker: {
+                    enabled: false
+                },
+
+                type: 'column',
+            },
+            ]
+        };
+
+        var chart = new Highcharts.Chart(options);
+        
+        });
+    }
+
+function destroyInnerGrid(record) {
+
+    var parent = document.getElementById(record.get('id'));
+    var child = parent.firstChild;
+
+    while (child) {
+        child.parentNode.removeChild(child);
+        child = child.nextSibling;
+    }
+
+}
 
 //call chart on click
 // TODO: rewrite when you figure out how to get the id of the cell clicked
 function monthlyBar(date, fund) {
 
-    var div = $('#data').data('monthly-bar-div');
+    var div = $('#data').data('div-holdperfbargraph');
+    console.log(div);
     var chart = $('#' + div).highcharts();
     
-    var url = '/api/widget/holdperf/?date=' + date + '&fund=' + fund + '&order_by=weight';
+    var url = '/api/widget/holdperfbargraph/?date=' + date + '&fund=' + fund + '&order_by=weight';
     //return monthTable(url, 'fundperfdaily', div);
 
+console.log('CALLEd');
+console.log(url);
     try {
         chart.destroy();
         $.getJSON(url, function(data) {
@@ -25,13 +213,26 @@ function monthlyBar(date, fund) {
                     chart: {
                         renderTo: div,
                         type: 'column',
+                        //width: (140 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 10,
+                        //height: (140 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 30,
+                    },  
+                    //title: {
+                    //    text: '',
+                    //},
+                    labels: {
+                        rotation: -45,
+                        align: 'right',
+                        style: {
+                            fontSize: '10px',
+                            fontFamily: 'Verdana, sans-serif'
+                        }
                     },
-                    
-                    series: [{
-                        data: data
-                    }]
+                    xAxis: {
+                        type: 'category',
+                        categories: data.columns,
+                    },
+                    series: data.objects,
                 });
-                console.log(data);
         });
     } catch (err) {
         //do nothing
@@ -40,6 +241,7 @@ function monthlyBar(date, fund) {
     
 
 Ext.onReady(function() {
+
 
 
     //$('<div id="main" class="gridster"></div>').appendTo('body');
@@ -59,12 +261,13 @@ Ext.onReady(function() {
         //if($('#data').data('active-panel') == id) {
         //    return
         //}
-
+    console.log('ID: ' + id.toString());
         for(i=0; i<pages.length; i++) {
 
             if(pages[i].id == id) {
             //    var page = pages[i];
     
+
                 el = 'page' + id;
 
                 // Children are tabs
@@ -183,10 +386,7 @@ Ext.onReady(function() {
         
         var page = obj.page;
         
-        console.log(page);
-        console.log(obj);        
-        
-console.log('initiating grid');
+//console.log('initiating grid');
 
 
         $('#data').data('page_id', page);
@@ -195,10 +395,6 @@ console.log('initiating grid');
             type: "GET",
             url: '/api/pagewindow/?page=' + page,
             success: function(data) {
-            
-                console.log('page window');
-                console.log(data);
-                console.log('/api/pagewindow/?page=' + page);
             
                 // if we have a grid for this page, it means it's already 
                 // loaded and we do not need to fetch it again
@@ -237,8 +433,21 @@ console.log('initiating grid');
                 $('#data').data('grid' + page, grid);
                 $('#data').data('grid_data' + page, data);
                 
+                
+                
+                
+                
+                // get the window id from pagewindow by filtering by page id (of current page)
+                // delete window div/dom
+                // create function below
+                // call that function with the 
+                
 
                 for(i=0; i<data.length; i++) {
+                
+                
+                    //function createWindows(data) {}
+                    
 
                     var window = '<div id="' + page + '_' + data[i].window.id + '" pagewindow="' + data[i].id + '" class="layout_block"></div>';
                     
@@ -352,16 +561,28 @@ console.log('initiating grid');
 
     function createWidget(obj, widget, div) {
     
-        var d=new Date(); 
-        obj.month = d.getMonth();
-        obj.year = d.getFullYear();
+    
+        // new way
+        console.log(widget.params);
+        $.each(widget.params, function(key, value) {
+             console.log(key.toString() + value.toString());
+             widget.qs = widget.qs.replace(key.toUpperCase(), value);
+        });
+    
+        if(typeof obj.year == 'undefined' || typeof obj.month == 'undefined') {
+            obj.year = new Date().getFullYear();
+            obj.month = new Date().getMonth() + 1;
+        }
         
         widget.div = div; // remove this later
         widget.url = '/api/widget/' + widget.key + '/';
 
+        // old way
         $.each(obj, function(key, value) {
              widget.qs = widget.qs.replace(key.toUpperCase(), value);
         });
+        
+
         
         if(widget.type == 'month_table') {
         
@@ -371,6 +592,14 @@ console.log('initiating grid');
         
             return dataTable(obj, widget, div);
             
+        } else if(widget.type == 'data_table_sub') {
+        
+            return dataTableSub(obj, widget, div);
+            
+        } else if(widget.type == 'line_chart') {
+        
+            return lineChart(obj, widget, div);
+        
         } else if(widget.type == 'bar_chart') {
         
             // get last day of last month
@@ -380,10 +609,13 @@ console.log('initiating grid');
             
             var formatted_date = obj.year + '-' + obj.month + '-' + d.getDate();
             widget.qs = widget.qs.replace('DATE', formatted_date);
-            console.log('WIDGET DIV' + widget.div);
+            
             return barChart(obj, widget, div);
-        }
+            
+        } else if(widget.type == 'line_bar_chart') {
+            return LineBarChart(obj, widget, div);
        
+       }
         try {
             $.getJSON(url, function(data) {
                 switch(widget.type) {
@@ -413,55 +645,267 @@ console.log('initiating grid');
         }
     }
     
-    function lineGraph(widget, data, div) {
+    function lineChart(obj, widget, div) {
     
+        $.getJSON(widget.url + widget.qs, function(data) {
+            
+            var chart = new Highcharts.StockChart({
+                chart: {
+                    type: 'line',
+                    marginRight: 25,
+                    //marginBottom: 25,
+                    size: '100%',
+                    renderTo: div,
+                    width: (140 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 10,
+                    height: (140 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
+                },
+                navigator:{
+                    enabled:true,
+                },
+                scrollbar: {
+                    enabled:false
+                },
+
+                rangeSelector: {
+                    enabled: false,
+	                //selected: 1
+                },                  
+                title: {
+                    enabled: false,
+                //    text: widget.name,
+                //    x: -20 //center
+                },
+                xAxis: {
+                    gridLineWidth: 1,
+                },
+                yAxis: {
+                    title: {
+                        text: 'Performance'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    //valueSuffix: '€'
+                },
+                legend: {
+                    enabled: true,
+                    //layout: 'vertical',
+                    //align: 'right',
+                    //verticalAlign: 'top',
+                    //x: -10,
+                    //y: 100,
+                    //borderWidth: 0
+                },
+                series: data,
+            });
+        });
     }
 
     function barChart(obj, widget, div) {
     
         $.getJSON(widget.url + widget.qs, function(data) {
-
-            try {
-                var chart = new Highcharts.Chart({
-                    chart: {
-                        renderTo: div,
-                        type: 'column',
-                    },
-                    labels: {
-                        rotation: -45,
-                        align: 'right',
-                        style: {
-                            fontSize: '10px',
-                            fontFamily: 'Verdana, sans-serif'
-                        }
-                    },
-                    xAxis: {
-                        type: 'category',
-                    },
-                    series: [{
-                        data: data
-                    }]
-                });
-
-
-            } catch (err) {
-                //console.log(err);
+        
+        
+            title = false;
+            if(typeof widget.params.title != 'undefined' && widget.params.title == "true") {
+                title = widget.name;
             }
-        });
+            
+        
+            legend = true;
+            if(typeof widget.params.legend != 'undefined' && widget.params.legend == "false") {
+                legend = false;
+            }
+        
+            scrollbar = false;
+            if(typeof widget.params.scrollbar != 'undefined' && widget.params.scrollbar == "true") {
+                scrollbar = true;
+            }
+    
+            var chart = new Highcharts.Chart({
+                chart: {
+                    //marginRight: 25,
+                    //marginTop: 50,
+                    //marginBottom: 50,
+                    renderTo: div,
+                    type: 'column',
+                    width: (140 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 10,
+                    height: (140 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 30,
+                }, 
+                title: {
+                    text: false
+                },
+                subtitle: {
+                    text: false
+                },
 
-        $('#data').data('monthly-bar-div', div);
+                yAxis: {
+                    title: {
+                        text: false,//'Holding Performance XXXX-XX-XX'
+                    }
+                },
+                legend: {
+                    enabled: legend,
+                },
+                series: [{
+                    //name: name,
+                    data: data,
+                    color: 'white'
+                }],
+                exporting: {
+                    enabled: true
+                },
+                labels: {
+                    rotation: -45,
+                    align: 'right',
+                    style: {
+                        fontSize: '10px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    categories: data.columns,
+                    //type : "datetime",
+                },
+                series: data.objects,            
+            })
+        
+
+                    
+         $('#data').data('div-' + widget.key, div);
+            
+        });
+        
+
+
     }
     
 
+    function LineBarChart(obj, widget, div) {
+    
+        $('#data').data('linebar-div', div);
+
+        $.getJSON(widget.url + widget.qs, function(data) {
+        
+
+        var options = {
+            chart: {
+                renderTo: div,
+            },
+            navigator:{
+                enabled:true
+            },
+            scrollbar: {
+                enabled:false, //remove ugly scrollbar
+            },
+
+            rangeSelector: {
+                enabled: true,
+	            //selected: 1
+            },  
+            title: {
+                text: false,
+            },
+            xAxis: {
+                gridLineWidth: 1,
+                type : "datetime",
+                labels: {
+                    rotation: -45,
+                    align: 'right',
+                    style: {
+                        fontSize: '13px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                }
+            },
+            yAxis: [
+            {
+                height: 180,
+                //lineWidth: 2,
+                offset: 0,
+                title: {
+                    text: 'Price',
+                }
+            },
+            {
+                top: 225,
+                lineWidth: 3,
+                //min: 0,
+                //max: 5,
+                gridLineWidth: 1,
+                offset: 0,
+                height: 100,
+                title: {
+                    text: 'Volume',
+                }
+            },
+            ],
+            
+    plotOptions: {
+        series: {
+            borderWidth: 0,
+            pointPadding: 0,
+//            groupPadding: 0,
+            shadow: false
+        },
+        column: {
+//            stacking: 'normal',
+            pointPadding: "20px;",
+            groupPadding: "20px",
+            pointWidth: 20,
+        },
+        line: {
+            stacking: 'normal'
+        }
+    },
+    
+            series: [
+            {
+                yAxis: 0,
+                name: 'Price by time',
+                stack: 0,
+
+                //data: [1, 12, 32, 43],       
+                data: data.line,
+		        tooltip: {
+			        valueDecimals: 2
+		        },           
+            },
+            {
+                name: 'Volume by time',
+                yAxis: 1,
+                stack: 0,
+                data: data.bar,
+		        tooltip: {
+			        valueDecimals: 2
+		        },  
+                lineWidth: 3,
+                marker: {
+                    enabled: false
+                },
+                pointWidth: 20,
+                type: 'column',
+            },
+            ]
+        };
+
+        var chart = new Highcharts.StockChart(options);
+        
+        });        
+    }
+        
+            
     
 
     function monthTable(obj, widget, div) {
     
-        if(typeof obj.year == 'undefined' || typeof month == 'undefined') {
-            obj.year = new Date().getFullYear();
-            obj.month = new Date().getMonth() + 1;
-        }
         
+        console.log(widget.url + widget.qs);
         $.getJSON(widget.url + widget.qs , function(data) {
         
             // first day in first week of month
@@ -556,21 +1000,25 @@ console.log('initiating grid');
             Ext.create('Ext.data.Store', {
                 storeId: widget.key,
                 fields: fields,
-                data: data,
+                data: data.rows,
                 proxy: {
                     type: 'memory',
                     reader: {
                         type: 'json',
                         root: 'rows'
                     }
-                }
+                },
+                sortInfo: {
+                    direction: "DESC",
+                    field: "year"
+                },
             });
 
             Ext.create('Ext.grid.Panel', {
                 store: Ext.data.StoreManager.lookup(widget.key),
                 columns: data.columns,
-                width: (140 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 100,
-                height: (140 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 100,
+                width: (140 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)),
+                height: (140 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
                 header: false,
                 border: false,
                 enableLocking: true,
@@ -589,6 +1037,8 @@ console.log('initiating grid');
                         } else if(columnIndex < 13) {
                             month = columnIndex;
                             
+                            $('#3_5').remove();
+                            
                             var panel = Ext.getCmp("month-table");
                             panel.remove('month-table-content');
                             
@@ -596,8 +1046,10 @@ console.log('initiating grid');
                             obj.month = month;
                             obj.year = year;
                             obj.fund = fund;
-                            widget.key = "fundperf";
-                            widget.qs = "?fund=FUND&date__year=YEAR&date__month=MONTH";
+                            widget.key = "fundperfmonthtable";
+                            widget.params.date__year = "YEAR";
+                            widget.params.date__month = "MONTH";
+                            widget.params.fund = "FUND";
                             widget.type = "month_table";
                             createWidget(obj, widget, panel.renderTo);
                         }
@@ -605,6 +1057,73 @@ console.log('initiating grid');
                 }
             });
         });
+    }
+    
+    function dataTableSub(obj, widget, div) {
+    
+        $.getJSON(widget.url + widget.qs, function(data) {
+        
+            fields = ['id'];
+            for(i=0; i < data.columns.length; i++) {
+                fields[i] = data.columns[i].dataIndex;
+            }
+         
+            var mainStore = Ext.create('Ext.data.Store', {
+                //storeId: widget.key,
+                fields: fields,
+                data: data.rows,
+                proxy: {
+                    type: 'memory',
+                    reader: {
+                        type: 'json',
+                        root: 'objects'
+                    }
+                }
+            });
+            
+            
+            var mainGrid = Ext.create('Ext.grid.Panel', {
+                store: mainStore,
+                columns: data.columns,
+                //autoWidth: true,
+                selModel: {
+                    selType: 'cellmodel'
+                },
+                //autoHeight: true,
+                width: (140 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)),
+                height: (140 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
+                plugins: [{
+                    ptype: 'rowexpander',
+                    rowBodyTpl: [
+                        '<div id="{id}">',
+                        '</div>'
+                    ]
+                }],
+                header: false,
+                iconCls: 'icon-grid',
+                renderTo: div
+            });
+
+            mainGrid.view.on('expandBody', function (rowNode, record, expandRow, eOpts) {
+                var id = record.get('id');
+                displayInnerGrid(record.get('id'));
+                
+                widget.url = '/api/widget/holdlinegraph/';
+                widget.qs = '?identifier=' + record.get('id') + '&fund=' + obj.fund;
+                widget.div = div;
+                
+                lineBarChart('', widget);
+                
+                if(typeof $('#data').data('last-open-subgrid') != 'undefined') {
+                    //destroyInnerGrid($('#data').data('last-open-subgrid'));
+                }
+1            });
+            mainGrid.view.on('collapsebody', function (rowNode, record, expandRow, eOpts) {
+                destroyInnerGrid(record);
+            }); 
+            
+        });
+    
     }
 
     function pieChart(widget, data, div) {
@@ -975,6 +1494,7 @@ console.log('adding widget');
             contentEl: 'menu', 
             autoDestroy: true,
             autoScroll: true,
+            defaults: {autoScroll: true}, // enables scrolling temporary 
         });
     }
 
@@ -1112,74 +1632,7 @@ console.log('adding widget');
             }
         });
     }
-    /*
-    function appendFundNodes(id, prefix, type_prefix) {
-    
-        $.ajax({
-            type: "GET",
-            url: '/api/fundbytype/',
-            success: function(data) {  
-                
-                appendNodes(id, data, prefix, type_prefix);
-                
-            }
-        });        
-    }
 
-
-    function appendNodes(id, data, prefix, type_prefix) {
-                
-        var node = Ext.getCmp('main-menu').getStore().getNodeById(id);
-        
-        // prevent the nodes from being loaded multiple times
-        if(node.hasChildNodes()) {
-            return
-        }
-        
-        node.data.leaf = false;
-        
-        // append types
-        for(i=0; i<data.length; i++) {
-        
-            var type_id = type_prefix.toString() + '_type_' + data[i].id.toString();
-        
-            console.log('appending type' + type_prefix + data[i].id);
-            node.appendChild({
-                page: id,
-                expanded: true,
-                leaf: true,
-                text: data[i].name,
-                id: type_id
-            });	
-            
-            // append funds or clients
-            if(data[i].funds !== undefined) {
-            
-                var node2 = Ext.getCmp('main-menu').getStore().getNodeById(type_id);
-                
-                for(x=0; x<data[i].funds.length; x++) {
-                
-                console.log('appending fund ' + prefix + data[i].funds[x].id);                
-                
-                    node2.appendChild({
-                        page: id,
-                        expanded: true,
-                        leaf: true,
-                        text: data[i].funds[x].name,
-                        id: prefix.toString() + data[i].funds[x].id.toString()
-                    });	
-                }
-                                    
-            } else if(data[i].clients !== undefined) {
-            
-                //appendNodes(prefix + data[i].id, data[i].clients, prefix);
-                            
-            }	            
-        }
-        //Ext.getCmp('main-menu').getView().refresh();	    
-    }
-    
-    */
     
     function viewPort() {
 
@@ -1238,7 +1691,7 @@ console.log('adding widget');
                                     record.expand();
                                 }
                                 
-                                
+                                console.log(record.raw.page);
                                 
                                 
                                 if(record.raw.page !== null) {

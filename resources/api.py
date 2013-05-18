@@ -129,6 +129,7 @@ class WidgetsResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = Widget.objects.select_related('widget_type', 'widget_param').all()
         include_resource_uri = True
+        exclude = ['description']
 
         filtering = {
             "window": ALL,
@@ -141,18 +142,19 @@ class WidgetsResource(MainBaseResource):
         bundle.data['type'] = bundle.data['widget_type'].data['key']
 
         qs = '?'
+        params = {}
         for var in bundle.data['widget_param']:
             if var.data['value']:
                 val = var.data['value']
             else:
                 val = var.data['key'].upper()
             qs += str(var.data['key']) + '=' + str(val) + '&'
+            
+            params[var.data['key']] = var.data['value']
 
         bundle.data['qs'] = qs[:-1]
+        bundle.data['params'] = params
         del bundle.data['widget_param']
-
-        # Description is only used for UnusedWidgetResource
-        del bundle.data['description']
 
         return bundle
 
@@ -273,13 +275,15 @@ class FundNameResource(MainBaseResource):
 
 
 class HoldingResource(ModelResource):
-    #fund = fields.ForeignKey(FundResource, 'fund')
+    fund = fields.ForeignKey(FundResource, 'fund')
+    
 
     class Meta:
-        queryset = Holding.objects.select_related('fund').all()
+        queryset = Holding.objects.all()
         filtering = {
             "fund": ALL,
-        }
+        }    
+          
 
 class MenuResource(TreeBaseResource, MainBaseResource):
     page = fields.ForeignKey(PageResource, "page", null=True, full=True)
@@ -353,3 +357,4 @@ api.register(FundResource())
 api.register(FundTypeResource(),canonical=True)
 api.register(PageResource(),canonical=True)
 api.register(PageWindowResource(),canonical=True)
+api.register(HoldingResource())

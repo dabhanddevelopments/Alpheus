@@ -57,7 +57,11 @@
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery.gridster.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}style.css">   
 <link id="theme" rel="stylesheet" type="text/css" href="{{ STATIC_URL }}ext-4.2.0/resources/css/ext-all.css" />
+{% comment %}
 <link rel="stylesheet" type="text/css" href="http://examples.extjs.eu/css/icons.css" />
+{% endcomment %}
+
+
 
 
 
@@ -65,7 +69,13 @@
 
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="http://code.highcharts.com/stock/highstock.js"></script>
+
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+{% comment %}
 <script src="http://code.highcharts.com/highcharts.js"></script>
+{% endcomment %}
+
 <script src="{{ STATIC_URL }}gridster/jquery.gridster.js" type="text/javascript" charset="utf-8"></script>
 <script src="{{ STATIC_URL }}gridster/jquery.collision.js" type="text/javascript" charset="utf-8"></script>
 <script src="{{ STATIC_URL }}gridster/jquery.coords.js" type="text/javascript" charset="utf-8"></script>

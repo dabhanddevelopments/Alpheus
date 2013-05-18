@@ -39,7 +39,7 @@ class Widget(models.Model):
     name = models.CharField(max_length=50)
     key = models.CharField(max_length=50)
     widget_type = models.ForeignKey(WidgetType)
-    widget_param = models.ManyToManyField(WidgetParam)
+    widget_param = models.ManyToManyField(WidgetParam, null=True, blank=True)
     window = models.ForeignKey(Window)
     description = models.TextField(blank=True, null=True)
     size_y = models.SmallIntegerField()
@@ -95,6 +95,7 @@ class FundType(models.Model):
 
 
 class Fund(models.Model):
+    
     fund_type = models.ForeignKey(FundType, related_name="fund")
     counter_party = models.ForeignKey('CounterParty')
     alarm = models.ForeignKey('Alarm', blank=True, null=True)
@@ -108,9 +109,24 @@ class Fund(models.Model):
     usd_hedge = models.SmallIntegerField(verbose_name="USD Positions Current FX Hedge")
     checks = models.SmallIntegerField()
     unsettled = models.SmallIntegerField()
-
+   
     def __unicode__(self):
         return self.name
+
+class FundBench(models.Model):
+    name = models.CharField(max_length=50)
+    funds = models.ManyToManyField(Fund)
+
+
+class FundBenchHist(models.Model):
+    benchmark = models.ForeignKey(FundBench)
+    value_date = models.DateField()
+    value = models.DecimalField(max_digits=20, decimal_places=2)
+    ann_return = models.DecimalField(max_digits=4, decimal_places=2)
+    ann_volatility = models.DecimalField(max_digits=4, decimal_places=2)
+    sharpe_ratio = models.DecimalField(max_digits=4, decimal_places=2)
+    
+
 
 class Menu(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
@@ -159,8 +175,20 @@ class TradeType(models.Model):
 
 # Trade does not have a history table
 class Trade(models.Model):
+    holding = models.ForeignKey('Holding')
+    identifier = models.IntegerField()
     trade_type = models.ForeignKey(TradeType)
-
+    trade_date = models.DateField()
+    settlement_date = models.DateField()
+    purchase_sale = models.BooleanField()
+    no_of_units = models.DecimalField(max_digits=20, decimal_places=2,\
+                                                verbose_name="No. of Units")
+    purchase_price = models.DecimalField(max_digits=20, decimal_places=5)
+    currency = models.ForeignKey(Currency)
+    fx_euro = models.DecimalField(max_digits=20, decimal_places=8,\
+                                                verbose_name="FX to Euro")
+    # purchase_price_euro = models.DecimalField(max_digits=20, decimal_places=5)
+    
 class Fee(models.Model):
     pass
 
@@ -179,29 +207,63 @@ class HistoricalExpense(models.Model):
 class CounterParty(models.Model):
     name = models.CharField(max_length=50)
 
+
+GROUP_ALL = 'all'
+GROUP_SEC = 'sec'
+GROUP_SUB = 'sub'
+GROUP_LOC = 'loc'
+GROUP_ASS = 'ass'
+HOLDING_GROUP = (
+    (GROUP_ALL, 'All'),
+    (GROUP_SEC, 'Sector'),
+    (GROUP_SUB, 'Sub-Sector'),
+    (GROUP_LOC, 'Location'),
+    (GROUP_ASS, 'Asset Class'),
+)
 class Holding(models.Model):
+     #name = models.CharField(max_length=50)
+
+    #class HoldingHistorical(models.Model):
     name = models.CharField(max_length=50)
+    identifier = models.IntegerField()
     fee = models.ForeignKey(Fee, blank=True, null=True)
     fund = models.ForeignKey(Fund)
+    currency = models.ForeignKey(Currency)
+    country = models.ForeignKey(Country)
+    counter_party = models.ForeignKey('CounterParty')
+    sector = models.ForeignKey('HoldingCategory', related_name='sector')
+    sub_sector = models.ForeignKey('HoldingCategory', related_name='sub_sector')
+    location = models.ForeignKey('HoldingCategory', related_name='location')
+    asset_class = models.ForeignKey('HoldingCategory',\
+                                    related_name='asset_class')
+    nav = models.DecimalField(max_digits=20, decimal_places=2,\
+                                                verbose_name="NAV")
+    holding_group = models.CharField(max_length=3,
+                                choices=HOLDING_GROUP,
+                                default=GROUP_ALL)
     description = models.TextField()
     value_date = models.DateField()
     rep_code = models.CharField(max_length=50)
-    currency = models.ForeignKey(Currency)
     isin = models.CharField(max_length=12)
     valoren = models.IntegerField()
     interest_rate = models.DecimalField(max_digits=20, decimal_places=5)
-    country = models.ForeignKey(Country)
-    counter_party = models.ForeignKey('CounterParty')
     weight = models.DecimalField(max_digits=20, decimal_places=5)
+    current_price = models.DecimalField(max_digits=20, decimal_places=8)
+    no_of_units = models.DecimalField(max_digits=20, decimal_places=2,\
+                                                verbose_name="No. of Units")
 
+      
     def __unicode__(self):
-        return self.name
+        return str(self.id)
 
     class Meta:
-            ordering = ["name"]
+            ordering = ["id"]
 
 class HoldingCategory(models.Model):
     name = models.CharField(max_length=50)
+    holding_group = models.CharField(max_length=3,
+                                choices=HOLDING_GROUP,
+                                default=GROUP_ALL)
 
     def __unicode__(self):
         return self.name
@@ -213,17 +275,6 @@ class HoldingType(models.Model):
 
     def __unicode__(self):
         return self.name
-
-GROUP_ALL = 'all'
-GROUP_SEC = 'sec'
-GROUP_SUB = 'sub'
-GROUP_LOC = 'loc'
-HOLDING_GROUP = (
-    (GROUP_ALL, 'All'),
-    (GROUP_SEC, 'Sector'),
-    (GROUP_SUB, 'Sub-Sector'),
-    (GROUP_LOC, 'Location'),
-)
 
 class HoldPerfYearly(models.Model):
     #holding = models.ForeignKey(Holding)
@@ -277,10 +328,14 @@ class FundPerfMonthly(models.Model):
                                 choices=HOLDING_GROUP,
                                 default=GROUP_ALL)
     holding_category = models.ForeignKey(HoldingCategory,
-                                        null=True, blank=True)
+                related_name='category', null=True, blank=True)
     value = models.DecimalField(max_digits=4, decimal_places=2)
+    ann_return = models.DecimalField(max_digits=4, decimal_places=2)
+    ann_volatility = models.DecimalField(max_digits=4, decimal_places=2)
+    sharpe_ratio = models.DecimalField(max_digits=4, decimal_places=2)
     year = models.SmallIntegerField()
     month = models.SmallIntegerField()
+    value_date = models.DateField()
 
     class Meta:
         #unique_together = ('holding_group', 'holding_category',)

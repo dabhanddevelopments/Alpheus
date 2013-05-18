@@ -5,10 +5,10 @@ from tastypie.authorization import DjangoAuthorization
 from tastypie.exceptions import BadRequest
 from alpheus.serializers import PrettyJSONSerializer
 from tastypie.exceptions import BadRequest
-from alpheus.serializers import PrettyJSONSerializer
 
-# Base Model Resource
-class MainBaseResource(ModelResource):
+
+# Base Model Resource - IS THIS USED?
+class MainBaseResource2(ModelResource):
     class Meta:
         authentication = SessionAuthentication()
         authorization = DjangoAuthorization()
@@ -38,15 +38,7 @@ class MainBaseResource(ModelResource):
 
         return self.create_response(request, serialized)
 
-    def month_columns(self, column_names):
-        columns = []
-        for column in column_names:
-            columns.append({
-                'dataIndex': column,
-                'text': column.title(),
-                'width': 50 #this should come from Meta
-            })
-        return columns
+
 
 
     def check_params(self, params, filters):
@@ -91,18 +83,33 @@ class MainBaseResource(ModelResource):
 
         return self.create_response(request, serialized)
 
-    def month_columns(self, column_names):
+    def set_columns(self, column_names, width=False):
+
+        # first column is 0, the rest are 1
+        if not width:
+            width = {}
+            width[0] = 50
+            width[1] = 50
+
         columns = []
         for key, column in enumerate(column_names):
-            dic = {}
-            dic = {
-                'dataIndex': column,
-                'text': column.title().replace('_', ''),
-            }
+            try: 
+                dic = {
+                    'text': column.title().replace('_', ' '),
+                    'dataIndex': column,
+                }
+            except:
+                try:
+                    dic = {
+                        'dataIndex': column[0],
+                        'text': column[1].title().replace('_', ' '),
+                    }
+                except:
+                    raise "set columns syntax is ['foo', ['bar', 'Some Bar']]"
             if key == 0:
-                dic['width'] = 80
+                dic['width'] = width[0]
             else:
-                dic['width'] = 50
+                dic['width'] = width[1]
             columns.append(dic)
 
         return columns

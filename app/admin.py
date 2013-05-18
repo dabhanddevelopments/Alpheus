@@ -26,7 +26,7 @@ class WindowAdmin(admin.ModelAdmin):
     ]
 
 class MenuAdmin(FeinCMSModelAdmin):
-    list_display = ('children', 'page')
+    list_display = ('children', 'page', 'fund')
 
 class PageAdmin(FeinCMSModelAdmin):
     pass
@@ -43,6 +43,9 @@ class FundPerfMonthlyAdmin(admin.ModelAdmin):
 class FundPerfYearlyAdmin(admin.ModelAdmin):
     list_display = ('fund', 'holding_group', 'year', 'si', 'ytd')
 
+class HoldingCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'holding_group')
+
 class HoldingAdmin(admin.ModelAdmin):
     pass
 
@@ -55,7 +58,7 @@ class CountryAdmin(admin.ModelAdmin):
 admin.site.register(Country, CountryAdmin)
 admin.site.register(Currency, CurrencyAdmin)
 admin.site.register(Holding, HoldingAdmin)
-admin.site.register(HoldingCategory)
+admin.site.register(HoldingCategory, HoldingCategoryAdmin)
 admin.site.register(Menu, MenuAdmin)
 admin.site.register(CounterParty)
 admin.site.register(WidgetType, WidgetTypeAdmin)
@@ -64,8 +67,13 @@ admin.site.register(Widget, WidgetAdmin)
 admin.site.register(Window, WindowAdmin)
 admin.site.register(Page, PageAdmin)
 admin.site.register(PageWindow, PageWindowAdmin)
+admin.site.register(Trade)
+admin.site.register(TradeType)
 admin.site.register(Fund)
 admin.site.register(FundType)
 admin.site.register(FundPerfDaily, FundPerfDailyAdmin)
 admin.site.register(FundPerfMonthly, FundPerfMonthlyAdmin)
 admin.site.register(FundPerfYearly, FundPerfYearlyAdmin)
+admin.site.register(Fee)
+admin.site.register(FundBench)
+admin.site.register(FundBenchHist)
