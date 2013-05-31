@@ -1,5 +1,5 @@
 
-Ext.Loader.setPath('Ext.ux', 'static/ext-4.2.0/examples/ux');
+Ext.Loader.setPath('Ext.ux', 'static/extjs/examples/ux');
 Ext.require([
     'Ext.ux.RowExpander'
 ]);
@@ -17,15 +17,17 @@ Ext.require([
 
 function displayInnerGrid(renderId) {
 
-    $.getJSON("/api/widget/tradetable/?identifier=" + renderId, function(data) {
+    $.getJSON("/api/widget/fundperfholdtradetable/?&holding__fund=" + renderId, function(data) {
     
         console.log('render id: ' + renderId.toString());
+        console.log(data);
     
         fields = [];
         for(i=0; i < data.columns.length; i++) {
             fields[i] = data.columns[i].dataIndex;
         }
         
+        console.log('store');
         var insideGridStore = Ext.create('Ext.data.Store', {
             //storeId: "inner_" + widget.key,
             fields: fields,
@@ -38,7 +40,7 @@ function displayInnerGrid(renderId) {
                 }
             }
         });
-        
+        console.log('panel');
         var innerGrid = Ext.create('Ext.grid.Panel', {
             store: insideGridStore,
             selModel: {
@@ -46,10 +48,10 @@ function displayInnerGrid(renderId) {
             },
             columns: data.columns,
             header: false,
-            width: 500,
+            width: 800,
             height: 150,
             iconCls: 'icon-grid',
-            renderTo: renderId,
+            renderTo: 'innergrid' + renderId,
         });
         innerGrid.getEl().swallowEvent([
             'mousedown', 'mouseup', 'click',
@@ -61,114 +63,124 @@ function displayInnerGrid(renderId) {
 }
 
 
-function lineBarChart(obj, widget) {
+function lineBarChart(widget) {
+
+    widget.url = '/api/widget/fundperfholdpriceline/';
+    widget.qs = '?holding__fund=' + widget.fund + '&holding=' + widget.holding; 
 
     var div = $('#data').data('linebar-div');
     var chart = $('#' + div).highcharts();
-    chart.destroy();
+    
+    if(typeof chart != 'undefined') {
+        chart.destroy();
+    }
 
-   $.getJSON(widget.url + widget.qs, function(data) {
+    $.getJSON(widget.url + widget.qs, function(data) {
+    
+        widget.url = '/api/widget/fundperfholdvolbar/';
+
+        $.getJSON(widget.url + widget.qs, function(data2) {
      
-        var options = {     
-            chart: {
-                renderTo: div,
-                marginTop: 5,
-            },
-            navigator:{
-                enabled:true
-            },
-            scrollbar: {
-                enabled:false, //remove ugly scrollbar
-            },
+            var options = {     
+                chart: {
+                    renderTo: div,
+                    marginTop: 5,
+                },
+                navigator:{
+                    enabled:true
+                },
+                scrollbar: {
+                    enabled:false, //remove ugly scrollbar
+                },
 
-            rangeSelector: {
-                enabled: true,
-	            //selected: 1
-            },  
-            title: {
-                text: false,
-            },
-            xAxis: [{
-                gridLineWidth: 1,
-                type : "datetime",
-                labels: {
-                    rotation: -45,
-                    align: 'right',
-                    style: {
-                        fontSize: '13px',
-                        fontFamily: 'Verdana, sans-serif'
+                rangeSelector: {
+                    enabled: true,
+	                //selected: 1
+                },  
+                title: {
+                    text: false,
+                },
+                xAxis: [{
+                    gridLineWidth: 1,
+                    type : "datetime",
+                    labels: {
+                        rotation: -45,
+                        align: 'right',
+                        style: {
+                            fontSize: '13px',
+                            fontFamily: 'Verdana, sans-serif'
+                        }
+                    },
+
+                },{ }],
+                yAxis: [
+                {
+                    height: 180,
+                    lineWidth: 3,
+                    offset: 0,
+                    gridLineWidth: 1,
+                    title: {
+                        text: 'Price',
+                        margin: 5,
                     }
                 },
-
-            },{ }],
-            yAxis: [
-            {
-                height: 180,
-                lineWidth: 3,
-                offset: 0,
-                gridLineWidth: 1,
-                title: {
-                    text: 'Price',
-                    margin: 5,
-                }
-            },
-            {
-                top: 225,
-                lineWidth: 3,
-                //min: 0,
-                //max: 5,
-                gridLineWidth: 1,
-                offset: 0,
-                height: 75,
-                title: {
-                    text: 'Volume',
-                }
-            },
-            ],
-            
-            legend: {
-                enabled: true,
-                //layout: 'vertical',
-                //align: 'right',
-                verticalAlign: 'top',
-                y: -10,
-                //y: 100,
-                //borderWidth: 0
-            },
-            series: [
-            {
-                yAxis: 0,
-                name: 'Price by time',
-                stack: 0,
-
-                //data: [1, 12, 32, 43],       
-                data: data.line,
-		        tooltip: {
-			        valueDecimals: 2
-		        }, 
-		                  
-            },
-            {
-                name: 'Volume by time',
-                yAxis: 1,
-                stack: 0,
-                data: data.bar,
-		        tooltip: {
-			        valueDecimals: 2
-		        },  
-                lineWidth: 3,
-                marker: {
-                    enabled: false
+                {
+                    top: 225,
+                    lineWidth: 3,
+                    //min: 0,
+                    //max: 5,
+                    gridLineWidth: 1,
+                    offset: 0,
+                    height: 75,
+                    title: {
+                        text: 'Volume',
+                    }
                 },
-                pointWidth: 5,
-                type: 'column',
+                ],
                 
-            },
-            ]
-        };
+                legend: {
+                    enabled: true,
+                    //layout: 'vertical',
+                    //align: 'right',
+                    verticalAlign: 'top',
+                    y: -10,
+                    //y: 100,
+                    //borderWidth: 0
+                },
+                series: [
+                {
+                    yAxis: 0,
+                    name: 'Price by time',
+                    stack: 0,
 
-        var chart = new Highcharts.Chart(options);
+                    //data: [1, 12, 32, 43],       
+                    data: data,
+		            tooltip: {
+			            valueDecimals: 2
+		            }, 
+		                      
+                },
+                {
+                    name: 'Volume by time',
+                    yAxis: 1,
+                    stack: 0,
+                    data: data2,
+		            tooltip: {
+			            valueDecimals: 2
+		            },  
+                    lineWidth: 3,
+                    marker: {
+                        enabled: false
+                    },
+                    pointWidth: 5,
+                    type: 'column',
+                    
+                },
+                ]
+            };
 
+            var chart = new Highcharts.Chart(options);
+            });
         });
     }
 
@@ -188,15 +200,13 @@ function destroyInnerGrid(record) {
 // TODO: rewrite when you figure out how to get the id of the cell clicked
 function monthlyBar(date, fund) {
 
-    var div = $('#data').data('div-holdperfbargraph');
+    var div = $('#data').data('div-fundperfholdperfbar');
     console.log(div);
     var chart = $('#' + div).highcharts();
     
-    var url = '/api/widget/holdperfbargraph/?date=' + date + '&fund=' + fund + '&order_by=weight';
+    var url = '/api/widget/fundperfholdperfbar/?value_date=' + date + '&fund=' + fund + '&legend=false';
     //return monthTable(url, 'fundperfdaily', div);
 
-console.log('CALLEd');
-console.log(url);
     try {
         chart.destroy();
         $.getJSON(url, function(data) {
@@ -208,9 +218,9 @@ console.log(url);
                         //width: (140 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 10,
                         //height: (140 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 30,
                     },  
-                    //title: {
-                    //    text: '',
-                    //},
+                    title: {
+                        text: false,
+                    },
                     labels: {
                         rotation: -45,
                         align: 'right',
@@ -284,6 +294,7 @@ Ext.onReady(function() {
                     $('<div id="page' + id + '"></div>').appendTo('#menu');
                 }
                 
+                console.log(obj);
                 initGrid(obj);
                     
                 // stops all widgets to auto reload/refresh
@@ -332,7 +343,9 @@ Ext.onReady(function() {
                 autoScroll:true,
                 listeners: {
                     activate: function(tab){
-                        initGrid(tab.id);
+                        obj = {};
+                        obj.page = tab.id;
+                        initGrid(obj);
                     }
                 },
             }); 
@@ -377,7 +390,7 @@ Ext.onReady(function() {
         
         var page = obj.page;
         
-//console.log('initiating grid');
+console.log('initiating grid');
 
 
         $('#data').data('page_id', page);
@@ -392,12 +405,12 @@ Ext.onReady(function() {
 
         obj.grid = $("#page" + page).gridster({
             widget_margins: [10, 10],
-            widget_base_dimensions: [140, 140],
+            widget_base_dimensions: [120, 120],
             max_size_x: 10,
             max_size_y: 10,
             draggable: {
                 stop: function(event, ui){ 
-                    saveWidgetPositions(JSON.stringify(grid.serialize()));
+                    saveWidgetPositions(JSON.stringify(obj.grid.serialize()));
                     //console.log('widget stopped');
                 }
             },
@@ -443,13 +456,232 @@ Ext.onReady(function() {
 
     function createWindows(data, i, obj, extra_params) {
     
+    
+        function lineChart2(data, div) {
+        
+           // $.getJSON(widget.url + widget.qs, function(data) {
+                
+                var chart = new Highcharts.StockChart({
+                    chart: {
+                        type: 'line',
+                        marginRight: 25,
+                        //marginBottom: 25,
+                        size: '100%',
+                        renderTo: div,
+                        //width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 10,
+                        //height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
+                    },
+                    navigator:{
+                        enabled:true,
+                    },
+                    scrollbar: {
+                        enabled:false
+                    },
+
+                    rangeSelector: {
+                        enabled: false,
+	                    //selected: 1
+                    },                  
+                    title: {
+                        enabled: false,
+                    //    text: widget.name,
+                    //    x: -20 //center
+                    },
+                    xAxis: {
+                        gridLineWidth: 1,
+                    },
+                    yAxis: {
+                        title: {
+                            text: div, //'Performance'
+                        },
+                        plotLines: [{
+                            value: 0,
+                            width: 1,
+                            color: '#808080'
+                        }]
+                    },
+                    tooltip: {
+                        //valueSuffix: '€'
+                    },
+                    legend: {
+                        enabled: true,
+                        //layout: 'vertical',
+                        //align: 'right',
+                        //verticalAlign: 'top',
+                        //x: -10,
+                        //y: 100,
+                        //borderWidth: 0
+                    },
+                    series: data,
+                });
+                return chart;
+           // });
+        }
+    
+        function createGrid(tabId, data) {
+        
+            fields = [];
+            for(i=0; i < data.columns.length; i++) {
+                fields[i] = data.columns[i].dataIndex;
+            }
+
+            Ext.create('Ext.data.Store', {
+                storeId: tabId,
+                fields: fields,
+                data: data,
+                proxy: {
+                    type: 'memory',
+                    reader: {
+                        type: 'json',
+                        root: 'rows'
+                    }
+                },
+            });
+            return Ext.create('Ext.grid.Panel', {
+                store: Ext.data.StoreManager.lookup(tabId),
+                columns: data.columns,
+                id: 'grid' + tabId,
+                //height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 20,
+                //width:  (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 20,
+               // renderTo: tabId,
+            });
+        }
+        
+        function appendGridToTab(tabId) {
+            fund = $('#data').data('fund');
+            fund = 2;
+            if(typeof Ext.getCmp('grid' + tabId) == 'undefined') {
+            
+                tab = Ext.getCmp(tabId);
+                console.log(grid);
+                $.getJSON('/api/widget/fundperfmonth/?fund=' + fund + '&fields=' + tabId, function(data) {
+                    var grid = createGrid(tabId, data);
+                    tab.add(grid);
+
+                    // div for inner tabs                           
+                    var innertab_div = 'inner-tab' + tabId; 
+                    $('<div id="' + innertab_div + '-bar"></div>').appendTo('#' + tab_div);
+                    $('<div id="' + innertab_div + '-line"></div>').appendTo('#' + tab_div);
+                    lineChart2(data, innertab_div + '-bar');
+                    
+                    // Bar Chart & Line Graph Tabs
+                    var tp = new Ext.TabPanel({
+                        renderTo: tab_div,
+                        id: 'inner-tab-id' + tabId,
+                        //height: (120 * data.size_y) + (10 * data.size_y) + (10 * (data.size_y - 1)) - 20,
+                        //width:  (120 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20,
+                        activeTab: 0,
+                        items: [{
+                            title: 'Bar Chart',
+                            id: 'bar',
+                            contentEl: innertab_div + '-bar',
+                            height: 650,
+                        },{
+                            title: 'Line Graph',
+                            id: 'line',
+                            contentEl: innertab_div + '-line',
+                            height: 650
+                        }],
+                        listeners: {
+                            'tabchange': function(tabPanel, tab){
+                                if(tab.id == 'line') {
+                                    div2 = innertab_div + '-line';
+
+                                    var chart = $('#' + div2).highcharts();
+                                
+                                    if(typeof chart == 'undefined') {
+                                        lineChart2(data, div2);
+                                    }
+                                }
+                            }
+                        }
+                    });   
+                    tab.add(tp);   
+                });
+            }
+        }
+    
         var page = obj.page;
         var grid = $('#data').data('grid' + page); // obj.grid;
         var window = '<div id="' + page + '_' + data.window.id + '" pagewindow="' + data.id + '" class="layout_block"></div>';
         
-console.log('DAATA win');
-console.log($('#3_5'));
         grid.add_widget(window, data.size_x, data.size_y, data.col, data.row);
+        
+        
+        // div for window
+        var window_id = 'page_' + page + '_' + data.window.id;
+        $('<div id="' + window_id + '"></div>').appendTo('body'); 
+        
+        if(data.window.key == 'w18') {
+        
+            widgetWindow(data.window.id, page, data.window.name, data.size_x, data.size_y, data.id, window_id);
+            
+            parents = [
+                {id: 'ann_return', title: 'Returns'},
+                {id: 'ann_volatility', title: 'Volatility'},
+                {id: 'sharpe_ratio', title: 'Sharpe'},
+            ];
+            children = [
+                {id: '', title: '1 Year Rolling Annualised'},
+                {id: '3', title: '3 Years Rolling Annualised'},
+                {id: '5', title: '5 Years Rolling Annualised'},
+            ];
+            items = [];
+            for(i=0; i<parents.length; i++) {
+            
+                childItems = [];
+                // only Returns have SI
+                if(parents[i].id == 'ann_return') {
+                    childItems.push({id: 'si', title: 'Since Inception'})
+                }
+                
+                for(x=0; x<children.length; x++) {
+                
+                    childItems.push({
+                        id: parents[i].id + children[x].id, 
+                        title: children[x].title,
+                        layout: 'fit',
+                    })
+                }
+                items.push({
+                    xtype: 'tabpanel',
+                    title: parents[i].title,
+                    id: 'parent-' + parents[i].id,
+                    activeTab: 0,
+                    items: childItems,
+                    listeners: {
+                        'tabchange': function(tabPanel, tab){
+                            appendGridToTab(tab.id);
+                        }
+                    }
+                });
+            }
+            
+            // div for tabs
+            var tab_div = 'tab-' + data.window.key + '-' + window_id;
+            $('<div id="' + tab_div + '"></div>').appendTo('#' + window_id);
+            
+            var tp = new Ext.TabPanel({
+                renderTo: tab_div,
+                id: 'main-tabs',
+                //height: 500,
+                //width:  (120 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20,
+                activeTab: 0,
+                items: items,
+                layout: 'fit',
+                listeners: {
+                    'tabchange': function(tabPanel, tab){
+                        var id = tab.id.split("-");
+                        appendGridToTab(id[1]);
+                    }
+                }
+            });       
+            
+            // append grids for default tab
+            appendGridToTab('si');
+            
+            return   
+        }
         
         
         // get the widgets for this window
@@ -461,11 +693,6 @@ console.log($('#3_5'));
             
                 // now I will be i asynchronously
                 I = this.ajaxI;
-            
-                // div for window
-                var window_id = 'page_' + page + '_' + data.window.id;
-                $('<div id="' + window_id + '"></div>').appendTo('body'); 
-                console.log('window id: ' + window_id);
 
                 // vbox or hbox
                 var layout = data.window.layout + 'box'; 
@@ -478,23 +705,36 @@ console.log($('#3_5'));
                     var widget_id = 'page_' + page + '_win_' + data.window.id + '_widget_' + widgets[x].id;
                     $('<div id="' + widget_id + '"></div>').appendTo('#' + window_id);
                     
-                    items[I] = {
-                        renderTo: widget_id,        
-                        height: (140 * data.size_y) + (10 * data.size_y) + (10 * (data.size_y - 1)) - 20,
-                        width:  (140 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20,
-                        border: false,   
-                    }
+                    var panel = createWidget(obj, widgets[x], widget_id);
                     
-                    createWidget(obj, widgets[x], widget_id);
+                    // if it's a datatable we just insert the grid
+                    // @TODO: This doesn't actually do anything, it was an attempt to get the scroll bar working on horizontal windows
+                    //console.log(widgets[x]);
+                    //if(widgets[x].type == "data_table") {
+                    
+                   //     items[I] = panel;
+                        
+                   // } else {
+                    
+                        items[I] = {
+                            renderTo: widget_id,        
+                            height: (120 * data.size_y) + (10 * data.size_y) + (10 * (data.size_y - 1)) - 20,
+                            width:  (120 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20,
+                            border: false, 
+                        }
+                   //}
+                    
+                    
                 }
                 
                 Ext.create('Ext.container.Container', {
                     renderTo: window_id,
                     layout: layout,
-                    items: items
+                    items: items,
+                    layout: 'fit',
                 });
                 
-                widgetWindow(data.window.id, page, data.window.name, data.size_x, data .size_y, data.id, window_id);
+                widgetWindow(data.window.id, page, data.window.name, data.size_x, data.size_y, data.id, window_id);
             }
         });
     } 
@@ -504,8 +744,8 @@ console.log($('#3_5'));
         Ext.create('Ext.window.Window', {
             title: title,
             // there's gotta be a better way to do this
-            height: (140 * size_y) + (10 * size_y) + (10 * (size_y - 1)) - 10,
-            width:  (140 * size_x) + (10 * size_x) + (10 * (size_x - 1)) - 10,
+            height: (120 * size_y) + (10 * size_y) + (10 * (size_y - 1)) - 10,
+            width:  (120 * size_x) + (10 * size_x) + (10 * (size_x - 1)) - 10,
             layout: 'auto',
             floatable: false,
             draggable: false,
@@ -554,6 +794,10 @@ console.log($('#3_5'));
     }
 
     function createWidget(obj, widget, div, extra_params) {
+    
+        if(typeof obj.fund == 'undefined') {
+            obj.fund = $('#data').data('fund');
+        }
     
     
         // new way
@@ -610,37 +854,23 @@ console.log($('#3_5'));
             return barChart(obj, widget, div);
             
         } else if(widget.type == 'line_bar_chart') {
-            return LineBarChart(obj, widget, div);
+        
+            $('#data').data('linebar-div', div);
+
+            $('#' + div).append('<p>Please select a Holding above</p>');
+            
+        } else if(widget.type == 'pie_chart') {
        
-       }
-        try {
-            $.getJSON(url, function(data) {
-                switch(widget.type) {
-                  case 'graph':      graph(widget, data, div); break;
-                  case 'pie_chart':  pieChart(widget, data, div); break;
-                }
-
-                // enables ajax auto reload/refresh for this widget
-                //enableReload(widget.id);
-            })
-        } catch (err) {
-            //console.log(err);
+            return pieChart(obj, widget, div);
+            
+        } else if(widget.type == 'euro_percent_table') {
+        
+            return euroPercentTabTable(obj, widget, div);
+            
         }
     }
 
-    function graph(widget, data, div) {
 
-//console.log('creating graph');
-        try {
-            $.jqplot(div, data, 
-                { 
-                  axes:{yaxis:{min:-10, max:240}}, 
-                  series:[{color:'#5FAB78'}]
-            });
-        } catch (err) {
-            //console.log(err);
-        }
-    }
     
     function lineChart(obj, widget, div) {
     
@@ -653,8 +883,8 @@ console.log($('#3_5'));
                     //marginBottom: 25,
                     size: '100%',
                     renderTo: div,
-                    width: (140 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 10,
-                    height: (140 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
+                    width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 10,
+                    height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
                 },
                 navigator:{
                     enabled:true,
@@ -730,8 +960,8 @@ console.log($('#3_5'));
                     //marginBottom: 50,
                     renderTo: div,
                     type: 'column',
-                    width: (140 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 10,
-                    height: (140 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 30,
+                    width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 10,
+                    height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 30,
                 }, 
                 title: {
                     text: false
@@ -781,118 +1011,6 @@ console.log($('#3_5'));
 
 
     }
-    
-
-    function LineBarChart(obj, widget, div) {
-    
-        $('#data').data('linebar-div', div);
-
-        $.getJSON(widget.url + widget.qs, function(data) {
-        
-       var options = {     
-            chart: {
-                renderTo: div,
-                marginTop: 5,
-            },
-            navigator:{
-                enabled:true
-            },
-            scrollbar: {
-                enabled:false, //remove ugly scrollbar
-            },
-
-            rangeSelector: {
-                enabled: true,
-	            //selected: 1
-            },  
-            title: {
-                text: false,
-            },
-            xAxis: [{
-                gridLineWidth: 1,
-                type : "datetime",
-                labels: {
-                    rotation: -45,
-                    align: 'right',
-                    style: {
-                        fontSize: '13px',
-                        fontFamily: 'Verdana, sans-serif'
-                    }
-                },
-
-            },{ }],
-            yAxis: [
-            {
-                height: 180,
-                lineWidth: 3,
-                offset: 0,
-                gridLineWidth: 1,
-                title: {
-                    text: 'Price',
-                    margin: 5,
-                }
-            },
-            {
-                top: 225,
-                lineWidth: 3,
-                //min: 0,
-                //max: 5,
-                gridLineWidth: 1,
-                offset: 0,
-                height: 75,
-                title: {
-                    text: 'Volume',
-                }
-            },
-            ],
-            
-            legend: {
-                enabled: true,
-                //layout: 'vertical',
-                //align: 'right',
-                verticalAlign: 'top',
-                y: -10,
-                //y: 100,
-                //borderWidth: 0
-            },
-            series: [
-            {
-                yAxis: 0,
-                name: 'Price by time',
-                stack: 0,
-
-                //data: [1, 12, 32, 43],       
-                data: data.line,
-		        tooltip: {
-			        valueDecimals: 2
-		        }, 
-		                  
-            },
-            {
-                name: 'Volume by time',
-                yAxis: 1,
-                stack: 0,
-                data: data.bar,
-		        tooltip: {
-			        valueDecimals: 2
-		        },  
-                lineWidth: 3,
-                marker: {
-                    enabled: false
-                },
-                pointWidth: 5,
-                type: 'column',
-                
-            },
-            ]
-        };
-
-        var chart = new Highcharts.Chart(options);
-        
-        });        
-    }
-        
-            
     
 
     function monthTable(obj, widget, div) {
@@ -972,6 +1090,101 @@ console.log($('#3_5'));
             });
         });
     }
+    
+    function createGrid(widget, data, div) {
+    
+        fields = [];
+        for(i=0; i < data.columns.length; i++) {
+            fields[i] = data.columns[i].dataIndex;
+        }
+
+console.log('HERE');
+        Ext.create('Ext.data.Store', {
+            storeId: widget.key,
+            fields: fields,
+            data: data,
+            proxy: {
+                type: 'memory',
+                reader: {
+                    type: 'json',
+                    root: 'rows'
+                }
+            },
+        });
+console.log(widget.key);     
+console.log(data.columns);        
+console.log(data.rows); 
+        return Ext.create('Ext.grid.Panel', {
+            title: widget.params.title,
+            store: Ext.data.StoreManager.lookup(widget.key),
+            columns: data.columns,
+            height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 20,
+            width:  (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 20,
+        });
+    }
+    
+    function euroPercentTabTable(obj, widget, div) {
+    
+    console.log(widget.url + widget.qs);
+    
+        $.getJSON(widget.url + widget.qs, function(data) { 
+            
+            
+            var tabPanel = Ext.create('Ext.tab.Panel', {
+                //height: 200, //(120 * data.size_y) + (10 * data.size_y) + (10 * (data.size_y - 1)) - 20,
+                //width:  800, //(120 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20,
+                //layout: 'fit',
+                renderTo: div,
+                /*
+                items: [{
+                    title: '€',
+                    id: 'euro',
+                    //contentEl: 'europerc' + div,
+                }, {
+                    id: 'percent',
+                    title: '% of Fund',
+                }],
+                //contentEl: 'asdf1',
+                
+                listeners: {
+                    render: function() {
+                        this.items.each(function(i){
+
+                            i.tab.on('click', function(asdf, asdf2){
+                                //console.log(i);
+                                //console.log(asdf);
+                                //console.log(asdf2);
+                                //i.update('whatever');
+                                
+                                var activeTab = tabPanel.getId();
+                                if(i.id == 'percent') {
+                                    var panel = Ext.getCmp('percent');
+                                    panel.add(gridPanel2);
+                                    panel.doLayout();
+                                }
+                            });
+                        });
+                    }
+                }
+                */
+            });
+            
+            widget.params.title = '€';
+            var grid = createGrid(widget, data); 
+            tabPanel.add(grid);
+            tabPanel.doLayout();
+            
+            var qs = widget.qs.replace('fields=nav', 'fields=weight');
+            widget.params.title = '% of Fund';
+            
+            $.getJSON(widget.url + qs, function(data2) { 
+                var grid = createGrid(widget, data2); 
+                tabPanel.add(grid);
+                tabPanel.doLayout();
+            });
+
+        });
+    }
 
     function dataTable(obj, widget, div) {
     
@@ -1007,12 +1220,12 @@ console.log($('#3_5'));
                 },
             });
 
-            Ext.create('Ext.grid.Panel', {
+            return Ext.create('Ext.grid.Panel', {
                 id: div,
                 store: Ext.data.StoreManager.lookup(widget.key),
                 columns: data.columns,
-                width: (140 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)),
-                height: (140 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
+                width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)),
+                height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
                 header: false,
                 border: false,
                 enableLocking: true,
@@ -1030,6 +1243,7 @@ console.log($('#3_5'));
                             year: year,
                         }
                         
+                        console.log('refreshing windows');
                         refreshWindow('w3', obj, extra_params);
                         refreshWindow('w4', obj, extra_params);
                         refreshWindow('w5', obj, extra_params);
@@ -1041,21 +1255,79 @@ console.log($('#3_5'));
                         } else if(columnIndex < 13) {
                             month = columnIndex;
                             
+                            console.log('month view');
+                            
+                           // var panel = Ext.getCmp("month-table");
+                            //panel.remove('month-table-content');
                             
                             
-                            var panel = Ext.getCmp("month-table");
-                            panel.remove('month-table-content');
+                            $('<div id="asdf"></div>').appendTo('#1');
                             
                             obj = {};
                             obj.month = month;
                             obj.year = year;
                             obj.fund = fund;
-                            widget.key = "fundperfmonthtable";
-                            widget.params.date__year = "YEAR";
-                            widget.params.date__month = "MONTH";
+                            widget.key = "fundperfhistcalview";
+                            widget.params.value_date__year = "YEAR";
+                            widget.params.value_date__month = "MONTH";
                             widget.params.fund = "FUND";
                             widget.type = "month_table";
-                            createWidget(obj, widget, panel.renderTo);
+                            createWidget(obj, widget, 'asdf'); //panel.renderTo);
+                            
+                            
+                            
+                            
+                            
+                 /*           
+                            
+                  console.log(obj.page + '_' + widget.key);          
+        Ext.create('Ext.window.Window', {
+            title: 'asdf',
+            // there's gotta be a better way to do this
+            //height: (140 * size_y) + (10 * size_y) + (10 * (size_y - 1)) - 10,
+            //width:  (140 * size_x) + (10 * size_x) + (10 * (size_x - 1)) - 10,
+            height: 300,
+            width: 350,
+            layout: 'auto',
+            floatable: false,
+            draggable: false,
+            closable: true, 
+            //contentEl: 'asdf',
+            //x: 0,
+            //y: 0,
+            renderTo: div,
+            tools: [{
+               type: 'close',
+               handler: function(e, toolEl, panel, tc) {
+                    Ext.Msg.show({
+                         title:'Remove Widget?',
+                         msg: 'You want to remove the widget from this page?',
+                         buttons: Ext.Msg.OKCANCEL,
+                         icon: Ext.Msg.CONFIRM,
+                         fn:function (buttonId) {
+                             //console.log('buttonId:' + buttonId);
+                             if (buttonId == "ok") {
+
+                                var grid = $('#data').data('grid' + page);
+
+                            }
+                         }
+                    });
+               }
+            }],
+        }).show();
+                            
+                            
+                            
+          */                  
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
                         }
                     }
                 }
@@ -1123,7 +1395,7 @@ console.log($('#3_5'));
                 plugins: [{
                     ptype: 'rowexpander',
                     rowBodyTpl: [
-                        '<div id="{id}">',
+                        '<div id="innergrid{id}">',
                         '</div>'
                     ]
                 }],
@@ -1135,13 +1407,12 @@ console.log($('#3_5'));
 
             mainGrid.view.on('expandBody', function (rowNode, record, expandRow, eOpts) {
                 var id = record.get('id');
-                displayInnerGrid(record.get('id'));
+                displayInnerGrid(id);
                 
-                widget.url = '/api/widget/holdlinegraph/';
-                widget.qs = '?identifier=' + record.get('id') + '&fund=' + obj.fund;
-                widget.div = div;
-                
-                lineBarChart('', widget);
+
+                widget.holding = record.get('id');
+                widget.fund = obj.fund;
+                lineBarChart(widget);
                 
                 if(typeof $('#data').data('last-open-subgrid') != 'undefined') {
                     //destroyInnerGrid($('#data').data('last-open-subgrid'));
@@ -1157,7 +1428,13 @@ console.log($('#3_5'));
 
     function pieChart(widget, data, div) {
 
+        if(widget.key == "fundnavpie") {
+            $('#data').data('linebar-div', div);
 
+            $('#' + div).append('<p>Please click on a month</p>');
+            return
+        }
+        
         var chart = new Highcharts.Chart({
             chart: {
                 renderTo: div,
@@ -1166,7 +1443,7 @@ console.log($('#3_5'));
                 plotShadow: false
             },
             title: {
-                text: 'Browser market shares at a specific website, 2010'
+                text: false
             },
             tooltip: {
         	    pointFormat: '{series.name}: <b>{point.percentage}%</b>',
@@ -1189,7 +1466,7 @@ console.log($('#3_5'));
             },
             series: [{
                 type: 'pie',
-                name: 'Browser share',
+                name: widget.name,
                 data: [
                     ['Firefox',   45.0],
                     ['IE',       26.8],
@@ -1735,7 +2012,6 @@ console.log($('#3_5'));
                                         record.raw.page = str.replace(/\D/g, '');
                                     }
                                 }
-                                
                                 initPage(record.raw);
 
                             }

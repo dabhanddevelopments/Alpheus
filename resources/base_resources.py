@@ -55,10 +55,11 @@ class MainBaseResource2(ModelResource):
 # Base Model Resource
 class MainBaseResource(ModelResource):
     class Meta:
-        authentication = SessionAuthentication()
-        authorization = DjangoAuthorization()
+        #authentication = SessionAuthentication()
+        #authorization = DjangoAuthorization()
         serializer = PrettyJSONSerializer()
         include_resource_uri = False
+        columns = []
 
     # Format output
     def alter_list_data_to_serialize(self, request, data):
@@ -90,22 +91,28 @@ class MainBaseResource(ModelResource):
             width = {}
             width[0] = 50
             width[1] = 50
+        
 
         columns = []
-        for key, column in enumerate(column_names):
+        for key, value in enumerate(column_names):
+        
+            
+            
             try: 
+                column = value.split('__')[0]
                 dic = {
                     'text': column.title().replace('_', ' '),
                     'dataIndex': column,
                 }
             except:
                 try:
+                    column = value
                     dic = {
                         'dataIndex': column[0],
                         'text': column[1].title().replace('_', ' '),
                     }
                 except:
-                    raise "set columns syntax is ['foo', ['bar', 'Some Bar']]"
+                    raise
             if key == 0:
                 dic['width'] = width[0]
             else:
@@ -119,6 +126,48 @@ class MainBaseResource(ModelResource):
         for param in params:
             if not param in filters:
                 raise BadRequest("Param '%s' is mandatory" % param)
+                
+                
+    def dehydrate(self, bundle):
+    
+        """ 
+        Adds support for double underscore in the Meta.fields
+        Currently it only supports two levels
+        """
+        to_delete = []
+        for row in self._meta.fields:
+            fields = row.split('__')
+            if len(fields) > 1:
+                if len(fields) == 3:
+                    #if fields[2] == 'name':
+                    #    name = fields[1]
+                    #else:
+                    #    name = fields[2]
+                    bundle.data[fields[0]] = bundle.data[fields[0]].\
+                                        data[fields[1]].data[fields[2]]
+                if len(fields) == 2:
+                    bundle.data[fields[0]] = bundle.data[fields[0]].data[fields[1]]
+
+                #to_delete.append(fields[0])
+        
+        #for delete in to_delete:
+        #    try:
+        #        del bundle.data[delete]
+        #    except:
+        #        pass #already deleted
+
+        """ 
+        Saving the field names so we can create column names for tables later
+        """
+        for name, value in bundle.data.iteritems(): 
+            try:
+                if name not in self._meta.columns and name != 'id':
+                    self._meta.columns.append(name)
+            except:
+                pass
+                
+        print 'return'
+        return bundle
 
 
 from mptt.templatetags.mptt_tags import cache_tree_children

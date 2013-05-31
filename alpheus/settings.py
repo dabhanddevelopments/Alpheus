@@ -7,6 +7,8 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 TASTYPIE_FULL_DEBUG = DEBUG
 
+INTERNAL_IPS = ('127.0.0.1',)
+
 SINCE_INCEPTION = 1950
 
 ADMINS = (
@@ -110,6 +112,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -143,6 +146,8 @@ INSTALLED_APPS = (
     'tastypie',
     'feincms',
     'mptt',
+    'debug_toolbar',
+    #'fixture_magic',
 
     # custom
     'app',
@@ -168,7 +173,7 @@ LOGGING = {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
-        }
+        },
     },
     'loggers': {
         'django.request': {

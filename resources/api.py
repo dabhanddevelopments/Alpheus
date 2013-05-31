@@ -9,6 +9,9 @@ from app.models import * #Page, PageWindow, Window, Widget, WidgetType, Fund, Fu
 from base_resources import MainBaseResource, TreeBaseResource
 from django.http import HttpResponse
 
+from tastypie.api import Api
+api = Api(api_name="api")
+
 class LoggedInResource(Resource):
     class Meta:
         pass
@@ -20,32 +23,6 @@ class LoggedInResource(Resource):
         else:
             return HttpResponse(status=401)
 
-
-"""
-# remove later
-from django.contrib.auth.models import User
-from tastypie.authorization import Authorization
-from tastypie import fields
-from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
-from app.models import Entry
-
-
-
-
-class EntryResource(ModelResource):
-    user = fields.ForeignKey(UserResource, 'user')
-
-    class Meta:
-        queryset = Entry.objects.all()
-        resource_name = 'entry'
-        authorization = Authorization()
-        filtering = {
-            'user': ALL_WITH_RELATIONS,
-            'pub_date': ['exact', 'lt', 'lte', 'gte', 'gt'],
-        }
-
-# end remove later
-"""
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -245,13 +222,7 @@ class FundTypeResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = FundType.objects.all()
 
-class FundResource2(ModelResource):
 
-    class Meta(MainBaseResource.Meta):
-        queryset = Fund.objects.all()
-        fields = ['id', 'name']
-
-# only used internally
 class FundResource(ModelResource):
 
     class Meta(MainBaseResource.Meta):
@@ -267,8 +238,6 @@ class FundByTypeResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = FundType.objects.all()
 
-
-
 class FundNameResource(MainBaseResource):
 
     fund_type = fields.ForeignKey(FundTypeResource, "fund_type")
@@ -276,18 +245,6 @@ class FundNameResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = Fund.objects.all()
         fields = ['name', 'fund_type']
-
-
-class HoldingResource(ModelResource):
-    fund = fields.ForeignKey(FundResource, 'fund')
-    
-
-    class Meta:
-        queryset = Holding.objects.all()
-        filtering = {
-            "fund": ALL,
-        }    
-          
 
 class MenuResource(TreeBaseResource, MainBaseResource):
     page = fields.ForeignKey(PageResource, "page", null=True, full=True)
@@ -337,7 +294,6 @@ class MenuResource(TreeBaseResource, MainBaseResource):
 
         return obj
 
-
 class MenuParentItemsResource(MainBaseResource):
     #page = fields.ForeignKey(PageResource, "page", null=True, full=True)
     parent = fields.ForeignKey('self', 'parent', null=True, full=True)
@@ -347,10 +303,64 @@ class MenuParentItemsResource(MainBaseResource):
         queryset = Menu.objects.all().select_related('parent')#, 'page')
 
 
-# TODO: Move this to it's own file
-from tastypie.api import Api
+class FundBenchResource(ModelResource):
+    funds = fields.ToManyField(FundResource, 'funds')
+    
+    class Meta:
+        queryset = FundBench.objects.all()
+        filtering = {
+            'funds': ALL,
+        }
 
-api = Api(api_name="api")
+class CurrencyResource(ModelResource):
+    
+    class Meta:
+        queryset = Currency.objects.all()
+        
+
+class HoldingCategoryResource(ModelResource):
+    class Meta:
+        queryset = HoldingCategory.objects.all()
+        filtering = {
+            'holding_group': ALL,
+        }
+        
+class PurchaseSaleResource(ModelResource):
+
+    class Meta:
+        queryset = PurchaseSale.objects.all()
+        
+
+class HoldingResource(ModelResource):
+    fund = fields.ForeignKey(FundResource, 'fund')   
+    class Meta:
+        queryset = Holding.objects.all()
+        filtering = {
+            "fund": ALL,
+        }    
+
+class HoldingResourceDetail(MainBaseResource):
+    fund = fields.ForeignKey(FundResource, 'fund')
+    currency = fields.ForeignKey(CurrencyResource, 'currency', full=True)
+    sector = fields.ForeignKey(HoldingCategoryResource, 'sector', \
+                                     related_name='sec', full=True)
+    sub_sector = fields.ForeignKey(HoldingCategoryResource, 'sub_sector', \
+                                        related_name='sub_sec', full=True)
+    location = fields.ForeignKey(HoldingCategoryResource, 'location', \
+                                    related_name='loc', full=True)
+    
+
+    class Meta:
+        queryset = Holding.objects.all()
+        filtering = {
+            "fund": ALL_WITH_RELATIONS,
+        }  
+        
+
+# TODO: Move this to it's own file
+
+
+
 api.register(UserResource())
 api.register(WidgetsResource())
 api.register(LoggedInResource())
@@ -362,3 +372,4 @@ api.register(FundTypeResource(),canonical=True)
 api.register(PageResource(),canonical=True)
 api.register(PageWindowResource(),canonical=True)
 api.register(HoldingResource())
+api.register(HoldingResourceDetail())

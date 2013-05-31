@@ -49,7 +49,7 @@ class Widget(models.Model):
     position = models.PositiveSmallIntegerField("Position")
 
     class Meta:
-        ordering = ['position']
+        ordering = ['position', 'name']
 
     def __unicode__(self):
         return self.name
@@ -96,10 +96,10 @@ class FundType(models.Model):
 
 class Fund(models.Model):
     
-    fund_type = models.ForeignKey(FundType, related_name="fund")
+    fund_type = models.ForeignKey(FundType, related_name="fund_type")
     counter_party = models.ForeignKey('CounterParty')
     alarm = models.ForeignKey('Alarm', blank=True, null=True)
-    benchmark = models.ForeignKey('Benchmark', blank=True, null=True)
+    benchmark = models.ForeignKey('FundBench', blank=True, null=True)
     name = models.CharField(max_length=200, null=True)
     aum = models.SmallIntegerField()
     mtd = models.SmallIntegerField()
@@ -121,11 +121,26 @@ class FundBench(models.Model):
 class FundBenchHist(models.Model):
     benchmark = models.ForeignKey(FundBench)
     value_date = models.DateField()
-    value = models.DecimalField(max_digits=20, decimal_places=2)
+    performance = models.DecimalField(max_digits=15, decimal_places=5)
+    si = models.DecimalField(max_digits=15, decimal_places=5)
     ann_return = models.DecimalField(max_digits=4, decimal_places=2)
+    ann_return3 = models.DecimalField(max_digits=4, decimal_places=2)
+    ann_return5 = models.DecimalField(max_digits=4, decimal_places=2)
     ann_volatility = models.DecimalField(max_digits=4, decimal_places=2)
+    ann_volatility3 = models.DecimalField(max_digits=4, decimal_places=2)
+    ann_volatility5 = models.DecimalField(max_digits=4, decimal_places=2)
     sharpe_ratio = models.DecimalField(max_digits=4, decimal_places=2)
-    
+    sharpe_ratio3 = models.DecimalField(max_digits=4, decimal_places=2)
+    sharpe_ratio5 = models.DecimalField(max_digits=4, decimal_places=2)
+    alpha = models.DecimalField(max_digits=4, decimal_places=2)
+    alpha3 = models.DecimalField(max_digits=4, decimal_places=2)
+    alpha5 = models.DecimalField(max_digits=4, decimal_places=2)
+    beta = models.DecimalField(max_digits=4, decimal_places=2)
+    beta3 = models.DecimalField(max_digits=4, decimal_places=2)
+    beta5 = models.DecimalField(max_digits=4, decimal_places=2)
+    correlation = models.DecimalField(max_digits=4, decimal_places=2)
+    correlation3 = models.DecimalField(max_digits=4, decimal_places=2)
+    correlation5 = models.DecimalField(max_digits=4, decimal_places=2)
 
 
 class Menu(MPTTModel):
@@ -190,6 +205,8 @@ class Trade(models.Model):
     no_of_units = models.DecimalField(max_digits=20, decimal_places=2,\
                                                 verbose_name="No. of Units")
     purchase_price = models.DecimalField(max_digits=20, decimal_places=5)
+    purchase_price_base = models.DecimalField(max_digits=20, decimal_places=5)
+    nav_purchase = models.DecimalField(max_digits=20, decimal_places=5)
     currency = models.ForeignKey(Currency)
     fx_euro = models.DecimalField(max_digits=20, decimal_places=8,\
                                                 verbose_name="FX to Euro")
@@ -227,11 +244,7 @@ HOLDING_GROUP = (
     (GROUP_ASS, 'Asset Class'),
 )
 class Holding(models.Model):
-     #name = models.CharField(max_length=50)
-
-    #class HoldingHistorical(models.Model):
     name = models.CharField(max_length=50)
-    identifier = models.IntegerField()
     fee = models.ForeignKey(Fee, blank=True, null=True)
     fund = models.ForeignKey(Fund)
     currency = models.ForeignKey(Currency)
@@ -242,22 +255,23 @@ class Holding(models.Model):
     location = models.ForeignKey('HoldingCategory', related_name='location')
     asset_class = models.ForeignKey('HoldingCategory',\
                                     related_name='asset_class')
-    nav = models.DecimalField(max_digits=20, decimal_places=2,\
-                                                verbose_name="NAV")
-    holding_group = models.CharField(max_length=3,
-                                choices=HOLDING_GROUP,
-                                default=GROUP_ALL)
-    description = models.TextField()
-    value_date = models.DateField()
-    rep_code = models.CharField(max_length=50)
     isin = models.CharField(max_length=12)
+    rep_code = models.CharField(max_length=50)
+    description = models.TextField()
     valoren = models.IntegerField()
+    
+    # fields recorded in the historical holding table HoldPerf
+    # all of them might not be necessary to store here
+    nav = models.DecimalField(max_digits=20, decimal_places=2,\
+                                             verbose_name="NAV")
     interest_rate = models.DecimalField(max_digits=20, decimal_places=5)
-    weight = models.DecimalField(max_digits=20, decimal_places=5)
+    
+    
     current_price = models.DecimalField(max_digits=20, decimal_places=8)
     no_of_units = models.DecimalField(max_digits=20, decimal_places=2,\
                                                 verbose_name="No. of Units")
-
+    weight = models.DecimalField(max_digits=20, decimal_places=5)
+    value_date = models.DateField()
       
     def __unicode__(self):
         return str(self.id)
@@ -282,96 +296,125 @@ class HoldingType(models.Model):
     def __unicode__(self):
         return self.name
 
-class HoldPerfYearly(models.Model):
-    #holding = models.ForeignKey(Holding)
+class HoldPerfYear(models.Model):
     fund = models.ForeignKey(Fund)
-    holding_group = models.CharField(max_length=3,
-                                choices=HOLDING_GROUP,
-                                default=GROUP_ALL)
     holding_category = models.ForeignKey(HoldingCategory)
     si = models.DecimalField(max_digits=4, decimal_places=2)
     ytd = models.DecimalField(max_digits=4, decimal_places=2)
-    year = models.SmallIntegerField()
+    value_date = models.DateField()
 
-    def __unicode__(self):
-        return "%s - %s - %s" % (self.holding.name, \
-                    self.fund.name, self.year)
+    #def __unicode__(self):
+    #    return str(self.value_date)
 
     class Meta:
-            ordering = ['year']
+            ordering = ['value_date']
 
-class HoldPerfMonthly(models.Model):
-    #holding = models.ForeignKey(Holding)
+class HoldPerfMonth(models.Model):
     fund = models.ForeignKey(Fund)
-    holding_group = models.CharField(max_length=3,
-                                choices=HOLDING_GROUP,
-                                default=GROUP_ALL)
+    #holding = models.ForeignKey(Holding)
     holding_category = models.ForeignKey(HoldingCategory)
-    #yearly = models.ForeignKey(HoldPerfYearly)
-    value = models.DecimalField(max_digits=4, decimal_places=2)
-    year = models.SmallIntegerField()
-    month = models.SmallIntegerField()
+    year = models.ForeignKey(HoldPerfYear)
+    si = models.DecimalField(max_digits=4, decimal_places=2)
+    ytd = models.DecimalField(max_digits=4, decimal_places=2)
+    performance = models.DecimalField(max_digits=4, decimal_places=2)
+    nav = models.DecimalField(max_digits=20, decimal_places=5,\
+                                             verbose_name="NAV")
+    weight = models.DecimalField(max_digits=20, decimal_places=5)
+    value_date = models.DateField()
 
     #class Meta:
     #    unique_together = (('holding_group', 'year'), ('year', 'month'))
 
     def __unicode__(self):
-        return self.name
-
-class FundPerfDaily(models.Model):
-    fund = models.ForeignKey(Fund)
-    holding = models.ForeignKey(Holding, null=True, blank=True)
-    value = models.DecimalField(max_digits=4, decimal_places=2)
-    date = models.DateField()
+        return str(self.value_date)
+        
+# @TODO: Consider renaming this model HoldingHistory
+class HoldPerf(models.Model):
+    holding = models.ForeignKey(Holding)
+    holding_category = models.ForeignKey(HoldingCategory)
+    month = models.ForeignKey(HoldPerfMonth)
+    nav = models.DecimalField(max_digits=20, decimal_places=2,\
+                                             verbose_name="NAV")
+    # not used?
+    interest_rate = models.DecimalField(max_digits=20, decimal_places=5)
+    
+    # equivalent to value in fund performance
+    performance = models.DecimalField(max_digits=20, decimal_places=5)
+    
+    # 
+    current_price = models.DecimalField(max_digits=20, decimal_places=8)
+    no_of_units = models.DecimalField(max_digits=20, decimal_places=2,\
+                                                verbose_name="No. of Units")
+    weight = models.DecimalField(max_digits=20, decimal_places=5)
+    value_date = models.DateField()
+               
+               
+# FUND PERFORMANCE    
+                             
+class FundPerfYear(models.Model):
+    fund = models.ForeignKey(Fund, related_name='fund')
+    ytd = models.DecimalField(max_digits=15, decimal_places=5)
+    si = models.DecimalField(max_digits=15, decimal_places=5)
+    value_date = models.DateField()
 
     def __unicode__(self):
-        return str(self.value)
+        return str(self.value_date)
+
+    class Meta:
+        ordering = ['value_date']
+    #    #unique_together = ('holding_group', 'holding_category',)
+    #    ordering = ['value_date']
 
 
-class FundPerfMonthly(models.Model):
-    fund = models.ForeignKey(Fund)
-    holding_group = models.CharField(max_length=3,
-                                choices=HOLDING_GROUP,
-                                default=GROUP_ALL)
-    holding_category = models.ForeignKey(HoldingCategory,
-                related_name='category', null=True, blank=True)
-    value = models.DecimalField(max_digits=4, decimal_places=2)
+class FundPerfMonth(models.Model):
+    fund = models.ForeignKey(Fund, related_name='month')
+    year = models.ForeignKey(FundPerfYear, related_name="month")
+    performance = models.DecimalField(max_digits=4, decimal_places=2)
+    ytd = models.DecimalField(max_digits=15, decimal_places=5)
+    si = models.DecimalField(max_digits=15, decimal_places=5)
     ann_return = models.DecimalField(max_digits=4, decimal_places=2)
+    ann_return3 = models.DecimalField(max_digits=4, decimal_places=2)
+    ann_return5 = models.DecimalField(max_digits=4, decimal_places=2)
     ann_volatility = models.DecimalField(max_digits=4, decimal_places=2)
+    ann_volatility3 = models.DecimalField(max_digits=4, decimal_places=2)
+    ann_volatility5 = models.DecimalField(max_digits=4, decimal_places=2)
     sharpe_ratio = models.DecimalField(max_digits=4, decimal_places=2)
-    year = models.SmallIntegerField()
-    month = models.SmallIntegerField()
+    sharpe_ratio3 = models.DecimalField(max_digits=4, decimal_places=2)
+    sharpe_ratio5 = models.DecimalField(max_digits=4, decimal_places=2)
+    alpha = models.DecimalField(max_digits=4, decimal_places=2)
+    alpha3 = models.DecimalField(max_digits=4, decimal_places=2)
+    alpha5 = models.DecimalField(max_digits=4, decimal_places=2)
+    beta = models.DecimalField(max_digits=4, decimal_places=2)
+    beta3 = models.DecimalField(max_digits=4, decimal_places=2)
+    beta5 = models.DecimalField(max_digits=4, decimal_places=2)
+    correlation = models.DecimalField(max_digits=4, decimal_places=2)
+    correlation3 = models.DecimalField(max_digits=4, decimal_places=2)
+    correlation5 = models.DecimalField(max_digits=4, decimal_places=2)
+    
+    euro_nav = models.DecimalField(max_digits=20, decimal_places=2)
     value_date = models.DateField()
 
     class Meta:
         #unique_together = ('holding_group', 'holding_category',)
-        pass
+        ordering = ['value_date']
 
     def __unicode__(self):
-        return self.fund.name
+        return str(self.value_date)
 
-class FundPerfYearly(models.Model):
+
+class FundPerf(models.Model):
     fund = models.ForeignKey(Fund)
-    holding_group = models.CharField(max_length=3,
-                                choices=HOLDING_GROUP,
-                                default=GROUP_ALL)
-    holding_category = models.ForeignKey(HoldingCategory,
-                                        null=True, blank=True)
-    year = models.SmallIntegerField()
-    ytd = models.DecimalField(max_digits=15, decimal_places=5)
-    si = models.DecimalField(max_digits=15, decimal_places=5)
+    month = models.ForeignKey(FundPerfMonth)
+    performance = models.DecimalField(max_digits=4, decimal_places=2)
+    value_date = models.DateField()
 
     def __unicode__(self):
-        return self.fund.name
-
-    class Meta:
-        #unique_together = ('holding_group', 'holding_category',)
-        ordering = ['year']
+        return str(self.performance)
 
 
 
 class Alarm(models.Model):
-    pass
+    name = models.CharField(max_length=50)
 
 class Benchmark(models.Model):
     pass

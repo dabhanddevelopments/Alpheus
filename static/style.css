@@ -37,7 +37,9 @@ a {
 
 .wrapper {
     margin: 0 auto;
-    width: 960px;
+    /*width: 960px;*/
+    width: 2550px;
+    height: 1024px;
 }
 
 
@@ -342,7 +344,8 @@ section header .m_txt{
 }
 
 .gridster {
-    width: 100%;
+    width: 4000px;
+    /* width: 100%; */
     margin: 0 auto;
 
     opacity: .8;
@@ -430,6 +433,96 @@ article:not(:last-child),
 #intro > div:last-child{
     width: 32%;
     float: right;
+}
+
+
+
+
+    p {
+        margin:5px;
+    }
+
+    .x-tree-icon-parent  {
+        width: 0px;
+        background-image: '';
+    }
+
+    .x-tree-icon-leaf {
+        width: 0px;
+        background-image: '';
+    }
+
+    .widget_desc {
+       margin: 20px 20px 20px 20px;
+       font-size: 12px;
+       font-family: tahoma,arial,verdana,sans-serif;
+    }
+
+    .widget_desc h1 {
+        margin-top: 30px;
+        margin-bottom: 10px;
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    .widget_preview {
+        color: gray; 
+        font-weight: italic; 
+        text-align:center;
+        margin-top:40%;     
+    }
+
+
+
+table.month_table{
+    margin:30px;   
+    background-color:white;
+}
+
+table.month_table{
+    border-collapse: seperate;
+    border-spacing: 2px;
+}
+
+table.month_table td {
+    background-color:gray;
+    border: 1px solid gray;
+    padding: 6px;
+
+}
+
+table.month_table td a {
+    font-size: 10px;
+    padding: 5px;    
+}
+
+/* tooltip */
+#content-anchor-tip ul {
+    float: left;
+    width: 500px;
+    list-style-type: disc;
+    margin-left: 15px;
+} 
+
+.ext-ie #content-anchor-tip ul {
+    margin: 0;
+    padding-left: 15px;
+} 
+
+#content-anchor-tip .thumb {
+    float: right;
+} 
+
+#content-anchor-tip .status-icon {
+    position: absolute;
+    top: 4px;
+    right: 50px;
+    padding: 0;
+    line-height: 0;
+} 
+
+#content-anchor-tip a:link, #content-anchor-tip a:visited {
+    color: #339;
 }
 
 

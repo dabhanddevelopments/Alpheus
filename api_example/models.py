@@ -5,7 +5,7 @@ from django.template.defaultfilters import slugify
 
 
 class Entry(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, related_name='asdf')
     pub_date = models.DateTimeField(default=now)
     title = models.CharField(max_length=200)
     slug = models.SlugField()
@@ -20,3 +20,5 @@ class Entry(models.Model):
             self.slug = slugify(self.title)[:50]
 
         return super(Entry, self).save(*args, **kwargs)
+  
+

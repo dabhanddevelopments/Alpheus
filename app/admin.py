@@ -12,6 +12,8 @@ class WidgetParamAdmin(admin.ModelAdmin):
 class WidgetAdmin(admin.ModelAdmin):
     list_display = ('name', 'key', 'widget_type', 'window', 'description',)
     filter_horizontal = ['widget_param']
+    list_editable = ['key']
+    list_filter = ['widget_type']
 
 
 class WidgetInline(admin.TabularInline):
@@ -35,13 +37,13 @@ class PageWindowAdmin(admin.ModelAdmin):
     pass
 
 class FundPerfDailyAdmin(admin.ModelAdmin):
-    list_display = ('fund', 'holding', 'value', 'date')
+    list_display = ('fund', 'performance', 'value_date')
 
 class FundPerfMonthlyAdmin(admin.ModelAdmin):
-    list_display = ('fund', 'holding_group', 'year', 'month')
+    list_display = ('value_date', 'year')
 
 class FundPerfYearlyAdmin(admin.ModelAdmin):
-    list_display = ('fund', 'holding_group', 'year', 'si', 'ytd')
+    list_display = ('fund', 'value_date', 'si', 'ytd')
 
 class HoldingCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'holding_group')
@@ -71,9 +73,12 @@ admin.site.register(Trade)
 admin.site.register(TradeType)
 admin.site.register(Fund)
 admin.site.register(FundType)
-admin.site.register(FundPerfDaily, FundPerfDailyAdmin)
-admin.site.register(FundPerfMonthly, FundPerfMonthlyAdmin)
-admin.site.register(FundPerfYearly, FundPerfYearlyAdmin)
+admin.site.register(FundPerf, FundPerfDailyAdmin)
+admin.site.register(FundPerfMonth, FundPerfMonthlyAdmin)
+admin.site.register(FundPerfYear, FundPerfYearlyAdmin)
+admin.site.register(HoldPerf)
+admin.site.register(HoldPerfMonth)
+admin.site.register(HoldPerfYear)
 admin.site.register(Fee)
 admin.site.register(PurchaseSale)
 admin.site.register(FundBench)
