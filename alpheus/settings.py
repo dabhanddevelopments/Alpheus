@@ -151,6 +151,7 @@ INSTALLED_APPS = (
 
     # custom
     'app',
+    'app2',
     'resources',
     'api_example',
 )

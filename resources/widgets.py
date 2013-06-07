@@ -9,7 +9,7 @@ from resources.base_resources import MainBaseResource
 #from app import widget_models
 from alpheus.serializers import PrettyJSONSerializer
 from django.db.models import Avg
-import datetime 
+import datetime
 from time import mktime
 
 from tastypie.api import Api
@@ -160,46 +160,46 @@ class FundPerfMonth(MainBaseResource):
     def build_filters(self, filters=None):
         self.check_params(['fields'], filters)
         return super(MainBaseResource, self).build_filters(filters)
-            
+
     def alter_list_data_to_serialize(self, request, data):
-    
+
         fields = request.GET.get("fields", 0)
         lis = []
         dic = {}
         this_year = date.today().year
-        
+
         for row in data['objects']:
-        
+
             for year in range(1970, this_year + 1):
-            
+
                 value_date = row.data['value_date']
-                
+
                 if year == value_date.year:
                     try:
                         dic[year]
                     except:
                         dic[year] = {'year': year}
-                        
+
                     for month in range(1, 13):
-                    
+
                         if month == value_date.month:
-                            
+
                             name = calendar.month_abbr[value_date.month]
                             dic[year][name.lower()] = row.data[fields]
-                            
+
                             if month == 12:
                                 dic[year]['ytd'] = row.data['ytd']
-                                
+
         for key, val in dic.iteritems():
             lis.append(val)
-        
+
         # create columns
         columns = ['year']
         for month in range(1, 13):
             abbr = calendar.month_abbr[month]
             columns.append(abbr.lower())
         if fields == 'performance':
-            columns.append('ytd') 
+            columns.append('ytd')
         columns = self.set_columns(columns, [50, 50])
 
         dic = {
@@ -207,27 +207,28 @@ class FundPerfMonth(MainBaseResource):
             'columns': columns,
             'rows': lis,
         }
-        
+
         return dic
 widget.register(FundPerfMonth())
-    
 
 
-# W2 Bar Graph
-# http://localhost:8007/api/widget/fundperfholdperfbar/?holding__fund=2&value_date=2013-5-30&legend=false&format=json
+
+# W2, W8 Graph
+# http://localhost:8007/api/widget/fundperfholdperfbar/?fund=2&value_date=2013-5-30&legend=false&format=json
 class FundPerfHoldPerfBar(MainBaseResource):
+    fund = fields.ForeignKey(FundResource, 'fund')
     holding = fields.ForeignKey(HoldingResource, 'holding', full=True)
 
     class Meta(MainBaseResource.Meta):
-        queryset = HoldPerfMonth.objects.select_related('holding', 'holding__fund')
+        queryset = HoldPerfMonth.objects.select_related('fund', 'holding')
         ordering = ['name', 'weight']
         #fields = ['current_price', 'holding__name']
- 
+
         filtering = {
             "value_date": ALL,
-            "holding": ALL_WITH_RELATIONS,
+            "fund": ALL,
         }
-    
+
     def alter_list_data_to_serialize(self, request, data):
         dic = {}
         dic['objects'] = [{
@@ -236,15 +237,16 @@ class FundPerfHoldPerfBar(MainBaseResource):
         return dic
 
     def dehydrate(self, bundle):
+        fields = bundle.request.GET.get('fields', 0)
         data = {
-            'y': float(bundle.data['performance']), #@TODO: Perm fix for float bug
+            'y': float(bundle.data[fields]), #@TODO: Perm fix for float bug
             'name': bundle.data['holding'].data['name']
         }
         return data
-        
+
     # without date we would get thousands of records
     def build_filters(self, filters=None):
-        self.check_params(['value_date'], filters)
+        self.check_params(['fields'], filters)
         return super(MainBaseResource, self).build_filters(filters)
 widget.register(FundPerfHoldPerfBar())
 
@@ -257,12 +259,12 @@ class FundPerfHoldPerf(MainBaseResource):
         queryset = HoldPerf.objects.select_related('holding', 'holding__fund')
         ordering = ['name', 'weight']
         #fields = ['current_price', 'holding__name']
- 
+
         filtering = {
             "value_date": ALL,
             "holding": ALL_WITH_RELATIONS,
         }
-    
+
     def alter_list_data_to_serialize(self, request, data):
         dic = {}
         dic['objects'] = [{
@@ -276,7 +278,7 @@ class FundPerfHoldPerf(MainBaseResource):
             'name': bundle.data['holding'].data['name']
         }
         return data
-        
+
     # without date we would get thousands of records
     def build_filters(self, filters=None):
         self.check_params(['value_date'], filters)
@@ -308,26 +310,26 @@ class FundPerfGroupTable(MainBaseResource):
     def build_filters(self, filters=None):
         self.check_params(['fund', 'holding_category__holding_group', 'fields', 'value_date__year'], filters)
         return super(FundPerfGroupTable, self).build_filters(filters)
-        
-        
+
+
     def alter_list_data_to_serialize(self, request, data):
-    
+
         fields = request.GET.get("fields", 0)
         holding_group = request.GET.get("holding_category__holding_group", 0)
-        
+
         lis = []
         dic = {}
         this_year = date.today().year
-        
+
         if holding_group == 'sec':
             group = 'sector'
         elif holding_group == 'sub':
             group = 'sub_sector'
         else:
             group = 'location'
-        
+
         for row in data['objects']:
-        
+
             value_date = row.data['value_date']
             cat_id = row.data['holding_category'].data['id']
             try:
@@ -337,31 +339,31 @@ class FundPerfGroupTable(MainBaseResource):
                     group: row.data['holding_category'].data['name']
                 }
             for month in range(1, 13):
-            
+
                 if month == value_date.month:
-                    
+
                     name = calendar.month_abbr[value_date.month]
                     dic[cat_id][name.lower()] = row.data[fields]
-                    
+
                     if month == 12:
                         dic[cat_id]['ytd'] = row.data['ytd']
                         dic[cat_id]['si'] = row.data['ytd']
-                                
+
         for key, val in dic.iteritems():
             lis.append(val)
-            
+
 
         # create columns
         columns = [group]
         for month in range(1, 13):
             abbr = calendar.month_abbr[month]
             columns.append(abbr.lower())
-    
-        # not NAV        
+
+        # not NAV
         if fields == 'performance':
             columns.append('si')
             columns.append('ytd')
-            
+
         columns = self.set_columns(columns, (80, 50))
 
         dic = {
@@ -377,13 +379,13 @@ widget.register(FundPerfGroupTable())
 # W3, W4 and W5 - Bar Graph
 # http://localhost:8009/api/widget/fundperfgroupbar/?year__fund=2&value_date__year=2013&holding_category__holding_group=loc&format=json
 class FundPerfGroupBar(MainBaseResource):
-    year = fields.ForeignKey(HoldingResource, 'year')
+    fund = fields.ForeignKey(FundResource, 'fund')
     holding_category = fields.ForeignKey(HoldingCategoryResource, 'holding_category')
 
     class Meta(MainBaseResource.Meta):
         queryset = HoldPerfMonth.objects.select_related('holding', 'holding_category')
         filtering = {
-            "year": ALL_WITH_RELATIONS,
+            "fund": ALL,
             "holding_category": ALL_WITH_RELATIONS,
             "value_date": ALL,
         }
@@ -445,12 +447,12 @@ class FundAllocNavBar(MainBaseResource):
         queryset = HoldPerf.objects.select_related('holding', 'holding__fund')
         ordering = ['name', 'weight']
         #fields = ['current_price', 'holding__name']
- 
+
         filtering = {
             "value_date": ALL,
             "holding": ALL_WITH_RELATIONS,
         }
-    
+
     def alter_list_data_to_serialize(self, request, data):
         dic = {}
         dic['objects'] = [{
@@ -464,7 +466,7 @@ class FundAllocNavBar(MainBaseResource):
             'name': bundle.data['holding'].data['name']
         }
         return data
-        
+
     # without date we would get thousands of records
     def build_filters(self, filters=None):
         self.check_params(['value_date'], filters)
@@ -489,7 +491,7 @@ class FundNavPie(MainBaseResource):
             "holding_category": ALL_WITH_RELATIONS,
         }
 
-    
+
     def alter_list_data_to_serialize(self, request, data):
         dic = {}
         dic['objects'] = [{
@@ -503,7 +505,7 @@ class FundNavPie(MainBaseResource):
             'name': bundle.data['holding_category'].data['name']
         }
         return data
-        
+
     # without date we would get thousands of records
     def build_filters(self, filters=None):
         self.check_params(['value_date'], filters)
@@ -517,7 +519,7 @@ widget.register(FundNavPie())
 
 
 
-# W11 holding table 
+# W11 holding table
 # http://localhost:8000/api/widget/fundperfholdtable/?format=json&fund=2
 class FundPerfHoldTable(MainBaseResource):
 
@@ -529,9 +531,9 @@ class FundPerfHoldTable(MainBaseResource):
     sub_sector = fields.ForeignKey(HoldingCategoryResource, 'sub_sector', \
                                         related_name='sub_sec', full=True)
     location = fields.ForeignKey(HoldingCategoryResource, 'location', \
-                                    related_name='loc', full=True)    
-     
-    class Meta(MainBaseResource.Meta):  
+                                    related_name='loc', full=True)
+
+    class Meta(MainBaseResource.Meta):
         queryset = Holding.objects.select_related('currency', 'sector', \
                                     'fund', 'sub_sector', 'location').all()
         filtering = {
@@ -539,26 +541,26 @@ class FundPerfHoldTable(MainBaseResource):
         }
         fields = [
             'id',
-            'name',  'no_of_units', 
-            'current_price', 'nav', 
-            'sector__name', 
-            'sub_sector__name', 
+            'name',  'no_of_units',
+            'current_price', 'nav',
+            'sector__name',
+            'sub_sector__name',
             'location__name',
             'currency__name',
         ]
-    
+
     def alter_list_data_to_serialize(self, request, data):
-    
+
         fields = self._meta.fields;
         if 'id' in fields: fields.remove('id')
 
         data = {
-            'metaData': {'sorting': 'name'}, 
+            'metaData': {'sorting': 'name'},
             'columns': self.set_columns(fields, [80, 80]),
             'rows': data,
         }
         return data
-    
+
 widget.register(FundPerfHoldTable())
 
 
@@ -572,7 +574,7 @@ class FundPerfHoldVolBar(MainBaseResource):
         filtering = {
             'holding': ALL_WITH_RELATIONS,
         }
-        
+
     def alter_list_data_to_serialize(self, request, data):
         lis = []
         for row in data['objects']:
@@ -580,48 +582,48 @@ class FundPerfHoldVolBar(MainBaseResource):
             innerlis=[int(str(date)), float(row.data['no_of_units'])]
             lis.append(innerlis)
         return lis
-widget.register(FundPerfHoldVolBar())      
-        
-        
+widget.register(FundPerfHoldVolBar())
+
+
 # W11 - Holding Price Line Graph
 # http://localhost:8007/api/widget/fundperfholdpriceline/?format=json&holding__fund=2
 class FundPerfHoldPriceLine(MainBaseResource):
     holding = fields.ForeignKey(HoldingResource, 'holding')
-    
+
     class Meta(MainBaseResource.Meta):
         queryset = HoldPerf.objects.select_related('holding').all()
         filtering = {
             'holding': ALL_WITH_RELATIONS,
         }
-        
+
     def alter_list_data_to_serialize(self, request, data):
         lis = []
         for row in data['objects']:
             date = int(mktime(row.data['value_date'].timetuple())) * 1000
             innerlis=[int(str(date)), float(row.data['current_price'])]
             lis.append(innerlis)
-        return lis  
+        return lis
 widget.register(FundPerfHoldPriceLine())
 
 
 # W11 - Holding Trade Inner Table
 # http://localhost:8007/api/widget/fundperfholdtradetable/?format=json&holding__fund=2
 class FundPerfHoldTradeTable(MainBaseResource):
-    holding = fields.ForeignKey(HoldingResource, 'holding')  
+    holding = fields.ForeignKey(HoldingResource, 'holding')
     purchase_sale = fields.ForeignKey(PurchaseSaleResource, 'purchase_sale', full=True)
-      
+
     class Meta(MainBaseResource.Meta):
         queryset = Trade.objects.select_related('holding', 'purchase_sale').all()
-        fields = ['trade_date', 'settlement_date', 'purchase_sale__name', 
-            'no_of_units', 'purchase_price_base', 'fx_to_euro', 
+        fields = ['trade_date', 'settlement_date', 'purchase_sale__name',
+            'no_of_units', 'purchase_price_base', 'fx_to_euro',
             'purchase_price', 'nav_purchase',]
         filtering = {
             'holding': ALL_WITH_RELATIONS,
         }
-        
+
     def alter_list_data_to_serialize(self, request, data):
         data = {
-            'metaData': {'sorting': 'name'}, 
+            'metaData': {'sorting': 'name'},
             'columns': self.set_columns(self._meta.fields, [80, 80]),
             'rows': data,
         }
@@ -636,7 +638,7 @@ widget.register(FundPerfHoldTradeTable())
 class FundPerfBenchCompLine(MainBaseResource):
 
     benchmark = fields.ForeignKey(FundBenchResource, 'benchmark', full=True)
-        
+
     class Meta(MainBaseResource.Meta):
         queryset = FundBenchHist.objects.select_related('benchmark')
         filtering = {
@@ -652,11 +654,11 @@ class FundPerfBenchCompLine(MainBaseResource):
         # benchmarks
         # TODO: redo this
         dic = {}
-        for row in objects:        
+        for row in objects:
             date = int(mktime(row.value_date.timetuple())) * 1000
             output = [int(str(date)), row.performance]
             bench_id = int(row.benchmark.id)
-            
+
             try:
                 dic[bench_id]['name'] = row.benchmark.name
             except:
@@ -667,23 +669,23 @@ class FundPerfBenchCompLine(MainBaseResource):
             except:
                 dic[bench_id]['data'] = []
                 dic[bench_id]['data'].append(output)
-                
+
         response_list = []
         for key, val in dic.iteritems():
             response_list.append(val)
-        
+
         # funds
         fields = request.GET.get("fields", 0)
         fund = request.GET.get('benchmark__funds', 0)
         funds = FundPerfMonth.objects.select_related('fund') \
                                                 .filter(fund=fund)
-                    
+
         dic = {}
-        for row in funds:        
+        for row in funds:
             date = int(mktime(row.value_date.timetuple())) * 1000
             output = [int(date), row.performance] #getattr(row, fields)]
             fund_id = int(row.year.fund.id)
-            
+
             try:
                 dic[fund_id]['name'] = row.year.fund.name
             except:
@@ -694,13 +696,13 @@ class FundPerfBenchCompLine(MainBaseResource):
             except:
                 dic[fund_id]['data'] = []
                 dic[fund_id]['data'].append(output)
-                
+
         for key, val in dic.iteritems():
             response_list.append(val)
-        
-        return JsonResponse(response_list)      
 
-        
+        return JsonResponse(response_list)
+
+
 widget.register(FundPerfBenchCompLine())
 
 
@@ -710,7 +712,7 @@ widget.register(FundPerfBenchCompLine())
 class FundPerfBenchCompTable(MainBaseResource):
 
     funds = fields.ToManyField(FundResource, 'funds', related_name='asdf')
-    
+
     class Meta(MainBaseResource.Meta):
         queryset = FundBench.objects.all()
         filtering = {
@@ -721,20 +723,20 @@ class FundPerfBenchCompTable(MainBaseResource):
     def build_filters(self, filters=None):
         self.check_params(['funds'], filters)
         return super(FundPerfBenchCompTable, self).build_filters(filters)
-        
+
     def get_list(self, request, **kwargs):
-    
+
         base_bundle = self.build_bundle(request=request)
         benchmarks = self.obj_get_list(bundle=base_bundle,
                     **self.remove_api_resource_names(kwargs))
-                    
+
         FundPerfMonth.objects.select_related('fund')
         fund = request.GET.get('funds', 0)
         funds = FundPerfMonth.objects.select_related('fund') \
                             .filter(year__fund=fund).latest('value_date')
-     
+
         # rows
-        rows = ['ann_return', 'ann_volatility', 'sharpe_ratio']
+        rows = ['ann_return1', 'ann_volatility1', 'sharpe_ratio1']
         data = []
         for index, row in enumerate(rows):
             dic = {}
@@ -745,15 +747,15 @@ class FundPerfBenchCompTable(MainBaseResource):
                                                         .latest('value_date')
                 dic['benchmark_' + str(index + 1)] = getattr(history, row)
             data.append(dic)
-            
-        # get latest SI 
+
+        # get latest SI
         funds = FundPerfMonth.objects.filter(fund=fund).latest('value_date')
-        data.append({'type': 'Since Inception', 'fund_name': funds.si}) 
-                    
+        data.append({'type': 'Since Inception', 'fund_name': funds.si})
+
         # columns
         fields = ['type', ['fund_name', funds.fund.name]]
         for index, field in enumerate(benchmarks):
-            fields.append('benchmark_' + str(index + 1))  
+            fields.append('benchmark_' + str(index + 1))
         columns = self.set_columns(fields, [100, 100])
 
         dic = {
@@ -761,90 +763,337 @@ class FundPerfBenchCompTable(MainBaseResource):
             'columns': columns,
             'rows': data,
         }
-        return JsonResponse(dic)   
+        return JsonResponse(dic)
 widget.register(FundPerfBenchCompTable())
 
 
 
-       
 
- 
- 
-""" 
+
+
+
+"""
 class HoldPerfResource(MainBaseResource):
     holding = fields.ForeignKey(HoldingResourceDetail, 'holding', full=True)
-    
+
     class Meta(MainBaseResource.Meta):
         queryset = HoldPerf.objects.select_related(
-            'holding', 'holding__currency', 'holding__sector', 
+            'holding', 'holding__currency', 'holding__sector',
             'holding__sub_sector', 'holding__location', 'holding__fund',
         ).all()
-        
+
         filtering = {
             'holding': ALL_WITH_RELATIONS,
         }
-"""        
-       
-       
-       
-       
-        
+"""
 
 
-        
 
-        
-"""        
+
+
+
+
+
+
+
+"""
 class FundBenchHistResource(MainBaseResource):
     user = fields.ForeignKey(FundBenchResource, 'benchmark', related_name='history')
 
     class Meta:
         queryset = FundBenchHist.objects.all()
         resource_name = 'history'
-"""        
-        
-
-        
-
- 
+"""
 
 
 
-        
 
-            
-            
+
+
+
+
+
+
+
+
 class HoldTradeResource(ModelResource):
     holding = fields.ForeignKey(HoldingResource, 'holding', full=True)
     class Meta:
         queryset = HoldPerf.objects.select_related('holding').all()#.latest('value_date')
         #fields = ['nav', 'holding__name']
-        
+
     # fetch only the latest if the id isn't supplied
     def obj_get_list(self, request=None, **kwargs):
         asdf = HoldPerf.objects.select_related('holding').all().latest('value_date')
-        
+
         return super(HoldTradeResource, self).get_object_list(request).all().latest('value_date')
     #    print asdf
     #    return asdf
-    
+
     #def get_object_list(self, request):
     #    print request.GET
     #    return super(HoldTradeResource, self).get_object_list(request).all()
-    
+
     #def dispatch(self, request_type, request, **kwargs):
     #    print request_type
-    
- 
-                
+
+
+
     def dehydrate(self, bundle):
-    
+
         #fields = ['
         #print bundle.data['holding']
         return bundle
+
+
+
+class HoldLiquidity(MainBaseResource):
+    holding = fields.ForeignKey(HoldingResourceFund, 'holding', full=True)
+
+    class Meta(MainBaseResource.Meta):
+        queryset = Trade.objects.select_related('holding', 'holding__fund').all()
+        fields = [
+            'holding__nav', 'holding__redemption_frequency',
+            'holding__redemption_notice', 'holding__max_redemption',
+            'holding__payment_days', 'dealing_date',
+            'holding__gate', 'holding__soft_lock',
+            'holding__redemption_fee12', 'holding__redemption_fee24',
+            'holding__redemption_fee36', 'holding__name',
+        ]
+        filtering = {
+            'holding': ALL_WITH_RELATIONS,
+        }
+
+    def alter_list_data_to_serialize(self, request, data):
+
+        # columns we want to rename
+        # @TODO: move this to set_columns()
+        columns = [
+            'holding',
+            'nav',
+            ['redemption_frequency', 'Red\'n Freq.'],
+            ['redemption_notice', 'Red\'n Notice'],
+            ['max_redemption', 'Max Red\'n'],
+            'holding__payment_days',
+            'dealing_date',
+            'gate',
+            'soft_lock',
+            ['redemption_fee12', 'Red\'n Fee 12M'],
+            ['redemption_fee24', 'Red\'n Fee 24M'],
+            ['redemption_fee36', 'Red\'n_Fee_36M'],
+        ]
+        """
+        columns = []
+        for field in self._meta.fields:
+            field = field.replace('holding__', '')
+            if field != 'name':
+                try:
+                    columns.append([field, special_columns[field]])
+                except:
+                    columns.append(field)
+        columns = ['holding'] + columns
+        """
+        data = {
+            'metaData': {'sorting': 'name'},
+            'columns': self.set_columns(columns, [100, 85]),
+            'rows': data['objects'],
+        }
+        return data
+widget.register(HoldLiquidity())
+
+
+
+class RedemptionTracker(MainBaseResource):
+    holding = fields.ForeignKey(HoldingResourceFund, 'holding', full=True)
+
+    class Meta(MainBaseResource.Meta):
+        queryset = Trade.objects.select_related('holding', 'holding__fund').all()
+        fields = [
+            'nav_purchase', 'holding__weight',
+            'dealing_date', 'holding__name',
+        ]
+        filtering = {
+            'holding': ALL_WITH_RELATIONS,
+        }
+
+    def alter_list_data_to_serialize(self, request, data):
+        columns = ['holding', 'amount', 'weight', ['redemption_date', 'Red\'n Date']]
+        data = {
+            'metaData': {'sorting': 'name'},
+            'columns': self.set_columns(columns, [100, 85]),
+            'rows': data['objects'],
+        }
+        return data
+widget.register(RedemptionTracker())
+
+
+
+class RedemptionTracker(MainBaseResource):
+    holding = fields.ForeignKey(HoldingResourceFund, 'holding', full=True)
+
+    class Meta(MainBaseResource.Meta):
+        queryset = Trade.objects.select_related('holding', 'holding__fund').all()
+        fields = [
+            'nav_purchase', 'holding__cumulative_weight',
+            'holding__cumulative_nav', 'dealing_date', 'holding__name',
+        ]
+        filtering = {
+            'holding': ALL_WITH_RELATIONS,
+        }
+
+    def alter_list_data_to_serialize(self, request, data):
+        columns = ['holding', 'amount', 'weight', ['redemption_date', 'Red\'n Date']]
+        data = {
+            'metaData': {'sorting': 'name'},
+            'columns': self.set_columns(columns, [100, 85]),
+            'rows': data['objects'],
+        }
+        return data
+widget.register(RedemptionTracker())
+
+
+
+
+class CumulativeWeight(MainBaseResource):
+    holding = fields.ForeignKey(HoldingResourceFund, 'holding', full=True)
+
+    class Meta(MainBaseResource.Meta):
+        queryset = Trade.objects.select_related('holding', 'holding__fund').all()
+        fields = [
+            'nav_purchase', 'holding__cumulative_weight',
+            'holding__cumulative_nav', 'dealing_date', 'holding__weight',
+        ]
+        filtering = {
+            'holding': ALL_WITH_RELATIONS,
+        }
+
+class CumulativeWeightTable(CumulativeWeight):
+    holding = fields.ForeignKey(HoldingResourceFund, 'holding', full=True)
+    class Meta(CumulativeWeight.Meta):
+        pass
+
+    def dehydrate(self, bundle):
+        bundle = super(CumulativeWeightTable, self).dehydrate(bundle)
+        del bundle.data['holding']
+        return bundle
+
+    def alter_list_data_to_serialize(self, request, data):
+
+        columns = [['dealing_date', 'Red\'n Date'], 'cumulative_nav', 'weight',
+                   ['cumulative_weight', 'Cum. Weight']]
+        data = {
+            'metaData': {'sorting': 'name'},
+            'columns': self.set_columns(columns, [100, 85]),
+            'rows': data['objects'],
+        }
+        return data
+widget.register(CumulativeWeightTable())
+
+class CumulativeWeightGraph(CumulativeWeight):
+    holding = fields.ForeignKey(HoldingResourceFund, 'holding', full=True)
+    class Meta(CumulativeWeight.Meta):
+        pass
+
+    def dehydrate(self, bundle):
+        bundle = super(CumulativeWeightGraph, self).dehydrate(bundle)
+        del bundle.data['holding']
+        return bundle
+
+    def alter_list_data_to_serialize(self, request, data):
+
+        y1 = []
+        y2 = []
+        x = []
+        for row in data['objects']:
+            date = int(mktime(row.data['dealing_date'].timetuple())) * 1000
+            y1.append([date, float(row.data['cumulative_weight'])])
+            y2.append([date, float(row.data['cumulative_nav'])])
+        data = [{
+            'data': y1,
+            'yAxis': 0,
+        },{
+            'data': y2,
+            'yAxis': 1,
+            #'type': 'line',
+        #},{
+        #    'data': x,
+        #    'xAxis': 1,
+        }]
+        return data
+widget.register(CumulativeWeightGraph())
+
+class FundSummary(MainBaseResource):
+    fund_type = fields.ForeignKey(FundTypeResource,'fund_type', full=True)
+    benchmark = fields.ForeignKey(FundBenchResource, 'benchmark', null=True, full=True)
+    custodian = fields.ForeignKey(CustodianResource, 'custodian', full=True)
+    auditor = fields.ForeignKey(AuditorResource, 'auditor', full=True)
+    administrator =  fields.ForeignKey(AdministratorResource, 'administrator', full=True)
+    classification = fields.ForeignKey(ClassificationResource, 'classification', full=True)
+    manager = fields.ForeignKey(UserResource, 'manager', full=True)
+    
+    
+    class Meta(MainBaseResource.Meta):
+        queryset = Fund.objects.select_related('fund_type', 'benchmark',\
+         'custodian', 'auditor', 'administrator', 'classification', \
+         'manager')
+
+widget.register(FundSummary())
+
+
+# @TODO limit columns
+class FundRegister(MainBaseResource):
+    fund = fields.ManyToManyField(FundResource, 'fund')
+    
+    class Meta(MainBaseResource.Meta):
+        queryset = Client.objects.prefetch_related('fund')
+        filtering = {
+            'fund': ALL,
+        }
+    def dehydrate(self, bundle):
+        bundle.data['name'] = bundle.data['first_name'] + ' ' + bundle.data['last_name']
+        return bundle
         
+    def alter_list_data_to_serialize(self, request, data):
 
+        columns = [['name', 'Client'], ['no_of_units', 'No of Units'],
+                   ['nav', 'NAV'], ['pending_nav', 'Pending NAV']]
+        data = {
+            'metaData': {'sorting': 'name'},
+            'columns': self.set_columns(columns, [115, 130]),
+            'rows': data['objects'],
+        }
+        return data
+widget.register(FundRegister())
 
+"""
+not used - moved to views becaue of get_FOO_display()
+class SubscriptionRedemption(MainBaseResource):
+    fund = fields.ForeignKey(FundResource, 'fund')
+    client = fields.ForeignKey(ClientResource, 'client')
+    
+    class Meta(MainBaseResource.Meta):
+        queryset = SubscriptionRedemption.objects.all()
+        filtering = {
+            'fund': ALL,
+            'client': ALL,
+        }
+    def dehydrate(self, bundle):
+        bundle.data['sub_red'] = bundle.get_sub_red_display()
+        bundle.data['percent_released'] = bundle.data['percent_released'].get_percent_released_display()
+        
+    def alter_list_data_to_serialize(self, request, data):
+
+        columns = [['name', 'Sub. or Red.'], 'trade_date',
+                   ['no_of_units', 'No. of Units'], ['pending_nav', 'NAV of Trance'],
+                   'percent_released']
+        data = {
+            'metaData': {'sorting': 'name'},
+            'columns': self.set_columns(columns, [100, 85]),
+            'rows': data['objects'],
+        }
+        return data
+widget.register(SubscriptionRedemption())
+"""
 
 """
 # not used?

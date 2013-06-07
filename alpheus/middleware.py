@@ -1,4 +1,4 @@
-from django.db import connection
+from django.db import connection 
 from django.template import Template, Context
 
 class SQLLogMiddleware:

@@ -91,15 +91,20 @@ class MainBaseResource(ModelResource):
             width = {}
             width[0] = 50
             width[1] = 50
-        
+
 
         columns = []
         for key, value in enumerate(column_names):
-        
-            
-            
-            try: 
-                column = value.split('__')[0]
+
+            try:
+                split = value.split('__')
+                try:
+                    if split[1] == 'name':
+                        column = split[0]
+                    else:
+                        column = split[1]
+                except:
+                    column = split[0]
                 dic = {
                     'text': column.title().replace('_', ' '),
                     'dataIndex': column,
@@ -126,11 +131,11 @@ class MainBaseResource(ModelResource):
         for param in params:
             if not param in filters:
                 raise BadRequest("Param '%s' is mandatory" % param)
-                
-                
+
+
     def dehydrate(self, bundle):
-    
-        """ 
+
+        """
         Adds support for double underscore in the Meta.fields
         Currently it only supports two levels
         """
@@ -146,26 +151,33 @@ class MainBaseResource(ModelResource):
                     bundle.data[fields[0]] = bundle.data[fields[0]].\
                                         data[fields[1]].data[fields[2]]
                 if len(fields) == 2:
-                    bundle.data[fields[0]] = bundle.data[fields[0]].data[fields[1]]
+                    if fields[1] == 'name':
+                        bundle.data[fields[0]] = bundle.data[fields[0]].data[fields[1]]
+                    else:
+                        print bundle.data[fields[0]].data[fields[1]]
+                        try:
+                            bundle.data[fields[1]] = bundle.data[fields[0]].data[fields[1]]
+                        except:
+                            print 'skipping', fields
 
                 #to_delete.append(fields[0])
-        
+
         #for delete in to_delete:
         #    try:
         #        del bundle.data[delete]
         #    except:
         #        pass #already deleted
 
-        """ 
+        """
         Saving the field names so we can create column names for tables later
         """
-        for name, value in bundle.data.iteritems(): 
+        for name, value in bundle.data.iteritems():
             try:
                 if name not in self._meta.columns and name != 'id':
                     self._meta.columns.append(name)
             except:
                 pass
-                
+
         print 'return'
         return bundle
 

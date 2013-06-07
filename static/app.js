@@ -15,12 +15,9 @@ Ext.require([
     'Ext.grid.*',
 ]);
 
-function displayInnerGrid(renderId) {
+function displayInnerGrid(data, renderId) {
 
-    $.getJSON("/api/widget/fundperfholdtradetable/?&holding__fund=" + renderId, function(data) {
-    
-        console.log('render id: ' + renderId.toString());
-        console.log(data);
+   
     
         fields = [];
         for(i=0; i < data.columns.length; i++) {
@@ -48,7 +45,7 @@ function displayInnerGrid(renderId) {
             },
             columns: data.columns,
             header: false,
-            width: 800,
+            width: 1000,
             height: 150,
             iconCls: 'icon-grid',
             renderTo: 'innergrid' + renderId,
@@ -59,7 +56,6 @@ function displayInnerGrid(renderId) {
             'dblclick', 'mousemove'
         ]);
 
-    });
 }
 
 
@@ -267,7 +263,6 @@ Ext.onReady(function() {
 
             if(pages[i].id == id) {
             //    var page = pages[i];
-    
 
                 el = 'page' + id;
 
@@ -456,68 +451,7 @@ console.log('initiating grid');
 
     function createWindows(data, i, obj, extra_params) {
     
-    
-        function lineChart2(data, div) {
-        
-           // $.getJSON(widget.url + widget.qs, function(data) {
-                
-                var chart = new Highcharts.StockChart({
-                    chart: {
-                        type: 'line',
-                        marginRight: 25,
-                        //marginBottom: 25,
-                        size: '100%',
-                        renderTo: div,
-                        //width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 10,
-                        //height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
-                    },
-                    navigator:{
-                        enabled:true,
-                    },
-                    scrollbar: {
-                        enabled:false
-                    },
-
-                    rangeSelector: {
-                        enabled: false,
-	                    //selected: 1
-                    },                  
-                    title: {
-                        enabled: false,
-                    //    text: widget.name,
-                    //    x: -20 //center
-                    },
-                    xAxis: {
-                        gridLineWidth: 1,
-                    },
-                    yAxis: {
-                        title: {
-                            text: div, //'Performance'
-                        },
-                        plotLines: [{
-                            value: 0,
-                            width: 1,
-                            color: '#808080'
-                        }]
-                    },
-                    tooltip: {
-                        //valueSuffix: '€'
-                    },
-                    legend: {
-                        enabled: true,
-                        //layout: 'vertical',
-                        //align: 'right',
-                        //verticalAlign: 'top',
-                        //x: -10,
-                        //y: 100,
-                        //borderWidth: 0
-                    },
-                    series: data,
-                });
-                return chart;
-           // });
-        }
-    
+        // for w18
         function createGrid(tabId, data) {
         
             fields = [];
@@ -526,7 +460,7 @@ console.log('initiating grid');
             }
 
             Ext.create('Ext.data.Store', {
-                storeId: tabId,
+                storeId: 'store' + tabId,
                 fields: fields,
                 data: data,
                 proxy: {
@@ -538,65 +472,108 @@ console.log('initiating grid');
                 },
             });
             return Ext.create('Ext.grid.Panel', {
-                store: Ext.data.StoreManager.lookup(tabId),
+                store: Ext.data.StoreManager.lookup('store' + tabId),
                 columns: data.columns,
                 id: 'grid' + tabId,
+                border: false,
                 //height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 20,
                 //width:  (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 20,
                // renderTo: tabId,
             });
         }
         
+        
+        //for w23
+        function appendGridToSubRedTab(tabId) {
+           var date = tabId.split("-");
+           if (typeof date[1] == 'undefined') {
+                date[1] = 1;
+                date[0] = tabId;
+                tabId = tabId + '-1';
+           } 
+           $.getJSON('/api/widget/fundsubredtable/?fund=' + obj.fund + '&year=' + date[0] + '&month='  + date[1], function(data) {
+           console.log(data);
+                    tab = Ext.getCmp(tabId);
+                    var table = createGrid(tabId, data);
+                    tab.add(table);
+           });
+           
+        }
+        
+        
+        // for w18
         function appendGridToTab(tabId) {
             fund = $('#data').data('fund');
-            fund = 2;
+            
+            // for default child tabs
+            var lastCharInString = tabId.toString().slice(-1);
+            if($.isNumeric(lastCharInString) == false) {
+                if(tabId == 'ann_return') {
+                    tabId = 'si'; // ann_return is a special case
+                } else if (tabId != 'si') {
+                    tabId = tabId + '1';
+                }
+            }
             if(typeof Ext.getCmp('grid' + tabId) == 'undefined') {
             
                 tab = Ext.getCmp(tabId);
-                console.log(grid);
+                // get grid data
                 $.getJSON('/api/widget/fundperfmonth/?fund=' + fund + '&fields=' + tabId, function(data) {
-                    var grid = createGrid(tabId, data);
-                    tab.add(grid);
-
+                
+                    var table = createGrid(tabId, data);
+                    tab.add(table);
                     // div for inner tabs                           
                     var innertab_div = 'inner-tab' + tabId; 
                     $('<div id="' + innertab_div + '-bar"></div>').appendTo('#' + tab_div);
                     $('<div id="' + innertab_div + '-line"></div>').appendTo('#' + tab_div);
-                    lineChart2(data, innertab_div + '-bar');
+                    
+                    widget = {}
+                    widget.url = '';
+                    widget.qs = '/api/widget/fundperfbenchcompline/?fields=' + tabId + '&fund=' + fund;
+                    widget.size_y = 3;
+                    widget.size_x = 6;
+                    widget.params = {}
+                    widget.params.title = '';
+                    
+                    var chart = $('#' +  innertab_div + '-bar').highcharts();
+                
+                    if(typeof chart == 'undefined') {
+                        widget.params.type = 'column';
+                        lineChart('', widget, innertab_div + '-bar');
+                    }
                     
                     // Bar Chart & Line Graph Tabs
-                    var tp = new Ext.TabPanel({
-                        renderTo: tab_div,
+                    var tp2 = new Ext.TabPanel({
                         id: 'inner-tab-id' + tabId,
                         //height: (120 * data.size_y) + (10 * data.size_y) + (10 * (data.size_y - 1)) - 20,
                         //width:  (120 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20,
+                        height: 600,
                         activeTab: 0,
                         items: [{
                             title: 'Bar Chart',
-                            id: 'bar',
+                            id: 'bar' + tabId,
                             contentEl: innertab_div + '-bar',
-                            height: 650,
                         },{
                             title: 'Line Graph',
-                            id: 'line',
+                            id: 'line' + tabId,
                             contentEl: innertab_div + '-line',
-                            height: 650
                         }],
                         listeners: {
                             'tabchange': function(tabPanel, tab){
-                                if(tab.id == 'line') {
+                                if(tab.id == 'line' + tabId) {
                                     div2 = innertab_div + '-line';
-
+                                    
                                     var chart = $('#' + div2).highcharts();
                                 
                                     if(typeof chart == 'undefined') {
-                                        lineChart2(data, div2);
+                                        widget.params.type = 'line';
+                                        lineChart('', widget, div2);
                                     }
                                 }
                             }
                         }
-                    });   
-                    tab.add(tp);   
+                    }); 
+                    tab.add(tp2);  
                 });
             }
         }
@@ -605,24 +582,54 @@ console.log('initiating grid');
         var grid = $('#data').data('grid' + page); // obj.grid;
         var window = '<div id="' + page + '_' + data.window.id + '" pagewindow="' + data.id + '" class="layout_block"></div>';
         
-        grid.add_widget(window, data.size_x, data.size_y, data.col, data.row);
+        grid.add_widget(window, data.window.size_x, data.window.size_y, data.col, data.row);
         
         
         // div for window
         var window_id = 'page_' + page + '_' + data.window.id;
         $('<div id="' + window_id + '"></div>').appendTo('body'); 
         
-        if(data.window.key == 'w18') {
+        // at TODO:change benchmark to support mtom
+        if(data.window.key == 'w15') {
+              $.getJSON('/api/widget/fundsummary/' + obj.fund, function(summary) {
+              console.log(summary);
+                          widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
+                html = '<div> <table width="100%" class="html_table">' +
+                '<tr><td>Fund Name</td><td>'+ summary.name + '</td></tr>' +
+                '<tr><td>Fund Type</td><td>'+ summary.fund_type.name + '</td></tr>' +
+                '<tr><td>Fund Manager</td><td>'+ summary.manager.first_name + summary.manager.last_name + '</td></tr>' +       
+                '<tr><td> Description</td><td>'+ summary.description + '<d></tr>' +
+                '<tr><td>Custodian</td><td>'+ summary.custodian.name + '</td><td>'+ summary.custodian.contact_name + '</td><td>' + summary.custodian.contact_number + '</td><td>Managment Fee</td><td>'+ summary.management_fee + '</td><td>Performance Fee</td><td>'+ summary.performance_fee + '</td></tr>' +   
+                '<tr><td>Administrator</td><td>'+ summary.administrator.name + '</td><td>'+ summary.administrator.contact_name + '</td><td>' + summary.administrator.contact_number + '</td><td>Administrator Fee</td><td>'+ summary.administrator.fee + '</td></tr>' +   
+                '<tr><td>Auditor</td><td>'+ summary.auditor.name + '</td><td>'+ summary.auditor.contact_name + '</td><td>' + summary.auditor.contact_number + '</td><td>Auditor Fee</td><td>'+ summary.auditor.fee + '</td></tr>' +   
+                '<tr><td>Subscription Terms</td><td>'+ summary.subscription_frequency + '</td></tr>' +
+                '<tr><td>Redemption Terms</td><td>'+ summary.redemption_frequency + '</td></tr>' +
+                '<tr><td>Management Fees</td><td>'+ summary.management_fee + '</td></tr>' +
+                '<tr><td>Performance Fees</td><td>'+ summary.performance_fee + '</td></tr>' +
+                '<tr><td>Benchmark</td><td>'+ summary.benchmark.name + '</td></tr>' +
+               
+'</table> </div>';              
+                
+                
+                
+                $(html).appendTo('#' + window_id);
+            });
+
+            return
+        } if(data.window.key == 'w18') {
         
-            widgetWindow(data.window.id, page, data.window.name, data.size_x, data.size_y, data.id, window_id);
+            widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
             
             parents = [
                 {id: 'ann_return', title: 'Returns'},
                 {id: 'ann_volatility', title: 'Volatility'},
                 {id: 'sharpe_ratio', title: 'Sharpe'},
+                {id: 'alpha', title: 'Alpha'},
+                {id: 'beta', title: 'Beta'},
+                {id: 'correlation', title: 'Correlation'},
             ];
             children = [
-                {id: '', title: '1 Year Rolling Annualised'},
+                {id: '1', title: '1 Year Rolling Annualised'},
                 {id: '3', title: '3 Years Rolling Annualised'},
                 {id: '5', title: '5 Years Rolling Annualised'},
             ];
@@ -651,6 +658,7 @@ console.log('initiating grid');
                     items: childItems,
                     listeners: {
                         'tabchange': function(tabPanel, tab){
+                        console.log('APPENDING FROM CHILD TAB ' + tab.id);
                             appendGridToTab(tab.id);
                         }
                     }
@@ -672,6 +680,7 @@ console.log('initiating grid');
                 listeners: {
                     'tabchange': function(tabPanel, tab){
                         var id = tab.id.split("-");
+                        console.log('APPENDING FROM PARENT TAB ' + id[1]);
                         appendGridToTab(id[1]);
                     }
                 }
@@ -680,9 +689,72 @@ console.log('initiating grid');
             // append grids for default tab
             appendGridToTab('si');
             
-            return   
+        } else if (data.window.key == 'w23') {
+            this_year = new Date().getFullYear();
+        
+            parents = [];
+            items = [];
+            children = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            for(i=this_year; i>2002; i--) {
+                parents.push(i);
+            }
+            console.log(parents);
+            for(i=0; i<parents.length; i++) {
+            
+                childItems = [];
+                
+                for(x=0; x<children.length; x++) {
+                
+                    childItems.push({
+                        id: parents[i] + '-' + (1 + x), 
+                        title: children[x],
+                        layout: 'fit',
+                    });
+                    console.log(childItems);
+                }
+                items.push({
+                    xtype: 'tabpanel',
+                    title: parents[i],
+                    id: 'parent-' + parents[i],
+                    activeTab: 0,
+                    items: childItems,
+                    listeners: {
+                        'tabchange': function(tabPanel, tab){
+                        console.log('APPENDING FROM CHILD TAB ' + tab.id);
+                        appendGridToSubRedTab(tab.id);
+                        }
+                    }
+                });
+            }
+            console.log("whatever");
+            
+            // div for tabs
+            var tab_div = 'tab-' + data.window.key + '-' + window_id;
+            $('<div id="' + tab_div + '"></div>').appendTo('#' + window_id);
+            
+            var tp = new Ext.TabPanel({
+                renderTo: tab_div,
+                id: 'main-tabs',
+                //height: 500,
+                //width:  (120 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20,
+                activeTab: 0,
+                items: items,
+                layout: 'fit',
+                listeners: {
+                    'tabchange': function(tabPanel, tab){
+                        var id = tab.id.split("-");
+                        console.log('APPENDING FROM PARENT TAB ' + id[1]);
+                        appendGridToSubRedTab(id[1]);
+                    }
+                }
+            });   
+            // set the default tab to January of this year
+            appendGridToSubRedTab(this_year + '-1');    
+              widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
+            return 
         }
         
+        console.log(data.window.key)
         
         // get the widgets for this window
         $.ajax({
@@ -696,7 +768,8 @@ console.log('initiating grid');
 
                 // vbox or hbox
                 var layout = data.window.layout + 'box'; 
-
+                
+                console.log('LAYOUT: ' + layout);
                 var items = [];
                 
                 for(x=0; x<widgets.length; x++) {
@@ -716,10 +789,10 @@ console.log('initiating grid');
                         
                    // } else {
                     
-                        items[I] = {
-                            renderTo: widget_id,        
-                            height: (120 * data.size_y) + (10 * data.size_y) + (10 * (data.size_y - 1)) - 20,
-                            width:  (120 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20,
+                        items[x] = {
+                            contentEl: widget_id, 
+                            height: (120 * widgets[x].size_y) + (10 * widgets[x].size_y) + (10 * (widgets[x].size_y - 1)),
+                            width:  (120 * widgets[x].size_x) + (10 * widgets[x].size_x) + (10 * (widgets[x].size_x - 1)),
                             border: false, 
                         }
                    //}
@@ -729,12 +802,16 @@ console.log('initiating grid');
                 
                 Ext.create('Ext.container.Container', {
                     renderTo: window_id,
+                    //width:  ((120 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20) * 3,
+                    autoFit: true,
+                    title: 'asdf',
+                    header: true,
                     layout: layout,
                     items: items,
-                    layout: 'fit',
+                    //layout: 'fit',
                 });
                 
-                widgetWindow(data.window.id, page, data.window.name, data.size_x, data.size_y, data.id, window_id);
+                widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
             }
         });
     } 
@@ -840,6 +917,10 @@ console.log('initiating grid');
         } else if(widget.type == 'line_chart') {
         
             return lineChart(obj, widget, div);
+            
+        } else if(widget.type == 'chart_doubley') {
+            
+            chartDoubleY(obj, widget, div)
         
         } else if(widget.type == 'bar_chart') {
         
@@ -874,11 +955,17 @@ console.log('initiating grid');
     
     function lineChart(obj, widget, div) {
     
+        if(typeof widget.params.type == 'undefined') {
+            var type = 'line';
+        } else {
+            var type = widget.params.type;
+        }
+    
         $.getJSON(widget.url + widget.qs, function(data) {
             
-            var chart = new Highcharts.StockChart({
+            var chart = new Highcharts.Chart({
                 chart: {
-                    type: 'line',
+                    type: type,
                     marginRight: 25,
                     //marginBottom: 25,
                     size: '100%',
@@ -931,17 +1018,77 @@ console.log('initiating grid');
             });
         });
     }
+    
+   function chartDoubleY(obj, widget, div) {
+    
+        if(typeof widget.params.type == 'undefined') {
+            var type = 'line';
+        } else {
+            var type = widget.params.type;
+        }
+    
+        $.getJSON(widget.url + widget.qs, function(data) {
+            
+            var chart = new Highcharts.StockChart({
+                chart: {
+                    type: type,
+                    //marginRight: 25,
+                    //marginBottom: 25,
+                    //size: '100%',
+                    renderTo: div,
+                    width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 50,
+                    height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 100,
+                },
+                navigator:{
+                    enabled:true,
+                },
+                scrollbar: {
+                    enabled:false
+                },
+			    rangeSelector : {
+				    //selected : 1
+				    //enabled: false,
+			    },
+			    title : {
+				    text : false
+			    },
+                yAxis: [{
+			        //title : {
+				    //    text : false
+			        //},
+                },{
+                    opposite: true
+                }],
+			    series: data
+            });
+        });
+    }
 
     function barChart(obj, widget, div) {
     
         $.getJSON(widget.url + widget.qs, function(data) {
         
-        
+            console.log(widget.params);
+            
             title = false;
             if(typeof widget.params.title != 'undefined' && widget.params.title == "true") {
                 title = widget.name;
             }
             
+            type = 'column';
+            if(typeof widget.params.type != 'undefined') {
+                type = widget.params.type;
+            }        
+            
+            yDecimals = true;
+            if(typeof widget.params.yDecimals != 'undefined' && widget.params.yDecimals === 'false') {
+                yDecimals = false;
+            }   
+            
+            labels = true;
+            if(typeof widget.params.labels != 'undefined' && widget.params.labels == 'false') {
+                labels = false;
+            } 
         
             legend = true;
             if(typeof widget.params.legend != 'undefined' && widget.params.legend == "false") {
@@ -959,7 +1106,7 @@ console.log('initiating grid');
                     //marginTop: 50,
                     //marginBottom: 50,
                     renderTo: div,
-                    type: 'column',
+                    type: type,
                     width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 10,
                     height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 30,
                 }, 
@@ -973,7 +1120,8 @@ console.log('initiating grid');
                 yAxis: {
                     title: {
                         text: false,//'Holding Performance XXXX-XX-XX'
-                    }
+                    },
+                    allowDecimals: yDecimals,
                 },
                 legend: {
                     enabled: legend,
@@ -986,13 +1134,23 @@ console.log('initiating grid');
                 exporting: {
                     enabled: true
                 },
+                dataLabels: {
+                    enabled: false,
+                    formatter: function() {
+                        return this.y;
+                    },
+                    style: {
+                        font: 'normal 13px Verdana, sans-serif'
+                    }
+                },
                 labels: {
                     rotation: -45,
                     align: 'right',
                     style: {
                         fontSize: '10px',
                         fontFamily: 'Verdana, sans-serif'
-                    }
+                    },
+                    enabled: labels,
                 },
                 xAxis: {
                     type: 'category',
@@ -1368,6 +1526,7 @@ console.log(data.rows);
                 fields[i] = data.columns[i].dataIndex;
             }
          
+            console.log(data);
             var mainStore = Ext.create('Ext.data.Store', {
                 //storeId: widget.key,
                 fields: fields,
@@ -1406,13 +1565,29 @@ console.log(data.rows);
             });
 
             mainGrid.view.on('expandBody', function (rowNode, record, expandRow, eOpts) {
-                var id = record.get('id');
-                displayInnerGrid(id);
                 
+                var id = record.get('id');
+                
+                if(widget.key == 'fundperfholdtable') {
+                    
+                    $.getJSON("/api/widget/fundperfholdtradetable/?&holding__fund=" + id, function(w11) {
+        
+                        displayInnerGrid(w11,id);
+                                
+                        widget.holding = record.get('id');
+                        widget.fund = obj.fund;
+                        lineBarChart(widget);                        
+                    });
+                    
+                } else if(widget.key == 'fundregister') {
 
-                widget.holding = record.get('id');
-                widget.fund = obj.fund;
-                lineBarChart(widget);
+                    $.getJSON("/api/widget/subscriptionredemption/?&fund=" + obj.fund + '&client=' + id, function(w12) {
+        
+                        displayInnerGrid(w12, id);
+                    });
+                }
+
+
                 
                 if(typeof $('#data').data('last-open-subgrid') != 'undefined') {
                     //destroyInnerGrid($('#data').data('last-open-subgrid'));
@@ -2001,6 +2176,7 @@ console.log(data.rows);
                                 }
                                 
                                 console.log(record.raw.page);
+                                $('#data').data('fund', record.raw.fund);
                                 
                                 
                                 if(record.raw.page !== null) {
@@ -2012,6 +2188,8 @@ console.log(data.rows);
                                         record.raw.page = str.replace(/\D/g, '');
                                     }
                                 }
+                                console.log('RCRD RAW');
+                                console.log(record.raw);
                                 initPage(record.raw);
 
                             }

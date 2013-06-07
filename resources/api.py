@@ -316,7 +316,31 @@ class CurrencyResource(ModelResource):
     
     class Meta:
         queryset = Currency.objects.all()
+
+class CustodianResource(ModelResource):
+    
+    class Meta:
+        queryset = Custodian.objects.all()
+
+class AuditorResource(ModelResource):
+    
+    class Meta:
+        queryset = Auditor.objects.all()
+
+class AdministratorResource(ModelResource):
+    
+    class Meta:
+        queryset = Administrator.objects.all()
+
+class ClassificationResource(ModelResource):
+    
+    class Meta:
+        queryset = Classification.objects.all()
         
+class ManagerResource(ModelResource):
+    
+    class Meta:
+        queryset = User.objects.all()
 
 class HoldingCategoryResource(ModelResource):
     class Meta:
@@ -332,13 +356,17 @@ class PurchaseSaleResource(ModelResource):
         
 
 class HoldingResource(ModelResource):
-    fund = fields.ForeignKey(FundResource, 'fund')   
     class Meta:
         queryset = Holding.objects.all()
+
+class HoldingResourceFund(ModelResource):
+    fund = fields.ForeignKey(FundResource, 'fund')   
+    class Meta:
+        queryset = Holding.objects.select_related('fund').all()
         filtering = {
             "fund": ALL,
-        }    
-
+        }           
+        
 class HoldingResourceDetail(MainBaseResource):
     fund = fields.ForeignKey(FundResource, 'fund')
     currency = fields.ForeignKey(CurrencyResource, 'currency', full=True)
@@ -356,7 +384,13 @@ class HoldingResourceDetail(MainBaseResource):
             "fund": ALL_WITH_RELATIONS,
         }  
         
-
+class ClientResource(ModelResource):
+    
+    class Meta(MainBaseResource.Meta):
+        queryset = Client.objects.all()
+        #filtering = {
+        #    'fund': ALL,
+        #}
 # TODO: Move this to it's own file
 
 

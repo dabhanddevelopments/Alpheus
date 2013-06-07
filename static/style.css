@@ -472,6 +472,10 @@ article:not(:last-child),
         margin-top:40%;     
     }
 
+.html_table {
+    font-size: 10px;
+    border-spacing: 10px;
+}
 
 
 table.month_table{

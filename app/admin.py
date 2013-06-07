@@ -40,10 +40,7 @@ class FundPerfDailyAdmin(admin.ModelAdmin):
     list_display = ('fund', 'performance', 'value_date')
 
 class FundPerfMonthlyAdmin(admin.ModelAdmin):
-    list_display = ('value_date', 'year')
-
-class FundPerfYearlyAdmin(admin.ModelAdmin):
-    list_display = ('fund', 'value_date', 'si', 'ytd')
+    list_display = ('value_date',)
 
 class HoldingCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'holding_group')
@@ -75,11 +72,19 @@ admin.site.register(Fund)
 admin.site.register(FundType)
 admin.site.register(FundPerf, FundPerfDailyAdmin)
 admin.site.register(FundPerfMonth, FundPerfMonthlyAdmin)
-admin.site.register(FundPerfYear, FundPerfYearlyAdmin)
 admin.site.register(HoldPerf)
 admin.site.register(HoldPerfMonth)
-admin.site.register(HoldPerfYear)
 admin.site.register(Fee)
 admin.site.register(PurchaseSale)
 admin.site.register(FundBench)
 admin.site.register(FundBenchHist)
+admin.site.register(FxHedge)
+admin.site.register(Classification)
+admin.site.register(Administrator)
+admin.site.register(Auditor)
+admin.site.register(Custodian)
+admin.site.register(Client)
+admin.site.register(ClientPerfMonth)
+admin.site.register(CurrencyPositionMonth)
+admin.site.register(SubscriptionRedemption)
+

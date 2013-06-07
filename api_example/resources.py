@@ -88,36 +88,60 @@ class EntryResource(ModelResource):
         import random
         from app.models import * 
         
-        benchmark = FundBench.objects.all()
-        FundBenchHist.objects.all().delete()
-         
-        for year in range(2006, 2014):
+
+        
+        FxRate.objects.all().delete()
+        currency = Currency.objects.all()
+
+        for year in range(2013, 2014):
             for month in range(1, 13):
-                history = FundBenchHist(
-                    value_date = str(year) + '-' + str(month) + '-1',    
-                    benchmark = benchmark[random.randrange(0, 3)],
-                    performance = random.randrange(1, 9),
-                    si = random.randrange(1, 9),
-                    ann_return = random.randrange(0, 10),
-                    ann_return3 = random.randrange(0, 10),
-                    ann_return5 = random.randrange(0, 10),
-                    ann_volatility = random.randrange(0, 10),
-                    ann_volatility3 = random.randrange(0, 10),
-                    ann_volatility5 = random.randrange(0, 10),
-                    sharpe_ratio = random.randrange(0, 10),
-                    sharpe_ratio3 = random.randrange(0, 10),
-                    sharpe_ratio5 = random.randrange(0, 10),
-                    alpha = random.randrange(0, 10),
-                    alpha3 = random.randrange(0, 10),
-                    alpha5 = random.randrange(0, 10),
-                    beta = random.randrange(0, 10),
-                    beta3 = random.randrange(0, 10),
-                    beta5 = random.randrange(0, 10),
-                    correlation = random.randrange(0, 10),
-                    correlation3 = random.randrange(0, 10),
-                    correlation5 = random.randrange(0, 10),
-                )
-                history.save()
+                for day in range(1,31):
+                    for cur in currency:
+                    
+                        try:
+                            fxrate = FxRate(
+                                value_date = str(year) + '-' + str(month) + '-1', 
+                                currency = cur, 
+                                fx_rate = random.randrange(0, 2), 
+                            )
+                            fxrate.save()
+                        except: 
+                            pass
+                                
+        
+        return
+        benchmark = FundBench.objects.all()
+        FundBenchHist.objects.all().delete()        
+        
+        for year in range(2004, 2014):
+            for month in range(1, 13):
+                for bench in range(0, 3):
+                    history = FundBenchHist(
+                        value_date = str(year) + '-' + str(month) + '-1',    
+                        benchmark = benchmark[bench],
+                        performance = random.randrange(1, 9),
+                        si = random.randrange(1, 9),
+                        net_drawdown = random.randrange(-100000,10000000),
+                        ann_return1 = random.randrange(0, 10),
+                        ann_return3 = random.randrange(0, 10),
+                        ann_return5 = random.randrange(0, 10),
+                        ann_volatility1 = random.randrange(0, 10),
+                        ann_volatility3 = random.randrange(0, 10),
+                        ann_volatility5 = random.randrange(0, 10),
+                        sharpe_ratio1 = random.randrange(0, 10),
+                        sharpe_ratio3 = random.randrange(0, 10),
+                        sharpe_ratio5 = random.randrange(0, 10),
+                        alpha1 = random.randrange(0, 10),
+                        alpha3 = random.randrange(0, 10),
+                        alpha5 = random.randrange(0, 10),
+                        beta1 = random.randrange(0, 10),
+                        beta3 = random.randrange(0, 10),
+                        beta5 = random.randrange(0, 10),
+                        correlation1 = random.randrange(0, 10),
+                        correlation3 = random.randrange(0, 10),
+                        correlation5 = random.randrange(0, 10),
+                    )
+                    history.save()
         #return data
         
         
@@ -131,7 +155,7 @@ class EntryResource(ModelResource):
         
         fee = Fee.objects.all()
         
-        currency = Currency.objects.all()
+        
         country = Country.objects.all()
         counter_party = CounterParty.objects.all()
         sector = HoldingCategory.objects.filter(holding_group='sec')
@@ -153,25 +177,53 @@ class EntryResource(ModelResource):
         
         alarm = Alarm.objects.all()
         fund_type = FundType.objects.all()
+        administrator = Administrator.objects.all()
+        auditor = Auditor.objects.all()
+        classification = Classification.objects.all()
+        manager = User.objects.all()
+        custodian = Custodian.objects.all()
         
         for index in range(0, 1):
-            fund = Fund(
-                name = self.create_random(),
-                counter_party = counter_party[random.randrange(0, 1)],
-                fund_type = fund_type[random.randrange(0, 7)],
-                alarm = alarm[0],
-                benchmark = benchmark[random.randrange(0, 3)],
-                aum = random.randrange(0, 10),
-                mtd  = random.randrange(0, 10),
-                ytd   = random.randrange(0, 10),
-                one_day_var  = random.randrange(0, 10),
-                total_cash = random.randrange(0, 10),
-                usd_hedge = random.randrange(0, 10),
-                checks = random.randrange(0, 10),
-                unsettled = random.randrange(0, 10),
-            )
-            fund.save()
+            for bench in range(0, 3):
+                fund = Fund(
+                    name = self.create_random(),
+                    counter_party = counter_party[random.randrange(0, 1)],
+                    fund_type = fund_type[random.randrange(0, 7)],
+                    alarm = alarm[0],
+                    benchmark = benchmark[bench],
+                    aum = random.randrange(0, 10),
+                    mtd  = random.randrange(0, 10),
+                    ytd   = random.randrange(0, 10),
+                    #one_day_var  = random.randrange(0, 10),
+                    #total_cash = random.randrange(0, 10),
+                    #usd_hedge = random.randrange(0, 10),
+                    #checks = random.randrange(0, 10),
+                    #unsettled = random.randrange(0, 10),
+                    custodian = custodian[0],
+                    auditor = auditor[0],
+                    administrator =  administrator[0],
+                    classification = classification[0],
+                    manager = manager[0],
+                    subscription_frequency = random.randrange(1,5),
+                    redemption_frequency = random.randrange(1,5),
+                    performance_fee = random.randrange(0, 3), 
+                    management_fee =  random.randrange(0, 3),
+                    
+                    
+                )
+                fund.save()
         fund = Fund.objects.all()[:1]
+             
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
            
         # Holdings
         for index in range(0, 3):
@@ -179,6 +231,7 @@ class EntryResource(ModelResource):
             name_rand = random.randrange(0, 5)
             holding = Holding(
                 name = self.create_random(),
+                mtd  = random.randrange(0, 10), 
                 fee = fee[random.randrange(0, int(fee.count()))],
                 fund = fund[random.randrange(0, int(fund.count()))],
                 currency = currency[random.randrange(0, int(currency.count()))],
@@ -192,6 +245,15 @@ class EntryResource(ModelResource):
                 rep_code = 1,
                 isin = 1,
                 valoren = 1,
+                redemption_frequency = random.randrange(1, 4),
+                redemption_notice = 30,
+                max_redemption = random.randrange(10, 50),
+                payment_days = 30,
+                gate = random.randrange(10, 50),
+                soft_lock = random.randrange(1, 2),
+                redemption_fee12 = random.randrange(1, 10),
+                redemption_fee24 = random.randrange(1, 10),
+                redemption_fee36 = random.randrange(1, 10),
                 
                 # historical
                 nav = random.randrange(100000,10000000),
@@ -200,6 +262,9 @@ class EntryResource(ModelResource):
                 weight = float ('0.' + str(random.randrange(0,99999))),
                 current_price = random.randrange(50,200),
                 no_of_units = random.randrange(1,10000),
+                price_of_unit = random.randrange(1,50),
+                cumulative_nav = random.randrange(1,10000),
+                cumulative_weight = random.randrange(1,100), 
             )
             holding.save()
         
@@ -214,21 +279,12 @@ class EntryResource(ModelResource):
         
         
         # Fund Peformance
-        FundPerfYear.objects.all().delete()
         FundPerfMonth.objects.all().delete()
         FundPerf.objects.all().delete()
         
         for fun in fund:
         
-            for year in range(2011, 2014):
-            
-                yearly = FundPerfYear(
-                    fund = fun,
-                    value_date = str(year) + str('-01-01'),
-                    ytd = random.randrange(1, 9),
-                    si = random.randrange(1, 9),
-                )
-                yearly.save()    
+            for year in range(2004, 2014):  
                 
                 for month in range(1, 13):
                 
@@ -237,27 +293,50 @@ class EntryResource(ModelResource):
                         ytd = random.randrange(1, 9),
                         si = random.randrange(1, 9),
                         performance = random.randrange(1, 9),
-                        year = yearly,
-                        ann_return = random.randrange(0, 10),
+                        net_drawdown = random.randrange(-100000,10000000),
+                        ann_return1 = random.randrange(0, 10),
                         ann_return3 = random.randrange(0, 10),
                         ann_return5 = random.randrange(0, 10),
-                        ann_volatility = random.randrange(0, 10),
+                        ann_volatility1 = random.randrange(0, 10),
                         ann_volatility3 = random.randrange(0, 10),
                         ann_volatility5 = random.randrange(0, 10),
-                        sharpe_ratio = random.randrange(0, 10),
+                        sharpe_ratio1 = random.randrange(0, 10),
                         sharpe_ratio3 = random.randrange(0, 10),
                         sharpe_ratio5 = random.randrange(0, 10),
-                        alpha = random.randrange(0, 10),
+                        alpha1 = random.randrange(0, 10),
                         alpha3 = random.randrange(0, 10),
                         alpha5 = random.randrange(0, 10),
-                        beta = random.randrange(0, 10),
+                        beta1 = random.randrange(0, 10),
                         beta3 = random.randrange(0, 10),
                         beta5 = random.randrange(0, 10),
-                        correlation = random.randrange(0, 10),
+                        correlation1 = random.randrange(0, 10),
                         correlation3 = random.randrange(0, 10),
                         correlation5 = random.randrange(0, 10),
                         euro_nav = random.randrange(0, 10),
                         value_date = str(year) + '-' + str(month) + '-1',
+                        previous_nav = random.randrange(0, 10),
+                        performance_fees_added_back = random.randrange(0, 10),
+                        subscription_amount = random.randrange(0, 10),
+                        redemption_amount = random.randrange(0, 10),
+                        net_movement = random.randrange(0, 10),
+                        gross_assets_after_subs_red = random.randrange(0, 10),
+                        
+                        nav_securities = random.randrange(0, 10),
+                        nav_cash = random.randrange(0, 10),
+                        nav_other_assets = random.randrange(0, 10),
+                        
+                        administration_fees = random.randrange(0, 10),
+                        audit_fees = random.randrange(0, 10),
+                        capital_payable = random.randrange(0, 10),
+                        corporate_secretarial_fees = random.randrange(0, 10),
+                        custodian_fees = random.randrange(0, 10),
+                        financial_statement_prep_fees = random.randrange(0, 10),
+                        sub_advisory_fees = random.randrange(0, 10),
+                        management_fees = random.randrange(0, 10),
+                        performance_fees = random.randrange(0, 10),
+                        other_liabilities = random.randrange(0, 10),
+                        total_liabilities = random.randrange(0, 10),
+                        
                     )
                     monthly.save() 
                     
@@ -286,7 +365,6 @@ class EntryResource(ModelResource):
         
            
         # Holding Peformance
-        HoldPerfYear.objects.all().delete()
         HoldPerfMonth.objects.all().delete()
         HoldPerf.objects.all().delete()
         
@@ -295,26 +373,17 @@ class EntryResource(ModelResource):
         
         for fun in fund:
             
-            for year in range(2011, 2014):
+            for year in range(2004, 2014):
      
                 for cat in holding_categories:
-                    
-                    yearly = HoldPerfYear(
-                        fund = fun,
-                        holding_category = cat,
-                        value_date = str(year) + '-1-1',
-                        ytd = random.randrange(1, 9),
-                        si = random.randrange(1, 9),
-                    )
-                    yearly.save()     
                     
                     for month in range(1, 13):
                     
                         monthly = HoldPerfMonth(
                             fund = fun,
+                            holding = holding[0],
                             holding_category = cat,
                             performance = random.randrange(1, 9),
-                            year = yearly,
                             ytd = random.randrange(1, 9),
                             si = random.randrange(1, 9),
                             value_date = str(year) + '-' + str(month) + '-1', 
@@ -329,7 +398,7 @@ class EntryResource(ModelResource):
                         
         for hold in holding:
          
-            for year in range(2011, 2014):
+            for year in range(2004, 2014):
             
                 for month in range(1, 13):
                     
@@ -358,5 +427,6 @@ class EntryResource(ModelResource):
                             else:
                                 pass
             
-        return data     
-                         
+        return data 
+        
+        
