@@ -1,4 +1,4 @@
-### Install Django
+k### Install Django
 Some dependencies only work with Django 1.4, so that is what we use for now. Download from https://www.djangoproject.com/download/1.4.5/tarball
 
     tar xzvf Django-1.4.5.tar.gz
@@ -30,4 +30,4 @@ Some dependencies only work with Django 1.4, so that is what we use for now. Dow
     sudo ln -s /usr/local/lib/python2.7/dist-packages/django/contrib/admin/templates/admin/ /srv/www/alpheus/templates/admin
     sudo ln -s /usr/local/lib/python2.7/dist-packages/feincms/static/feincms/ /srv/www/alpheus/static/feincms
     sudo ln -s /usr/local/lib/python2.7/dist-packages/feincms/templates/admin/feincms/ /srv/www/alpheus/templates/admin/feincms
-
+    sudo ln -s /usr/local/lib/python2.7/dist-packages/grappelli/static/grappelli/ /srv/www/alpheus/static/grappelli

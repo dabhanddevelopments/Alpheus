@@ -140,6 +140,7 @@ class MainBaseResource(ModelResource):
         Currently it only supports two levels
         """
         to_delete = []
+        
         for row in self._meta.fields:
             fields = row.split('__')
             if len(fields) > 1:
@@ -150,6 +151,7 @@ class MainBaseResource(ModelResource):
                     #    name = fields[2]
                     bundle.data[fields[0]] = bundle.data[fields[0]].\
                                         data[fields[1]].data[fields[2]]
+
                 if len(fields) == 2:
                     if fields[1] == 'name':
                         bundle.data[fields[0]] = bundle.data[fields[0]].data[fields[1]]
@@ -161,7 +163,7 @@ class MainBaseResource(ModelResource):
                             print 'skipping', fields
 
                 #to_delete.append(fields[0])
-
+            #print fields[0], bundle.obj._meta.get_field(fields[0]).verbose_name, 'fuck'
         #for delete in to_delete:
         #    try:
         #        del bundle.data[delete]
@@ -178,7 +180,6 @@ class MainBaseResource(ModelResource):
             except:
                 pass
 
-        print 'return'
         return bundle
 
 

@@ -8,6 +8,7 @@ from tastypie.authentication import SessionAuthentication
 from tastypie.authorization import DjangoAuthorization
 from alpheus.serializers import PrettyJSONSerializer
 
+import random
 
 from tastypie.paginator import Paginator
 
@@ -82,18 +83,19 @@ class EntryResource(ModelResource):
         randomstring = ''.join([allowed[random.randint(0, len(allowed) - 1)] for x in xrange(size)]) 
         return randomstring      
 
+    def rand_date(self):
+        return str(random.randrange(2010, 2014)) + '-' + str(random.randrange(1, 13)) + '-' + str(random.randrange(1, 28))
+        
     def alter_list_data_to_serialize(self, request, data):
     
     
-        import random
+        
         from app.models import * 
         
-
-        
-        FxRate.objects.all().delete()
         currency = Currency.objects.all()
-
-        for year in range(2013, 2014):
+        #FxRate.objects.all().delete()
+        
+        for year in range(2003, 2014):
             for month in range(1, 13):
                 for day in range(1,31):
                     for cur in currency:
@@ -109,11 +111,10 @@ class EntryResource(ModelResource):
                             pass
                                 
         
-        return
         benchmark = FundBench.objects.all()
-        FundBenchHist.objects.all().delete()        
+        #FundBenchHist.objects.all().delete()        
         
-        for year in range(2004, 2014):
+        for year in range(2003, 2014):
             for month in range(1, 13):
                 for bench in range(0, 3):
                     history = FundBenchHist(
@@ -122,34 +123,50 @@ class EntryResource(ModelResource):
                         performance = random.randrange(1, 9),
                         si = random.randrange(1, 9),
                         net_drawdown = random.randrange(-100000,10000000),
-                        ann_return1 = random.randrange(0, 10),
-                        ann_return3 = random.randrange(0, 10),
-                        ann_return5 = random.randrange(0, 10),
-                        ann_volatility1 = random.randrange(0, 10),
-                        ann_volatility3 = random.randrange(0, 10),
-                        ann_volatility5 = random.randrange(0, 10),
-                        sharpe_ratio1 = random.randrange(0, 10),
-                        sharpe_ratio3 = random.randrange(0, 10),
-                        sharpe_ratio5 = random.randrange(0, 10),
-                        alpha1 = random.randrange(0, 10),
-                        alpha3 = random.randrange(0, 10),
-                        alpha5 = random.randrange(0, 10),
-                        beta1 = random.randrange(0, 10),
-                        beta3 = random.randrange(0, 10),
-                        beta5 = random.randrange(0, 10),
-                        correlation1 = random.randrange(0, 10),
-                        correlation3 = random.randrange(0, 10),
-                        correlation5 = random.randrange(0, 10),
+                        ann_return1 = random.randrange(0, 5),
+                        ann_return3 = random.randrange(0, 5),
+                        ann_return5 = random.randrange(0, 5),
+                        ann_volatility1 = random.randrange(0, 5),
+                        ann_volatility3 = random.randrange(0, 5),
+                        ann_volatility5 = random.randrange(0, 5),
+                        sharpe_ratio1 = random.randrange(0, 5),
+                        sharpe_ratio3 = random.randrange(0, 5),
+                        sharpe_ratio5 = random.randrange(0, 5),
+                        alpha1 = random.randrange(0, 5),
+                        alpha3 = random.randrange(0, 5),
+                        alpha5 = random.randrange(0, 5),
+                        beta1 = random.randrange(0, 5),
+                        beta3 = random.randrange(0, 5),
+                        beta5 = random.randrange(0, 5),
+                        correlation1 = random.randrange(0, 5),
+                        correlation3 = random.randrange(0, 5),
+                        correlation5 = random.randrange(0, 5),
                     )
                     history.save()
         #return data
         
         
         
+        #return data
+        #HoldPerfMonth.objects.all().delete()
+        #HoldPerf.objects.all().delete()
+        #Alarm.objects.all().delete()
+        #CurrencyPositionMonth.objects.all().delete()
+        
+        #Fund.objects.all().delete()     
+        #Holding.objects.all().delete() 
+        
+        # Holding Peformance
         
         
+               
         
-        holding = Holding.objects.all().delete()
+        # Fund Peformance
+        #FundPerfMonth.objects.all().delete()
+        #FundPerf.objects.all().delete()
+           
+        
+        
         holding_categories = HoldingCategory.objects.all()
         
         
@@ -161,8 +178,7 @@ class EntryResource(ModelResource):
         sector = HoldingCategory.objects.filter(holding_group='sec')
         sub_sector = HoldingCategory.objects.filter(holding_group='sub')
         location = HoldingCategory.objects.filter(holding_group='loc')
-        asset_class = HoldingCategory.objects.filter(holding_group='ass')
-        
+        asset_class = HoldingCategory.objects.get(id=17) # funds
         holding_names = ['Jupiter Long Short', 'Blackrock Property', \
                 'Jupiter Asia Equity',\
                 'Jupiter EM Gilts', 'Jupiter EM Equity Long Only'
@@ -171,8 +187,8 @@ class EntryResource(ModelResource):
         
         
         # Funds
-        #Fund.objects.all().delete()
-        Alarm.objects.all().delete()
+        
+        
         alarm = Alarm(name="alarm1").save()
         
         alarm = Alarm.objects.all()
@@ -183,17 +199,18 @@ class EntryResource(ModelResource):
         manager = User.objects.all()
         custodian = Custodian.objects.all()
         
+        
         for index in range(0, 1):
-            for bench in range(0, 3):
+            for bench in range(0, 1):
                 fund = Fund(
                     name = self.create_random(),
                     counter_party = counter_party[random.randrange(0, 1)],
                     fund_type = fund_type[random.randrange(0, 7)],
                     alarm = alarm[0],
                     benchmark = benchmark[bench],
-                    aum = random.randrange(0, 10),
-                    mtd  = random.randrange(0, 10),
-                    ytd   = random.randrange(0, 10),
+                    aum = random.randrange(0, 100000),
+                    mtd  = random.randrange(0, 5),
+                    ytd   = random.randrange(0, 5),
                     #one_day_var  = random.randrange(0, 10),
                     #total_cash = random.randrange(0, 10),
                     #usd_hedge = random.randrange(0, 10),
@@ -218,124 +235,222 @@ class EntryResource(ModelResource):
            
            
            
+
+        client_name = [['John', 'Doe'], ['Jane', 'Doe'], ['Juan', 'Nadia'], ['Juanita', 'Ninguna']]
+        for name in client_name:
+            client = Client(
+                first_name = name[0],
+                last_name = name[1],
+                pending_nav = random.randrange(0,10000000),
+                nav = random.randrange(0,10000000),
+                no_of_units = random.randrange(0,10000000),
+            )
+            client.save()
+        clients = Client.objects.all() 
+        for year in range(2003, 2014):
+            for month in range(1, 13):
+                for client in range(0, 4):
+                    history = ClientPerfMonth(
+                        value_date = str(year) + '-' + str(month) + '-1', 
+                        fund = fund[0],
+                        client = clients[client],
+                        performance = random.randrange(1, 5),
+                        si = random.randrange(1, 5),
+                        ytd = random.randrange(1, 5),
+                        net_drawdown = random.randrange(-100000,10000000),
+                        ann_return1 = random.randrange(0, 5),
+                        ann_return3 = random.randrange(0, 5),
+                        ann_return5 = random.randrange(0, 5),
+                        ann_volatility1 = random.randrange(0, 5),
+                        ann_volatility3 = random.randrange(0, 5),
+                        ann_volatility5 = random.randrange(0, 5),
+                        sharpe_ratio1 = random.randrange(0, 5),
+                        sharpe_ratio3 = random.randrange(0, 5),
+                        sharpe_ratio5 = random.randrange(0, 5),
+                        alpha1 = random.randrange(0, 5),
+                        alpha3 = random.randrange(0, 5),
+                        alpha5 = random.randrange(0, 5),
+                        beta1 = random.randrange(0, 5),
+                        beta3 = random.randrange(0, 5),
+                        beta5 = random.randrange(0, 5),
+                        correlation1 = random.randrange(0, 5),
+                        correlation3 = random.randrange(0, 5),
+                        correlation5 = random.randrange(0, 5),
+                        previous_nav = random.randrange(0, 1000000),
+                        performance_fees_added_back = random.randrange(0, 1000000),
+                        subscription_amount = random.randrange(0, 100000),
+                        redemption_amount = random.randrange(0, 100000),
+                        net_movement = random.randrange(0, 100000),
+                        gross_assets_after_subs_red = random.randrange(0, 10000000),
+                        pending_nav = random.randrange(0, 1000000),
+                        nav = random.randrange(0, 1000000),
+                        no_of_units = random.randrange(0, 100000),
+                        euro_nav = random.randrange(0, 100000),
+       
+                    )
+                    history.save()           
            
-           
-           
-           
-           
-           
-           
+        for year in range(2003, 2014):
+            for month in range(1, 13):
+                rand = random.randrange(2, 5)
+                for index in range(1, rand):
+                    sub_red = SubscriptionRedemption(
+                        fund = fund[0],
+                        client = clients[random.randrange(0, 4)],
+                        trade_date = str(year) + '-' + str(month) + '-1', 
+                        input_date = str(year) + '-' + str(month) + '-1', 
+                        no_of_units = random.randrange(0, 10),
+                        sub_red = random.randrange(1, 2),
+                        nav = random.randrange(0, 10),
+                        percent_released = 1,
+                    )
+                    sub_red.save()   
+          
         # Holdings
-        for index in range(0, 3):
+        no_holdings = 3
+        holding_names = ['Coca Cola', 'Pepsi', 'Pussy']
+        for index in range(0, no_holdings):
 
             name_rand = random.randrange(0, 5)
-            holding = Holding(
-                name = self.create_random(),
-                mtd  = random.randrange(0, 10), 
-                fee = fee[random.randrange(0, int(fee.count()))],
-                fund = fund[random.randrange(0, int(fund.count()))],
-                currency = currency[random.randrange(0, int(currency.count()))],
-                country = country[random.randrange(0, int(country.count()))],
-                counter_party = counter_party[random.randrange(0, int(counter_party.count()))],
-                sector = sector[random.randrange(0, int(sector.count()))],
-                sub_sector = sub_sector[random.randrange(0, int(sub_sector.count()))],
-                location = location[random.randrange(0, int(location.count()))],
-                asset_class = asset_class[random.randrange(0, int(asset_class.count()))],
-                description = 'n/a',
-                rep_code = 1,
-                isin = 1,
-                valoren = 1,
-                redemption_frequency = random.randrange(1, 4),
-                redemption_notice = 30,
-                max_redemption = random.randrange(10, 50),
-                payment_days = 30,
-                gate = random.randrange(10, 50),
-                soft_lock = random.randrange(1, 2),
-                redemption_fee12 = random.randrange(1, 10),
-                redemption_fee24 = random.randrange(1, 10),
-                redemption_fee36 = random.randrange(1, 10),
+            
+            for holding_name in holding_names:
                 
-                # historical
-                nav = random.randrange(100000,10000000),
-                value_date = '2013-01-01',
-                interest_rate = 1,
-                weight = float ('0.' + str(random.randrange(0,99999))),
-                current_price = random.randrange(50,200),
-                no_of_units = random.randrange(1,10000),
-                price_of_unit = random.randrange(1,50),
-                cumulative_nav = random.randrange(1,10000),
-                cumulative_weight = random.randrange(1,100), 
-            )
-            holding.save()
-        
-                            
-                
-        #return data
+                hold = Holding(
+                    name = holding_name,
+                    mtd  = random.randrange(0, 5), 
+                    fee = fee[random.randrange(0, int(fee.count()))],
+                    fund = fund[0],
+                    currency = currency[random.randrange(0, int(currency.count()))],
+                    country = country[random.randrange(0, int(country.count()))],
+                    counter_party = counter_party[random.randrange(0, int(counter_party.count()))],
+                    sector = sector[random.randrange(0, int(sector.count()))],
+                    sub_sector = sub_sector[random.randrange(0, int(sub_sector.count()))],
+                    location = location[random.randrange(0, int(location.count()))],
+                    asset_class = asset_class,
+                    description = 'n/a',
+                    rep_code = 1,
+                    isin = 1,
+                    valoren = 1,
+                    redemption_frequency = random.randrange(1, 4),
+                    redemption_notice = 30,
+                    max_redemption = random.randrange(10, 50),
+                    payment_days = 30,
+                    gate = random.randrange(10, 50),
+                    soft_lock = random.randrange(1, 2),
+                    redemption_fee12 = random.randrange(1, 2),
+                    redemption_fee24 = random.randrange(2, 4),
+                    redemption_fee36 = random.randrange(3, 5),
+                    
+                    # historical
+                    nav = random.randrange(100000,10000000),
+                    value_date = self.rand_date(),
+                    dealing_date = self.rand_date(),
+                    redemption_date = self.rand_date(),
+                    interest_rate = 1,
+                    weight = float ('0.' + str(random.randrange(0,99999))),
+                    current_price = random.randrange(50,200),
+                    no_of_units = random.randrange(1,10000),
+                    price_of_unit = random.randrange(1,50),
+                    cumulative_nav = random.randrange(1,10000),
+                    cumulative_weight = random.randrange(1,100), 
+                )
+                hold.save()
 
-        
-        
-        
-        
-        
-        
-        # Fund Peformance
-        FundPerfMonth.objects.all().delete()
-        FundPerf.objects.all().delete()
-        
+        trade_types = TradeType.objects.all()
+        purchase_sales = PurchaseSale.objects.all()
+        holding = Holding.objects.all()
+        holding_categories = HoldingCategory.objects.all()
+
+        for index in range(1, 100):
+            trade = Trade(
+                holding = holding[random.randrange(0, 2)],
+                identifier = 1,
+                trade_type = trade_types[random.randrange(0, 1)],
+                trade_date = self.rand_date(),
+                settlement_date = self.rand_date(),
+                purchase_sale = purchase_sales[random.randrange(0, 1)], #to be deleted same as buy sell
+                buy_sell = random.randrange(1,2),
+                no_of_units = random.randrange(50,200),
+                purchase_price =random.randrange(50,125),
+                purchase_price_base = random.randrange(50,125),
+                nav_purchase = random.randrange(50,125),
+                currency = currency[random.randrange(0,1)],
+                fx_euro = random.randrange(50,100),
+                dealing_date = self.rand_date(),
+            )
+            trade.save()
+
         for fun in fund:
         
-            for year in range(2004, 2014):  
+            for year in range(2003, 2014):  
+            
+                yearly = FundPerfYear(
+                    fund = fun, 
+                    ytd = random.randrange(1, 9),
+                    si = random.randrange(1, 9),
+                    value_date = str(year) + '-1-1',
+                )
+                yearly.save()    
+                
                 
                 for month in range(1, 13):
                 
+                    print 'start monthly'
                     monthly = FundPerfMonth(
                         fund = fun,
-                        ytd = random.randrange(1, 9),
-                        si = random.randrange(1, 9),
-                        performance = random.randrange(1, 9),
-                        net_drawdown = random.randrange(-100000,10000000),
-                        ann_return1 = random.randrange(0, 10),
-                        ann_return3 = random.randrange(0, 10),
-                        ann_return5 = random.randrange(0, 10),
-                        ann_volatility1 = random.randrange(0, 10),
-                        ann_volatility3 = random.randrange(0, 10),
-                        ann_volatility5 = random.randrange(0, 10),
-                        sharpe_ratio1 = random.randrange(0, 10),
-                        sharpe_ratio3 = random.randrange(0, 10),
-                        sharpe_ratio5 = random.randrange(0, 10),
-                        alpha1 = random.randrange(0, 10),
-                        alpha3 = random.randrange(0, 10),
-                        alpha5 = random.randrange(0, 10),
-                        beta1 = random.randrange(0, 10),
-                        beta3 = random.randrange(0, 10),
-                        beta5 = random.randrange(0, 10),
-                        correlation1 = random.randrange(0, 10),
-                        correlation3 = random.randrange(0, 10),
-                        correlation5 = random.randrange(0, 10),
-                        euro_nav = random.randrange(0, 10),
+                        year = yearly,
+                        ytd = random.randrange(1, 5),
+                        si = random.randrange(1, 5),
+                        performance = random.randrange(1, 5),
+                        net_drawdown = random.randrange(-100000,1000000),
+                        ann_return1 = random.randrange(0, 5),
+                        ann_return3 = random.randrange(0, 5),
+                        ann_return5 = random.randrange(0, 5),
+                        ann_volatility1 = random.randrange(0, 5),
+                        ann_volatility3 = random.randrange(0, 5),
+                        ann_volatility5 = random.randrange(0, 5),
+                        sharpe_ratio1 = random.randrange(0, 5),
+                        sharpe_ratio3 = random.randrange(0, 5),
+                        sharpe_ratio5 = random.randrange(0, 5),
+                        alpha1 = random.randrange(0, 5),
+                        alpha3 = random.randrange(0, 5),
+                        alpha5 = random.randrange(0, 5),
+                        beta1 = random.randrange(0, 5),
+                        beta3 = random.randrange(0, 5),
+                        beta5 = random.randrange(0, 5),
+                        correlation1 = random.randrange(0, 5),
+                        correlation3 = random.randrange(0, 5),
+                        correlation5 = random.randrange(0, 5),
+                        euro_nav = random.randrange(0, 10000000),
                         value_date = str(year) + '-' + str(month) + '-1',
-                        previous_nav = random.randrange(0, 10),
-                        performance_fees_added_back = random.randrange(0, 10),
-                        subscription_amount = random.randrange(0, 10),
-                        redemption_amount = random.randrange(0, 10),
-                        net_movement = random.randrange(0, 10),
-                        gross_assets_after_subs_red = random.randrange(0, 10),
+                        previous_nav = random.randrange(0, 1000000),
+                        performance_fees_added_back = random.randrange(0, 1000),
+                        subscription_amount = random.randrange(0, 100000),
+                        redemption_amount = random.randrange(0, 10000),
+                        net_movement = random.randrange(0, 100000),
+                        gross_assets_after_subs_red = random.randrange(0, 1000000),
                         
-                        nav_securities = random.randrange(0, 10),
-                        nav_cash = random.randrange(0, 10),
-                        nav_other_assets = random.randrange(0, 10),
+                        nav_securities = random.randrange(0, 1000000),
+                        nav_cash = random.randrange(0, 1000000),
+                        nav_other_assets = random.randrange(0, 1000000),
                         
-                        administration_fees = random.randrange(0, 10),
-                        audit_fees = random.randrange(0, 10),
-                        capital_payable = random.randrange(0, 10),
-                        corporate_secretarial_fees = random.randrange(0, 10),
-                        custodian_fees = random.randrange(0, 10),
-                        financial_statement_prep_fees = random.randrange(0, 10),
-                        sub_advisory_fees = random.randrange(0, 10),
-                        management_fees = random.randrange(0, 10),
-                        performance_fees = random.randrange(0, 10),
-                        other_liabilities = random.randrange(0, 10),
-                        total_liabilities = random.randrange(0, 10),
+                        administration_fees = random.randrange(0, 10000),
+                        audit_fees = random.randrange(0, 10000),
+                        capital_payable = random.randrange(0, 10000),
+                        corporate_secretarial_fees = random.randrange(0, 1000),
+                        custodian_fees = random.randrange(0, 10000),
+                        financial_statement_prep_fees = random.randrange(0, 1000),
+                        sub_advisory_fees = random.randrange(0, 10000),
+                        management_fees = random.randrange(0, 10000),
+                        performance_fees = random.randrange(0, 10000),
+                        other_liabilities = random.randrange(0, 10000),
+                        total_liabilities = random.randrange(0, 100000),
+                        
+                        no_of_units = random.randrange(1,10000),
+                        no_of_units_fund = random.randrange(1,10000),
+                        euro_nav_fund = random.randrange(1,10000),
+                        nav_securities_total = random.randrange(1,10000),
+
                         
                     )
                     monthly.save() 
@@ -360,24 +475,47 @@ class EntryResource(ModelResource):
                             
             #return data                      
             
-        
+         
         
         
            
-        # Holding Peformance
-        HoldPerfMonth.objects.all().delete()
-        HoldPerf.objects.all().delete()
+
         
-        holding = Holding.objects.all()
-        holding_categories = HoldingCategory.objects.all()
+
         
+
         for fun in fund:
+        
+            cur_pos = CurrencyPositionMonth(
+                currency = currency[random.randrange(0,1)],
+                fund = fun,
+                nav = random.randrange(1000,100000),
+                value_date = self.rand_date(),
+            )
+            cur_pos.save()
             
-            for year in range(2004, 2014):
-     
-                for cat in holding_categories:
+            for year in range(2003, 2014):
+            
+                for month in range(1, 13):
+                
+                    for hold in holding:
                     
-                    for month in range(1, 13):
+                        monthly = HoldPerfMonth(
+                            fund = fun,
+                            holding = hold,
+                            performance = random.randrange(1, 9),
+                            ytd = random.randrange(1, 9),
+                            si = random.randrange(1, 9),
+                            value_date = str(year) + '-' + str(month) + '-1', 
+                            nav = random.randrange(100000,1000000),
+                            weight = float ('0.' + str(random.randrange(0,99999))),
+                            #ann_return = random.randrange(0, 10),
+                            #ann_volatility = random.randrange(0, 10),
+                            #sharpe_ratio = random.randrange(0, 9),
+                        )
+                        monthly.save() 
+     
+                    for cat in holding_categories:
                     
                         monthly = HoldPerfMonth(
                             fund = fun,
@@ -393,12 +531,13 @@ class EntryResource(ModelResource):
                             #ann_volatility = random.randrange(0, 10),
                             #sharpe_ratio = random.randrange(0, 9),
                         )
-                        monthly.save() 
+                        monthly.save()          
+
                         
                         
         for hold in holding:
          
-            for year in range(2004, 2014):
+            for year in range(2003, 2014):
             
                 for month in range(1, 13):
                     
@@ -415,17 +554,14 @@ class EntryResource(ModelResource):
                             value_date = str(year) + '-' + str(month) + '-' + str(day),
                             interest_rate = 1,
                             weight = float ('0.' + str(random.randrange(0,99999))),
-                            current_price = random.randrange(50,200),
+                            current_price = random.randrange(50,120),
                             no_of_units = random.randrange(1,10000),
-                            performance = random.randrange(1,10),
+                            performance = random.randrange(1,5),
                         )
                         try:
                             daily.save()
                         except:
-                            if day < 28:
-                                raise
-                            else:
-                                pass
+                            pass
             
         return data 
         

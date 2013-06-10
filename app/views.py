@@ -29,6 +29,12 @@ def mainmenu(request):
                             {'nodes':Menu.objects.all()},
                             context_instance=RequestContext(request))
                             
+def get_month_list():
+    months = []
+    for month in range(1, 13):
+        months.append(calendar.month_abbr[month].lower())
+    return months
+                                
 def set_columns(column_names, width=False):
 
     # first column is 0, the rest are 1
@@ -99,7 +105,7 @@ def fund_perf_data_table(request):
         abbr = calendar.month_abbr[month]
         columns.append(abbr.lower())
     columns.append('ytd') 
-    columns = set_columns(columns, [50, 50])
+    columns = set_columns(columns, [50, 58])
 
     dic = {
         'sorting': 'year',
@@ -110,10 +116,9 @@ def fund_perf_data_table(request):
     return JsonResponse(dic)
     
     
-
 # W6 Fund Historical NAV
 # http://localhost:8000/api/widget/fundallochistnav/?format=json&fund=2
-def fund_alloc_hist_nav(request):
+def fundallochistnav(request):
 
     fund = request.GET.get('fund', 0)
     
@@ -151,7 +156,6 @@ def fund_alloc_hist_nav(request):
     }
     
     return JsonResponse(dic)
-    
     
 # W16 - Data Table
 def fundperfbenchcomptable(request):    
@@ -212,7 +216,7 @@ def fundperfbenchcompline(request):
     dic = {}
     for row in objects:        
         date = int(mktime(row.value_date.timetuple())) * 1000
-        output = [int(str(date)), row.performance]
+        output = [int(date), row.performance]
         bench_id = int(row.benchmark.id)
         
         try:
@@ -252,6 +256,7 @@ def fundperfbenchcompline(request):
             dic[fund_id]['data'].append(output)
             
     for key, val in dic.iteritems():
+        print val
         response_list.append(val)
     
     return JsonResponse(response_list)   
@@ -266,14 +271,14 @@ def fundreturn(request):
     
     # Last month of year is the yearly value
     funds = FundPerfMonth.objects.select_related('fund') \
-                            .filter(value_date__month=1, fund=fund)
+                            .filter(value_date__month=12, fund=fund)
     benchmarks = FundBenchHist.objects.select_related('benchmark') \
                             .filter(value_date__month=12, benchmark__funds=fund)
     dic = {}
     
     # funds
     fund_column = ['year']
-    for year in range(1970, date.today().year):
+    for year in range(1970, date.today().year + 1):
         dic[year] = {}    
         for row in funds:
             if year == row.value_date.year:
@@ -282,7 +287,7 @@ def fundreturn(request):
                     fund_column.append(row.fund.name)
     # benchmarks         
     bench_columns = []
-    for year in range(1970, date.today().year):           
+    for year in range(1970, date.today().year + 1):           
         for row in benchmarks:
             if year == row.value_date.year:
                 dic[year][row.benchmark.name] = row.performance # change to: ytd
@@ -297,7 +302,7 @@ def fundreturn(request):
         if val:
             val['year'] = key
             result.append(val)
-            
+         
     dic = {
         'metaData': {'sorting': 'year'},
         'columns': set_columns(columns, [50, 80]),
@@ -623,6 +628,39 @@ def subscriptionredemption(request):
         'rows': lis,
     }
     return JsonResponse(data)     
+    
+def subscriptionredemptionmonth(request):
+
+    from app.models import SubscriptionRedemption
+    fund = request.GET.get('fund', 0)
+    year = request.GET.get('year', 0)
+    month = request.GET.get('month', 0)
+    
+    queryset = SubscriptionRedemption.objects.select_related('client').filter(fund=fund, trade_date__year=year, \
+            trade_date__month=month)
+    lis = []
+    for row in queryset:
+        dic = {
+            'client': row.client.first_name + ' ' + row.client.last_name, 
+            'sub_red': row.get_sub_red_display(),
+            'percent_released': row.get_percent_released_display(),
+            'trade_date': str(row.trade_date),
+            'no_of_units': row.no_of_units,
+            'nav': row.nav
+        
+        
+        }
+        lis.append(dic)
+        
+    columns = ['client', ['sub_red', 'Sub. or Red.'], 'trade_date',
+               ['no_of_units', 'No. of Units'], ['nav', 'NAV of Trance'],
+               'percent_released']
+    data = {
+        'metaData': {'sorting': 'name'},
+        'columns': set_columns(columns, [100, 100]),
+        'rows': lis,
+    }
+    return JsonResponse(data)  
 
 def fundsubredtable(request):
 
@@ -658,4 +696,106 @@ def fundsubredtable(request):
     }
     return JsonResponse(data)
     
+def fundnavreconciliation(request):
+
+    from app.models import FundPerfMonth
+    fund = request.GET.get('fund', 0)
+    fund = FundPerfMonth.objects.filter(fund=fund).latest('value_date')
+    
+    lis = [{
+        'euro_nav': fund.euro_nav,
+        'no_of_units': fund.no_of_units,
+        'euro_nav_fund': fund.euro_nav_fund,
+        'no_of_units_fund': fund.no_of_units_fund,
+        
+    }]
+    
+    columns = {
+        'text': 'Valuation From Clients',
+        'columns': [{
+            'text'     : 'Euro NAV',
+            'width'    : 75,
+            'dataIndex': 'euro_nav'
+        }, {
+            'text'     : 'No. of Units',
+            'width'    : 75,
+            'dataIndex': 'no_of_units'
+        }]
+    }, {
+        'text': '',
+    }, {
+        'text': 'Valuation From Fund',
+        'columns': [{
+            'text'     : 'Euro NAV',
+            'width'    : 75,
+            'dataIndex': 'euro_nav_fund'
+        }, {
+            'text'     : 'No. of Units',
+            'width'    : 75,
+            'dataIndex': 'no_of_units_fund'
+        }]
+        
+    }
+
+    data = {
+        'columns': columns,
+        'rows': lis
+    }
+    return JsonResponse(data)
+    
+def fundgrossasset(request):
+
+    from app.models import FundPerfMonth, Client
+     
+    fund = request.GET.get('fund', 0)
+    year = request.GET.get('year', 0)
+    
+    qs = FundPerfMonth.objects.filter(fund=fund, value_date__year=year)
+    
+    fields = []
+    columns = [['type', '']] + get_month_list()
+    
+    def set_fields(field, group):
+        field_name = field.replace('_', ' ').title()
+        dic = {'type': field_name, 'group': group} 
+        for row in qs:
+            month_name = calendar.month_abbr[row.value_date.month]
+            dic[month_name.lower()] = getattr(row, field)
+        fields.append(dic)
+
+    dic = {
+        'previous_nav': 'NAV',
+        'performance_fees_added_back': 'NAV',
+        'subscription_amount': 'NAV',
+        'redemption_amount': 'NAV',
+        'net_movement': 'NAV',
+        'gross_assets_after_subs_red': 'NAV',
+
+        'nav_securities': 'Assets',
+        'nav_securities_total': 'Assets',
+        'nav_cash': 'Assets',
+        'nav_other_assets': 'Assets',
+
+        'administration_fees': 'Liabilities',
+        'audit_fees': 'Liabilities',
+        'capital_payable': 'Liabilities',
+        'corporate_secretarial_fees': 'Liabilities',
+        'custodian_fees': 'Liabilities',
+        'financial_statement_prep_fees': 'Liabilities',
+        'sub_advisory_fees': 'Liabilities',
+        'management_fees': 'Liabilities',
+        'performance_fees': 'Liabilities',
+        'other_liabilities': 'Liabilities',
+        'total_liabilities': 'Liabilities',
+    }
+    for field, group in dic.iteritems():
+        set_fields(field, group)
+        
+    data = {
+        'metaData': {'sorting': 'name'},
+        'columns': set_columns(columns, [160, 85]),
+        'rows': fields,
+    }
+    
+    return JsonResponse(data)
     

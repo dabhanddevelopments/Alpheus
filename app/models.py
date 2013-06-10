@@ -192,9 +192,9 @@ class Fund(models.Model):
     classification = models.ForeignKey(Classification, related_name="fund_class")
     manager = models.ForeignKey(User)
     name = models.CharField(max_length=200, null=True)
-    aum = models.SmallIntegerField()
-    mtd = models.SmallIntegerField()
-    ytd = models.SmallIntegerField()
+    aum = models.DecimalField(max_digits=20, decimal_places=5)
+    mtd = models.DecimalField(max_digits=20, decimal_places=5)
+    ytd = models.DecimalField(max_digits=20, decimal_places=5)
     description = models.CharField(max_length=2000, null=True, blank=True)
     subscription_frequency = models.SmallIntegerField(choices=FREQUENCY)
     redemption_frequency = models.SmallIntegerField(choices=FREQUENCY)
@@ -266,15 +266,17 @@ class HistoricFund(models.Model):
 
 
 class Client(models.Model):
+    alarm = models.ForeignKey('Alarm', blank=True, null=True)
+    benchmark = models.ForeignKey('Benchmark', blank=True, null=True)   
+   
     fund = models.ManyToManyField(Fund, through="SubscriptionRedemption")
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    alarm = models.ForeignKey('Alarm', blank=True, null=True)
-    benchmark = models.ForeignKey('Benchmark', blank=True, null=True)
     pending_nav = models.DecimalField(max_digits=20, decimal_places=2)
     nav = models.DecimalField(max_digits=20, decimal_places=2)
     no_of_units = models.DecimalField(max_digits=20, decimal_places=2,\
                                                 verbose_name="No. of Units")
+                                             
     
     def __unicode__(self):
         return u'%s / %s' % (self.first_name, self.last_name)
@@ -322,7 +324,7 @@ class Trade(models.Model):
     currency = models.ForeignKey(Currency)
     fx_euro = models.DecimalField(max_digits=20, decimal_places=8,\
                                                 verbose_name="FX to Euro")
-
+    # not used to be deleted
     dealing_date = models.DateField()
     # purchase_price_euro = models.DecimalField(max_digits=20, decimal_places=5)
 
@@ -394,7 +396,9 @@ class Holding(models.Model):
     value_date = models.DateField()
 
     # static trade data
+    dealing_date = models.DateField()
     redemption_frequency = models.SmallIntegerField(choices=FREQUENCY)
+    redemption_date = models.DateField()
     redemption_notice = models.DecimalField(max_digits=20, decimal_places=5)
     max_redemption = models.DecimalField(max_digits=20, decimal_places=5)
     payment_days = models.DecimalField(max_digits=20, decimal_places=5)
@@ -406,7 +410,10 @@ class Holding(models.Model):
                                                 verbose_name="Redemption Fee 24M")
     redemption_fee36 = models.DecimalField(max_digits=20, decimal_places=5,\
                                                 verbose_name="Redemption Fee 36M")
-
+    
+    def soft_lock2(self):
+        return self.get_soft_lock_display()
+    
     def __unicode__(self):
         return str(self.id)
 
@@ -433,7 +440,7 @@ class HoldingType(models.Model):
 class HoldPerfMonth(models.Model):
     fund = models.ForeignKey(Fund)
     holding = models.ForeignKey(Holding)
-    holding_category = models.ForeignKey(HoldingCategory)
+    holding_category = models.ForeignKey(HoldingCategory, null=True, blank=True)
     si = models.DecimalField(max_digits=4, decimal_places=2)
     ytd = models.DecimalField(max_digits=4, decimal_places=2)
     performance = models.DecimalField(max_digits=4, decimal_places=2)
@@ -471,9 +478,16 @@ class HoldPerf(models.Model):
 
 # FUND PERFORMANCE
 
+class FundPerfYear(models.Model):
+    fund = models.ForeignKey(Fund, related_name='fund')
+    ytd = models.DecimalField(max_digits=15, decimal_places=5)
+    si = models.DecimalField(max_digits=15, decimal_places=5)
+    value_date = models.DateField()
+
 
 class FundPerfMonth(models.Model):
-    fund = models.ForeignKey(Fund, related_name='month')
+    fund = models.ForeignKey(Fund)
+    year = models.ForeignKey(FundPerfYear, related_name='month')
     performance = models.DecimalField(max_digits=4, decimal_places=2)
     net_drawdown = models.DecimalField(max_digits=15, decimal_places=5)
     ytd = models.DecimalField(max_digits=15, decimal_places=5)
@@ -496,9 +510,12 @@ class FundPerfMonth(models.Model):
     correlation1 = models.DecimalField(max_digits=4, decimal_places=2)
     correlation3 = models.DecimalField(max_digits=4, decimal_places=2)
     correlation5 = models.DecimalField(max_digits=4, decimal_places=2)
-
-    euro_nav = models.DecimalField(max_digits=20, decimal_places=2)
+    no_of_units = models.DecimalField(max_digits=20, decimal_places=5)
+    euro_nav = models.DecimalField(max_digits=20, decimal_places=5)
+    no_of_units_fund = models.DecimalField(max_digits=20, decimal_places=5)
+    euro_nav_fund = models.DecimalField(max_digits=20, decimal_places=5)
     value_date = models.DateField()
+    
     previous_nav = models.DecimalField(max_digits=20, decimal_places=2) #last months nav, is this needed?
     performance_fees_added_back = models.DecimalField(max_digits=20, decimal_places=2)# not being imported by alexi? input form?
     subscription_amount = models.DecimalField(max_digits=20, decimal_places=2)
@@ -507,6 +524,7 @@ class FundPerfMonth(models.Model):
     gross_assets_after_subs_red = models.DecimalField(max_digits=20, decimal_places=2)
     
     nav_securities = models.DecimalField(max_digits=20, decimal_places=2)
+    nav_securities_total = models.DecimalField(max_digits=20, decimal_places=2)
     nav_cash = models.DecimalField(max_digits=20, decimal_places=2)
     nav_other_assets = models.DecimalField(max_digits=20, decimal_places=2)
     
@@ -527,8 +545,8 @@ class FundPerfMonth(models.Model):
         #unique_together = ('holding_group', 'holding_category',)
         ordering = ['value_date']
 
-    def __unicode__(self):
-        return str(self.value_date)
+    #def __unicode__(self):
+    #    return str(self.value_date)
 
 
 class FundPerf(models.Model):
@@ -612,22 +630,5 @@ class ClientPerfMonth(models.Model):
         #unique_together = ('holding_group', 'holding_category',)
         ordering = ['value_date']
 
-    def __unicode__(self):
-        return str(self.value_date)
-
-
-class ClientPerf(models.Model):
-    fund = models.ForeignKey(Fund)
-    month = models.ForeignKey(FundPerfMonth)
-    performance = models.DecimalField(max_digits=4, decimal_places=2)
-    value_date = models.DateField()
-
-    def __unicode__(self):
-        return str(self.performance)
-    
-
-    
-    
-    
     
     
