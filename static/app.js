@@ -259,8 +259,8 @@ Ext.onReady(function() {
     function initPage(obj) {
     
         var id = obj.page;
-        console.log(id);
-        console.log(obj);
+       //console.log(id);
+       //console.log(obj);
         // All pages used on the site. This is loaded on start.
         // @TODO: Redo this
         var pages = $('#data').data('page');
@@ -300,7 +300,7 @@ Ext.onReady(function() {
                     $('<div id="page' + id + '"></div>').appendTo('#menu');
                 }
                 
-                console.log(obj);
+               //console.log(obj);
                 initGrid(obj);
                     
                 // stops all widgets to auto reload/refresh
@@ -369,8 +369,8 @@ Ext.onReady(function() {
         try {
             ws.remove(active);
         } catch(err) {
-            console.log("Failed to remove panel");
-            console.log(err);
+           //console.log("Failed to remove panel");
+           //console.log(err);
         }
 
         // The 'main' DOM element gets destroyed on remove() with autoDestroy
@@ -381,8 +381,8 @@ Ext.onReady(function() {
         try {
             ws.add(panel);
         } catch(err) {
-            console.log("Failed to add panel");
-            console.log(err);
+           //console.log("Failed to add panel");
+           //console.log(err);
         }
   
         ws.doLayout();  
@@ -405,7 +405,7 @@ console.log('initiating grid');
         // loaded and we do not need to fetch it again
         if($('#data').data('grid' + page) !== undefined && $('#data').data('grid' + page) !== '') {
 
-            console.log('skipping gridster: grid' + page);
+           //console.log('skipping gridster: grid' + page);
             return;
         }
 
@@ -624,7 +624,7 @@ console.log('initiating grid');
         // at TODO:change benchmark to support mtom
         if(data.window.key == 'w15') {
               $.getJSON('/api/widget/fundsummary/' + obj.fund, function(summary) {
-              console.log(summary);
+             //console.log(summary);
                           widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
                 html = '<div> <table width="100%" class="html_table">' +
                 '<tr><td>Fund Name</td><td>'+ summary.name + '</td></tr>' +
@@ -690,7 +690,7 @@ console.log('initiating grid');
                     items: childItems,
                     listeners: {
                         'tabchange': function(tabPanel, tab){
-                        console.log('APPENDING FROM CHILD TAB ' + tab.id);
+                       //console.log('APPENDING FROM CHILD TAB ' + tab.id);
                             appendGridToTab(tab.id);
                         }
                     }
@@ -712,7 +712,7 @@ console.log('initiating grid');
                 listeners: {
                     'tabchange': function(tabPanel, tab){
                         var id = tab.id.split("-");
-                        console.log('APPENDING FROM PARENT TAB ' + id[2]);
+                       //console.log('APPENDING FROM PARENT TAB ' + id[2]);
                         appendGridToTab(id[2]);
                     }
                 }
@@ -732,7 +732,7 @@ console.log('initiating grid');
             for(i=this_year; i>2002; i--) {
                 parents.push(i);
             }
-            console.log(parents);
+           //console.log(parents);
             for(i=0; i<parents.length; i++) {
             
                 childItems = [];
@@ -744,7 +744,7 @@ console.log('initiating grid');
                         title: children[x],
                         layout:  {type : 'vbox', align : 'stretch' }
                     });
-                    console.log(childItems);
+                   //console.log(childItems);
                 }
                 items.push({
                     xtype: 'tabpanel',
@@ -754,13 +754,13 @@ console.log('initiating grid');
                     items: childItems,
                     listeners: {
                         'tabchange': function(tabPanel, tab){
-                        console.log('APPENDING FROM CHILD TAB ' + tab.id);
+                       //console.log('APPENDING FROM CHILD TAB ' + tab.id);
                         appendGridToSubRedTab(tab.id);
                         }
                     }
                 });
             }
-            console.log("whatever");
+           //console.log("whatever");
             
             // div for tabs
             var tab_div = 'tab-' + data.window.key + '-' + window_id;
@@ -777,7 +777,7 @@ console.log('initiating grid');
                 listeners: {
                     'tabchange': function(tabPanel, tab){
                         var id = tab.id.split("-");
-                        console.log('APPENDING FROM PARENT TAB ' + id[2]);
+                       //console.log('APPENDING FROM PARENT TAB ' + id[2]);
                         appendGridToSubRedTab(id[2]);
                     }
                 }
@@ -804,7 +804,7 @@ console.log('initiating grid');
                     id: 'w13-year-' + parents[i],
                 });
             }
-            console.log("whatever");
+           //console.log("whatever");
             
             // div for tabs
             var tab_div = 'tab-' + data.window.key + '-' + window_id;
@@ -833,7 +833,7 @@ console.log('initiating grid');
         
         }
         
-        console.log(data.window.key)
+       //console.log(data.window.key)
         
         // get the widgets for this window
         $.ajax({
@@ -848,7 +848,7 @@ console.log('initiating grid');
                 // vbox or hbox
                 var layout = data.window.layout + 'box'; 
                 
-                console.log('LAYOUT: ' + layout);
+               //console.log('LAYOUT: ' + layout);
                 var items = [];
                 
                 for(x=0; x<widgets.length; x++) {
@@ -1151,9 +1151,9 @@ console.log('initiating grid');
     
         $.getJSON(widget.url + widget.qs, function(data) {
         
-            console.log('BAR CHART');
-            console.log(obj);
-            console.log(widget);
+           //console.log('BAR CHART');
+           //console.log(obj);
+           //console.log(widget);
             
             title = false;
             if(typeof widget.params.title != 'undefined' && widget.params.title == "true") {
@@ -1184,7 +1184,7 @@ console.log('initiating grid');
             if(typeof widget.params.scrollbar != 'undefined' && widget.params.scrollbar == "true") {
                 scrollbar = true;
             }
-            console.log(labels);
+           //console.log(labels);
     
             var chart = new Highcharts.Chart({
                 chart: {
@@ -1401,8 +1401,8 @@ console.log(data.rows);
     
     
         $.getJSON(widget.url + widget.qs, function(data) { 
-            console.log('EURO PERCENT');
-            console.log(div);
+           //console.log('EURO PERCENT');
+           //console.log(div);
             if(typeof Ext.getCmp(div) != 'undefined') {
                 tabPanel = Ext.getCmp(div);
                 tabPanel.destroy();
@@ -1511,7 +1511,7 @@ console.log(data);
                     }
                 }
             }   
-            console.log(fields);
+           //console.log(fields);
             Ext.create('Ext.data.Store', {
                 storeId: widget.key,
                 fields: fields,
@@ -1665,7 +1665,7 @@ console.log(data);
                 fields[i] = data.columns[i].dataIndex;
             }
          
-            console.log(data);
+           //console.log(data);
             var mainStore = Ext.create('Ext.data.Store', {
                 //storeId: widget.key,
                 fields: fields,
@@ -1735,8 +1735,8 @@ console.log(data);
                 }
             });
             mainGrid.view.on('collapsebody', function (rowNode, record, expandRow, eOpts) {
-                console.log(record);
-                destroyInnerGrid(record);
+               //console.log(record);
+                //destroyInnerGrid(record);
             }); 
             
         });
@@ -1755,7 +1755,7 @@ console.log(data);
        
         
         $.getJSON(widget.url + widget.qs, function(data) {
-         console.log(data);
+        //console.log(data);
             var chart = new Highcharts.Chart({
                 chart: {
                     renderTo: div,
@@ -2286,7 +2286,7 @@ console.log(data);
                                     record.expand();
                                 }
                                 
-                                console.log(record.raw.page);
+                               //console.log(record.raw.page);
                                 $('#data').data('fund', record.raw.fund);
                                 
                                 
@@ -2299,8 +2299,8 @@ console.log(data);
                                         record.raw.page = str.replace(/\D/g, '');
                                     }
                                 }
-                                console.log('RCRD RAW');
-                                console.log(record.raw);
+                               //console.log('RCRD RAW');
+                               //console.log(record.raw);
                                 initPage(record.raw);
 
                             }

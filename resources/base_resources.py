@@ -55,8 +55,8 @@ class MainBaseResource2(ModelResource):
 # Base Model Resource
 class MainBaseResource(ModelResource):
     class Meta:
-        #authentication = SessionAuthentication()
-        #authorization = DjangoAuthorization()
+        authentication = SessionAuthentication()
+        authorization = DjangoAuthorization()
         serializer = PrettyJSONSerializer()
         include_resource_uri = False
         columns = []

@@ -583,13 +583,19 @@ def currencyhedge(request):
                         .filter(fund=fund_id, currency=row.currency_id) \
                         .latest('value_date')   
        fxrate = FxRate.objects.filter(currency=row.currency_id).latest('value_date')
+       
+       try: 
+           euro_eq = (perf.nav - row.amount) / fxrate.fx_rate
+       except:
+           euro_eq = 0
+           
        dic = {
          'currency': perf.currency.name,
          'total_position': perf.nav,
          'total_hedge': row.amount,
          'hedge_expires': str(row.settlement_date),
          'exposure': perf.nav - row.amount,
-         'euro_equivalent': (perf.nav - row.amount) / fxrate.fx_rate
+         'euro_equivalent': euro_eq,
        }
        lis.append(dic)
     columns = ['currency', 'total_position', 'total_hedge', 'hedge_expires', 'exposure', 'euro_equivalent', ]

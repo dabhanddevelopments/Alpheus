@@ -84,7 +84,7 @@ class EntryResource(ModelResource):
         return randomstring      
 
     def rand_date(self):
-        return str(random.randrange(2010, 2014)) + '-' + str(random.randrange(1, 13)) + '-' + str(random.randrange(1, 28))
+        return str(random.randrange(2013, 2014)) + '-' + str(random.randrange(1, 13)) + '-' + str(random.randrange(1, 28))
         
     def alter_list_data_to_serialize(self, request, data):
     
@@ -104,7 +104,7 @@ class EntryResource(ModelResource):
                             fxrate = FxRate(
                                 value_date = str(year) + '-' + str(month) + '-1', 
                                 currency = cur, 
-                                fx_rate = random.randrange(0, 2), 
+                                fx_rate = random.randrange(1, 2), 
                             )
                             fxrate.save()
                         except: 
