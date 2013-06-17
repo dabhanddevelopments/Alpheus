@@ -19,6 +19,7 @@ class WidgetAdmin(admin.ModelAdmin):
 class WidgetInline(admin.TabularInline):
     model = Widget
     sortable_field_name = 'position'
+    exclude = ('widget_param', 'description', 'column_width')
 
 class WindowAdmin(admin.ModelAdmin):
     list_display = ('name', 'key', 'size_x', 'size_y', 'layout') #'access')

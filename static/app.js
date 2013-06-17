@@ -54,13 +54,150 @@ function displayInnerGrid(data, renderId) {
 
 }
 
+function zoomGraph(e, widget) {
+
+    //this is ugly
+    var qs = widget.qs.replace('&value_date__month=2,4,6,8,10,12', '');
+console.log(e);
+console.log(widget);
+
+    var start = new Date(e.min);
+    var end = new Date(e.max);
+    
+    var start_date = start.getFullYear() + '-' + (start.getMonth() + 1) + '-' + start.getDate();
+    var end_date = end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate();
+    
+    
+    var date = '&value_date__gte=' + start_date + '&value_date__lte=' + end_date;
+    //var date = '';
+    
+    range = (e.max / 1000 ) - (e.min / 1000);
+    range = Math.round( range );
+    
+    var filter = '';
+    
+    if(range > 300000000) { // more than 9.5 years
+    
+        filter = '&value_date__month=2,4,6,8,10,12'; // 1st of month each other month
+        console.log('ALL');
+        
+    } else if(range >= 240000000) { // more than 7.5 years
+    
+        //var filter = '&value_date__month=2,4,6,8,10,12'; // wed
+        console.log('1Y');
+        
+    } else if(range >= 120000000) { // more than 4 years
+    
+        //var filter = '&value_date__week_day=3,5'; // tue, thu
+        console.log('6M');
+   
+    } else if(range >= 60000000) { // more than 2 years
+    
+        //var filter = '&value_date__week_day=2,4,6'; // mon, wed, fri
+        console.log('3M');
+        
+    } else { 
+        var filter = ''; // empty means every month
+        console.log('1M');
+    }
+    
+    //console.log(range);
+    //console.log(date);
+    //console.log(start);
+    //console.log(end);
+    
+    var chart = $('#' + widget.div).highcharts();
+    chart.showLoading('Loading data from server...');
+   
+    $.getJSON(widget.url + qs + date + filter, function(data22) {
+         console.log(data22[0]);
+         console.log(data22[0].data);
+	     chart.series[0].setData(data22[0].data);
+		 chart.hideLoading();
+	});	
+}
+
+//@TODO: Merge this with zoomGraph()
+function zoomLineBarGraph(e) {
+
+console.log(e);
+
+    holding = $('#data').data('holding');
+    
+    var div = $('#data').data('linebar-div');
+    
+
+    var qs = '?holding_category__holding_group__isnull=true&holding=' + holding; 
+    
+    var start = new Date(e.min);
+    var end = new Date(e.max);
+    
+    var start_date = start.getFullYear() + '-' + (start.getMonth() + 1) + '-' + start.getDate();
+    var end_date = end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate();
+    
+    var date = '&value_date__gte=' + start_date + '&value_date__lte=' + end_date;
+
+    
+    range = (e.max / 1000 ) - (e.min / 1000);
+    range = Math.round( range );
+    
+    if(range > 31557600) { // more than 1 year
+    
+        var filter = '&value_date__month=2,4,6,8,10,12&value_date__day=1'; // 1st of month each other month
+        console.log('ALL');
+        
+    } else if(range >= 31535000) { // more than 6 months
+    
+        var filter = '&value_date__week_day=4'; // wed
+        console.log('1Y');
+        
+    } else if(range >= 15535000) { // more than 3 months
+    
+        var filter = '&value_date__week_day=3,5'; // tue, thu
+        console.log('6M');
+   
+    } else if(range >= 7700000) { // more than 1 months
+    
+        var filter = '&value_date__week_day=2,4,6'; // mon, wed, fri
+        console.log('3M');
+        
+    } else { 
+        var filter = ''; // empty means every day
+        console.log('1M');
+    }
+    
+    //console.log(range);
+    //console.log(date);
+    //console.log(start);
+    //console.log(end);
+    
+    var chart = $('#' + div).highcharts();
+    chart.showLoading('Loading data from server...');
+   
+    $.getJSON('/api/widget/fundperfholdpriceline/' + qs + date + filter, function(data) {
+	
+	     chart.series[0].setData(data);
+		 chart.hideLoading();
+		 
+        $.getJSON('/api/widget/fundperfholdvolbar/' + qs + date + filter, function(data2) {
+	
+	         chart.series[1].setData(data2);
+		     chart.hideLoading();
+		     
+	    });
+	});	
+}
+
 
 function lineBarChart(widget) {
 
     widget.url = '/api/widget/fundperfholdpriceline/';
-    widget.qs = '?holding__fund=' + widget.fund + '&holding=' + widget.holding; 
+    widget.qs = '?holding_category__holding_group__isnull=true&value_date__month=2,4,6,8,10,12&value_date__day=1&holding__fund=' + widget.fund + '&holding=' + widget.holding; 
 
+    $('#data').data('holding', widget.holding);
+    
     var div = $('#data').data('linebar-div');
+    console.log('DIV ' + div);
     var chart = $('#' + div).highcharts();
     
     if(typeof chart != 'undefined') {
@@ -80,16 +217,16 @@ function lineBarChart(widget) {
                     marginRight: 50,
                 },
                 navigator:{
-                    enabled:true
-                },
+                    enabled:true,
+				    adaptToUpdatedData: false,
+				    series : {
+					    data : data
+				    }
+			    },
                 scrollbar: {
                     enabled:false, //remove ugly scrollbar
                 },
 
-                rangeSelector: {
-                    enabled: true,
-	                //selected: 1
-                },  
                 title: {
                     text: false,
                 },
@@ -104,6 +241,10 @@ function lineBarChart(widget) {
                             fontFamily: 'Verdana, sans-serif'
                         }
                     },
+				    events : {
+					    afterSetExtremes : zoomLineBarGraph
+				    },
+				    minRange: 3600 * 1000 // one hour
 
                 },{ }],
                 yAxis: [
@@ -140,6 +281,32 @@ function lineBarChart(widget) {
                     //y: 100,
                     //borderWidth: 0
                 },
+                
+			    rangeSelector : {
+			        enabled: true,
+				    buttons: [{
+					    type: 'month',
+					    count: 1,
+					    text: '1m'
+				    }, {
+					    type: 'month',
+					    count: 3,
+					    text: '3m'
+				    }, {
+					    type: 'month',
+					    count: 6,
+					    text: '6m'
+				    }, {
+					    type: 'year',
+					    count: 1,
+					    text: '1y'
+				    }, {
+					    type: 'all',
+					    text: 'All'
+				    }],
+				    inputEnabled: false, // it supports only days
+				    selected : 4 // all
+			    },
                 series: [
                 {
                     yAxis: 0,
@@ -167,19 +334,20 @@ function lineBarChart(widget) {
                     },
                     pointWidth: 5,
                     type: 'column',
-                    
                 },
                 ]
             };
-
+            
             var chart = new Highcharts.Chart(options);
+            
+
             });
         });
     }
 
 function destroyInnerGrid(record) {
 
-    var parent = document.getElementById(record.get('id'));
+    var parent = document.getElementById('innergrid' + record.get('id'));
     var child = parent.firstChild;
 
     while (child) {
@@ -247,11 +415,147 @@ function monthlyBar(date, fund, fields, order_by) {
     }
 };    
 
-    
 
 Ext.onReady(function() {
 
 
+
+    // W18 summary graphs
+    function summaryGraphs() {
+        graphs = {
+            1: [
+                {ann_return1: 'Returns one ann'},
+                {ann_volatility1: 'Volatility one ann'},
+                {alpha1: 'Alpha one ann'},
+                {beta1: 'Beta one ann'},
+                {sharpe_ratio1: 'Sharpe one ann'},
+                {correlation1: 'Correlation one ann'}, 
+            ],              
+            2: [
+                {ann_return3: 'Returns three ann'},
+                {ann_volatility3: 'Volatility three ann'},
+                {alpha3: 'Alpha three ann'},
+                {beta3: 'Beta three ann'},
+                {sharpe_ratio3: 'Sharpe three ann'},
+                {correlation3: 'Correlation three ann'},    
+            ],
+            3: [
+                {ann_return5: 'Returns five ann'},
+                {ann_volatility5: 'Volatility five ann'},
+                {alpha5: 'Alpha five ann'},
+                {beta5: 'Beta five ann'},
+                {sharpe_ratio5: 'Sharpe five ann'},
+                {correlation5: 'Correlation five ann'},    
+            ]
+        };
+
+
+        var fund = $('#data').data('fund');
+
+        items = [];
+        for(var row in graphs) {
+
+            children = [];
+            
+            for(var chart in graphs[row]) {
+            
+                key = Object.keys(graphs[row][chart])[0];
+                
+                var bar_div = 'summary2-bar-' + key;
+                var line_div = 'summary2-line-' + key;
+                    
+                $('<div id="' + bar_div + '"></div>').appendTo('body');
+                $('<div id="' + line_div + '"></div>').appendTo('body');
+                //$('<div id="' + innertab_div + '-line"></div>').appendTo('#' + tab_div);
+                
+                // widget is global for some reason, so using another name
+                win_widget = {}
+                win_widget.url = '/api/widget/fundperfmonthmin/';
+                win_widget.qs = '?fund=' + fund + '&fields=' + key + '&value_date__month=2,4,6,8,10,12';
+                win_widget.size_y = 1.9;
+                win_widget.size_x = 3;
+                win_widget.div = bar_div;
+                
+                
+                win_widget.params = {}
+                win_widget.params.type = 'column';
+                win_widget.params.legend = 'false';
+                win_widget.params.scrollbar = 'false';
+                win_widget.params.navigator = 'true';
+                win_widget.params.zoom = 'true';
+                win_widget.params.rangeSelector = 'true';
+                win_widget.params.title = 'false';
+                win_widget.params.yAxisTitle = graphs[row][chart][key];
+                win_widget.params.date_type = 'month';
+                
+                lineChart('', win_widget, bar_div);
+                
+                children.push({
+                     xtype: 'tabpanel',
+                     border: 1,
+                     width: (120 * win_widget.size_x) + (10 * win_widget.size_x) + (10 * (win_widget.size_x - 1)) - 20,
+                     height: (120 * win_widget.size_y) + (10 * win_widget.size_y) + (10 * (win_widget.size_y - 1)) + 20,
+                      items: [
+                        {
+                            xtype : 'panel',     
+                            title : 'Bar',
+                            contentEl: bar_div,
+                            id: bar_div
+                        },
+                        {
+                            xtype : 'panel',     
+                            title :'Line',
+                            contentEl: line_div,
+                            id: line_div
+                        }
+                    ],
+                    listeners: {
+                        'tabchange': function(tabPanel, tab){
+                            win_widget.params.type = 'line';
+                            lineChart('', win_widget, tab.id);
+                        }
+                    }
+                })
+            }
+                
+            parent = {
+                xtype: 'container',
+                layout: 'hbox',
+                items: children,
+            }
+            items.push(parent)
+        }
+        console.log("ROW: " + row);
+            
+
+        Ext.onReady(function(){
+            var win = new Ext.Window({
+                renderTo: Ext.getBody(),
+                items: items,
+                listeners: {
+                    'close': function(tabPanel, tab){
+                        $.each(graphs, function(x, row) {
+                            $.each(row, function(key, field) {
+                                 key = Object.keys(field)[0];
+                                 destroyGrid('summary2-bar-' + key);
+                                 destroyGrid('summary2-line-' + key);
+                            });
+                        });
+                    }
+                }
+            });
+            win.toggleMaximize();
+            win.show();
+        });
+
+    }
+    
+    function destroyGrid(div) {
+        if(typeof $('#' + div).highcharts() != 'undefined') {
+            var widget_obj = $('#' + div).highcharts();
+            widget_obj.destroy();
+        }
+    }
 
     //$('<div id="main" class="gridster"></div>').appendTo('body');
     $('<div id="data"></div>').appendTo('body');
@@ -566,6 +870,9 @@ console.log('initiating grid');
                     widget.size_x = 6;
                     widget.params = {}
                     widget.params.title = '';
+                    widget.params.date_type = 'month';
+                    widget.params.navigator = 'true';
+                    widget.params.rangeSelector = 'true';
                     
                     var chart = $('#' +  innertab_div + '-bar').highcharts();
                 
@@ -596,8 +903,9 @@ console.log('initiating grid');
                                     div2 = innertab_div + '-line';
                                     
                                     var chart = $('#' + div2).highcharts();
-                                
+                                    console.log('got chart');
                                     if(typeof chart == 'undefined') {
+                                        console.log('chart does not exist');
                                         widget.params.type = 'line';
                                         lineChart('', widget, div2);
                                     }
@@ -638,16 +946,14 @@ console.log('initiating grid');
                 '<tr><td>Redemption Terms</td><td>'+ summary.redemption_frequency + '</td></tr>' +
                 '<tr><td>Management Fees</td><td>'+ summary.management_fee + '</td></tr>' +
                 '<tr><td>Performance Fees</td><td>'+ summary.performance_fee + '</td></tr>' +
-                '<tr><td>Benchmark</td><td>'+ summary.benchmark.name + '</td></tr>' +
-               
-'</table> </div>';              
-                
-                
+                '<tr><td>Benchmark</td><td>'+ summary.benchmark.name + '</td></tr>' + '</table> </div>';              
                 
                 $(html).appendTo('#' + window_id);
             });
 
             return
+        
+        // W18
         } if(data.window.key == 'w18') {
         
             widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
@@ -710,7 +1016,12 @@ console.log('initiating grid');
                 items: items,
                 layout: 'fit',
                 listeners: {
-                    'tabchange': function(tabPanel, tab){
+                    'beforetabchange': function(tabPanel, tab){
+                        
+                        if(tab.id == 'summary-tab') {
+                        summaryGraphs();
+                        return false;
+                        }
                         var id = tab.id.split("-");
                        //console.log('APPENDING FROM PARENT TAB ' + id[2]);
                         appendGridToTab(id[2]);
@@ -720,6 +1031,12 @@ console.log('initiating grid');
             
             // append grids for default tab
             appendGridToTab('si');
+            
+            // The summary tab is a link to a popup window
+            tp.add({
+                title: 'Summary',
+                id: 'summary-tab',             
+            });
             
         } else if (data.window.key == 'w23') {
         
@@ -1037,16 +1354,65 @@ console.log('initiating grid');
 
     
     function lineChart(obj, widget, div) {
-    
+
+        if(typeof $('#' + div).highcharts() != 'undefined') {
+            console.log('chart already created');
+        }
+        
         if(typeof widget.params.type == 'undefined') {
             var type = 'line';
         } else {
             var type = widget.params.type;
         }
+        
+
+        var title = false;
+        if(typeof widget.params.title != 'undefined' && widget.params.title == "true") {
+            title = true;
+        }
+        
+        var yDecimals = true;
+        if(typeof widget.params.yDecimals != 'undefined' && widget.params.yDecimals === 'false') {
+            yDecimals = false;
+        }   
+        
+        var yAxisTitle = 'Performance';
+        if(typeof widget.params.yAxisTitle != 'undefined') {
+            if(widget.params.yAxisTitle == 'false') {
+                yAxisTitle = false;
+            } else {
+                yAxisTitle = widget.params.yAxisTitle;
+            }
+        }   
+        
+        var labels = true;
+        if(typeof widget.params.labels != 'undefined' && widget.params.labels == 'false') {
+            labels = false;
+        } 
+    
+        var legend = true;
+        if(typeof widget.params.legend != 'undefined' && widget.params.legend == 'false') {
+            legend = false;
+        }
+    
+        var scrollbar = false;
+        if(typeof widget.params.scrollbar != 'undefined' && widget.params.scrollbar == 'true') {
+            scrollbar = true;
+        }
+    
+        var navigator = false;
+        if(typeof widget.params.navigator != 'undefined' && widget.params.navigator == 'true') {
+            navigator = true;
+        }
+        
+        var rangeSelector = true;
+        if(typeof widget.params.rangeSelector != 'undefined' && widget.params.rangeSelector == 'false') {
+            rangeSelector = false;
+        }
     
         $.getJSON(widget.url + widget.qs, function(data) {
             
-            var chart = new Highcharts.StockChart({
+            var options = {
                 chart: {
                     type: type,
                     marginRight: 25,
@@ -1057,19 +1423,22 @@ console.log('initiating grid');
                     height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
                 },
                 navigator:{
-                    enabled:true,
+                    enabled: navigator,
+				    adaptToUpdatedData: false,
+				    series: data,
+				    height: 20,
                 },
                 scrollbar: {
-                    enabled:false
+                    enabled: scrollbar
                 },
 
                 rangeSelector: {
-                    enabled: false,
-	                //selected: 1
+                    enabled: rangeSelector,
+                    selected : 4 
                 },                  
                 title: {
-                    enabled: false,
-                //    text: widget.name,
+                    enabled: title,
+                    text: widget.name,
                 //    x: -20 //center
                 },
                 xAxis: {
@@ -1077,7 +1446,7 @@ console.log('initiating grid');
                 },
                 yAxis: {
                     title: {
-                        text: 'Performance'
+                        text: yAxisTitle,
                     },
                     plotLines: [{
                         value: 0,
@@ -1089,7 +1458,7 @@ console.log('initiating grid');
                     //valueSuffix: '€'
                 },
                 legend: {
-                    enabled: true,
+                    enabled: legend,
                     //layout: 'vertical',
                     //align: 'right',
                     //verticalAlign: 'top',
@@ -1098,7 +1467,46 @@ console.log('initiating grid');
                     //borderWidth: 0
                 },
                 series: data,
-            });
+            };
+            
+            if(typeof widget.params.date_type != 'undefined' && widget.params.date_type == 'month') {
+                options['rangeSelector'] = {            
+                    enabled: true,
+			        buttons: [{
+				        type: 'year',
+				        count: 1,
+				        text: '1y'
+			        }, {
+				        type: 'year',
+				        count: 5,
+				        text: '5y'
+			        }, {
+				        type: 'year',
+				        count: 10,
+				        text: '10y'
+			        }, {
+				        type: 'all',
+				        text: 'All'
+			        }],
+			        inputEnabled: false, // no space for it
+			        selected : 1 
+                }
+            } 
+            if(typeof widget.params.zoom != 'undefined' && widget.params.zoom == 'true') {
+                console.log(options.xAxis);
+                options['xAxis'] = {
+                    events: {
+                        afterSetExtremes: function(e){
+                            console.log(e);
+                            zoomGraph(e, widget);
+                        }
+                    },
+                    minRange: 3600 * 1000 // one hour
+                };
+                console.log(options);
+            }
+            var chart = new Highcharts.StockChart(options);
+            
         });
     }
     
@@ -1363,33 +1771,47 @@ console.log(data.rows);
             listeners: {
                 cellclick: function(gridView,htmlElement,columnIndex,dataRecord) {
                 
-                    year = dataRecord.data.year;
-                    
-                    obj.page = $('#data').data('page_id');
-                    obj.grid = $('#data').data('grid' + obj.page);
-                    extra_params = {
-                        year: year,
-                    }
-                    
-                    div = $('#data').data('piechart-div');
-                    var window_id = 'page_' + obj.page + '_win_' + widget.window.id;
-                                    
+                    year = obj.page = $('#data').data('year');
                     month = columnIndex;
-                    widget.key = "fundperfholdperfbar";
-                    widget.params.value_date__month = month;
-                    widget.params.value_date__year = year;
-                    widget.params.holding_category__holding_group = "sec";
-                    widget.params.fund = "FUND";
-                    widget.params.fields = "nav";
-                    widget.type = "pie_chart";
-                                                
-                    var widget_obj = $('#' + div).highcharts();
-                    widget_obj.destroy();
                     
-                    $('<div id="' + widget_id + '"></div>').appendTo('#' + window_id);
+                    if(month != 0) {
                     
-                    createWidget(obj, widget_data[x], widget_id, extra_params);
+                        if(typeof year == 'undefined') {
+                            year = new Date().getFullYear();
+                        }
                         
+                        obj.page = $('#data').data('page_id');
+                        obj.grid = $('#data').data('grid' + obj.page);
+                        extra_params = {
+                            year: year,
+                        }
+
+                        if(widget.window.key == 'w8') { 
+                            group = 'sec';
+                        } else if(widget.window.key == 'w9') {
+                            group = 'sub';
+                        } else if(widget.window.key == 'w10') {
+                            group = 'loc';
+                        }
+                        
+                        div = $('#data').data('piechart-div-' + widget.window.key);
+                        var window_id = 'page_' + obj.page + '_win_' + widget.window.id;
+                        
+                        
+                        widget.key = "fundperfgrouppie";
+                        widget.qs = "?fund=1&value_date__year=YEAR&value_date__month=" + month + "&holding_category__holding_group=" + group + "&fields=nav&value_date__day=1";
+                        widget.params.value_date__year = year;
+                        widget.params.holding_category__holding_group = "sec";
+                        widget.params.fund = "FUND";
+                        widget.params.fields = "nav";
+                        widget.type = "pie_chart";
+                        console.log(widget);
+                                                    
+                        var widget_obj = $('#' + div).highcharts();
+                        widget_obj.destroy();
+                        
+                        createWidget(obj, widget, div, extra_params);
+                    }
                }
             }
                     
@@ -1420,7 +1842,7 @@ console.log(data.rows);
             tabPanel.add(grid);
             tabPanel.doLayout();
             
-            var qs = widget.qs.replace('fields=nav', 'fields=weight');
+            var qs = widget.qs.replace('fields=nav', 'fields=weight'); // ???
             widget.params.title = '% of Fund';
             
             $.getJSON(widget.url + qs, function(data2) { 
@@ -1556,11 +1978,13 @@ console.log(data);
                         month = columnIndex;
                         
 
+                        
+
                         if(widget.window.key == 'w1') {
                         
                             // year view
                             if(columnIndex == 0) {
-                                
+                                        
                                 refreshWindow('w3', obj, extra_params);
                                 refreshWindow('w4', obj, extra_params);
                                 refreshWindow('w5', obj, extra_params);
@@ -1576,25 +2000,21 @@ console.log(data);
                             // year view
                             if(columnIndex == 0) {
                             
+                                // save this for W8, 9 and 10
+                                $('#data').data('year', year);
+                            
                                 //obj = {};
                                 //obj.month = month;
                                 //obj.year = year;
                                 //obj.fund = fund;
-                                widget.key = "fundperfgrouptable";
-                                widget.params.value_date__year = year;
-                                widget.params.holding_category__holding_group = "sec";
-                                widget.params.fund = "FUND";
-                                widget.params.fields = "nav";
-                                widget.type = "euro_percent_table";
+                                //widget.key = "fundperfgrouptable";
+                                //widget.params.value_date__year = year;
+                                //widget.params.fund = "FUND";
+                                //widget.params.fields = "nav";
+                                //widget.type = "euro_percent_table";
                                 
                                 refreshWindow('w8', obj, extra_params);
-                                
-                                widget.params.holding_category__holding_group = "sub";
-                                
                                 refreshWindow('w9', obj, extra_params);
-                                
-                                widget.params.holding_category__holding_group = "loc";
-                                
                                 refreshWindow('w10', obj, extra_params);
                                 
                             // month view
@@ -1744,7 +2164,7 @@ console.log(data);
     }
 
     function pieChart(obj, widget, div) {
-        $('#data').data('piechart-div', div); 
+        $('#data').data('piechart-div-' + widget.window.key, div); 
 
         if(widget.key == "fundnavpie") {
             $('#data').data('linebar-div', div); //re-name 
@@ -1755,14 +2175,15 @@ console.log(data);
        
         
         $.getJSON(widget.url + widget.qs, function(data) {
-        //console.log(data);
+        console.log(widget.url + widget.qs);
+        console.log(data);
             var chart = new Highcharts.Chart({
                 chart: {
                     renderTo: div,
                     //borderWidth: 1,
-                    marginTop: -20,
-                    marginLeft: 20,
-                    marginRight: 20,
+                    marginTop: -50,
+                    marginLeft: 30,
+                    marginRight: 30,
                     //width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)),
                     //height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
                     // @TODO: Find out why widget is getting overwritten
@@ -1775,11 +2196,7 @@ console.log(data);
                 series: [{
                     type: 'pie',
                     name: widget.name,
-                data: [
-                    ['Utilities',   45.0],
-                    ['Financials',  26.8]
-                    ['Mining',     26.8],
-                ]
+                    data: data
                 }]
             });
         });
@@ -2167,7 +2584,7 @@ console.log(data);
 	        text: 'Lock Panels',
             id: 'disable_drag',
             hidden: true,
-        },{
+        },{        
 	        text: 'Log out',
             id: 'log_out',
         }],

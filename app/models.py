@@ -74,8 +74,8 @@ class Widget(models.Model):
     widget_param = models.ManyToManyField(WidgetParam, null=True, blank=True)
     window = models.ForeignKey(Window)
     description = models.TextField(blank=True, null=True)
-    size_y = models.SmallIntegerField()
-    size_x = models.SmallIntegerField()
+    size_y = models.DecimalField(max_digits=3, decimal_places=1)
+    size_x = models.DecimalField(max_digits=3, decimal_places=1)
     column_width = models.SmallIntegerField(blank=True, null=True,
                                 help_text="Only applicable for data grids")
     position = models.PositiveSmallIntegerField("Position")

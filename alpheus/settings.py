@@ -147,6 +147,7 @@ INSTALLED_APPS = (
     'feincms',
     'mptt',
     'debug_toolbar',
+    'django_extensions',
     #'fixture_magic',
 
     # custom

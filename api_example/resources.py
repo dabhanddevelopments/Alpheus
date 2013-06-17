@@ -519,7 +519,7 @@ class EntryResource(ModelResource):
                     
                         monthly = HoldPerfMonth(
                             fund = fun,
-                            holding = holding[0],
+                            holding = holding[0], # this should actually be null
                             holding_category = cat,
                             performance = random.randrange(1, 9),
                             ytd = random.randrange(1, 9),

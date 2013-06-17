@@ -181,6 +181,71 @@ class MainBaseResource(ModelResource):
                 pass
 
         return bundle
+        
+        
+    def build_filters(self, filters=None):
+    
+        """ 
+        Adds support for negation filtering
+        """
+        if not filters:
+            return filters
+
+        applicable_filters = {}
+
+        # Normal filtering
+        filter_params = dict([(x, filters[x]) for x in filter(lambda x: not x.endswith('!'), filters)])
+        applicable_filters['filter'] = super(MainBaseResource, self).build_filters(filter_params)
+
+        # Exclude filtering
+        exclude_params = dict([(x[:-1], filters[x]) for x in filter(lambda x: x.endswith('!'), filters)])
+        print exclude_params
+        applicable_filters['exclude'] = super(MainBaseResource, self).build_filters(exclude_params)
+
+        return applicable_filters
+
+    def apply_filters(self, request, applicable_filters):
+    
+        from django.db.models import Q
+        import operator
+        from types import *
+        
+        """ 
+        Adds support for:
+        1. negation filtering: value_date__year!=2013
+        2. multiple filtering value_date__year=2013,2012
+        """
+        # TRY THIS: bundle.obj.get_full_name()
+        
+        
+        objects = self.get_object_list(request)
+
+        f = applicable_filters.get('filter')
+        
+        if f:    
+            # Q Filters for multiple values (1,2,3 etc)    
+            q_filters = []
+            for key, val in f.iteritems():
+                string = str(val)
+                if ',' in string:                
+                    for excl_filter in string.split(','):
+                        q_filters.append((key, excl_filter))
+
+            q_list = [Q(x) for x in q_filters]
+            for x in q_filters:
+                try:
+                    del f[x[0]]
+                except:
+                    pass 
+            if q_list:
+                objects = objects.filter(reduce(operator.or_, q_list), **f)
+            else:
+                objects = objects.filter(**f)
+                
+        e = applicable_filters.get('exclude')
+        if e:
+            objects = objects.exclude(**e)
+        return objects
 
 
 from mptt.templatetags.mptt_tags import cache_tree_children
