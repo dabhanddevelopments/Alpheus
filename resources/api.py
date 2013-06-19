@@ -231,6 +231,7 @@ class FundResource(ModelResource):
         filtering = {
             "fund": ALL,
         }
+api.register(FundResource())
 
 class FundByTypeResource(MainBaseResource):
     funds = fields.ToManyField(FundResource, "fund", full=True)

@@ -63,6 +63,9 @@ class WidgetType(models.Model):
 class WidgetParam(models.Model):
     key = models.CharField(max_length=50)
     value = models.CharField(max_length=50)
+    
+    class Meta:
+        ordering = ['key']
 
     def __unicode__(self):
         return '%s=%s' % (self.key, self.value)
@@ -126,6 +129,7 @@ class FundType(models.Model):
         return self.name
 
 class Classification(models.Model):
+    key = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
 
     def __unicode__(self):
@@ -523,11 +527,27 @@ class FundPerfMonth(models.Model):
     net_movement = models.DecimalField(max_digits=20, decimal_places=2)
     gross_assets_after_subs_red = models.DecimalField(max_digits=20, decimal_places=2)
     
+    """
+     to be added phase 4
+    long_portfolio = models.DecimalField(max_digits=20, decimal_places=2)
+    dividends_receivable = models.DecimalField(max_digits=20, decimal_places=2)
+    assets_subtotal = models.DecimalField(max_digits=20, decimal_places=2)
+    cash = models.DecimalField(max_digits=20, decimal_places=2)
+    accrued_interest = models.DecimalField(max_digits=20, decimal_places=2)
+    interest_receivable_on_banks = models.DecimalField(max_digits=20, decimal_places=2)
+    recv_for_transactions = models.DecimalField(max_digits=20, decimal_places=2)
+    
+    """
+    
+    
+    
+    
     nav_securities = models.DecimalField(max_digits=20, decimal_places=2)
     nav_securities_total = models.DecimalField(max_digits=20, decimal_places=2)
     nav_cash = models.DecimalField(max_digits=20, decimal_places=2)
     nav_other_assets = models.DecimalField(max_digits=20, decimal_places=2)
     
+    # to be removed for phase 4 
     administration_fees = models.DecimalField(max_digits=20, decimal_places=2)
     audit_fees = models.DecimalField(max_digits=20, decimal_places=2)
     capital_payable = models.DecimalField(max_digits=20, decimal_places=2)
@@ -538,8 +558,29 @@ class FundPerfMonth(models.Model):
     management_fees = models.DecimalField(max_digits=20, decimal_places=2)
     performance_fees = models.DecimalField(max_digits=20, decimal_places=2)
     other_liabilities = models.DecimalField(max_digits=20, decimal_places=2)
-    total_liabilities = models.DecimalField(max_digits=20, decimal_places=2)
+    total_liabilities = models.DecimalField(max_digits=20, decimal_places=2) #renamed
     
+    """
+    to be added phase 4
+
+    capital_fees = models.DecimalField(max_digits=20, decimal_places=2) 
+    transaction_fee = models.DecimalField(max_digits=20, decimal_places=2) #is used?
+    management_fees_payable = models.DecimalField(max_digits=20, decimal_places=2)
+    serv_act_fee = models.DecimalField(max_digits=20, decimal_places=2,\
+                                                verbose_name="Service & Accounting Fees Payable")
+    trustee_fee = models.DecimalField(max_digits=20, decimal_places=2)
+    other_fees = models.DecimalField(max_digits=20, decimal_places=2)
+    administrator_fees_payable = models.DecimalField(max_digits=20, decimal_places=2)
+    auditor_fees_payable = models.DecimalField(max_digits=20, decimal_places=2)
+    capital_fees_payable = models.DecimalField(max_digits=20, decimal_places=2)
+    corporate_secretarial_fees = models.DecimalField(max_digits=20, decimal_places=2)
+    custodian_fees_payable = models.DecimalField(max_digits=20, decimal_places=2)
+    financial_statement_prep_fees = models.DecimalField(max_digits=20, decimal_places=2)
+    sub_advisory_fees = models.DecimalField(max_digits=20, decimal_places=2)
+    performance_fees_payable = models.DecimalField(max_digits=20, decimal_places=2)
+    other_liabilities = models.DecimalField(max_digits=20, decimal_places=2)
+    liabilities_subtotal = models.DecimalField(max_digits=20, decimal_places=2) #renamed
+    """
 
     class Meta:
         #unique_together = ('holding_group', 'holding_category',)

@@ -35,16 +35,15 @@ def get_month_list():
         months.append(calendar.month_abbr[month].lower())
     return months
 
-def set_columns(column_names, width=False):
+def set_columns(request, column_names):
 
-    # first column is 0, the rest are 1
-    if not width:
-        width = {}
-        width[0] = 50
-        width[1] = 50
+    column_width = request.GET.get('column_width', '50,50').split(',')
+    column_border_y = request.GET.get('column_border_y', 'ytd')
+    align = request.GET.get('align', 'left')
 
     columns = []
     for key, column in enumerate(column_names):
+    
         try:
             dic = {
                 'text': column.title().replace('_', ' '),
@@ -58,10 +57,15 @@ def set_columns(column_names, width=False):
                 }
             except:
                 raise
+                
+        if column == column_border_y:
+            dic['tdCls'] = 'horizonal-border-column'
+        
         if key == 0:
-            dic['width'] = width[0]
+            dic['width'] = column_width[0]
         else:
-            dic['width'] = width[1]
+            dic['width'] = column_width[1]
+            dic['align'] = align
         columns.append(dic)
 
     return columns
@@ -106,12 +110,12 @@ def fund_perf_data_table(request):
         abbr = calendar.month_abbr[month]
         columns.append(abbr.lower())
     columns.append('ytd')
-    columns = set_columns(columns, [50, 58])
+    columns = set_columns(request, columns)
 
     dic = {
         'sorting': 'year',
         'columns': columns,
-        'rows': lis,
+        'rows': sorted(lis, key=itemgetter('year'), reverse=True),
     }
 
     return JsonResponse(dic)
@@ -148,7 +152,7 @@ def fundallochistnav(request):
         abbr = calendar.month_abbr[month]
         columns.append(abbr.lower())
     columns.append('ytd')
-    columns = set_columns(columns, [50, 80])
+    columns = set_columns(request, columns)
 
     dic = {
         'sorting': 'year',
@@ -191,7 +195,7 @@ def fundperfbenchcomptable(request):
     fields = ['type', ['fund_name', funds.fund.name]]
     for index, field in enumerate(benchmarks):
         fields.append('benchmark_' + str(index + 1))
-    columns = set_columns(fields, [100, 100])
+    columns = set_columns(request, fields)
 
     dic = {
         'metaData': {'sorting': 'name'},
@@ -306,7 +310,7 @@ def fundreturn(request):
 
     dic = {
         'metaData': {'sorting': 'year'},
-        'columns': set_columns(columns, [50, 80]),
+        'columns': set_columns(request, columns),
         'rows': sorted(result, key=itemgetter('year'), reverse=True),
     }
     return JsonResponse(dic)
@@ -379,7 +383,7 @@ def fundbestworst(request):
 
     dic = {
         'metaData': {'sorting': 'year'},
-        'columns': set_columns(columns, [120, 80]),
+        'columns': set_columns(request, columns),
         'rows': lis,
     }
     return JsonResponse(dic)
@@ -479,7 +483,7 @@ def fundcorrelationmatrix(request):
         columns.append(col.name)
 
     dic = {
-        'columns': set_columns(columns, [100, 80]),
+        'columns': set_columns(request, columns),
         'rows': lis
     }
     return JsonResponse(dic)
@@ -507,7 +511,7 @@ def holdcorrelationmatrix(request):
         columns.append(col.name)
 
     dic = {
-        'columns': set_columns(columns, [100, 80]),
+        'columns': set_columns(request, columns),
         'rows': lis
     }
     return JsonResponse(dic)
@@ -548,7 +552,7 @@ def fundnegativemonthstable(request):
     columns = [avg_perf] + columns
 
     data = {
-        'columns': set_columns(columns, [120, 80]),
+        'columns': set_columns(request, columns),
         'rows': [dic]
     }
     return JsonResponse(data)
@@ -601,7 +605,7 @@ def currencyhedge(request):
        lis.append(dic)
     columns = ['currency', 'total_position', 'total_hedge', 'hedge_expires', 'exposure', 'euro_equivalent', ]
     data = {
-        'columns': set_columns(columns, [80, 80]),
+        'columns': set_columns(request, columns),
         'rows': lis
     }
     return JsonResponse(data)
@@ -631,7 +635,7 @@ def subscriptionredemption(request):
                'percent_released']
     data = {
         'metaData': {'sorting': 'name'},
-        'columns': set_columns(columns, [100, 100]),
+        'columns': set_columns(request, columns),
         'rows': lis,
     }
     return JsonResponse(data)
@@ -664,7 +668,7 @@ def subscriptionredemptionmonth(request):
                'percent_released']
     data = {
         'metaData': {'sorting': 'name'},
-        'columns': set_columns(columns, [100, 100]),
+        'columns': set_columns(request, column),
         'rows': lis,
     }
     return JsonResponse(data)
@@ -698,7 +702,7 @@ def fundsubredtable(request):
 
     columns = ['summary','euro']
     data = {
-        'columns': set_columns(columns, [80, 80]),
+        'columns': set_columns(request, columns),
         'rows': lis
     }
     return JsonResponse(data)
@@ -800,7 +804,7 @@ def fundgrossasset(request):
 
     data = {
         'metaData': {'sorting': 'name'},
-        'columns': set_columns(columns, [160, 85]),
+        'columns': set_columns(request, columns),
         'rows': fields,
     }
 

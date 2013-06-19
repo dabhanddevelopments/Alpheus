@@ -529,4 +529,25 @@ table.month_table td a {
     color: #339;
 }
 
+/* center cells for data tables */
+.x-grid-row .horizonal-border-column { 
+    border-left:  1px solid #000 !important;
+}
 
+/* Grid cells when the mouse cursor is over the row */ 
+.custom-grid .x-grid-row-over .x-grid-cell { 
+    background-color: #BABABA !important; 
+} 
+ 
+/* Grid cells in the selected row */ 
+.custom-grid .x-grid-row-selected .x-grid-cell { 
+    background-color: #CFCFCF !important; 
+}
+
+.custom-grid .x-grid-row .x-grid-cell { 
+    background-color: #E6E6E6; 
+} 
+ 
+.custom-grid .x-grid-row-alt .x-grid-cell { 
+    background-color: #fff; 
+}

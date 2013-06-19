@@ -79,26 +79,26 @@ console.log(widget);
     if(range > 300000000) { // more than 9.5 years
     
         filter = '&value_date__month=2,4,6,8,10,12'; // 1st of month each other month
-        console.log('ALL');
+       //console.log('ALL');
         
     } else if(range >= 240000000) { // more than 7.5 years
     
         //var filter = '&value_date__month=2,4,6,8,10,12'; // wed
-        console.log('1Y');
+       //console.log('1Y');
         
     } else if(range >= 120000000) { // more than 4 years
     
         //var filter = '&value_date__week_day=3,5'; // tue, thu
-        console.log('6M');
+       //console.log('6M');
    
     } else if(range >= 60000000) { // more than 2 years
     
         //var filter = '&value_date__week_day=2,4,6'; // mon, wed, fri
-        console.log('3M');
+       //console.log('3M');
         
     } else { 
         var filter = ''; // empty means every month
-        console.log('1M');
+       //console.log('1M');
     }
     
     //console.log(range);
@@ -110,8 +110,8 @@ console.log(widget);
     chart.showLoading('Loading data from server...');
    
     $.getJSON(widget.url + qs + date + filter, function(data22) {
-         console.log(data22[0]);
-         console.log(data22[0].data);
+        //console.log(data22[0]);
+        //console.log(data22[0].data);
 	     chart.series[0].setData(data22[0].data);
 		 chart.hideLoading();
 	});	
@@ -144,26 +144,26 @@ console.log(e);
     if(range > 31557600) { // more than 1 year
     
         var filter = '&value_date__month=2,4,6,8,10,12&value_date__day=1'; // 1st of month each other month
-        console.log('ALL');
+       //console.log('ALL');
         
     } else if(range >= 31535000) { // more than 6 months
     
         var filter = '&value_date__week_day=4'; // wed
-        console.log('1Y');
+       //console.log('1Y');
         
     } else if(range >= 15535000) { // more than 3 months
     
         var filter = '&value_date__week_day=3,5'; // tue, thu
-        console.log('6M');
+       //console.log('6M');
    
     } else if(range >= 7700000) { // more than 1 months
     
         var filter = '&value_date__week_day=2,4,6'; // mon, wed, fri
-        console.log('3M');
+       //console.log('3M');
         
     } else { 
         var filter = ''; // empty means every day
-        console.log('1M');
+       //console.log('1M');
     }
     
     //console.log(range);
@@ -197,7 +197,7 @@ function lineBarChart(widget) {
     $('#data').data('holding', widget.holding);
     
     var div = $('#data').data('linebar-div');
-    console.log('DIV ' + div);
+   //console.log('DIV ' + div);
     var chart = $('#' + div).highcharts();
     
     if(typeof chart != 'undefined') {
@@ -358,9 +358,10 @@ function destroyInnerGrid(record) {
 }
 
 //call W2 chart on click from monthly calendar view W1
-// TODO: rewrite when you figure out how to get the id of the cell clicked
-function monthlyBar(date, fund, fields, order_by) {
 
+function refreshHoldPerfBar(date, fund, monthly, fields, order_by) {
+
+    
     if(typeof fields == 'undefined') {
         fields = 'nav';
     }
@@ -369,11 +370,30 @@ function monthlyBar(date, fund, fields, order_by) {
     }
     // gets set when W2 is loaded first time
     var div = $('#data').data('div-fundperfholdperfbar');
+    
+    // get the window div so we can set the title, super ugly
+    win_div = div.slice(0, div.indexOf("_widget"));
+    
+    var date_title = date
+    if(typeof monthly != 'undefined' && monthly == true) {
+        date_title = moment(date).format("MMM YYYY")
+    }
+    
+    
+    
+    //title = title.replace('FUND_NAME', $('#data').data('fund_name'));
+    //title = title.replace('DATE', date_title);
+    
+    var title = $('#data').data('fund_name') + ' / ' + date_title + ' / Holding Performance Bar Graph';
+    win = Ext.getCmp(win_div);
+    win.setTitle(title);
+
     var chart = $('#' + div).highcharts();
     
     var url = '/api/widget/fundperfholdperfbar/?value_date=' + date + '&fund=' + fund + '&legend=false&fields=' + fields + '&order_by=' + order_by + '&holding_category__isnull=true';
     //return monthTable(url, 'fundperfdaily', div);
 
+    // TODO: check if possible to reload the already existing chart's data instead of below
     try {
         chart.destroy();
         $.getJSON(url, function(data) {
@@ -525,7 +545,7 @@ Ext.onReady(function() {
             }
             items.push(parent)
         }
-        console.log("ROW: " + row);
+       //console.log("ROW: " + row);
             
 
         Ext.onReady(function(){
@@ -814,15 +834,15 @@ console.log('initiating grid');
                 date[0] = tabId;
                 tabId = tabId + '-1';
            } 
-           $.getJSON('/api/widget/fundsubredtable/?fund=' + obj.fund + '&year=' + date[0] + '&month='  + date[1], function(data1) {
+           $.getJSON('/api/widget/fundsubredtable/?fund=' + obj.fund + '&year=' + date[0] + '&month='  + date[1] + '&column_width=80,80', function(data1) {
+                tab = Ext.getCmp(tabId);
+                var table = createGrid(tabId, data1, 0);
+                tab.add(table);
+                $.getJSON('/api/widget/subscriptionredemptionmonth/?fund=' + obj.fund + '&year=' + date[0] + '&month='  + date[1] + '&column_width=100,100', function(data2) {
                     tab = Ext.getCmp(tabId);
-                    var table = createGrid(tabId, data1, 0);
+                    var table = createGrid('client' + tabId, data2, 1);
                     tab.add(table);
-                $.getJSON('/api/widget/subscriptionredemptionmonth/?fund=' + obj.fund + '&year=' + date[0] + '&month='  + date[1], function(data2) {
-                            tab = Ext.getCmp(tabId);
-                            var table = createGrid('client' + tabId, data2, 1);
-                            tab.add(table);
-                   });   
+                });   
            });
     
 
@@ -830,10 +850,10 @@ console.log('initiating grid');
         
         //for w13
         function appendGridToGrossAssetTab(tab, year) {                        
-            $.getJSON('/api/widget/fundgrossasset/?fund=' + obj.fund + '&year=' + year, function(assets) {
-                    var grid = dataGroupTable(assets, data.window);
-                    tab.insert(0, grid);                  
-                    tab.doLayout();
+            $.getJSON('/api/widget/fundgrossasset/?fund=' + obj.fund + '&year=' + year + '&column_width=160,85', function(assets) {
+                var grid = dataGroupTable(assets, data.window);
+                tab.insert(0, grid);                  
+                tab.doLayout();
             });
         }
         
@@ -854,7 +874,7 @@ console.log('initiating grid');
             
                 tab = Ext.getCmp(tabId);
                 // get grid data
-                $.getJSON('/api/widget/fundperfmonth/?fund=' + fund + '&fields=' + tabId, function(data) {
+                $.getJSON('/api/widget/fundperfmonth/?fund=' + fund + '&fields=' + tabId + '&column_width=55,60', function(data) {
                 
                     var table = createGrid(tabId, data);
                     tab.add(table);
@@ -903,9 +923,9 @@ console.log('initiating grid');
                                     div2 = innertab_div + '-line';
                                     
                                     var chart = $('#' + div2).highcharts();
-                                    console.log('got chart');
+                                   //console.log('got chart');
                                     if(typeof chart == 'undefined') {
-                                        console.log('chart does not exist');
+                                       //console.log('chart does not exist');
                                         widget.params.type = 'line';
                                         lineChart('', widget, div2);
                                     }
@@ -956,8 +976,6 @@ console.log('initiating grid');
         // W18
         } if(data.window.key == 'w18') {
         
-            widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
-            
             parents = [
                 {id: 'ann_return', title: 'Returns'},
                 {id: 'ann_volatility', title: 'Volatility'},
@@ -1037,6 +1055,8 @@ console.log('initiating grid');
                 title: 'Summary',
                 id: 'summary-tab',             
             });
+            
+            return widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
             
         } else if (data.window.key == 'w23') {
         
@@ -1214,6 +1234,14 @@ console.log('initiating grid');
 
     function widgetWindow(key, page, title, size_x, size_y, pagewindow, window) {
     
+        
+        // Sets the fund name to the window title
+        if(typeof  $('#data').data('fund_name') != 'undefined') {
+            title = title.replace('FUND_NAME', $('#data').data('fund_name'));
+            title = title.replace('DATE', moment().format('YYYY')); // for W5, W6 & W7
+        }
+        
+    
         Ext.create('Ext.window.Window', {
             title: title,
             // there's gotta be a better way to do this
@@ -1227,6 +1255,7 @@ console.log('initiating grid');
             x: 0,
             y: 0,
             renderTo: page + '_' + key,
+            id: 'page_' + page + '_win_' + key,
             tools: [{
                type: 'close',
                handler: function(e, toolEl, panel, tc) {
@@ -1272,7 +1301,6 @@ console.log('initiating grid');
             obj.fund = $('#data').data('fund');
         }
     
-    
         // new way
         if(typeof extra_params != 'undefined') {
             $.each(extra_params, function(key, value) {
@@ -1298,11 +1326,7 @@ console.log('initiating grid');
         });
 
         
-        if(widget.type == 'month_table') {
-        
-            return monthTable(obj, widget, div);
-            
-        } else if(widget.type == 'data_table') {
+        if(widget.type == 'data_table') {
         
             return dataTable(obj, widget, div);
             
@@ -1356,7 +1380,7 @@ console.log('initiating grid');
     function lineChart(obj, widget, div) {
 
         if(typeof $('#' + div).highcharts() != 'undefined') {
-            console.log('chart already created');
+           //console.log('chart already created');
         }
         
         if(typeof widget.params.type == 'undefined') {
@@ -1493,17 +1517,17 @@ console.log('initiating grid');
                 }
             } 
             if(typeof widget.params.zoom != 'undefined' && widget.params.zoom == 'true') {
-                console.log(options.xAxis);
+               //console.log(options.xAxis);
                 options['xAxis'] = {
                     events: {
                         afterSetExtremes: function(e){
-                            console.log(e);
+                           //console.log(e);
                             zoomGraph(e, widget);
                         }
                     },
                     minRange: 3600 * 1000 // one hour
                 };
-                console.log(options);
+               //console.log(options);
             }
             var chart = new Highcharts.StockChart(options);
             
@@ -1657,18 +1681,25 @@ console.log('initiating grid');
     }
     
 
-    function monthTable(obj, widget, div) {
+    function monthTable(year, month) {
     
+        var fund = $('#data').data('fund');
+    
+        $('<div id="calendar"></div>').appendTo('body');
+        
+        mo_widget = {}
+        mo_widget.url = '/api/widget/fundperfhistcalview/';
+        mo_widget.qs = '?fund=' + fund + '&order_by=weight&value_date__year=' + year + '&value_date__month=' + month;
         
         //console.log(widget.url + widget.qs);
-        $.getJSON(widget.url + widget.qs , function(data) {
+        $.getJSON(mo_widget.url + mo_widget.qs , function(data) {
         
             // first day in first week of month
-            var d = new Date(obj.year, obj.month - 1, 1);
+            var d = new Date(year, month - 1, 1);
             var first_weekday = d.getDay();
             
             // last day of the month
-            var d2 = new Date(obj.year, obj.month, 0);
+            var d2 = new Date(year, month, 0);
             var last_day_of_month = d2.getDate();
 
             var html = '<table class="month_table"><tr>';
@@ -1696,7 +1727,7 @@ console.log('initiating grid');
                     var val = 0;
                 }
                 
-                date = obj.year.toString() + '-' + obj.month.toString() + '-' + i;
+                date = year.toString() + '-' + month.toString() + '-' + i;
 
                 // exclude weekends
                 var d = new Date(date);
@@ -1717,10 +1748,37 @@ console.log('initiating grid');
                     }
                 
                 }
-                html += '<td>' + i + '<a href="#" onclick="monthlyBar(\'' + date + '\', ' + obj.fund + ');">' + val + '</a></td>';
+                html += '<td>' + i + '<a href="#" onclick="refreshHoldPerfBar(\'' + date + '\', ' + fund + ');">' + val + '</a></td>';
             }
             
             html += "</tr></table>";
+            
+            
+            
+            
+            var win = new Ext.Window({
+                renderTo: Ext.getBody(),
+                html: html,
+                //items: items,
+                height: 300,
+                width: 400,
+                /*
+                listeners: {
+                    'close': function(tabPanel, tab){
+                        $.each(graphs, function(x, row) {
+                            $.each(row, function(key, field) {
+                                 key = Object.keys(field)[0];
+                                 destroyGrid('summary2-bar-' + key);
+                                 destroyGrid('summary2-line-' + key);
+                            });
+                        });
+                    }
+                }
+                */
+            });
+            win.show();
+            
+            return;            
         
             Ext.create('Ext.container.Container', {
                 id: 'month-table',
@@ -1742,7 +1800,6 @@ console.log('initiating grid');
             fields[i] = data.columns[i].dataIndex;
         }
 
-console.log('HERE');
         Ext.create('Ext.data.Store', {
             storeId: widget.key,
             fields: fields,
@@ -1755,9 +1812,7 @@ console.log('HERE');
                 }
             },
         });
-console.log(widget.key);     
-console.log(data.columns);        
-console.log(data.rows); 
+        
         return Ext.create('Ext.grid.Panel', {
             title: widget.params.title,
             store: Ext.data.StoreManager.lookup(widget.key),
@@ -1805,7 +1860,7 @@ console.log(data.rows);
                         widget.params.fund = "FUND";
                         widget.params.fields = "nav";
                         widget.type = "pie_chart";
-                        console.log(widget);
+                       //console.log(widget);
                                                     
                         var widget_obj = $('#' + div).highcharts();
                         widget_obj.destroy();
@@ -1858,7 +1913,6 @@ console.log(data.rows);
     
        // $.getJSON(widget.url + widget.qs, function(data) {
 
-console.log(data);        
             var fund = $('#data').data('fund');
             
             fields = [];
@@ -1911,10 +1965,7 @@ console.log(data);
     }
     function dataTable(obj, widget, div) {
     
-        // TODO: get rid of this later
-        if(typeof obj.fund != 'undefined') {
-            $('#data').data('fund', obj.fund);
-        }
+
     
         $.getJSON(widget.url + widget.qs, function(data) {
 
@@ -1933,7 +1984,7 @@ console.log(data);
                     }
                 }
             }   
-           //console.log(fields);
+           console.log(data.columns);
             Ext.create('Ext.data.Store', {
                 storeId: widget.key,
                 fields: fields,
@@ -1950,9 +2001,10 @@ console.log(data);
                     field: "year"
                 },
             });
-
-            return Ext.create('Ext.grid.Panel', {
+            
+            var panel = Ext.create('Ext.grid.Panel', {
                 id: div,
+                cls: 'custom-grid', 
                 columnLines: true,
                 store: Ext.data.StoreManager.lookup(widget.key),
                 columns: data.columns,
@@ -1964,7 +2016,7 @@ console.log(data);
                 autoScroll: true,
                 renderTo: div,
                // forceFit: true,
-                layout:'fit',
+                //layout:'fit',
                 listeners: {
                     cellclick: function(gridView,htmlElement,columnIndex,dataRecord) {
                     
@@ -1991,7 +2043,9 @@ console.log(data);
                                 
                             // month view
                             } else if(columnIndex < 13) {
-                                monthlyBar(year + '-' + month + '-1', obj.fund);
+                                refreshHoldPerfBar(year + '-' + month + '-1', obj.fund, true);
+                                
+                                monthTable(year, month);
                             }
                         }       
                         
@@ -2019,7 +2073,7 @@ console.log(data);
                                 
                             // month view
                             } else if(columnIndex < 13) {
-                                monthlyBar(year + '-' + month + '-1', obj.fund, 'performance', 'weight');
+                                refreshHoldPerfBar(year + '-' + month + '-1', obj.fund, true, 'performance', 'weight');
                             }
                         }   
                                // var panel = Ext.getCmp("month-table");
@@ -2045,17 +2099,33 @@ console.log(data);
                 }
                
             });
+
+            return panel;
         });
     }
     
     function refreshWindow(window_key, obj, extra_params) {
         $.getJSON('/api/widgets/?window__key=' + window_key, function(widget_data) {
+        
             
             for(x=0; x<widget_data.length; x++) {
             
                 var window_id = 'page_' + obj.page + '_win_' + widget_data[x].window.id;
                 var widget_id = window_id + '_widget_' + widget_data[x].id;
                 
+                var title = widget_data[x].window.name;
+        
+                if(extra_params.year != 'undefined') {
+                    date = extra_params.year;
+                } else {
+                    date = 'Week X'; // fill this in later
+                }
+                title = title.replace('FUND_NAME', $('#data').data('fund_name'));
+                title = title.replace('DATE', date);
+                
+                win = Ext.getCmp(window_id);
+                win.setTitle(title);
+                        
                 if(widget_data[x].type == 'data_table') {
                     var widget_obj = Ext.getCmp(widget_id);
                     
@@ -2099,7 +2169,8 @@ console.log(data);
                 }
             });
             
-            
+            console.log('data sub');
+            console.log(data.columns);
             var mainGrid = Ext.create('Ext.grid.Panel', {
                 store: mainStore,
                 columns: data.columns,
@@ -2131,7 +2202,7 @@ console.log(data);
                 
                 if(widget.key == 'fundperfholdtable') {
                     
-                    $.getJSON("/api/widget/fundperfholdtradetable/?holding=" + id + "&holding__fund=" + obj.fund, function(w11) {
+                    $.getJSON("/api/widget/fundperfholdtradetable/?holding=" + id + "&holding__fund=" + obj.fund + '&column_width=80,80', function(w11) {
         
                         displayInnerGrid(w11,id);
                                 
@@ -2142,7 +2213,7 @@ console.log(data);
                     
                 } else if(widget.key == 'fundregister') {
 
-                    $.getJSON("/api/widget/subscriptionredemption/?&fund=" + obj.fund + '&client=' + id, function(w12) {
+                    $.getJSON("/api/widget/subscriptionredemption/?&fund=" + obj.fund + '&client=' + id + '&column_width=100,100', function(w12) {
         
                         displayInnerGrid(w12, id);
                     });
@@ -2175,8 +2246,8 @@ console.log(data);
        
         
         $.getJSON(widget.url + widget.qs, function(data) {
-        console.log(widget.url + widget.qs);
-        console.log(data);
+       //console.log(widget.url + widget.qs);
+       //console.log(data);
             var chart = new Highcharts.Chart({
                 chart: {
                     renderTo: div,
@@ -2388,7 +2459,7 @@ console.log(data);
                     }
                 });
 
-
+                // ADD WIDGET
                 var win = Ext.create('Ext.window.Window', {
                     title: 'Layout Window',
                     closable: true,
@@ -2644,6 +2715,16 @@ console.log(data);
             }
         });
     }
+    
+    function setFundName(id) {
+         $.ajax({
+            type: "GET",
+            url: '/api/fund/' + id,
+            success: function(data) {
+                $('#data').data("fund_name", data.name);
+            }
+        });    
+    }
 
     
     function viewPort() {
@@ -2703,9 +2784,11 @@ console.log(data);
                                     record.expand();
                                 }
                                 
-                               //console.log(record.raw.page);
-                                $('#data').data('fund', record.raw.fund);
-                                
+                               //console.log(record.raw);
+                               if(typeof record.raw.fund != 'undefined') {
+                                    $('#data').data('fund', record.raw.fund);
+                                    setFundName(record.raw.fund);
+                                }
                                 
                                 if(record.raw.page !== null) {
                                 
@@ -2746,6 +2829,7 @@ console.log(data);
                     id: 'viewport', 
                     items: [panel_west, panelStandard()]
                 });
+                
                 Ext.EventManager.onWindowResize(viewport.doLayout, viewport);
 
              }

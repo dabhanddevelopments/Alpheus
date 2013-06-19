@@ -113,7 +113,7 @@ class UnusedResource(WidgetBaseResource):
 
 
 # W1 Month View
-# http://localhost:8008/api/widget/fundperfhistcalview/?fund=2&order_by=weight&value_date__year=2013&value_date__month=5&format=json
+# http://localhost:8000/api/widget/fundperfhistcalview/?fund=1&order_by=weight&value_date__year=2013&value_date__month=5&format=json
 class FundPerfHistCalView(MainBaseResource):
     fund = fields.ForeignKey(FundResource, 'fund')
 
@@ -133,8 +133,8 @@ class FundPerfHistCalView(MainBaseResource):
             'value': bundle.data['performance']
         }
 
-    def build_filters(self, filters=None):
-        return super(MainBaseResource, self).build_filters(filters)
+    #def build_filters(self, filters=None):
+    #    return super(MainBaseResource, self).build_filters(filters)
 
 
 widget.register(FundPerfHistCalView())
@@ -259,7 +259,7 @@ class FundPerfMonth(MainBaseResource):
             columns.append(abbr.lower())
         if fields == 'performance':
             columns.append('ytd')
-        columns = self.set_columns(columns, [50, 50])
+        columns = self.set_columns(request, columns)
 
         dic = {
             'sorting': 'year',
@@ -427,10 +427,11 @@ class FundPerfGroupTable(MainBaseResource):
 
         # not NAV
         if fields == 'performance':
-            columns.append('si')
             columns.append('ytd')
+            columns.append('si')
 
-        columns = self.set_columns(columns, (80, 50))
+
+        columns = self.set_columns(request, columns)
 
         dic = {
             'metaData': {'sorting': 'year', 'root': 'rows', },
@@ -610,7 +611,7 @@ class FundPerfHoldTable(MainBaseResource):
 
         data = {
             'metaData': {'sorting': 'name'},
-            'columns': self.set_columns(fields, [80, 80]),
+            'columns': self.set_columns(request, fields),
             'rows': data,
         }
         return data
@@ -680,7 +681,7 @@ class FundPerfHoldTradeTable(MainBaseResource):
     def alter_list_data_to_serialize(self, request, data):
         data = {
             'metaData': {'sorting': 'name'},
-            'columns': self.set_columns(self._meta.fields, [80, 80]),
+            'columns': self.set_columns(request, self._meta.fields),
             'rows': data,
         }
         return data
@@ -942,7 +943,7 @@ class HoldLiquidity(MainBaseResource):
         ]
         data = {
             'metaData': {'sorting': 'name'},
-            'columns': self.set_columns(columns, [100, 85]),
+            'columns': self.set_columns(request, columns),
             'rows': data['objects'],
         }
         return data
@@ -991,7 +992,7 @@ class RedemptionTracker(MainBaseResource):
         columns = ['holding', ['nav', 'Amount'], 'weight', ['redemption_date', 'Red\'n Date']]
         data = {
             'metaData': {'sorting': 'name'},
-            'columns': self.set_columns(columns, [100, 85]),
+            'columns': self.set_columns(request, columns),
             'rows': data['objects'],
         }
         return data
@@ -1029,7 +1030,7 @@ class CumulativeWeightTable(CumulativeWeight):
                    ['cumulative_weight', 'Cum. Weight']]
         data = {
             'metaData': {'sorting': 'name'},
-            'columns': self.set_columns(columns, [100, 85]),
+            'columns': self.set_columns(request, columns),
             'rows': data['objects'],
         }
         return data
@@ -1108,7 +1109,7 @@ class FundRegister(MainBaseResource):
                    ['nav', 'NAV'], ['pending_nav', 'Pending NAV']]
         data = {
             'metaData': {'sorting': 'name'},
-            'columns': self.set_columns(columns, [115, 130]),
+            'columns': self.set_columns(request, columns),
             'rows': data['objects'],
         }
         return data

@@ -84,14 +84,12 @@ class MainBaseResource(ModelResource):
 
         return self.create_response(request, serialized)
 
-    def set_columns(self, column_names, width=False):
 
-        # first column is 0, the rest are 1
-        if not width:
-            width = {}
-            width[0] = 50
-            width[1] = 50
+    def set_columns(self, request, column_names):
 
+        column_width = request.GET.get('column_width', '50,50').split(',')
+        column_border_y = request.GET.get('column_border_y', 'ytd')
+        align = request.GET.get('align', 'left')
 
         columns = []
         for key, value in enumerate(column_names):
@@ -108,6 +106,7 @@ class MainBaseResource(ModelResource):
                 dic = {
                     'text': column.title().replace('_', ' '),
                     'dataIndex': column,
+                    'align': 'center',
                 }
             except:
                 try:
@@ -115,13 +114,20 @@ class MainBaseResource(ModelResource):
                     dic = {
                         'dataIndex': column[0],
                         'text': column[1].title().replace('_', ' '),
+                        'align': 'center',
                     }
                 except:
                     raise
+            if column == column_border_y:
+                dic['tdCls'] = 'horizonal-border-column'
+            
             if key == 0:
-                dic['width'] = width[0]
+                dic['width'] = column_width[0]
+                dic['align'] = 'left'
             else:
-                dic['width'] = width[1]
+                dic['width'] = column_width[1]
+                dic['align'] = align
+            
             columns.append(dic)
 
         return columns
@@ -156,7 +162,6 @@ class MainBaseResource(ModelResource):
                     if fields[1] == 'name':
                         bundle.data[fields[0]] = bundle.data[fields[0]].data[fields[1]]
                     else:
-                        print bundle.data[fields[0]].data[fields[1]]
                         try:
                             bundle.data[fields[1]] = bundle.data[fields[0]].data[fields[1]]
                         except:
@@ -169,6 +174,12 @@ class MainBaseResource(ModelResource):
         #        del bundle.data[delete]
         #    except:
         #        pass #already deleted
+
+        # make sure all Decimals have two decimal places
+        from decimal import *
+        for key, val in bundle.data.iteritems():
+            if isinstance(val, Decimal):
+                bundle.data[key] = Decimal("%.2f" % val)
 
         """
         Saving the field names so we can create column names for tables later
