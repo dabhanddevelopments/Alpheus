@@ -544,10 +544,15 @@ table.month_table td a {
     background-color: #CFCFCF !important; 
 }
 
-.custom-grid .x-grid-row .x-grid-cell { 
-    background-color: #E6E6E6; 
-} 
- 
-.custom-grid .x-grid-row-alt .x-grid-cell { 
-    background-color: #fff; 
+
+.custom-grid .x-grid-row-alt { 
+    background-color: yellow; 
 }
+
+/* Overall Performance has a top border */
+.overall-performance-row .x-grid-cell { 
+ border-top:  1px solid #000 !important;
+}
+
+
+

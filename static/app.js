@@ -15,7 +15,7 @@ Ext.require([
     'Ext.grid.*',
 ]);
 
-function displayInnerGrid(data, renderId) {
+function displayInnerGrid(widget, data, renderId) {
     
         fields = [];
         for(i=0; i < data.columns.length; i++) {
@@ -44,7 +44,7 @@ function displayInnerGrid(data, renderId) {
             width: 1000,
             height: 150,
             iconCls: 'icon-grid',
-            renderTo: 'innergrid' + renderId,
+            renderTo: 'innergrid-' + widget.id + '-' + renderId,
         });
         innerGrid.getEl().swallowEvent([
             'mousedown', 'mouseup', 'click',
@@ -582,6 +582,7 @@ Ext.onReady(function() {
 
     function initPage(obj) {
     
+        console.log('init page');
         var id = obj.page;
        //console.log(id);
        //console.log(obj);
@@ -589,6 +590,7 @@ Ext.onReady(function() {
         // @TODO: Redo this
         var pages = $('#data').data('page');
 
+        
         // No need to reload the page if users clicks on a link 
         // to a page they are already on
         //if($('#data').data('active-panel') == id) {
@@ -597,6 +599,7 @@ Ext.onReady(function() {
         for(i=0; i<pages.length; i++) {
 
             if(pages[i].id == id) {
+            console.log('up to here 1');
             //    var page = pages[i];
 
                 el = 'page' + id;
@@ -604,6 +607,7 @@ Ext.onReady(function() {
                 // Children are tabs
                 if(pages[i].children !== undefined) {
 
+            console.log('up to here 2');
                     var panel = panelTab();
 
                     switchPanel(panel, el);
@@ -617,6 +621,7 @@ Ext.onReady(function() {
 
                 } else {
 
+            console.log('up to here 3');
                     var panel = panelStandard();
                     switchPanel(panel, el);
 
@@ -693,7 +698,7 @@ Ext.onReady(function() {
         try {
             ws.remove(active);
         } catch(err) {
-           //console.log("Failed to remove panel");
+           console.log("Failed to remove panel");
            //console.log(err);
         }
 
@@ -705,7 +710,7 @@ Ext.onReady(function() {
         try {
             ws.add(panel);
         } catch(err) {
-           //console.log("Failed to add panel");
+           console.log("Failed to add panel");
            //console.log(err);
         }
   
@@ -1392,7 +1397,7 @@ console.log('initiating grid');
 
         var title = false;
         if(typeof widget.params.title != 'undefined' && widget.params.title == "true") {
-            title = true;
+            title = widget.name;
         }
         
         var yDecimals = true;
@@ -1461,8 +1466,7 @@ console.log('initiating grid');
                     selected : 4 
                 },                  
                 title: {
-                    enabled: title,
-                    text: widget.name,
+                    text: title,
                 //    x: -20 //center
                 },
                 xAxis: {
@@ -2185,7 +2189,7 @@ console.log('initiating grid');
                 plugins: [{
                     ptype: 'rowexpander',
                     rowBodyTpl: [
-                        '<div id="innergrid{id}">',
+                        '<div id="innergrid-' + widget.id + '-{id}">',
                         '</div>'
                     ]
                 }],
@@ -2204,7 +2208,7 @@ console.log('initiating grid');
                     
                     $.getJSON("/api/widget/fundperfholdtradetable/?holding=" + id + "&holding__fund=" + obj.fund + '&column_width=80,80', function(w11) {
         
-                        displayInnerGrid(w11,id);
+                        displayInnerGrid(widget, w11,id);
                                 
                         widget.holding = record.get('id');
                         widget.fund = obj.fund;
@@ -2215,7 +2219,7 @@ console.log('initiating grid');
 
                     $.getJSON("/api/widget/subscriptionredemption/?&fund=" + obj.fund + '&client=' + id + '&column_width=100,100', function(w12) {
         
-                        displayInnerGrid(w12, id);
+                        displayInnerGrid(widget, w12, id);
                     });
                 }
 
@@ -2800,7 +2804,6 @@ console.log('initiating grid');
                                     }
                                 }
                                //console.log('RCRD RAW');
-                               //console.log(record.raw);
                                 initPage(record.raw);
 
                             }

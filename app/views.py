@@ -668,7 +668,7 @@ def subscriptionredemptionmonth(request):
                'percent_released']
     data = {
         'metaData': {'sorting': 'name'},
-        'columns': set_columns(request, column),
+        'columns': set_columns(request, columns),
         'rows': lis,
     }
     return JsonResponse(data)

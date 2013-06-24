@@ -5,7 +5,7 @@ from tastypie.authorization import DjangoAuthorization
 from tastypie import fields
 from app.models import *
 from resources.api import *
-from resources.base_resources import MainBaseResource
+from resources.base_resources import MainBaseResource, MainBaseResource2, TestResource
 #from app import widget_models
 from alpheus.serializers import PrettyJSONSerializer
 from django.db.models import Avg
@@ -140,6 +140,44 @@ class FundPerfHistCalView(MainBaseResource):
 widget.register(FundPerfHistCalView())
 
 
+class asdf(MainBaseResource2):
+    fund = fields.ForeignKey(FundResourceAll, 'fund')
+
+    class Meta(MainBaseResource.Meta):
+        queryset = Holding.objects.all()
+        filtering = {
+            "value_date": ALL,
+            "fund": ALL,
+        }
+        
+    def alter_list_data_to_serialize(self, request, data):
+        from django.http import QueryDict
+        dict = {'fund': '1', 'value_date__year': '2013', }
+        qdict = QueryDict('fund=1&fields=ann_return1')
+        request.GET = {}
+        request.GET = qdict
+        
+        
+
+        
+        kwargs = {'api_name': u'widget', 'resource_name': u'fundperfmonthmin'}
+        class_name = widget.canonical_resource_for('fundperfmonthmin').__class__.__name__
+        fund = globals()[class_name]()
+        
+        base_bundle = fund.build_bundle(request=request)
+        objects = fund.obj_get_list(bundle=base_bundle,
+                                    **fund.remove_api_resource_names(kwargs))
+        bundles = []
+
+        for obj in objects:
+            bundle = fund.build_bundle(obj=obj, request=request)
+            bundles.append(fund.full_dehydrate(bundle))
+
+        test = bundles
+        #test = fund.get_list(request)
+        return {'data1': data, 'data2': test} 
+        
+widget.register(asdf())
 
 # W18 Summary Graph
 # TODO: Limit this query so it does not return fields that are not passed in the 'fields' qs

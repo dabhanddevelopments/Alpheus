@@ -133,6 +133,7 @@ class WidgetsResource(MainBaseResource):
             params[var.data['key']] = var.data['value']
 
         bundle.data['qs'] = qs[:-1]
+        #bundle.data['qs'] += bundle.data['columns'].replace(',', '&')
         bundle.data['params'] = params
         del bundle.data['widget_param']
 
@@ -157,6 +158,9 @@ class PageResource(TreeBaseResource, MainBaseResource):
         queryset = Page.objects.all().select_related('parent')
         allowed_methods = ['get']
         fields = ['id', 'title']
+        filtering = {
+            'parent': ALL,
+        }
 
     # Controls the data structure of the output
     def get_node_data(self, obj):
@@ -221,6 +225,16 @@ class FundTypeResource(MainBaseResource):
 
     class Meta(MainBaseResource.Meta):
         queryset = FundType.objects.all()
+
+
+class FundResourceAll(ModelResource):
+
+    class Meta(MainBaseResource.Meta):
+        queryset = Fund.objects.all()
+        filtering = {
+            "fund": ALL,
+        }
+api.register(FundResourceAll())
 
 
 class FundResource(ModelResource):

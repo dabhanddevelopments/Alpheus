@@ -7,50 +7,10 @@ from alpheus.serializers import PrettyJSONSerializer
 from tastypie.exceptions import BadRequest
 
 
-# Base Model Resource - IS THIS USED?
-class MainBaseResource2(ModelResource):
+class TestResource(ModelResource):
     class Meta:
-        authentication = SessionAuthentication()
-        authorization = DjangoAuthorization()
         serializer = PrettyJSONSerializer()
-        include_resource_uri = False
-
-    # Format output
-    def alter_list_data_to_serialize(self, request, data):
-        if isinstance(data,dict):
-            return data['objects']
-
-    # Disables paging
-    def get_list(self, request, **kwargs):
-
-        base_bundle = self.build_bundle(request=request)
-        objects = self.obj_get_list(bundle=base_bundle,
-                                    **self.remove_api_resource_names(kwargs))
-        bundles = []
-
-        for obj in objects:
-            bundle = self.build_bundle(obj=obj, request=request)
-            bundles.append(self.full_dehydrate(bundle))
-
-        serialized = {}
-        serialized[self._meta.collection_name] = bundles
-        serialized = self.alter_list_data_to_serialize(request, serialized)
-
-        return self.create_response(request, serialized)
-
-
-
-
-    def check_params(self, params, filters):
-
-        for param in params:
-            if not param in filters:
-                raise BadRequest("Param '%s' not mandatory" % param)
-
-    # fund param is mandatory
-    def build_filters(self, filters=None):
-        self.check_params(params, filters)
-        return super(FundPerfYearlyResource, self).build_filters(filters)
+            
 
 # Base Model Resource
 class MainBaseResource(ModelResource):
@@ -151,10 +111,6 @@ class MainBaseResource(ModelResource):
             fields = row.split('__')
             if len(fields) > 1:
                 if len(fields) == 3:
-                    #if fields[2] == 'name':
-                    #    name = fields[1]
-                    #else:
-                    #    name = fields[2]
                     bundle.data[fields[0]] = bundle.data[fields[0]].\
                                         data[fields[1]].data[fields[2]]
 
@@ -166,14 +122,6 @@ class MainBaseResource(ModelResource):
                             bundle.data[fields[1]] = bundle.data[fields[0]].data[fields[1]]
                         except:
                             print 'skipping', fields
-
-                #to_delete.append(fields[0])
-            #print fields[0], bundle.obj._meta.get_field(fields[0]).verbose_name, 'fuck'
-        #for delete in to_delete:
-        #    try:
-        #        del bundle.data[delete]
-        #    except:
-        #        pass #already deleted
 
         # make sure all Decimals have two decimal places
         from decimal import *
@@ -226,8 +174,6 @@ class MainBaseResource(ModelResource):
         1. negation filtering: value_date__year!=2013
         2. multiple filtering value_date__year=2013,2012
         """
-        # TRY THIS: bundle.obj.get_full_name()
-        
         
         objects = self.get_object_list(request)
 
@@ -259,6 +205,161 @@ class MainBaseResource(ModelResource):
         return objects
 
 
+
+
+# v2
+class MainBaseResource2(MainBaseResource):
+    class Meta(MainBaseResource.Meta):
+        pass
+
+    def get_object_list(self, request):
+    
+        """
+        Only fetches the specified columns
+        Automatically sets `select_related`
+        Sets the verbose name of the field to `column_names`
+        """
+        
+        from django.db import models
+    
+        fields = request.GET.get("fields", '')
+        
+        objects = super(MainBaseResource2, self).get_object_list(request)
+        
+        from django.utils.datastructures import SortedDict
+        self.column_names = SortedDict()
+        
+        self.select_related = []
+        
+        field_lis = fields.split(',')
+        
+        for field in field_lis:
+
+            related_fields = field.split('__')
+
+            if len(related_fields) > 1:
+            
+                self.select_related.append(related_fields[0])
+                
+                model_name = related_fields[0].replace('_', ' ').title() \
+                                                            .replace(' ', '')
+                model = models.get_model('app', model_name)
+                for rel_field in model._meta._fields():
+                    if related_fields[1] == rel_field.name:
+                        self.column_names[field] = rel_field.verbose_name \
+                                                                .capitalize()
+                        
+            else:
+                for meta_field in objects.model._meta._fields():
+                    if field == meta_field.name:
+                        self.column_names[field] = meta_field.verbose_name \
+                                                                .capitalize()
+                        
+        objects = objects.only(*field_lis).select_related(*self.select_related)
+        
+        return objects
+                                                
+    def full_dehydrate(self, bundle, for_list=False):
+        """
+        Given a bundle with an object instance, extract the information from it
+        to populate the resource.
+        """
+        # Dehydrate each field supplied in the `fields` parameter
+        for field_name, field_object in self.fields.items():
+
+            # A touch leaky but it makes URI resolution work.
+            if getattr(field_object, 'dehydrated_type', None) == 'related':
+                field_object.api_name = self._meta.api_name
+                field_object.resource_name = self._meta.resource_name
+
+            # Check for an optional method to do further dehydration.
+            method = getattr(self, "dehydrate_%s" % field_name, None)
+
+            if method:
+                bundle.data[field_name] = method(bundle)
+
+        bundle = self.dehydrate(bundle)
+        return bundle
+
+    def dehydrate(self, bundle):
+
+        fields = bundle.request.GET.get("fields", '')
+        field_lis = fields.split(',')
+
+        for row in field_lis:
+            fields = row.split('__')
+            if len(fields) == 1:
+                bundle.data[row] = getattr(bundle.obj, fields[0])
+            elif len(fields) == 2:
+                try:
+                    bundle.data[row] = getattr(getattr(bundle.obj, \
+                                                fields[0]), fields[1])
+                except:
+                    raise Exception("'%s' not found." % row)
+            elif len(fields) == 3:
+                try:
+                    bundle.data[row] = getattr(getattr(getattr(bundle.obj, \
+                                            fields[0]), fields[1]), fields[2])
+                except:
+                    raise Exception("'%s' not found." % row)
+
+            # `choices` fields
+            try:
+                method = getattr(bundle.obj, "get_%s_display" % fields[0], None)
+                bundle.data[fields[0]] = method()
+            except:
+                pass
+
+        # make sure all Decimals have two decimal places
+        from decimal import *
+        for key, val in bundle.data.iteritems():
+            if isinstance(val, Decimal):
+                bundle.data[key] = Decimal("%.2f" % val)
+
+        return bundle        
+        
+        
+    def get_columns(self, request, column_names):
+
+        column_width = request.GET.get('column_width', '50,50').split(',')
+        column_border_y = request.GET.get('column_border_y', 'ytd')
+        align = request.GET.get('align', 'left')
+
+        columns = []
+        counter = 0
+        for key, value in self.column_names.iteritems():
+
+            dic = {
+                'dataIndex': key,
+                'text': value,
+            }
+            if key == column_border_y:
+                dic['tdCls'] = 'horizonal-border-column'
+            
+            if counter == 0:
+                dic['width'] = column_width[0]
+                dic['align'] = 'left'
+            else:
+                dic['width'] = column_width[1]
+                dic['align'] = align
+            
+            columns.append(dic)
+            counter += 1
+
+        return columns
+
+        
+    def alter_list_data_to_serialize(self, request, data):
+    
+        data = {
+            'columns': self.get_columns(request, self.column_names),
+            'rows': data['objects'],
+        }
+        return data
+        
+        
+     
+        
 from mptt.templatetags.mptt_tags import cache_tree_children
 
 class TreeBaseResource(ModelResource):
