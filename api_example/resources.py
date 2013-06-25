@@ -84,7 +84,7 @@ class EntryResource(ModelResource):
         return randomstring      
 
     def rand_date(self):
-        return str(random.randrange(2013, 2014)) + '-' + str(random.randrange(1, 13)) + '-' + str(random.randrange(1, 28))
+        return str(random.randrange(2010, 2014)) + '-' + str(random.randrange(1, 13)) + '-' + str(random.randrange(1, 28))
         
     def alter_list_data_to_serialize(self, request, data):
     
@@ -95,7 +95,7 @@ class EntryResource(ModelResource):
         currency = Currency.objects.all()
         #FxRate.objects.all().delete()
         
-        for year in range(2003, 2014):
+        for year in range(2010, 2014):
             for month in range(1, 13):
                 for day in range(1,31):
                     for cur in currency:
@@ -114,7 +114,7 @@ class EntryResource(ModelResource):
         benchmark = FundBench.objects.all()
         #FundBenchHist.objects.all().delete()        
         
-        for year in range(2003, 2014):
+        for year in range(2010, 2014):
             for month in range(1, 13):
                 for bench in range(0, 3):
                     history = FundBenchHist(
@@ -225,15 +225,10 @@ class EntryResource(ModelResource):
                     redemption_frequency = random.randrange(1,5),
                     performance_fee = random.randrange(0, 3), 
                     management_fee =  random.randrange(0, 3),
-                    
-                    
                 )
                 fund.save()
         fund = Fund.objects.all()[:1]
              
-           
-           
-           
            
 
         client_name = [['John', 'Doe'], ['Jane', 'Doe'], ['Juan', 'Nadia'], ['Juanita', 'Ninguna']]
@@ -247,7 +242,7 @@ class EntryResource(ModelResource):
             )
             client.save()
         clients = Client.objects.all() 
-        for year in range(2003, 2014):
+        for year in range(2010, 2014):
             for month in range(1, 13):
                 for client in range(0, 4):
                     history = ClientPerfMonth(
@@ -290,7 +285,7 @@ class EntryResource(ModelResource):
                     )
                     history.save()           
            
-        for year in range(2003, 2014):
+        for year in range(2010, 2014):
             for month in range(1, 13):
                 rand = random.randrange(2, 5)
                 for index in range(1, rand):
@@ -382,7 +377,7 @@ class EntryResource(ModelResource):
 
         for fun in fund:
         
-            for year in range(2003, 2014):  
+            for year in range(2010, 2014):  
             
                 yearly = FundPerfYear(
                     fund = fun, 
@@ -433,24 +428,46 @@ class EntryResource(ModelResource):
                         nav_securities = random.randrange(0, 1000000),
                         nav_cash = random.randrange(0, 1000000),
                         nav_other_assets = random.randrange(0, 1000000),
+                        nav_securities_total = random.randrange(1,10000),
                         
-                        administration_fees = random.randrange(0, 10000),
-                        audit_fees = random.randrange(0, 10000),
-                        capital_payable = random.randrange(0, 10000),
-                        corporate_secretarial_fees = random.randrange(0, 1000),
-                        custodian_fees = random.randrange(0, 10000),
-                        financial_statement_prep_fees = random.randrange(0, 1000),
-                        sub_advisory_fees = random.randrange(0, 10000),
-                        management_fees = random.randrange(0, 10000),
-                        performance_fees = random.randrange(0, 10000),
-                        other_liabilities = random.randrange(0, 10000),
-                        total_liabilities = random.randrange(0, 100000),
-                        
+                        custodian_fees = random.randrange(1, 3),
+                        management_fees = random.randrange(50000, 100000),
+                        management_fees_payable = random.randrange(0, 10000),
+                        performance_fees = random.randrange(50000, 100000),
+                        other_liabilities = random.randrange(5000, 10000),
+                         
                         no_of_units = random.randrange(1,10000),
                         no_of_units_fund = random.randrange(1,10000),
                         euro_nav_fund = random.randrange(1,10000),
-                        nav_securities_total = random.randrange(1,10000),
-
+                        
+                        
+                        long_portfolio = random.randrange(0, 10000),
+                        dividends_receivable = random.randrange(0, 10000),
+                        assets_subtotal = random.randrange(0, 10000),
+                        cash = random.randrange(0, 10000),
+                        accrued_interest = random.randrange(0, 10000),
+                        interest_receivable_on_banks = random.randrange(0, 10000),
+                        recv_for_transactions = random.randrange(0, 10000),
+                        
+                        capital_fees_payable = random.randrange(0, 10000), 
+                        transaction_fees_payable = random.randrange(0, 10000), #is used?
+                        
+                        serv_act_fees_payable = random.randrange(0, 10000),
+                        trustee_fees = random.randrange(1, 3),
+                        other_fees = random.randrange(1, 3),
+                        administrator_fees_payable = random.randrange(0, 10000),
+                        administrator_fees = random.randrange(1, 3),
+                        auditor_fees = random.randrange(1, 3),
+                        auditor_fees_payable = random.randrange(0, 10000),
+                        corporate_secretarial_payable = random.randrange(0, 10000),
+                        custodian_fees_payable = random.randrange(0, 10000),    
+                        financial_statement_prep_payable = random.randrange(0, 10000),
+                        sub_advisory_fees_payable = random.randrange(0, 10000),
+                        performance_fees_payable = random.randrange(0, 10000),
+                        liabilities_subtotal = random.randrange(0, 10000), #renamed
+                        transaction_payable = random.randrange(0, 10000),
+                        total_net_asset_value = random.randrange(0, 10000),
+                        fet_valuation = random.randrange(0, 10000),
                         
                     )
                     monthly.save() 
@@ -494,7 +511,7 @@ class EntryResource(ModelResource):
             )
             cur_pos.save()
             
-            for year in range(2003, 2014):
+            for year in range(2010, 2014):
             
                 for month in range(1, 13):
                 
@@ -531,13 +548,36 @@ class EntryResource(ModelResource):
                             #ann_volatility = random.randrange(0, 10),
                             #sharpe_ratio = random.randrange(0, 9),
                         )
-                        monthly.save()          
+                        monthly.save()
+                        
+                        # Country Breakdown
+                        if cat.holding_group == 'loc':
 
+                            countries = False
+                            if cat.name == 'Latin America':
+                                countries = ['Brazil', 'Mexico', 'Chile', 'Peru']
+                            elif cat.name == 'EM':
+                                countries = ['U.K', 'Spain', 'Greece']
+                            elif cat.name == 'Asia':
+                                countries = ['Singapore', 'China', 'Japan']
+
+                            if countries:
+                                for country in countries:
+                                    cb = CountryBreakdown(
+                                        fund = fun,
+                                        holding_category = cat,
+                                        country = Country.objects.get(name=country),
+                                        ytd = random.randrange(1, 9),
+                                        si = random.randrange(1, 9),
+                                        mtd = random.randrange(1, 9),
+                                        value_date = str(year) + '-' + str(month) + '-1', 
+                                    )
+                                    cb.save()
                         
                         
         for hold in holding:
          
-            for year in range(2003, 2014):
+            for year in range(2010, 2014):
             
                 for month in range(1, 13):
                     

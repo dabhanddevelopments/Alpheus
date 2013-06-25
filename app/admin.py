@@ -88,4 +88,5 @@ admin.site.register(Client)
 admin.site.register(ClientPerfMonth)
 admin.site.register(CurrencyPositionMonth)
 admin.site.register(SubscriptionRedemption)
+admin.site.register(CountryBreakdown)
 

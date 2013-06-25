@@ -9,7 +9,7 @@
         }
     },
     {
-        "pk": 48,
+        "pk": 50,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "alarm",
@@ -45,7 +45,7 @@
         }
     },
     {
-        "pk": 49,
+        "pk": 51,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "benchmark",
@@ -54,7 +54,7 @@
         }
     },
     {
-        "pk": 57,
+        "pk": 59,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "benchmark",
@@ -63,7 +63,7 @@
         }
     },
     {
-        "pk": 58,
+        "pk": 60,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "category",
@@ -90,7 +90,7 @@
         }
     },
     {
-        "pk": 56,
+        "pk": 58,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "client",
@@ -99,7 +99,7 @@
         }
     },
     {
-        "pk": 51,
+        "pk": 53,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "clientperfmonth",
@@ -135,12 +135,21 @@
         }
     },
     {
-        "pk": 53,
+        "pk": 55,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "country",
             "name": "country",
             "app_label": "app2"
+        }
+    },
+    {
+        "pk": 46,
+        "model": "contenttypes.contenttype",
+        "fields": {
+            "model": "countrybreakdown",
+            "name": "country breakdown",
+            "app_label": "app"
         }
     },
     {
@@ -153,7 +162,7 @@
         }
     },
     {
-        "pk": 52,
+        "pk": 54,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "currency",
@@ -180,7 +189,7 @@
         }
     },
     {
-        "pk": 66,
+        "pk": 68,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "entry",
@@ -216,7 +225,7 @@
         }
     },
     {
-        "pk": 54,
+        "pk": 56,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "fund",
@@ -243,7 +252,7 @@
         }
     },
     {
-        "pk": 47,
+        "pk": 49,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "fundperf",
@@ -252,7 +261,7 @@
         }
     },
     {
-        "pk": 63,
+        "pk": 65,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "fundperfdaily",
@@ -261,7 +270,7 @@
         }
     },
     {
-        "pk": 46,
+        "pk": 48,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "fundperfmonth",
@@ -270,7 +279,7 @@
         }
     },
     {
-        "pk": 61,
+        "pk": 63,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "fundperfmonthly",
@@ -279,7 +288,7 @@
         }
     },
     {
-        "pk": 67,
+        "pk": 47,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "fundperfyear",
@@ -360,7 +369,7 @@
         }
     },
     {
-        "pk": 64,
+        "pk": 66,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "history",
@@ -378,7 +387,7 @@
         }
     },
     {
-        "pk": 62,
+        "pk": 64,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "holdperfdaily",
@@ -396,7 +405,7 @@
         }
     },
     {
-        "pk": 60,
+        "pk": 62,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "holdperfmonthly",
@@ -414,7 +423,7 @@
         }
     },
     {
-        "pk": 59,
+        "pk": 61,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "holding",
@@ -468,7 +477,7 @@
         }
     },
     {
-        "pk": 55,
+        "pk": 57,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "peer",
@@ -513,7 +522,7 @@
         }
     },
     {
-        "pk": 50,
+        "pk": 52,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "subscriptionredemption",
@@ -531,7 +540,7 @@
         }
     },
     {
-        "pk": 65,
+        "pk": 67,
         "model": "contenttypes.contenttype",
         "fields": {
             "model": "trade",
@@ -2942,7 +2951,7 @@
         "model": "app.classification",
         "fields": {
             "name": "b&e",
-            "key": null
+            "key": "be"
         }
     },
     {
@@ -3050,9 +3059,7 @@
         "pk": 1,
         "model": "app.fundbench",
         "fields": {
-            "funds": [
-                1
-            ],
+            "funds": [],
             "name": "FTSE 100",
             "mtd": "123.00000"
         }
@@ -3061,9 +3068,7 @@
         "pk": 2,
         "model": "app.fundbench",
         "fields": {
-            "funds": [
-                1
-            ],
+            "funds": [],
             "name": "EUROSTOXX 500",
             "mtd": "123.00000"
         }
@@ -3072,9 +3077,7 @@
         "pk": 3,
         "model": "app.fundbench",
         "fields": {
-            "funds": [
-                1
-            ],
+            "funds": [],
             "name": "IBEX - 50",
             "mtd": "123.00000"
         }
@@ -3099,8 +3102,80 @@
         "pk": 1,
         "model": "app.country",
         "fields": {
-            "code": "IRA",
-            "name": "Iran"
+            "code": "BRA",
+            "name": "Brazil"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "app.country",
+        "fields": {
+            "code": "MEX",
+            "name": "Mexico"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "app.country",
+        "fields": {
+            "code": "CHI",
+            "name": "Chile"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "app.country",
+        "fields": {
+            "code": "PER",
+            "name": "Peru"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "app.country",
+        "fields": {
+            "code": "SGN",
+            "name": "Singapore"
+        }
+    },
+    {
+        "pk": 6,
+        "model": "app.country",
+        "fields": {
+            "code": "CHN",
+            "name": "China"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "app.country",
+        "fields": {
+            "code": "JPN",
+            "name": "Japan"
+        }
+    },
+    {
+        "pk": 8,
+        "model": "app.country",
+        "fields": {
+            "code": "UNI",
+            "name": "U.K"
+        }
+    },
+    {
+        "pk": 9,
+        "model": "app.country",
+        "fields": {
+            "code": "GRE",
+            "name": "Greece"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "app.country",
+        "fields": {
+            "code": "SPA",
+            "name": "Spain"
         }
     },
     {
@@ -3311,30 +3386,30 @@
         }
     },
     {
-        "pk": 196,
+        "pk": 202,
         "model": "auth.permission",
         "fields": {
             "codename": "add_entry",
             "name": "Can add entry",
-            "content_type": 66
+            "content_type": 68
         }
     },
     {
-        "pk": 197,
+        "pk": 203,
         "model": "auth.permission",
         "fields": {
             "codename": "change_entry",
             "name": "Can change entry",
-            "content_type": 66
+            "content_type": 68
         }
     },
     {
-        "pk": 198,
+        "pk": 204,
         "model": "auth.permission",
         "fields": {
             "codename": "delete_entry",
             "name": "Can delete entry",
-            "content_type": 66
+            "content_type": 68
         }
     },
     {
@@ -3365,30 +3440,30 @@
         }
     },
     {
-        "pk": 142,
+        "pk": 148,
         "model": "auth.permission",
         "fields": {
-            "codename": "add_alarm",
-            "name": "Can add alarm",
-            "content_type": 48
+            "codename": "add_subscriptionredemption",
+            "name": "Can add subscription redemption",
+            "content_type": 50
         }
     },
     {
-        "pk": 143,
+        "pk": 149,
         "model": "auth.permission",
         "fields": {
-            "codename": "change_alarm",
-            "name": "Can change alarm",
-            "content_type": 48
+            "codename": "change_subscriptionredemption",
+            "name": "Can change subscription redemption",
+            "content_type": 50
         }
     },
     {
-        "pk": 144,
+        "pk": 150,
         "model": "auth.permission",
         "fields": {
-            "codename": "delete_alarm",
-            "name": "Can delete alarm",
-            "content_type": 48
+            "codename": "delete_subscriptionredemption",
+            "name": "Can delete subscription redemption",
+            "content_type": 50
         }
     },
     {
@@ -3419,30 +3494,30 @@
         }
     },
     {
-        "pk": 145,
+        "pk": 151,
         "model": "auth.permission",
         "fields": {
-            "codename": "add_benchmark",
-            "name": "Can add benchmark",
-            "content_type": 49
+            "codename": "add_clientperfmonth",
+            "name": "Can add client perf month",
+            "content_type": 51
         }
     },
     {
-        "pk": 146,
+        "pk": 152,
         "model": "auth.permission",
         "fields": {
-            "codename": "change_benchmark",
-            "name": "Can change benchmark",
-            "content_type": 49
+            "codename": "change_clientperfmonth",
+            "name": "Can change client perf month",
+            "content_type": 51
         }
     },
     {
-        "pk": 147,
+        "pk": 153,
         "model": "auth.permission",
         "fields": {
-            "codename": "delete_benchmark",
-            "name": "Can delete benchmark",
-            "content_type": 49
+            "codename": "delete_clientperfmonth",
+            "name": "Can delete client perf month",
+            "content_type": 51
         }
     },
     {
@@ -3500,30 +3575,30 @@
         }
     },
     {
-        "pk": 151,
+        "pk": 157,
         "model": "auth.permission",
         "fields": {
-            "codename": "add_clientperfmonth",
-            "name": "Can add client perf month",
-            "content_type": 51
+            "codename": "add_country",
+            "name": "Can add country",
+            "content_type": 53
         }
     },
     {
-        "pk": 152,
+        "pk": 158,
         "model": "auth.permission",
         "fields": {
-            "codename": "change_clientperfmonth",
-            "name": "Can change client perf month",
-            "content_type": 51
+            "codename": "change_country",
+            "name": "Can change country",
+            "content_type": 53
         }
     },
     {
-        "pk": 153,
+        "pk": 159,
         "model": "auth.permission",
         "fields": {
-            "codename": "delete_clientperfmonth",
-            "name": "Can delete client perf month",
-            "content_type": 51
+            "codename": "delete_country",
+            "name": "Can delete country",
+            "content_type": 53
         }
     },
     {
@@ -3578,6 +3653,33 @@
             "codename": "delete_country",
             "name": "Can delete country",
             "content_type": 32
+        }
+    },
+    {
+        "pk": 136,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "add_fundperfmonth",
+            "name": "Can add fund perf month",
+            "content_type": 46
+        }
+    },
+    {
+        "pk": 137,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "change_fundperfmonth",
+            "name": "Can change fund perf month",
+            "content_type": 46
+        }
+    },
+    {
+        "pk": 138,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "delete_fundperfmonth",
+            "name": "Can delete fund perf month",
+            "content_type": 46
         }
     },
     {
@@ -3797,6 +3899,60 @@
         }
     },
     {
+        "pk": 145,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "add_benchmark",
+            "name": "Can add benchmark",
+            "content_type": 49
+        }
+    },
+    {
+        "pk": 146,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "change_benchmark",
+            "name": "Can change benchmark",
+            "content_type": 49
+        }
+    },
+    {
+        "pk": 147,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "delete_benchmark",
+            "name": "Can delete benchmark",
+            "content_type": 49
+        }
+    },
+    {
+        "pk": 142,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "add_alarm",
+            "name": "Can add alarm",
+            "content_type": 48
+        }
+    },
+    {
+        "pk": 143,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "change_alarm",
+            "name": "Can change alarm",
+            "content_type": 48
+        }
+    },
+    {
+        "pk": 144,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "delete_alarm",
+            "name": "Can delete alarm",
+            "content_type": 48
+        }
+    },
+    {
         "pk": 139,
         "model": "auth.permission",
         "fields": {
@@ -3821,60 +3977,6 @@
             "codename": "delete_fundperf",
             "name": "Can delete fund perf",
             "content_type": 47
-        }
-    },
-    {
-        "pk": 136,
-        "model": "auth.permission",
-        "fields": {
-            "codename": "add_fundperfmonth",
-            "name": "Can add fund perf month",
-            "content_type": 46
-        }
-    },
-    {
-        "pk": 137,
-        "model": "auth.permission",
-        "fields": {
-            "codename": "change_fundperfmonth",
-            "name": "Can change fund perf month",
-            "content_type": 46
-        }
-    },
-    {
-        "pk": 138,
-        "model": "auth.permission",
-        "fields": {
-            "codename": "delete_fundperfmonth",
-            "name": "Can delete fund perf month",
-            "content_type": 46
-        }
-    },
-    {
-        "pk": 199,
-        "model": "auth.permission",
-        "fields": {
-            "codename": "add_fundperfyear",
-            "name": "Can add fund perf year",
-            "content_type": 67
-        }
-    },
-    {
-        "pk": 200,
-        "model": "auth.permission",
-        "fields": {
-            "codename": "change_fundperfyear",
-            "name": "Can change fund perf year",
-            "content_type": 67
-        }
-    },
-    {
-        "pk": 201,
-        "model": "auth.permission",
-        "fields": {
-            "codename": "delete_fundperfyear",
-            "name": "Can delete fund perf year",
-            "content_type": 67
         }
     },
     {
@@ -4310,30 +4412,30 @@
         }
     },
     {
-        "pk": 148,
+        "pk": 154,
         "model": "auth.permission",
         "fields": {
-            "codename": "add_subscriptionredemption",
-            "name": "Can add subscription redemption",
-            "content_type": 50
+            "codename": "add_currency",
+            "name": "Can add currency",
+            "content_type": 52
         }
     },
     {
-        "pk": 149,
+        "pk": 155,
         "model": "auth.permission",
         "fields": {
-            "codename": "change_subscriptionredemption",
-            "name": "Can change subscription redemption",
-            "content_type": 50
+            "codename": "change_currency",
+            "name": "Can change currency",
+            "content_type": 52
         }
     },
     {
-        "pk": 150,
+        "pk": 156,
         "model": "auth.permission",
         "fields": {
-            "codename": "delete_subscriptionredemption",
-            "name": "Can delete subscription redemption",
-            "content_type": 50
+            "codename": "delete_currency",
+            "name": "Can delete currency",
+            "content_type": 52
         }
     },
     {
@@ -4499,30 +4601,57 @@
         }
     },
     {
-        "pk": 169,
+        "pk": 175,
         "model": "auth.permission",
         "fields": {
-            "codename": "add_benchmark",
-            "name": "Can add benchmark",
-            "content_type": 57
+            "codename": "add_holding",
+            "name": "Can add holding",
+            "content_type": 59
         }
     },
     {
-        "pk": 170,
+        "pk": 176,
         "model": "auth.permission",
         "fields": {
-            "codename": "change_benchmark",
-            "name": "Can change benchmark",
-            "content_type": 57
+            "codename": "change_holding",
+            "name": "Can change holding",
+            "content_type": 59
         }
     },
     {
-        "pk": 171,
+        "pk": 177,
         "model": "auth.permission",
         "fields": {
-            "codename": "delete_benchmark",
-            "name": "Can delete benchmark",
-            "content_type": 57
+            "codename": "delete_holding",
+            "name": "Can delete holding",
+            "content_type": 59
+        }
+    },
+    {
+        "pk": 178,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "add_holdperfmonthly",
+            "name": "Can add hold perf monthly",
+            "content_type": 60
+        }
+    },
+    {
+        "pk": 179,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "change_holdperfmonthly",
+            "name": "Can change hold perf monthly",
+            "content_type": 60
+        }
+    },
+    {
+        "pk": 180,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "delete_holdperfmonthly",
+            "name": "Can delete hold perf monthly",
+            "content_type": 60
         }
     },
     {
@@ -4553,84 +4682,30 @@
         }
     },
     {
-        "pk": 166,
+        "pk": 163,
         "model": "auth.permission",
         "fields": {
-            "codename": "add_client",
-            "name": "Can add client",
-            "content_type": 56
+            "codename": "add_peer",
+            "name": "Can add peer",
+            "content_type": 55
         }
     },
     {
-        "pk": 167,
+        "pk": 164,
         "model": "auth.permission",
         "fields": {
-            "codename": "change_client",
-            "name": "Can change client",
-            "content_type": 56
+            "codename": "change_peer",
+            "name": "Can change peer",
+            "content_type": 55
         }
     },
     {
-        "pk": 168,
+        "pk": 165,
         "model": "auth.permission",
         "fields": {
-            "codename": "delete_client",
-            "name": "Can delete client",
-            "content_type": 56
-        }
-    },
-    {
-        "pk": 157,
-        "model": "auth.permission",
-        "fields": {
-            "codename": "add_country",
-            "name": "Can add country",
-            "content_type": 53
-        }
-    },
-    {
-        "pk": 158,
-        "model": "auth.permission",
-        "fields": {
-            "codename": "change_country",
-            "name": "Can change country",
-            "content_type": 53
-        }
-    },
-    {
-        "pk": 159,
-        "model": "auth.permission",
-        "fields": {
-            "codename": "delete_country",
-            "name": "Can delete country",
-            "content_type": 53
-        }
-    },
-    {
-        "pk": 154,
-        "model": "auth.permission",
-        "fields": {
-            "codename": "add_currency",
-            "name": "Can add currency",
-            "content_type": 52
-        }
-    },
-    {
-        "pk": 155,
-        "model": "auth.permission",
-        "fields": {
-            "codename": "change_currency",
-            "name": "Can change currency",
-            "content_type": 52
-        }
-    },
-    {
-        "pk": 156,
-        "model": "auth.permission",
-        "fields": {
-            "codename": "delete_currency",
-            "name": "Can delete currency",
-            "content_type": 52
+            "codename": "delete_peer",
+            "name": "Can delete peer",
+            "content_type": 55
         }
     },
     {
@@ -4661,6 +4736,60 @@
         }
     },
     {
+        "pk": 166,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "add_client",
+            "name": "Can add client",
+            "content_type": 56
+        }
+    },
+    {
+        "pk": 167,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "change_client",
+            "name": "Can change client",
+            "content_type": 56
+        }
+    },
+    {
+        "pk": 168,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "delete_client",
+            "name": "Can delete client",
+            "content_type": 56
+        }
+    },
+    {
+        "pk": 193,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "add_trade",
+            "name": "Can add trade",
+            "content_type": 65
+        }
+    },
+    {
+        "pk": 194,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "change_trade",
+            "name": "Can change trade",
+            "content_type": 65
+        }
+    },
+    {
+        "pk": 195,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "delete_trade",
+            "name": "Can delete trade",
+            "content_type": 65
+        }
+    },
+    {
         "pk": 187,
         "model": "auth.permission",
         "fields": {
@@ -4685,6 +4814,33 @@
             "codename": "delete_fundperfdaily",
             "name": "Can delete fund perf daily",
             "content_type": 63
+        }
+    },
+    {
+        "pk": 196,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "add_entry",
+            "name": "Can add entry",
+            "content_type": 66
+        }
+    },
+    {
+        "pk": 197,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "change_entry",
+            "name": "Can change entry",
+            "content_type": 66
+        }
+    },
+    {
+        "pk": 198,
+        "model": "auth.permission",
+        "fields": {
+            "codename": "delete_entry",
+            "name": "Can delete entry",
+            "content_type": 66
         }
     },
     {
@@ -4742,33 +4898,6 @@
         }
     },
     {
-        "pk": 175,
-        "model": "auth.permission",
-        "fields": {
-            "codename": "add_holding",
-            "name": "Can add holding",
-            "content_type": 59
-        }
-    },
-    {
-        "pk": 176,
-        "model": "auth.permission",
-        "fields": {
-            "codename": "change_holding",
-            "name": "Can change holding",
-            "content_type": 59
-        }
-    },
-    {
-        "pk": 177,
-        "model": "auth.permission",
-        "fields": {
-            "codename": "delete_holding",
-            "name": "Can delete holding",
-            "content_type": 59
-        }
-    },
-    {
         "pk": 184,
         "model": "auth.permission",
         "fields": {
@@ -4796,84 +4925,57 @@
         }
     },
     {
-        "pk": 178,
+        "pk": 169,
         "model": "auth.permission",
         "fields": {
-            "codename": "add_holdperfmonthly",
-            "name": "Can add hold perf monthly",
-            "content_type": 60
+            "codename": "add_benchmark",
+            "name": "Can add benchmark",
+            "content_type": 57
         }
     },
     {
-        "pk": 179,
+        "pk": 170,
         "model": "auth.permission",
         "fields": {
-            "codename": "change_holdperfmonthly",
-            "name": "Can change hold perf monthly",
-            "content_type": 60
+            "codename": "change_benchmark",
+            "name": "Can change benchmark",
+            "content_type": 57
         }
     },
     {
-        "pk": 180,
+        "pk": 171,
         "model": "auth.permission",
         "fields": {
-            "codename": "delete_holdperfmonthly",
-            "name": "Can delete hold perf monthly",
-            "content_type": 60
+            "codename": "delete_benchmark",
+            "name": "Can delete benchmark",
+            "content_type": 57
         }
     },
     {
-        "pk": 163,
+        "pk": 199,
         "model": "auth.permission",
         "fields": {
-            "codename": "add_peer",
-            "name": "Can add peer",
-            "content_type": 55
+            "codename": "add_fundperfyear",
+            "name": "Can add fund perf year",
+            "content_type": 67
         }
     },
     {
-        "pk": 164,
+        "pk": 200,
         "model": "auth.permission",
         "fields": {
-            "codename": "change_peer",
-            "name": "Can change peer",
-            "content_type": 55
+            "codename": "change_fundperfyear",
+            "name": "Can change fund perf year",
+            "content_type": 67
         }
     },
     {
-        "pk": 165,
+        "pk": 201,
         "model": "auth.permission",
         "fields": {
-            "codename": "delete_peer",
-            "name": "Can delete peer",
-            "content_type": 55
-        }
-    },
-    {
-        "pk": 193,
-        "model": "auth.permission",
-        "fields": {
-            "codename": "add_trade",
-            "name": "Can add trade",
-            "content_type": 65
-        }
-    },
-    {
-        "pk": 194,
-        "model": "auth.permission",
-        "fields": {
-            "codename": "change_trade",
-            "name": "Can change trade",
-            "content_type": 65
-        }
-    },
-    {
-        "pk": 195,
-        "model": "auth.permission",
-        "fields": {
-            "codename": "delete_trade",
-            "name": "Can delete trade",
-            "content_type": 65
+            "codename": "delete_fundperfyear",
+            "name": "Can delete fund perf year",
+            "content_type": 67
         }
     },
     {
@@ -5116,6 +5218,136 @@
             "password": "pbkdf2_sha256$10000$l8bXV0IQO3vt$5K40ZfpJsZ415w++TboOA0H9Qs83V+8rO6Dm1kURo5w=",
             "email": "asdf@asdf.cm",
             "date_joined": "2013-05-28T15:18:21Z"
+        }
+    },
+    {
+        "pk": 725,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-06-25T06:18:14Z",
+            "object_repr": "Spain",
+            "object_id": "10",
+            "change_message": "",
+            "user": 1,
+            "content_type": 32
+        }
+    },
+    {
+        "pk": 724,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-06-25T06:18:03Z",
+            "object_repr": "Greece",
+            "object_id": "9",
+            "change_message": "",
+            "user": 1,
+            "content_type": 32
+        }
+    },
+    {
+        "pk": 723,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-06-25T06:17:49Z",
+            "object_repr": "U.K",
+            "object_id": "8",
+            "change_message": "",
+            "user": 1,
+            "content_type": 32
+        }
+    },
+    {
+        "pk": 722,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-06-25T06:17:39Z",
+            "object_repr": "Japan",
+            "object_id": "7",
+            "change_message": "",
+            "user": 1,
+            "content_type": 32
+        }
+    },
+    {
+        "pk": 721,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-06-25T06:17:36Z",
+            "object_repr": "China",
+            "object_id": "6",
+            "change_message": "",
+            "user": 1,
+            "content_type": 32
+        }
+    },
+    {
+        "pk": 720,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-06-25T06:17:17Z",
+            "object_repr": "Singapore",
+            "object_id": "5",
+            "change_message": "",
+            "user": 1,
+            "content_type": 32
+        }
+    },
+    {
+        "pk": 719,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-06-25T06:17:01Z",
+            "object_repr": "Peru",
+            "object_id": "4",
+            "change_message": "",
+            "user": 1,
+            "content_type": 32
+        }
+    },
+    {
+        "pk": 718,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-06-25T06:16:58Z",
+            "object_repr": "Chile",
+            "object_id": "3",
+            "change_message": "",
+            "user": 1,
+            "content_type": 32
+        }
+    },
+    {
+        "pk": 717,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-06-25T06:16:52Z",
+            "object_repr": "Mexico",
+            "object_id": "2",
+            "change_message": "",
+            "user": 1,
+            "content_type": 32
+        }
+    },
+    {
+        "pk": 716,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-06-25T06:16:41Z",
+            "object_repr": "Brazil",
+            "object_id": "1",
+            "change_message": "Changed name and code.",
+            "user": 1,
+            "content_type": 32
         }
     },
     {
@@ -16534,7 +16766,7 @@
             "rght": 2,
             "name": "Click here",
             "parent": null,
-            "fund": 1,
+            "fund": null,
             "level": 0,
             "access": [
                 1
@@ -16585,7 +16817,7 @@
             "rght": 4,
             "name": "Gale B",
             "parent": 12,
-            "fund": 1,
+            "fund": null,
             "level": 2,
             "access": [
                 1
@@ -16602,7 +16834,7 @@
             "rght": 6,
             "name": "Gale E",
             "parent": 12,
-            "fund": 2,
+            "fund": null,
             "level": 2,
             "access": [
                 1
@@ -16619,7 +16851,7 @@
             "rght": 8,
             "name": "Gale G",
             "parent": 12,
-            "fund": 3,
+            "fund": null,
             "level": 2,
             "access": [
                 1
@@ -16636,7 +16868,7 @@
             "rght": 10,
             "name": "Gale H",
             "parent": 12,
-            "fund": 15,
+            "fund": null,
             "level": 2,
             "access": [
                 1
@@ -16653,7 +16885,7 @@
             "rght": 12,
             "name": "Gale I",
             "parent": 12,
-            "fund": 16,
+            "fund": null,
             "level": 2,
             "access": [
                 1
@@ -16670,7 +16902,7 @@
             "rght": 14,
             "name": "Gale K",
             "parent": 12,
-            "fund": 5,
+            "fund": null,
             "level": 2,
             "access": [
                 1
@@ -16687,7 +16919,7 @@
             "rght": 16,
             "name": "Gale L",
             "parent": 12,
-            "fund": 6,
+            "fund": null,
             "level": 2,
             "access": [
                 1
@@ -16704,7 +16936,7 @@
             "rght": 18,
             "name": "Gale M",
             "parent": 12,
-            "fund": 7,
+            "fund": null,
             "level": 2,
             "access": [
                 1
@@ -16721,7 +16953,7 @@
             "rght": 20,
             "name": "Gale N",
             "parent": 12,
-            "fund": 8,
+            "fund": null,
             "level": 2,
             "access": [
                 1
@@ -16755,7 +16987,7 @@
             "rght": 24,
             "name": "CS European Equity",
             "parent": 13,
-            "fund": 11,
+            "fund": null,
             "level": 2,
             "access": [
                 1
@@ -16772,7 +17004,7 @@
             "rght": 26,
             "name": "CS US Equity",
             "parent": 13,
-            "fund": 12,
+            "fund": null,
             "level": 2,
             "access": [
                 1
@@ -16789,7 +17021,7 @@
             "rght": 28,
             "name": "CS Asia Equity",
             "parent": 13,
-            "fund": 13,
+            "fund": null,
             "level": 2,
             "access": [
                 1
@@ -16806,7 +17038,7 @@
             "rght": 30,
             "name": "CS Volatility",
             "parent": 13,
-            "fund": 10,
+            "fund": null,
             "level": 2,
             "access": [
                 1
@@ -16823,7 +17055,7 @@
             "rght": 32,
             "name": "CS Fixed Income & Treasuries",
             "parent": 13,
-            "fund": 4,
+            "fund": null,
             "level": 2,
             "access": [
                 1
@@ -16840,7 +17072,7 @@
             "rght": 34,
             "name": "Calibrator",
             "parent": 13,
-            "fund": 9,
+            "fund": null,
             "level": 2,
             "access": [
                 1
@@ -16874,7 +17106,7 @@
             "rght": 38,
             "name": "Private Equity",
             "parent": 17,
-            "fund": 14,
+            "fund": null,
             "level": 2,
             "access": [
                 1

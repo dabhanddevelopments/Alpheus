@@ -303,7 +303,9 @@ class Currency(models.Model):
 class Country(models.Model):
     name = models.CharField(max_length=50)
     code = models.CharField(max_length=3)
-
+    
+    def __unicode__(self):
+        return self.name
 
 # deposit, withdrawal, buy sell stocks etc
 class TradeType(models.Model):
@@ -371,7 +373,7 @@ HOLDING_GROUP = (
     (GROUP_SUB, 'Sub-Sector'),
     (GROUP_LOC, 'Location'),
     (GROUP_ASS, 'Asset Class'),
-    (GROUP_CUR, 'Currency'),
+    (GROUP_CUR, 'Currency'), 
     (GROUP_HOL, 'Holding'),
     (GROUP_INV, 'Investment Type'),
 )
@@ -490,14 +492,14 @@ class HoldPerf(models.Model):
     weight = models.DecimalField(max_digits=20, decimal_places=5)
     value_date = models.DateField()
 
-"""
 class CountryBreakdown(models.Model):
-    currency = models.ForeignKey('Currency') 
+    fund = models.ForeignKey(Fund)
+    country = models.ForeignKey('Country') 
+    holding_category = models.ForeignKey(HoldingCategory)
     mtd = models.DecimalField(max_digits=15, decimal_places=5)
     ytd = models.DecimalField(max_digits=15, decimal_places=5)
     si = models.DecimalField(max_digits=15, decimal_places=5)
     value_date = models.DateField()
-""" 
     
 # FUND PERFORMANCE
 
@@ -546,8 +548,6 @@ class FundPerfMonth(models.Model):
     net_movement = models.DecimalField(max_digits=20, decimal_places=2)
     gross_assets_after_subs_red = models.DecimalField(max_digits=20, decimal_places=2)
     
-    """
-     to be added phase 4
     long_portfolio = models.DecimalField(max_digits=20, decimal_places=2)
     dividends_receivable = models.DecimalField(max_digits=20, decimal_places=2)
     assets_subtotal = models.DecimalField(max_digits=20, decimal_places=2)
@@ -556,33 +556,11 @@ class FundPerfMonth(models.Model):
     interest_receivable_on_banks = models.DecimalField(max_digits=20, decimal_places=2)
     recv_for_transactions = models.DecimalField(max_digits=20, decimal_places=2)
     
-    """
-    
-    
-    
-    
     nav_securities = models.DecimalField(max_digits=20, decimal_places=2)
     nav_securities_total = models.DecimalField(max_digits=20, decimal_places=2)
     nav_cash = models.DecimalField(max_digits=20, decimal_places=2)
     nav_other_assets = models.DecimalField(max_digits=20, decimal_places=2)
     other_liabilities = models.DecimalField(max_digits=20, decimal_places=2)
-    
-    
-    # to be removed for phase 4 
-    administration_fees = models.DecimalField(max_digits=20, decimal_places=2) # renamed
-    audit_fees = models.DecimalField(max_digits=20, decimal_places=2)
-    capital_payable = models.DecimalField(max_digits=20, decimal_places=2)
-    corporate_secretarial_fees = models.DecimalField(max_digits=20, decimal_places=2)
-    custodian_fees = models.DecimalField(max_digits=20, decimal_places=2)
-    financial_statement_prep_fees = models.DecimalField(max_digits=20, decimal_places=2)
-    sub_advisory_fees = models.DecimalField(max_digits=20, decimal_places=2)
-    management_fees = models.DecimalField(max_digits=20, decimal_places=2)
-    performance_fees = models.DecimalField(max_digits=20, decimal_places=2)
-    total_liabilities = models.DecimalField(max_digits=20, decimal_places=2) #renamed
-    
-    """
-    to be added phase 4
-
     
     capital_fees_payable = models.DecimalField(max_digits=20, decimal_places=2) 
     transaction_fees_payable = models.DecimalField(max_digits=20, decimal_places=2) #is used?
@@ -610,12 +588,6 @@ class FundPerfMonth(models.Model):
     total_net_asset_value = models.DecimalField(max_digits=20, decimal_places=2)
     fet_valuation = models.DecimalField(max_digits=20, decimal_places=2,\
                                                 verbose_name="F.E.T./Valuation")
-    """
-
-
-
-        #Accrued Interest on Bonds, same as accrued_interest?
-
 
 
     class Meta:
