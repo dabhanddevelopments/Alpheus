@@ -38,7 +38,7 @@ def get_month_list():
 def set_columns(request, column_names):
 
     column_width = request.GET.get('column_width', '50,50').split(',')
-    column_border_y = request.GET.get('column_border_y', 'ytd')
+    column_border_y = request.GET.get('column_border_y', False)
     align = request.GET.get('align', 'left')
 
     columns = []
@@ -754,7 +754,7 @@ def fundnavreconciliation(request):
     }
     return JsonResponse(data)
 
-def fundgrossasset(request):
+def fundgrossasset(request, grid):
 
     from app.models import FundPerfMonth, Client
 
@@ -774,7 +774,20 @@ def fundgrossasset(request):
             dic[month_name.lower()] = getattr(row, field)
         fields.append(dic)
 
-    dic = {
+    for field, group in grid.iteritems():
+        set_fields(field, group)
+
+    data = {
+        'metaData': {'sorting': 'name'},
+        'columns': set_columns(request, columns),
+        'rows': fields,
+    }
+
+    return JsonResponse(data)
+
+# W13a
+def fundgrossasset1(request):
+    grid = {
         'previous_nav': 'NAV',
         'performance_fees_added_back': 'NAV',
         'subscription_amount': 'NAV',
@@ -799,14 +812,100 @@ def fundgrossasset(request):
         'other_liabilities': 'Liabilities',
         'total_liabilities': 'Liabilities',
     }
-    for field, group in dic.iteritems():
-        set_fields(field, group)
+    self.fundgrossasset(request, grid)
 
-    data = {
-        'metaData': {'sorting': 'name'},
-        'columns': set_columns(request, columns),
-        'rows': fields,
+# W13b
+def fundgrossasset2(request):
+    grid = {
+        'nav': 'NAV',
+        'net_movement': 'NAV',
+        'subscription_amount': 'NAV',
+        'redemption_amount': 'NAV',
+        'gross_assets_after_subs_red': 'NAV',
+        'performance_fees_added_back': 'NAV',
+
+        'nav_cash': 'Assets',
+        'long_portfolio': 'Assets',
+        'fet_valuation': 'Assets',
+        'accrued_interest': 'Assets',
+        'dividens_receivable': 'Assets',
+        'recv_for_transactions': 'Assets',
+        'securities_total': 'Assets',
+
+        'transaction_fees_payable': 'Liabilities',
+        'management_fees_payable': 'Liabilities',
+        'serv_act_fees_payable': 'Liabilities',
+        'trustee_fees_payable': 'Liabilities',   #column did not exist
+        'audit_fees_payable': 'Liabilities',
+        'performance_fees_payable': 'Liabilities',
+        'other_liabilities_payable': 'Liabilities',  #column did not exist
+        'total_liabilities': 'Liabilities',
+        'assets_liabilities': 'Liabilities',
     }
+    self.fundgrossasset(request, grid)
 
-    return JsonResponse(data)
+# W13c
+def fundgrossasset3(request):
+    grid = {
+        'nav': 'NAV',
+        'net_movement': 'NAV',
+        'subscription_amount': 'NAV',
+        'redemption_amount': 'NAV',
+        'gross_assets_after_subs_red': 'NAV',
+        'performance_fees_added_back': 'NAV',
+        
+        'nav_securities': 'Assets',
+        'put_options': 'Assets',  #column did not exist
+        'call_options': 'Assets',  #column did not exist
+        'financial_futures': 'Assets',  #column did not exist
+        'nav_cash': 'Assets',
+        'fet_valuation': 'Assets',
+        'accrued_interest': 'Assets',
+        'dividens_receivable': 'Assets',
+        'interest_receivable_on_banks': 'Assets',
+        'securities_total': 'Assets',
 
+        'transaction_fees_payable': 'Liabilities',
+        'management_fees_payable': 'Liabilities',
+        'serv_act_fees_payable': 'Liabilities',
+        'trustee_fees': 'Liabilities',
+        'audit_fees_payable': 'Liabilities',
+        'performance_fees_payable': 'Liabilities',
+        'other_liabilities': 'Liabilities',
+        'total_liabilities': 'Liabilities',
+        'assets_liabilities': 'Liabilities',
+    }
+    self.fundgrossasset(request, grid)        
+        
+# W13c
+def fundgrossasset4(request):
+    grid = {
+        'nav': 'NAV',
+        'net_movement': 'NAV',
+        'subscription_amount': 'NAV',
+        'redemption_amount': 'NAV',
+        'gross_assets_after_subs_red': 'NAV',
+        'performance_fees_added_back': 'NAV',
+
+
+        'long_portfolio': 'Assets',
+        'nav_cash': 'Assets',
+        'receivables': 'Assets',  #column did not exist
+        'prepaid_or_recov_amounts': 'Assets',  #column did not exist
+        'financial_futures': 'Assets',
+        'transitory_assets': 'Assets',  #column did not exist
+
+        'securities_total': 'Liabilities',  #column did not exist
+        'transaction_fees_payable': 'Liabilities',
+        'management_fees_payable': 'Liabilities',
+        'serv_act_fees_payable': 'Liabilities',
+        'trustee_fees_payable': 'Liabilities',
+        'audit_fees_payable': 'Liabilities',
+        'performance_fees_payable': 'Liabilities',
+        'other_liabilities': 'Liabilities',
+        'total_liabilities': 'Liabilities',
+        'liabilities_subtotal': 'Liabilities',
+        'assets_liabilities': 'Liabilities',
+    }
+    self.fundgrossasset(request, grid)        
+        

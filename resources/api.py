@@ -6,11 +6,17 @@ from tastypie.authorization import Authorization
 from tastypie.exceptions import BadRequest
 from tastypie import fields
 from app.models import * #Page, PageWindow, Window, Widget, WidgetType, Fund, FundType, Menu, Holding
-from base_resources import MainBaseResource, TreeBaseResource
+from base_resources import MainBaseResource, MainBaseResource2, TreeBaseResource
 from django.http import HttpResponse
 
 from tastypie.api import Api
 api = Api(api_name="api")
+
+
+
+
+
+
 
 class LoggedInResource(Resource):
     class Meta:
@@ -129,7 +135,7 @@ class WidgetsResource(MainBaseResource):
             else:
                 val = var.data['key'].upper()
             qs += str(var.data['key']) + '=' + str(val) + '&'
-            
+
             params[var.data['key']] = var.data['value']
 
         bundle.data['qs'] = qs[:-1]
@@ -221,6 +227,13 @@ class PageWindowResource(MainBaseResource):
                                     bundle, user=bundle.request.user)
 
 
+
+class ClassificationResource(MainBaseResource):
+
+    class Meta(MainBaseResource.Meta):
+        queryset = Classification.objects.all()
+
+
 class FundTypeResource(MainBaseResource):
 
     class Meta(MainBaseResource.Meta):
@@ -237,7 +250,7 @@ class FundResourceAll(ModelResource):
 api.register(FundResourceAll())
 
 
-class FundResource(ModelResource):
+class FundResourceOld(ModelResource):
 
     class Meta(MainBaseResource.Meta):
         queryset = Fund.objects.all()
@@ -245,10 +258,22 @@ class FundResource(ModelResource):
         filtering = {
             "fund": ALL,
         }
-api.register(FundResource())
+api.register(FundResourceOld())
+
+"""
+class FundClassificationResource(MainBaseResource):
+    classification = fields.ForeignKey(ClassificationResource, "classification")
+    class Meta(MainBaseResource.Meta):
+        queryset = Fund.objects.select_related('classification')
+        fields = ['id', 'name', 'classification__name']
+        filtering = {
+            "fund": ALL,
+        }
+api.register(FundClassificationResource())
+"""
 
 class FundByTypeResource(MainBaseResource):
-    funds = fields.ToManyField(FundResource, "fund", full=True)
+    funds = fields.ToManyField(FundResourceOld, "fund", full=True)
 
     class Meta(MainBaseResource.Meta):
         queryset = FundType.objects.all()
@@ -319,8 +344,8 @@ class MenuParentItemsResource(MainBaseResource):
 
 
 class FundBenchResource(ModelResource):
-    funds = fields.ToManyField(FundResource, 'funds')
-    
+    funds = fields.ToManyField(FundResourceOld, 'funds')
+
     class Meta:
         queryset = FundBench.objects.all()
         filtering = {
@@ -328,32 +353,32 @@ class FundBenchResource(ModelResource):
         }
 
 class CurrencyResource(ModelResource):
-    
+
     class Meta:
         queryset = Currency.objects.all()
 
 class CustodianResource(ModelResource):
-    
+
     class Meta:
         queryset = Custodian.objects.all()
 
 class AuditorResource(ModelResource):
-    
+
     class Meta:
         queryset = Auditor.objects.all()
 
 class AdministratorResource(ModelResource):
-    
+
     class Meta:
         queryset = Administrator.objects.all()
 
 class ClassificationResource(ModelResource):
-    
+
     class Meta:
         queryset = Classification.objects.all()
-        
+
 class ManagerResource(ModelResource):
-    
+
     class Meta:
         queryset = User.objects.all()
 
@@ -363,27 +388,24 @@ class HoldingCategoryResource(ModelResource):
         filtering = {
             'holding_group': ALL,
         }
-        
+
 class PurchaseSaleResource(ModelResource):
 
     class Meta:
         queryset = PurchaseSale.objects.all()
-        
 
-class HoldingResource(ModelResource):
-    class Meta:
-        queryset = Holding.objects.all()
+
 
 class HoldingResourceFund(ModelResource):
-    fund = fields.ForeignKey(FundResource, 'fund')   
+    fund = fields.ForeignKey(FundResourceOld, 'fund')
     class Meta:
         queryset = Holding.objects.select_related('fund').all()
         filtering = {
             "fund": ALL,
-        }           
-        
+        }
+
 class HoldingResourceDetail(MainBaseResource):
-    fund = fields.ForeignKey(FundResource, 'fund')
+    fund = fields.ForeignKey(FundResourceOld, 'fund')
     currency = fields.ForeignKey(CurrencyResource, 'currency', full=True)
     sector = fields.ForeignKey(HoldingCategoryResource, 'sector', \
                                      related_name='sec', full=True)
@@ -391,22 +413,206 @@ class HoldingResourceDetail(MainBaseResource):
                                         related_name='sub_sec', full=True)
     location = fields.ForeignKey(HoldingCategoryResource, 'location', \
                                     related_name='loc', full=True)
-    
+
 
     class Meta:
         queryset = Holding.objects.all()
         filtering = {
             "fund": ALL_WITH_RELATIONS,
-        }  
-        
+        }
+"""
 class ClientResource(ModelResource):
-    
+
     class Meta(MainBaseResource.Meta):
         queryset = Client.objects.all()
         #filtering = {
         #    'fund': ALL,
         #}
-# TODO: Move this to it's own file
+"""
+
+
+
+
+
+
+
+
+
+class FundResource(MainBaseResource2):
+    classification = fields.ForeignKey(ClassificationResource, "classification")
+
+    class Meta(MainBaseResource2.Meta):
+        queryset = Fund.objects.all()
+        filtering = {
+            "fund": ALL,
+        }
+api.register(FundResource())
+
+
+
+
+
+class HoldingResource(MainBaseResource2):
+    fund = fields.ForeignKey(FundResource, "fund")
+
+    class Meta(MainBaseResource2.Meta):
+        queryset = Holding.objects.all()
+        filtering = {
+            "value_date": ALL,
+            "fund": ALL,
+        }
+api.register(HoldingResource())
+
+class HoldingHistoryResource(MainBaseResource2):
+    fund = fields.ForeignKey(FundResource, "fund")
+    holding = fields.ForeignKey(HoldingResource, "holding")
+
+    class Meta(MainBaseResource2.Meta):
+        queryset = HoldPerfMonth.objects.all()
+        resource_name = 'holding-history'
+        filtering = {
+            "fund": ALL,
+            "holding": ALL,
+            "value_date": ALL,
+        }
+api.register(HoldingHistoryResource())
+
+
+
+# will be used later. atm parent class for country breakdown
+class BreakdownResource(MainBaseResource2):
+    fund = fields.ForeignKey(FundResource, 'fund')
+    holding_category = fields.ForeignKey(HoldingCategoryResource, 'holding_category')
+
+    class Meta(MainBaseResource2.Meta):
+        queryset = CountryBreakdown.objects.all() # change this later
+        resource_name = 'breakdown'
+        filtering = {
+            "fund": ALL,
+            "value_date": ALL,
+            "holding_category": ALL_WITH_RELATIONS,
+        }
+api.register(BreakdownResource())
+
+
+class CountryBreakdownResource(BreakdownResource):
+    fund = fields.ForeignKey(FundResource, 'fund')
+    holding_category = fields.ForeignKey(HoldingCategoryResource, 'holding_category')
+
+    class Meta(BreakdownResource.Meta):
+        queryset = CountryBreakdown.objects.all()
+        resource_name = 'country-breakdown'
+        filtering = {
+            "fund": ALL,
+            "holding_category": ALL_WITH_RELATIONS,
+            "value_date": ALL,
+        }
+api.register(CountryBreakdownResource())
+
+
+class HoldingValuationResource(MainBaseResource2):
+    fund = fields.ForeignKey(FundResource, 'fund')
+    holding = fields.ForeignKey(HoldingResource, 'holding')
+    holding_category = fields.ForeignKey(HoldingCategoryResource, 'holding_category', null=True)
+
+    class Meta(MainBaseResource2.Meta):
+        queryset = HoldPerfMonth.objects.filter(holding_category__isnull=True)
+        resource_name = 'holding-valuation'
+        allowed_fields = ['valuation',  'holding__name', 'net_movement', 'value_date', 'delta_valuation', 'delta_flow', ]
+        filtering = {
+            "fund": ALL,
+            "value_date": ALL,
+            "holding_category": ALL_WITH_RELATIONS,
+        }
+        ordering = ['holding__name', 'value_date']
+
+    def alter_list_data_to_serialize(self, request, data):
+
+        import calendar
+
+        fields = []
+        def set_fields(field, group, extra_fields = []):
+            dic = {'type': field.replace('_', ' ').title(), 'group': group}
+            for row in data['objects']:
+                if row.data['holding__name'] == group:
+                    month = row.data['value_date'].month
+                    month_name = calendar.month_abbr[month].lower()
+                    dic[month_name] = row.data[field]
+                    for extra_field in extra_fields:
+                        dic[extra_field] = row.data[extra_field]
+            fields.append(dic)
+
+        holdings = set([row.data['holding__name'] for row in data['objects']])
+        extra_fields = ['delta_valuation', 'delta_flow']
+
+        for holding in holdings:
+            set_fields('valuation', holding, extra_fields)
+            set_fields('net_movement', holding)
+
+        columns = ['type'] + self.get_month_list() + ['delta_valuation', 'delta_flow']
+        return {
+            'columns': self.set_columns(request, columns),
+            'rows': fields,
+        }
+api.register(HoldingValuationResource())
+
+class FundValuationResource(MainBaseResource2):
+    fund = fields.ForeignKey(FundResource, 'fund')
+
+    class Meta(MainBaseResource2.Meta):
+        queryset = FundPerfMonth.objects.all()
+        resource_name = 'fund-valuation'
+        allowed_fields = [
+            'net_movement', 'value_date', 'delta_valuation', 'delta_flow',
+            'inflow_euro', 'inflow_dollar', 'outflow_euro', 'outflow_dollar'
+        ]
+        filtering = {
+            "fund": ALL,
+            "value_date": ALL,
+        }
+        ordering = ['value_date']
+
+    def alter_list_data_to_serialize(self, request, data):
+
+        import calendar
+
+        fields = []
+        def set_fields(field, name, group):
+            extra_fields = ['delta_valuation', 'delta_flow']
+            dic = {'type': name, 'group': group}
+            for row in data['objects']:
+                month = row.data['value_date'].month
+                month_name = calendar.month_abbr[month].lower()
+                dic[month_name] = row.data[field]
+                for extra_field in extra_fields:
+                    dic[extra_field] = row.data[extra_field]
+            fields.append(dic)
+
+        set_fields('net_movement', 'Net Movement', 'Total')
+        set_fields('inflow_euro', 'Euro', 'Inflow')
+        set_fields('inflow_dollar', 'US Dollar', 'Inflow')
+        set_fields('outflow_euro', 'Euro', 'Outflow')
+        set_fields('outflow_euro', 'US Dollar', 'Outflow')
+
+        columns = ['type'] + self.get_month_list() + ['delta_valuation', 'delta_flow']
+        return {
+            'columns': self.set_columns(request, columns),
+            'rows': fields,
+        }
+api.register(FundValuationResource())
+
+
+class ClientResource(MainBaseResource2):
+    #funds = fields.ManyToManyField(FundResourceOld, 'fund', related_name='funds')
+
+    class Meta(MainBaseResource2.Meta):
+        queryset = Client.objects.all()
+        filtering = {
+            'funds': ALL_WITH_RELATIONS,
+        }
+
+api.register(ClientResource())
+
 
 
 

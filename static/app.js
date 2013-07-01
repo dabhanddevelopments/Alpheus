@@ -1,5 +1,5 @@
 
-Ext.Loader.setPath('Ext.ux', 'static/extjs/examples/ux');
+Ext.Loader.setPath('Ext.ux', 'static/ext-4.2.1/examples/ux');
 Ext.require([
     'Ext.ux.RowExpander'
 ]);
@@ -15,13 +15,21 @@ Ext.require([
     'Ext.grid.*',
 ]);
 
-function displayInnerGrid(widget, data, renderId) {
-    
+function displayInnerGrid(widget, data, renderId, hideHeaders, height) {
+
         fields = [];
         for(i=0; i < data.columns.length; i++) {
             fields[i] = data.columns[i].dataIndex;
         }
-        
+
+        if(typeof hideHeaders == 'undefined') {
+            hideHeaders: false;
+        }
+        if(typeof height == 'undefined') {
+            height: 100 ;
+        }
+
+
         var insideGridStore = Ext.create('Ext.data.Store', {
             //storeId: "inner_" + widget.key,
             fields: fields,
@@ -34,6 +42,7 @@ function displayInnerGrid(widget, data, renderId) {
                 }
             }
         });
+            console.log(data.rows);
         var innerGrid = Ext.create('Ext.grid.Panel', {
             store: insideGridStore,
             selModel: {
@@ -41,10 +50,28 @@ function displayInnerGrid(widget, data, renderId) {
             },
             columns: data.columns,
             header: false,
+            autoFit: true,
             width: 1000,
-            height: 150,
+            height: height,
             iconCls: 'icon-grid',
+            hideHeaders: hideHeaders,
             renderTo: 'innergrid-' + widget.id + '-' + renderId,
+            listeners: {
+                cellclick: function(gridView,htmlElement,columnIndex,dataRecord) {
+
+                    console.log(dataRecord);
+                    var win = new Ext.Window({
+                        renderTo: Ext.getBody(),
+                        html: html,
+                        //items: items,
+                        height: 300,
+                        width: 400,
+                    });
+                    win.show();
+
+                    console.log('asdf');
+                }
+            },
         });
         innerGrid.getEl().swallowEvent([
             'mousedown', 'mouseup', 'click',
@@ -58,63 +85,61 @@ function zoomGraph(e, widget) {
 
     //this is ugly
     var qs = widget.qs.replace('&value_date__month=2,4,6,8,10,12', '');
-console.log(e);
-console.log(widget);
 
     var start = new Date(e.min);
     var end = new Date(e.max);
-    
+
     var start_date = start.getFullYear() + '-' + (start.getMonth() + 1) + '-' + start.getDate();
     var end_date = end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate();
-    
-    
+
+
     var date = '&value_date__gte=' + start_date + '&value_date__lte=' + end_date;
     //var date = '';
-    
+
     range = (e.max / 1000 ) - (e.min / 1000);
     range = Math.round( range );
-    
+
     var filter = '';
-    
+
     if(range > 300000000) { // more than 9.5 years
-    
+
         filter = '&value_date__month=2,4,6,8,10,12'; // 1st of month each other month
        //console.log('ALL');
-        
+
     } else if(range >= 240000000) { // more than 7.5 years
-    
+
         //var filter = '&value_date__month=2,4,6,8,10,12'; // wed
        //console.log('1Y');
-        
+
     } else if(range >= 120000000) { // more than 4 years
-    
+
         //var filter = '&value_date__week_day=3,5'; // tue, thu
        //console.log('6M');
-   
+
     } else if(range >= 60000000) { // more than 2 years
-    
+
         //var filter = '&value_date__week_day=2,4,6'; // mon, wed, fri
        //console.log('3M');
-        
-    } else { 
+
+    } else {
         var filter = ''; // empty means every month
        //console.log('1M');
     }
-    
+
     //console.log(range);
     //console.log(date);
     //console.log(start);
     //console.log(end);
-    
+
     var chart = $('#' + widget.div).highcharts();
     chart.showLoading('Loading data from server...');
-   
+
     $.getJSON(widget.url + qs + date + filter, function(data22) {
         //console.log(data22[0]);
         //console.log(data22[0].data);
 	     chart.series[0].setData(data22[0].data);
 		 chart.hideLoading();
-	});	
+	});
 }
 
 //@TODO: Merge this with zoomGraph()
@@ -123,94 +148,94 @@ function zoomLineBarGraph(e) {
 console.log(e);
 
     holding = $('#data').data('holding');
-    
-    var div = $('#data').data('linebar-div');
-    
 
-    var qs = '?holding_category__holding_group__isnull=true&holding=' + holding; 
-    
+    var div = $('#data').data('linebar-div');
+
+
+    var qs = '?holding_category__holding_group__isnull=true&holding=' + holding;
+
     var start = new Date(e.min);
     var end = new Date(e.max);
-    
+
     var start_date = start.getFullYear() + '-' + (start.getMonth() + 1) + '-' + start.getDate();
     var end_date = end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate();
-    
+
     var date = '&value_date__gte=' + start_date + '&value_date__lte=' + end_date;
 
-    
+
     range = (e.max / 1000 ) - (e.min / 1000);
     range = Math.round( range );
-    
+
     if(range > 31557600) { // more than 1 year
-    
+
         var filter = '&value_date__month=2,4,6,8,10,12&value_date__day=1'; // 1st of month each other month
        //console.log('ALL');
-        
+
     } else if(range >= 31535000) { // more than 6 months
-    
+
         var filter = '&value_date__week_day=4'; // wed
        //console.log('1Y');
-        
+
     } else if(range >= 15535000) { // more than 3 months
-    
+
         var filter = '&value_date__week_day=3,5'; // tue, thu
        //console.log('6M');
-   
+
     } else if(range >= 7700000) { // more than 1 months
-    
+
         var filter = '&value_date__week_day=2,4,6'; // mon, wed, fri
        //console.log('3M');
-        
-    } else { 
+
+    } else {
         var filter = ''; // empty means every day
        //console.log('1M');
     }
-    
+
     //console.log(range);
     //console.log(date);
     //console.log(start);
     //console.log(end);
-    
+
     var chart = $('#' + div).highcharts();
     chart.showLoading('Loading data from server...');
-   
+
     $.getJSON('/api/widget/fundperfholdpriceline/' + qs + date + filter, function(data) {
-	
+
 	     chart.series[0].setData(data);
 		 chart.hideLoading();
-		 
+
         $.getJSON('/api/widget/fundperfholdvolbar/' + qs + date + filter, function(data2) {
-	
+
 	         chart.series[1].setData(data2);
 		     chart.hideLoading();
-		     
+
 	    });
-	});	
+	});
 }
 
 
 function lineBarChart(widget) {
 
     widget.url = '/api/widget/fundperfholdpriceline/';
-    widget.qs = '?holding_category__holding_group__isnull=true&value_date__month=2,4,6,8,10,12&value_date__day=1&holding__fund=' + widget.fund + '&holding=' + widget.holding; 
+    widget.qs = '?holding_category__holding_group__isnull=true&value_date__month=2,4,6,8,10,12&value_date__day=1&holding__fund=' + widget.fund + '&holding=' + widget.holding;
 
     $('#data').data('holding', widget.holding);
-    
+
     var div = $('#data').data('linebar-div');
    //console.log('DIV ' + div);
     var chart = $('#' + div).highcharts();
-    
+
     if(typeof chart != 'undefined') {
         chart.destroy();
     }
 
     $.getJSON(widget.url + widget.qs, function(data) {
-    
+
         widget.url = '/api/widget/fundperfholdvolbar/';
 
         $.getJSON(widget.url + widget.qs, function(data2) {
-     
-            var options = {     
+
+            var options = {
                 chart: {
                     renderTo: div,
                     marginTop: 5,
@@ -271,7 +296,7 @@ function lineBarChart(widget) {
                     }
                 },
                 ],
-                
+
                 legend: {
                     enabled: true,
                     //layout: 'vertical',
@@ -281,7 +306,7 @@ function lineBarChart(widget) {
                     //y: 100,
                     //borderWidth: 0
                 },
-                
+
 			    rangeSelector : {
 			        enabled: true,
 				    buttons: [{
@@ -313,12 +338,12 @@ function lineBarChart(widget) {
                     name: 'Price by time',
                     stack: 0,
 
-                    //data: [1, 12, 32, 43],       
+                    //data: [1, 12, 32, 43],
                     data: data,
 		            tooltip: {
 			            valueDecimals: 2
-		            }, 
-		                      
+		            },
+
                 },
                 {
                     name: 'Volume by time',
@@ -327,7 +352,7 @@ function lineBarChart(widget) {
                     data: data2,
 		            tooltip: {
 			            valueDecimals: 2
-		            },  
+		            },
                     lineWidth: 3,
                     marker: {
                         enabled: false
@@ -337,17 +362,17 @@ function lineBarChart(widget) {
                 },
                 ]
             };
-            
+
             var chart = new Highcharts.Chart(options);
-            
+
 
             });
         });
     }
 
-function destroyInnerGrid(record) {
+function destroyInnerGrid(record, widget_id) {
 
-    var parent = document.getElementById('innergrid' + record.get('id'));
+    var parent = document.getElementById('innergrid-' + widget_id + '-' + record.get('id'));
     var child = parent.firstChild;
 
     while (child) {
@@ -361,7 +386,7 @@ function destroyInnerGrid(record) {
 
 function refreshHoldPerfBar(date, fund, monthly, fields, order_by) {
 
-    
+
     if(typeof fields == 'undefined') {
         fields = 'nav';
     }
@@ -370,26 +395,26 @@ function refreshHoldPerfBar(date, fund, monthly, fields, order_by) {
     }
     // gets set when W2 is loaded first time
     var div = $('#data').data('div-fundperfholdperfbar');
-    
+
     // get the window div so we can set the title, super ugly
     win_div = div.slice(0, div.indexOf("_widget"));
-    
+
     var date_title = date
     if(typeof monthly != 'undefined' && monthly == true) {
         date_title = moment(date).format("MMM YYYY")
     }
-    
-    
-    
+
+
+
     //title = title.replace('FUND_NAME', $('#data').data('fund_name'));
     //title = title.replace('DATE', date_title);
-    
+
     var title = $('#data').data('fund_name') + ' / ' + date_title + ' / Holding Performance Bar Graph';
     win = Ext.getCmp(win_div);
     win.setTitle(title);
 
     var chart = $('#' + div).highcharts();
-    
+
     var url = '/api/widget/fundperfholdperfbar/?value_date=' + date + '&fund=' + fund + '&legend=false&fields=' + fields + '&order_by=' + order_by + '&holding_category__isnull=true';
     //return monthTable(url, 'fundperfdaily', div);
 
@@ -407,7 +432,7 @@ function refreshHoldPerfBar(date, fund, monthly, fields, order_by) {
                         type: 'column',
                         width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 30,
                         height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 35,
-                    },  
+                    },
                     title: {
                         text: false,
                     },
@@ -425,7 +450,7 @@ function refreshHoldPerfBar(date, fund, monthly, fields, order_by) {
                             fontFamily: 'Verdana, sans-serif'
                         },
                         enabled: labels,
-                    },                        
+                    },
                     },
                     series: data.objects,
                 });
@@ -433,7 +458,7 @@ function refreshHoldPerfBar(date, fund, monthly, fields, order_by) {
     } catch (err) {
         //do nothing
     }
-};    
+};
 
 
 Ext.onReady(function() {
@@ -449,15 +474,15 @@ Ext.onReady(function() {
                 {alpha1: 'Alpha one ann'},
                 {beta1: 'Beta one ann'},
                 {sharpe_ratio1: 'Sharpe one ann'},
-                {correlation1: 'Correlation one ann'}, 
-            ],              
+                {correlation1: 'Correlation one ann'},
+            ],
             2: [
                 {ann_return3: 'Returns three ann'},
                 {ann_volatility3: 'Volatility three ann'},
                 {alpha3: 'Alpha three ann'},
                 {beta3: 'Beta three ann'},
                 {sharpe_ratio3: 'Sharpe three ann'},
-                {correlation3: 'Correlation three ann'},    
+                {correlation3: 'Correlation three ann'},
             ],
             3: [
                 {ann_return5: 'Returns five ann'},
@@ -465,7 +490,7 @@ Ext.onReady(function() {
                 {alpha5: 'Alpha five ann'},
                 {beta5: 'Beta five ann'},
                 {sharpe_ratio5: 'Sharpe five ann'},
-                {correlation5: 'Correlation five ann'},    
+                {correlation5: 'Correlation five ann'},
             ]
         };
 
@@ -476,18 +501,18 @@ Ext.onReady(function() {
         for(var row in graphs) {
 
             children = [];
-            
+
             for(var chart in graphs[row]) {
-            
+
                 key = Object.keys(graphs[row][chart])[0];
-                
+
                 var bar_div = 'summary2-bar-' + key;
                 var line_div = 'summary2-line-' + key;
-                    
+
                 $('<div id="' + bar_div + '"></div>').appendTo('body');
                 $('<div id="' + line_div + '"></div>').appendTo('body');
                 //$('<div id="' + innertab_div + '-line"></div>').appendTo('#' + tab_div);
-                
+
                 // widget is global for some reason, so using another name
                 win_widget = {}
                 win_widget.url = '/api/widget/fundperfmonthmin/';
@@ -495,8 +520,8 @@ Ext.onReady(function() {
                 win_widget.size_y = 1.9;
                 win_widget.size_x = 3;
                 win_widget.div = bar_div;
-                
-                
+
+
                 win_widget.params = {}
                 win_widget.params.type = 'column';
                 win_widget.params.legend = 'false';
@@ -507,9 +532,9 @@ Ext.onReady(function() {
                 win_widget.params.title = 'false';
                 win_widget.params.yAxisTitle = graphs[row][chart][key];
                 win_widget.params.date_type = 'month';
-                
+
                 lineChart('', win_widget, bar_div);
-                
+
                 children.push({
                      xtype: 'tabpanel',
                      border: 1,
@@ -517,13 +542,13 @@ Ext.onReady(function() {
                      height: (120 * win_widget.size_y) + (10 * win_widget.size_y) + (10 * (win_widget.size_y - 1)) + 20,
                       items: [
                         {
-                            xtype : 'panel',     
+                            xtype : 'panel',
                             title : 'Bar',
                             contentEl: bar_div,
                             id: bar_div
                         },
                         {
-                            xtype : 'panel',     
+                            xtype : 'panel',
                             title :'Line',
                             contentEl: line_div,
                             id: line_div
@@ -537,7 +562,7 @@ Ext.onReady(function() {
                     }
                 })
             }
-                
+
             parent = {
                 xtype: 'container',
                 layout: 'hbox',
@@ -546,7 +571,7 @@ Ext.onReady(function() {
             items.push(parent)
         }
        //console.log("ROW: " + row);
-            
+
 
         Ext.onReady(function(){
             var win = new Ext.Window({
@@ -569,7 +594,7 @@ Ext.onReady(function() {
         });
 
     }
-    
+
     function destroyGrid(div) {
         if(typeof $('#' + div).highcharts() != 'undefined') {
             var widget_obj = $('#' + div).highcharts();
@@ -581,7 +606,7 @@ Ext.onReady(function() {
     $('<div id="data"></div>').appendTo('body');
 
     function initPage(obj) {
-    
+
         console.log('init page');
         var id = obj.page;
        //console.log(id);
@@ -590,8 +615,8 @@ Ext.onReady(function() {
         // @TODO: Redo this
         var pages = $('#data').data('page');
 
-        
-        // No need to reload the page if users clicks on a link 
+
+        // No need to reload the page if users clicks on a link
         // to a page they are already on
         //if($('#data').data('active-panel') == id) {
         //    return
@@ -612,12 +637,12 @@ Ext.onReady(function() {
 
                     switchPanel(panel, el);
                     appendTabs(pages[i]);
-                    
+
                     obj.page = pages[i].children[0].id;
                     //console.log('child tabs');
                     //console.log(obj);
                     //console.log(pages[i].children);
-                    
+
 
                 } else {
 
@@ -628,10 +653,10 @@ Ext.onReady(function() {
                     $('#data').data('grid' + id, '');
                     $('<div id="page' + id + '"></div>').appendTo('#menu');
                 }
-                
+
                //console.log(obj);
                 initGrid(obj);
-                    
+
                 // stops all widgets to auto reload/refresh
                 //clearAllIntervals();
             }
@@ -662,7 +687,7 @@ Ext.onReady(function() {
                 }
             },
         });
-        */ 
+        */
 
         for(x=0; x<tabs.children.length; x++) {
 
@@ -683,15 +708,18 @@ Ext.onReady(function() {
                         initGrid(obj);
                     }
                 },
-            }); 
+            });
         }
         panel.setActiveTab(0);
     }
-        
+
 
     function switchPanel(panel, el) {
 
-        var active = $('#data').data('active-panel'); 
+        var active = $('#data').data('active-panel');
+
+        // clear the year so other
+        $('#data').data('year', false);
 
         var ws = Ext.getCmp('viewport');
 
@@ -713,8 +741,8 @@ Ext.onReady(function() {
            console.log("Failed to add panel");
            //console.log(err);
         }
-  
-        ws.doLayout();  
+
+        ws.doLayout();
 
         // Save the panel so we know which one to destroy next time
         $('#data').data('active-panel', panel.id);
@@ -722,15 +750,15 @@ Ext.onReady(function() {
     }
 
     function initGrid(obj) {
-        
+
         var page = obj.page;
-        
+
 console.log('initiating grid');
 
 
         $('#data').data('page_id', page);
-    
-        // if we have a grid for this page, it means it's already 
+
+        // if we have a grid for this page, it means it's already
         // loaded and we do not need to fetch it again
         if($('#data').data('grid' + page) !== undefined && $('#data').data('grid' + page) !== '') {
 
@@ -744,20 +772,20 @@ console.log('initiating grid');
             max_size_x: 10,
             max_size_y: 10,
             draggable: {
-                stop: function(event, ui){ 
+                stop: function(event, ui){
                     saveWidgetPositions(JSON.stringify(obj.grid.serialize()));
                     //console.log('widget stopped');
                 }
             },
-            serialize_params: function($w, wgd) { 
-                return { 
-                    id: wgd.el[0].id, 
-                    col: wgd.col, 
+            serialize_params: function($w, wgd) {
+                return {
+                    id: wgd.el[0].id,
+                    col: wgd.col,
                     row: wgd.row,
                     size_y: wgd.size_y,
                     size_x: wgd.size_x,
                     pagewindow: $w.context.attributes.pagewindow.value,
-                } 
+                }
             }
         }).data('gridster');
 
@@ -771,35 +799,35 @@ console.log('initiating grid');
             success: function(data) {
 
                 $('#data').data('grid_data' + page, data);
-                
-                
+
+
                 // get the window id from pagewindow by filtering by page id (of current page)
                 // delete window div/dom
                 // create function below
-                // call that function with the 
-                
+                // call that function with the
+
 
                 for(i=0; i<data.length; i++) {
-                
+
                     createWindows(data[i], i, obj);
 
-                }       
+                }
             }
         });
     }
-    
+
 
     function createWindows(data, i, obj, extra_params) {
-    
+
         if(typeof obj.fund == 'undefined') {
             obj.fund = $('#data').data('fund');
         }
-    
+
         // for w18
         function createGrid(tabId, data,flex) {
-        
+
             if(typeof Ext.getCmp('grid' + tabId) == 'undefined') {
-            
+
             fields = [];
             for(i=0; i < data.columns.length; i++) {
                 fields[i] = data.columns[i].dataIndex;
@@ -823,14 +851,13 @@ console.log('initiating grid');
                 id: 'grid' + tabId,
                 border: false,
                 flex: flex,
-                
                 //height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 20,
                 //width:  (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 20,
                // renderTo: tabId,
             });
         }
-        }        
-        
+        }
+
         //for w23
         function appendGridToSubRedTab(tabId) {
            var date = tabId.split("-");
@@ -838,7 +865,7 @@ console.log('initiating grid');
                 date[1] = 1;
                 date[0] = tabId;
                 tabId = tabId + '-1';
-           } 
+           }
            $.getJSON('/api/widget/fundsubredtable/?fund=' + obj.fund + '&year=' + date[0] + '&month='  + date[1] + '&column_width=80,80', function(data1) {
                 tab = Ext.getCmp(tabId);
                 var table = createGrid(tabId, data1, 0);
@@ -847,25 +874,25 @@ console.log('initiating grid');
                     tab = Ext.getCmp(tabId);
                     var table = createGrid('client' + tabId, data2, 1);
                     tab.add(table);
-                });   
+                });
            });
-    
+
 
         }
-        
+
         //for w13
-        function appendGridToGrossAssetTab(tab, year) {                        
+        function appendGridToGrossAssetTab(tab, year) {
             $.getJSON('/api/widget/fundgrossasset/?fund=' + obj.fund + '&year=' + year + '&column_width=160,85', function(assets) {
                 var grid = dataGroupTable(assets, data.window);
-                tab.insert(0, grid);                  
+                tab.insert(0, grid);
                 tab.doLayout();
             });
         }
-        
+
         // for w18
         function appendGridToTab(tabId) {
             fund = $('#data').data('fund');
-            
+
             // for default child tabs
             var lastCharInString = tabId.toString().slice(-1);
             if($.isNumeric(lastCharInString) == false) {
@@ -876,18 +903,18 @@ console.log('initiating grid');
                 }
             }
             if(typeof Ext.getCmp('grid' + tabId) == 'undefined') {
-            
+
                 tab = Ext.getCmp(tabId);
                 // get grid data
                 $.getJSON('/api/widget/fundperfmonth/?fund=' + fund + '&fields=' + tabId + '&column_width=55,60', function(data) {
-                
+
                     var table = createGrid(tabId, data);
                     tab.add(table);
-                    // div for inner tabs                           
-                    var innertab_div = 'inner-tab' + tabId; 
+                    // div for inner tabs
+                    var innertab_div = 'inner-tab' + tabId;
                     $('<div id="' + innertab_div + '-bar"></div>').appendTo('#' + tab_div);
                     $('<div id="' + innertab_div + '-line"></div>').appendTo('#' + tab_div);
-                    
+
                     widget = {}
                     widget.url = '';
                     widget.qs = '/api/widget/fundperfbenchcompline/?fields=' + tabId + '&fund=' + fund;
@@ -898,14 +925,14 @@ console.log('initiating grid');
                     widget.params.date_type = 'month';
                     widget.params.navigator = 'true';
                     widget.params.rangeSelector = 'true';
-                    
+
                     var chart = $('#' +  innertab_div + '-bar').highcharts();
-                
+
                     if(typeof chart == 'undefined') {
                         widget.params.type = 'column';
                         lineChart('', widget, innertab_div + '-bar');
                     }
-                    
+
                     // Bar Chart & Line Graph Tabs
                     var tp2 = new Ext.TabPanel({
                         id: 'inner-tab-id' + tabId,
@@ -926,7 +953,7 @@ console.log('initiating grid');
                             'tabchange': function(tabPanel, tab){
                                 if(tab.id == 'line' + tabId) {
                                     div2 = innertab_div + '-line';
-                                    
+
                                     var chart = $('#' + div2).highcharts();
                                    //console.log('got chart');
                                     if(typeof chart == 'undefined') {
@@ -937,23 +964,23 @@ console.log('initiating grid');
                                 }
                             }
                         }
-                    }); 
-                    tab.add(tp2);  
+                    });
+                    tab.add(tp2);
                 });
             }
         }
-    
+
         var page = obj.page;
         var grid = $('#data').data('grid' + page); // obj.grid;
         var window = '<div id="' + page + '_' + data.window.id + '" pagewindow="' + data.id + '" class="layout_block"></div>';
-        
+
         grid.add_widget(window, data.window.size_x, data.window.size_y, data.col, data.row);
-        
-        
+
+
         // div for window
         var window_id = 'page_' + page + '_' + data.window.id;
-        $('<div id="' + window_id + '"></div>').appendTo('body'); 
-        
+        $('<div id="' + window_id + '"></div>').appendTo('body');
+
         // at TODO:change benchmark to support mtom
         if(data.window.key == 'w15') {
               $.getJSON('/api/widget/fundsummary/' + obj.fund, function(summary) {
@@ -962,25 +989,25 @@ console.log('initiating grid');
                 html = '<div> <table width="100%" class="html_table">' +
                 '<tr><td>Fund Name</td><td>'+ summary.name + '</td></tr>' +
                 '<tr><td>Fund Type</td><td>'+ summary.fund_type.name + '</td></tr>' +
-                '<tr><td>Fund Manager</td><td>'+ summary.manager.first_name + summary.manager.last_name + '</td></tr>' +       
+                '<tr><td>Fund Manager</td><td>'+ summary.manager.first_name + summary.manager.last_name + '</td></tr>' +
                 '<tr><td> Description</td><td>'+ summary.description + '<d></tr>' +
-                '<tr><td>Custodian</td><td>'+ summary.custodian.name + '</td><td>'+ summary.custodian.contact_name + '</td><td>' + summary.custodian.contact_number + '</td><td>Managment Fee</td><td>'+ summary.management_fee + '</td><td>Performance Fee</td><td>'+ summary.performance_fee + '</td></tr>' +   
-                '<tr><td>Administrator</td><td>'+ summary.administrator.name + '</td><td>'+ summary.administrator.contact_name + '</td><td>' + summary.administrator.contact_number + '</td><td>Administrator Fee</td><td>'+ summary.administrator.fee + '</td></tr>' +   
-                '<tr><td>Auditor</td><td>'+ summary.auditor.name + '</td><td>'+ summary.auditor.contact_name + '</td><td>' + summary.auditor.contact_number + '</td><td>Auditor Fee</td><td>'+ summary.auditor.fee + '</td></tr>' +   
+                '<tr><td>Custodian</td><td>'+ summary.custodian.name + '</td><td>'+ summary.custodian.contact_name + '</td><td>' + summary.custodian.contact_number + '</td><td>Managment Fee</td><td>'+ summary.management_fee + '</td><td>Performance Fee</td><td>'+ summary.performance_fee + '</td></tr>' +
+                '<tr><td>Administrator</td><td>'+ summary.administrator.name + '</td><td>'+ summary.administrator.contact_name + '</td><td>' + summary.administrator.contact_number + '</td><td>Administrator Fee</td><td>'+ summary.administrator.fee + '</td></tr>' +
+                '<tr><td>Auditor</td><td>'+ summary.auditor.name + '</td><td>'+ summary.auditor.contact_name + '</td><td>' + summary.auditor.contact_number + '</td><td>Auditor Fee</td><td>'+ summary.auditor.fee + '</td></tr>' +
                 '<tr><td>Subscription Terms</td><td>'+ summary.subscription_frequency + '</td></tr>' +
                 '<tr><td>Redemption Terms</td><td>'+ summary.redemption_frequency + '</td></tr>' +
                 '<tr><td>Management Fees</td><td>'+ summary.management_fee + '</td></tr>' +
                 '<tr><td>Performance Fees</td><td>'+ summary.performance_fee + '</td></tr>' +
-                '<tr><td>Benchmark</td><td>'+ summary.benchmark.name + '</td></tr>' + '</table> </div>';              
-                
+                '<tr><td>Benchmark</td><td>'+ summary.benchmark.name + '</td></tr>' + '</table> </div>';
+
                 $(html).appendTo('#' + window_id);
             });
 
             return
-        
+
         // W18
         } if(data.window.key == 'w18') {
-        
+
             parents = [
                 {id: 'ann_return', title: 'Returns'},
                 {id: 'ann_volatility', title: 'Volatility'},
@@ -996,17 +1023,17 @@ console.log('initiating grid');
             ];
             items = [];
             for(i=0; i<parents.length; i++) {
-            
+
                 childItems = [];
                 // only Returns have SI
                 if(parents[i].id == 'ann_return') {
                     childItems.push({id: 'si', title: 'Since Inception'})
                 }
-                
+
                 for(x=0; x<children.length; x++) {
-                
+
                     childItems.push({
-                        id: parents[i].id + children[x].id, 
+                        id: parents[i].id + children[x].id,
                         title: children[x].title,
                         layout: 'fit',
                     })
@@ -1025,11 +1052,11 @@ console.log('initiating grid');
                     }
                 });
             }
-            
+
             // div for tabs
             var tab_div = 'tab-' + data.window.key + '-' + window_id;
             $('<div id="' + tab_div + '"></div>').appendTo('#' + window_id);
-            
+
             var tp = new Ext.TabPanel({
                 renderTo: tab_div,
                 id: 'w18-tabs',
@@ -1040,7 +1067,7 @@ console.log('initiating grid');
                 layout: 'fit',
                 listeners: {
                     'beforetabchange': function(tabPanel, tab){
-                        
+
                         if(tab.id == 'summary-tab') {
                         summaryGraphs();
                         return false;
@@ -1050,24 +1077,24 @@ console.log('initiating grid');
                         appendGridToTab(id[2]);
                     }
                 }
-            });       
-            
+            });
+
             // append grids for default tab
             appendGridToTab('si');
-            
+
             // The summary tab is a link to a popup window
             tp.add({
                 title: 'Summary',
-                id: 'summary-tab',             
+                id: 'summary-tab',
             });
-            
+
             return widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
-            
+
         } else if (data.window.key == 'w23') {
-        
-        
+
+
             this_year = new Date().getFullYear();
-        
+
             parents = [];
             items = [];
             children = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -1076,13 +1103,13 @@ console.log('initiating grid');
             }
            //console.log(parents);
             for(i=0; i<parents.length; i++) {
-            
+
                 childItems = [];
-                
+
                 for(x=0; x<children.length; x++) {
-                
+
                     childItems.push({
-                        id: parents[i] + '-' + (1 + x), 
+                        id: parents[i] + '-' + (1 + x),
                         title: children[x],
                         layout:  {type : 'vbox', align : 'stretch' }
                     });
@@ -1103,11 +1130,11 @@ console.log('initiating grid');
                 });
             }
            //console.log("whatever");
-            
+
             // div for tabs
             var tab_div = 'tab-' + data.window.key + '-' + window_id;
             $('<div id="' + tab_div + '"></div>').appendTo('#' + window_id);
-            
+
             var tp = new Ext.TabPanel({
                 renderTo: tab_div,
                 id: 'w23-tabs',
@@ -1123,23 +1150,23 @@ console.log('initiating grid');
                         appendGridToSubRedTab(id[2]);
                     }
                 }
-            });   
+            });
             // set the default tab to January of this year
-            appendGridToSubRedTab(this_year + '-1');    
+            appendGridToSubRedTab(this_year + '-1');
             return widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
-            
-            
+
+
         } if(data.window.key == 'w13') {
-        
+
             this_year = new Date().getFullYear();
-        
+
             parents = [];
             items = [];
             for(i=this_year; i>2002; i--) {
                 parents.push(i);
             }
             for(i=0; i<parents.length; i++) {
-            
+
                 items.push({
                     //xtype: 'tabpanel',
                     title: parents[i],
@@ -1147,11 +1174,11 @@ console.log('initiating grid');
                 });
             }
            //console.log("whatever");
-            
+
             // div for tabs
             var tab_div = 'tab-' + data.window.key + '-' + window_id;
             $('<div id="' + tab_div + '"></div>').appendTo('#' + window_id);
-            
+
             var tp = new Ext.TabPanel({
                 renderTo: tab_div,
                 id: 'w13-tabs',
@@ -1167,86 +1194,85 @@ console.log('initiating grid');
                     }
                 }
             });
-             
+
             // set the default tab to January of this year
             tab = Ext.getCmp('w13-year-' + this_year);
-            appendGridToGrossAssetTab(tab, this_year);    
-            return widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);        
-        
+            appendGridToGrossAssetTab(tab, this_year);
+            return widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
+
         }
-        
+
        //console.log(data.window.key)
-        
+
         // get the widgets for this window
         $.ajax({
             type: "GET",
             url: '/api/widgets/?window=' + data.window.id,
             ajaxI: i,
             success: function(widgets) {
-            
+
                 // now I will be i asynchronously
                 I = this.ajaxI;
 
                 // vbox or hbox
-                var layout = data.window.layout + 'box'; 
-                
+                var layout = data.window.layout + 'box';
+
                //console.log('LAYOUT: ' + layout);
                 var items = [];
-                
+
                 for(x=0; x<widgets.length; x++) {
-                
+
                     // div for widget
                     var widget_id = 'page_' + page + '_win_' + data.window.id + '_widget_' + widgets[x].id;
                     $('<div id="' + widget_id + '"></div>').appendTo('#' + window_id);
-                    
+
                     var panel = createWidget(obj, widgets[x], widget_id);
-                    
+
                     // if it's a datatable we just insert the grid
                     // @TODO: This doesn't actually do anything, it was an attempt to get the scroll bar working on horizontal windows
                     //console.log(widgets[x]);
                     //if(widgets[x].type == "data_table") {
-                    
+
                    //     items[I] = panel;
-                        
+
                    // } else {
-                    
+
                         items[x] = {
-                            contentEl: widget_id, 
+                            contentEl: widget_id,
                             height: (120 * widgets[x].size_y) + (10 * widgets[x].size_y) + (10 * (widgets[x].size_y - 1)),
                             width:  (120 * widgets[x].size_x) + (10 * widgets[x].size_x) + (10 * (widgets[x].size_x - 1)),
-                            border: false, 
+                            border: false,
+                            autoScroll: true,
                         }
                    //}
-                    
-                    
+
+
                 }
-                
+
                 Ext.create('Ext.container.Container', {
                     renderTo: window_id,
                     //width:  ((120 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20) * 3,
                     autoFit: true,
-                    title: 'asdf',
                     header: true,
                     layout: layout,
                     items: items,
-                    //layout: 'fit',
                 });
-                
+
                 widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
             }
         });
-    } 
+    }
 
     function widgetWindow(key, page, title, size_x, size_y, pagewindow, window) {
-    
-        
+
+
         // Sets the fund name to the window title
         if(typeof  $('#data').data('fund_name') != 'undefined') {
             title = title.replace('FUND_NAME', $('#data').data('fund_name'));
             title = title.replace('DATE', moment().format('YYYY')); // for W5, W6 & W7
         }
-        
-    
+
+
         Ext.create('Ext.window.Window', {
             title: title,
             // there's gotta be a better way to do this
@@ -1255,7 +1281,7 @@ console.log('initiating grid');
             layout: 'auto',
             floatable: false,
             draggable: false,
-            closable: false, 
+            closable: false,
             contentEl: window,
             x: 0,
             y: 0,
@@ -1297,15 +1323,15 @@ console.log('initiating grid');
                 //console.log('problem removing widget');
                 //console.log(err);
             },
-        });          
+        });
     }
 
     function createWidget(obj, widget, div, extra_params) {
-    
+
         if(typeof obj.fund == 'undefined') {
             obj.fund = $('#data').data('fund');
         }
-    
+
         // new way
         if(typeof extra_params != 'undefined') {
             $.each(extra_params, function(key, value) {
@@ -1316,95 +1342,101 @@ console.log('initiating grid');
              //console.log(key.toString() + value.toString());
              widget.qs = widget.qs.replace(key.toUpperCase(), value);
         });
-        
+
         if(typeof obj.year == 'undefined' || typeof obj.month == 'undefined') {
             obj.year = new Date().getFullYear();
             obj.month = new Date().getMonth() + 1;
         }
-        
+
         widget.div = div; // remove this later
-        widget.url = '/api/widget/' + widget.key + '/';
+
+        if(widget.v2 == true) {
+            var api = '/api/';
+        } else {
+            var api = '/api/widget/';
+        }
+        widget.url = api + widget.key + '/';
 
         // old way
         $.each(obj, function(key, value) {
              widget.qs = widget.qs.replace(key.toUpperCase(), value);
         });
 
-        
+
         if(widget.type == 'data_table') {
-        
+
             return dataTable(obj, widget, div);
-            
+
         } else if(widget.type == 'data_table_sub') {
-        
+
             return dataTableSub(obj, widget, div);
-            
-        //} else if(widget.type == 'data_group_table') {
-        
-        //    return dataGroupTable(obj, widget, div);
-            
+
+        } else if(widget.type == 'data_group_table') {
+
+            return dataGroupTable2(obj, widget, div);
+
         } else if(widget.type == 'line_chart') {
-        
+
             return lineChart(obj, widget, div);
-            
+
         } else if(widget.type == 'chart_doubley') {
-            
+
             chartDoubleY(obj, widget, div)
-        
+
         } else if(widget.type == 'bar_chart') {
-        
+
             // get last day of last month
-            var d=new Date(); 
-            d.setDate(1); 
+            var d=new Date();
+            d.setDate(1);
             d.setHours(-1);
-            
+
             var formatted_date = obj.year + '-' + obj.month + '-' + d.getDate();
             widget.qs = widget.qs.replace('DATE', formatted_date);
-            
+
             return barChart(obj, widget, div);
-            
+
         } else if(widget.type == 'line_bar_chart') {
-        
+
             $('#data').data('linebar-div', div);
 
             $('#' + div).append('<p>Please select a Holding above</p>');
-            
+
         } else if(widget.type == 'pie_chart') {
-       
+
             return pieChart(obj, widget, div);
-            
+
         } else if(widget.type == 'euro_percent_table') {
-        
+
             return euroPercentTabTable(obj, widget, div);
-            
+
         }
     }
 
 
-    
+
     function lineChart(obj, widget, div) {
 
         if(typeof $('#' + div).highcharts() != 'undefined') {
            //console.log('chart already created');
         }
-        
+
         if(typeof widget.params.type == 'undefined') {
             var type = 'line';
         } else {
             var type = widget.params.type;
         }
-        
+
 
         var title = false;
         if(typeof widget.params.title != 'undefined' && widget.params.title == "true") {
             title = widget.name;
         }
-        
+
         var yDecimals = true;
         if(typeof widget.params.yDecimals != 'undefined' && widget.params.yDecimals === 'false') {
             yDecimals = false;
-        }   
-        
+        }
+
         var yAxisTitle = 'Performance';
         if(typeof widget.params.yAxisTitle != 'undefined') {
             if(widget.params.yAxisTitle == 'false') {
@@ -1412,35 +1444,35 @@ console.log('initiating grid');
             } else {
                 yAxisTitle = widget.params.yAxisTitle;
             }
-        }   
-        
+        }
+
         var labels = true;
         if(typeof widget.params.labels != 'undefined' && widget.params.labels == 'false') {
             labels = false;
-        } 
-    
+        }
+
         var legend = true;
         if(typeof widget.params.legend != 'undefined' && widget.params.legend == 'false') {
             legend = false;
         }
-    
+
         var scrollbar = false;
         if(typeof widget.params.scrollbar != 'undefined' && widget.params.scrollbar == 'true') {
             scrollbar = true;
         }
-    
+
         var navigator = false;
         if(typeof widget.params.navigator != 'undefined' && widget.params.navigator == 'true') {
             navigator = true;
         }
-        
+
         var rangeSelector = true;
         if(typeof widget.params.rangeSelector != 'undefined' && widget.params.rangeSelector == 'false') {
             rangeSelector = false;
         }
-    
+
         $.getJSON(widget.url + widget.qs, function(data) {
-            
+
             var options = {
                 chart: {
                     type: type,
@@ -1463,8 +1495,8 @@ console.log('initiating grid');
 
                 rangeSelector: {
                     enabled: rangeSelector,
-                    selected : 4 
-                },                  
+                    selected : 4
+                },
                 title: {
                     text: title,
                 //    x: -20 //center
@@ -1496,9 +1528,9 @@ console.log('initiating grid');
                 },
                 series: data,
             };
-            
+
             if(typeof widget.params.date_type != 'undefined' && widget.params.date_type == 'month') {
-                options['rangeSelector'] = {            
+                options['rangeSelector'] = {
                     enabled: true,
 			        buttons: [{
 				        type: 'year',
@@ -1517,9 +1549,9 @@ console.log('initiating grid');
 				        text: 'All'
 			        }],
 			        inputEnabled: false, // no space for it
-			        selected : 1 
+			        selected : 1
                 }
-            } 
+            }
             if(typeof widget.params.zoom != 'undefined' && widget.params.zoom == 'true') {
                //console.log(options.xAxis);
                 options['xAxis'] = {
@@ -1534,20 +1566,20 @@ console.log('initiating grid');
                //console.log(options);
             }
             var chart = new Highcharts.StockChart(options);
-            
+
         });
     }
-    
+
    function chartDoubleY(obj, widget, div) {
-    
+
         if(typeof widget.params.type == 'undefined') {
             var type = 'line';
         } else {
             var type = widget.params.type;
         }
-    
+
         $.getJSON(widget.url + widget.qs, function(data) {
-            
+
             var chart = new Highcharts.StockChart({
                 chart: {
                     type: type,
@@ -1584,44 +1616,44 @@ console.log('initiating grid');
     }
 
     function barChart(obj, widget, div) {
-    
+
         $.getJSON(widget.url + widget.qs, function(data) {
-        
+
            //console.log('BAR CHART');
            //console.log(obj);
            //console.log(widget);
-            
+
             title = false;
             if(typeof widget.params.title != 'undefined' && widget.params.title == "true") {
                 title = widget.name;
             }
-            
+
             type = 'column';
             if(typeof widget.params.type != 'undefined') {
                 type = widget.params.type;
-            }        
-            
+            }
+
             yDecimals = true;
             if(typeof widget.params.yDecimals != 'undefined' && widget.params.yDecimals === 'false') {
                 yDecimals = false;
-            }   
-            
+            }
+
             labels = true;
             if(typeof widget.params.labels != 'undefined' && widget.params.labels == 'false') {
                 labels = false;
-            } 
-        
+            }
+
             legend = true;
             if(typeof widget.params.legend != 'undefined' && widget.params.legend == "false") {
                 legend = false;
             }
-        
+
             scrollbar = false;
             if(typeof widget.params.scrollbar != 'undefined' && widget.params.scrollbar == "true") {
                 scrollbar = true;
             }
            //console.log(labels);
-    
+
             var chart = new Highcharts.Chart({
                 chart: {
                     //marginRight: 25,
@@ -1631,7 +1663,7 @@ console.log('initiating grid');
                     type: type,
                     width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 30,
                     height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 35,
-                }, 
+                },
                 title: {
                     text: false
                 },
@@ -1671,50 +1703,50 @@ console.log('initiating grid');
                         enabled: labels,
                     },
                 },
-                series: data.objects,            
+                series: data.objects,
             })
-        
 
-                    
+
+
          $('#data').data('div-' + widget.key, div);
-            
+
         });
-        
+
 
 
     }
-    
+
 
     function monthTable(year, month) {
-    
+
         var fund = $('#data').data('fund');
-    
+
         $('<div id="calendar"></div>').appendTo('body');
-        
+
         mo_widget = {}
         mo_widget.url = '/api/widget/fundperfhistcalview/';
         mo_widget.qs = '?fund=' + fund + '&order_by=weight&value_date__year=' + year + '&value_date__month=' + month;
-        
+
         //console.log(widget.url + widget.qs);
         $.getJSON(mo_widget.url + mo_widget.qs , function(data) {
-        
+
             // first day in first week of month
             var d = new Date(year, month - 1, 1);
             var first_weekday = d.getDay();
-            
+
             // last day of the month
             var d2 = new Date(year, month, 0);
             var last_day_of_month = d2.getDate();
 
             var html = '<table class="month_table"><tr>';
-            
+
             // empty cells for months that do not start on a monday
             if(first_weekday < 6) {
                 for(i=1; i<first_weekday; i++) {
                     html += "<td></td>";
                 }
             }
-            
+
             // converting the data object
             days = {};
             for(i=0; i < data.length; i++) {
@@ -1722,21 +1754,21 @@ console.log('initiating grid');
                 day = parseInt(day, 10);
                 days[day] = data[i].value;
             }
-            
+
             for(i=1; i<=last_day_of_month; i++) {
-            
+
                 if(typeof days[i] != 'undefined') {
                     var val = days[i];
                 } else {
                     var val = 0;
                 }
-                
+
                 date = year.toString() + '-' + month.toString() + '-' + i;
 
                 // exclude weekends
                 var d = new Date(date);
                 if(d.getDay() == 6 || d.getDay() == 0) {
-                
+
                     // first day of month is a sunday
                     if(d.getDay() == 0 && i == 1) {
                         continue;
@@ -1744,22 +1776,22 @@ console.log('initiating grid');
                     } else if(d.getDay() == 6 && i == 1) {
                         i++;
                         continue;
-                    // is normal weekend. break row 
+                    // is normal weekend. break row
                     } else {
                         html += "</tr><tr>";
                         i++;
-                        continue;   
+                        continue;
                     }
-                
+
                 }
                 html += '<td>' + i + '<a href="#" onclick="refreshHoldPerfBar(\'' + date + '\', ' + fund + ');">' + val + '</a></td>';
             }
-            
+
             html += "</tr></table>";
-            
-            
-            
-            
+
+
+
+
             var win = new Ext.Window({
                 renderTo: Ext.getBody(),
                 html: html,
@@ -1781,9 +1813,9 @@ console.log('initiating grid');
                 */
             });
             win.show();
-            
-            return;            
-        
+
+            return;
+
             Ext.create('Ext.container.Container', {
                 id: 'month-table',
                 width: 400,
@@ -1796,9 +1828,11 @@ console.log('initiating grid');
             });
         });
     }
-    
+
     function createGrid(widget, data, div) {
-    
+
+        fund = $('#data').data('fund');
+
         fields = [];
         for(i=0; i < data.columns.length; i++) {
             fields[i] = data.columns[i].dataIndex;
@@ -1816,8 +1850,23 @@ console.log('initiating grid');
                 }
             },
         });
-        
-        return Ext.create('Ext.grid.Panel', {
+
+        plugins = [];
+        selModel = [];
+        if(widget.window.key == 'w10' && $('#data').data('classification') == 'eof') {
+            plugins = [{
+                ptype: 'rowexpander',
+                rowBodyTpl: [
+                    '<div id="innergrid-' + widget.id + '-{id}">',
+                    '</div>'
+                ]
+            }];
+            selModel = {
+                selType: 'cellmodel'
+            }
+        }
+
+        var euroGrid = Ext.create('Ext.grid.Panel', {
             title: widget.params.title,
             store: Ext.data.StoreManager.lookup(widget.key),
             columns: data.columns,
@@ -1826,62 +1875,90 @@ console.log('initiating grid');
             layout: {
                 type: 'vbox',
                 align: 'stretch'
-            },            
+            },
+            plugins: plugins,
+            selModel: selModel,
             listeners: {
                 cellclick: function(gridView,htmlElement,columnIndex,dataRecord) {
-                
+
                     year = obj.page = $('#data').data('year');
                     month = columnIndex;
-                    
+
                     if(month != 0) {
-                    
+
                         if(typeof year == 'undefined') {
                             year = new Date().getFullYear();
                         }
-                        
+
                         obj.page = $('#data').data('page_id');
                         obj.grid = $('#data').data('grid' + obj.page);
                         extra_params = {
                             year: year,
                         }
 
-                        if(widget.window.key == 'w8') { 
+                        if(widget.window.key == 'w8') {
                             group = 'sec';
                         } else if(widget.window.key == 'w9') {
                             group = 'sub';
                         } else if(widget.window.key == 'w10') {
                             group = 'loc';
                         }
-                        
+
                         div = $('#data').data('piechart-div-' + widget.window.key);
                         var window_id = 'page_' + obj.page + '_win_' + widget.window.id;
-                        
-                        
+
+
                         widget.key = "fundperfgrouppie";
-                        widget.qs = "?fund=1&value_date__year=YEAR&value_date__month=" + month + "&holding_category__holding_group=" + group + "&fields=nav&value_date__day=1";
+                        widget.qs = "?fund=" + fund + "&value_date__year=YEAR&value_date__month=" + month + "&holding_category__holding_group=" + group + "&fields=nav&value_date__day=1";
                         widget.params.value_date__year = year;
                         widget.params.holding_category__holding_group = "sec";
                         widget.params.fund = "FUND";
                         widget.params.fields = "nav";
                         widget.type = "pie_chart";
                        //console.log(widget);
-                                                    
+
                         var widget_obj = $('#' + div).highcharts();
                         widget_obj.destroy();
-                        
+
                         createWidget(obj, widget, div, extra_params);
                     }
                }
             }
-                    
+
         });
+
+        if(widget.window.key == 'w10' && $('#data').data('classification') == 'eof') {
+
+            euroGrid.view.on('expandBody', function (rowNode, record, expandRow, eOpts) {
+
+                if(typeof $('#data').data('year') == 'undefined' || $('#data').data('year') == 'false') {
+                    year = new Date().getFullYear();
+                } else {
+                    year = $('#data').data('year');
+                }
+
+                var id = record.get('id');
+
+                $.getJSON('/api/country-breakdown/?fund=' + fund + '&holding_category=' + id + '&value_date__year=' + year + '&date=value_date&name=country__name&value=mtd&fields=value_date,country__name,mtd,si,ytd', function(widget_data) {
+                    displayInnerGrid(widget, widget_data, id);
+                });
+
+                if(typeof $('#data').data('last-open-subgrid') != 'undefined') {
+                    //destroyInnerGrid($('#data').data('last-open-subgrid'));
+                }
+            });
+            euroGrid.view.on('collapsebody', function (rowNode, record, expandRow, eOpts) {
+                destroyInnerGrid(record, widget.id);
+            });
+        }
+        return euroGrid;
     }
-    
+
     function euroPercentTabTable(obj, widget, div) {
-    
-    
-    
-        $.getJSON(widget.url + widget.qs, function(data) { 
+
+
+
+        $.getJSON(widget.url + widget.qs, function(data) {
            //console.log('EURO PERCENT');
            //console.log(div);
             if(typeof Ext.getCmp(div) != 'undefined') {
@@ -1895,17 +1972,17 @@ console.log('initiating grid');
                 renderTo: div,
                 id: div,
             });
-            
+
             widget.params.title = '€';
-            var grid = createGrid(widget, data); 
+            var grid = createGrid(widget, data);
             tabPanel.add(grid);
             tabPanel.doLayout();
-            
+
             var qs = widget.qs.replace('fields=nav', 'fields=weight'); // ???
             widget.params.title = '% of Fund';
-            
-            $.getJSON(widget.url + qs, function(data2) { 
-                var grid = createGrid(widget, data2); 
+
+            $.getJSON(widget.url + qs, function(data2) {
+                var grid = createGrid(widget, data2);
                 tabPanel.add(grid);
                 tabPanel.doLayout();
             });
@@ -1913,31 +1990,92 @@ console.log('initiating grid');
         });
     }
 
-    function dataGroupTable(data, widget) {
-    
-       // $.getJSON(widget.url + widget.qs, function(data) {
+    function dataGroupTable2(obj, widget, div) {
+
+       $.getJSON(widget.url + widget.qs, function(data) {
 
             var fund = $('#data').data('fund');
-            
+
             fields = [];
             c = 0;
-            
+
             // for nested header columns as well
             for(i=0; i < data.columns.length; i++) {
                 if(typeof data.columns[i].columns != 'undefined') {
                     for(x=0; x < data.columns[i].columns.length; x++) {
                         fields[c] = data.columns[i].columns[x].dataIndex;
                         c++;
-                    }               
+                    }
                 } else {
                     if(typeof data.columns[i].dataIndex != 'undefined') {
                         fields[c] = data.columns[i].dataIndex;
                         c++;
                     }
                 }
-            }       
+            }
             fields.push('group');
-            
+
+            var store = Ext.create('Ext.data.Store', {
+                storeId: 'groupStore',
+                fields: fields,
+                groupField: 'group',
+                data: data,
+                proxy: {
+                    type: 'memory',
+                    reader: {
+                        type: 'json',
+                        root: 'rows'
+                    }
+                }
+            });
+
+            var groupingFeature = Ext.create('Ext.grid.feature.Grouping',{
+                groupHeaderTpl: '{name}',
+                collapsible: false,
+                depthToIndent: 100,
+                enableGroupingMenu: false,
+
+            });
+
+            return Ext.create('Ext.grid.Panel', {
+                columnLines: true,
+                cls: 'custom-grid-group',
+                store: Ext.data.StoreManager.lookup('groupStore'),
+                columns: data.columns,
+                features: [groupingFeature],
+                renderTo: div,
+                width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)),
+                height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
+            });
+        });
+    }
+
+
+    function dataGroupTable(data, widget) {
+
+       // $.getJSON(widget.url + widget.qs, function(data) {
+
+            var fund = $('#data').data('fund');
+
+            fields = [];
+            c = 0;
+
+            // for nested header columns as well
+            for(i=0; i < data.columns.length; i++) {
+                if(typeof data.columns[i].columns != 'undefined') {
+                    for(x=0; x < data.columns[i].columns.length; x++) {
+                        fields[c] = data.columns[i].columns[x].dataIndex;
+                        c++;
+                    }
+                } else {
+                    if(typeof data.columns[i].dataIndex != 'undefined') {
+                        fields[c] = data.columns[i].dataIndex;
+                        c++;
+                    }
+                }
+            }
+            fields.push('group');
+
             var store = Ext.create('Ext.data.Store', {
                 storeId: 'groupStore',
                 fields: fields,
@@ -1955,7 +2093,7 @@ console.log('initiating grid');
             var groupingFeature = Ext.create('Ext.grid.feature.Grouping',{
                 groupHeaderTpl: '{name}'
             });
-                
+
             return Ext.create('Ext.grid.Panel', {
                 columnLines: true,
                 store: Ext.data.StoreManager.lookup('groupStore'),
@@ -1968,27 +2106,27 @@ console.log('initiating grid');
         //});
     }
     function dataTable(obj, widget, div) {
-    
 
-    
         $.getJSON(widget.url + widget.qs, function(data) {
 
             // for nested header columns as well
             c = 0;
+            fields = {};
             for(i=0; i < data.columns.length; i++) {
                 if(typeof data.columns[i].columns != 'undefined') {
                     for(x=0; x < data.columns[i].columns.length; x++) {
                         fields[c] = data.columns[i].columns[x].dataIndex;
                         c++;
-                    }               
+                    }
                 } else {
                     if(typeof data.columns[i].dataIndex != 'undefined') {
                         fields[c] = data.columns[i].dataIndex;
                         c++;
                     }
                 }
-            }   
-           console.log(data.columns);
+            }
+           console.log(data);
+           console.log(fields);
             Ext.create('Ext.data.Store', {
                 storeId: widget.key,
                 fields: fields,
@@ -2005,62 +2143,82 @@ console.log('initiating grid');
                     field: "year"
                 },
             });
-            
+
+            // for innergrids
+            plugins = [];
+            selModel = [];
+
+            var width = (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1));
+            var height = (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1));
+            if(widget.params.subtable == 'true') {
+                plugins = [{
+                    ptype: 'rowexpander',
+                    rowBodyTpl: [
+                        '<div id="innergrid-' + widget.id + '-{id}">',
+                        '</div>'
+                    ]
+                }];
+                selModel = {
+                    selType: 'cellmodel'
+                }
+                width = width - 23;
+            }
+
             var panel = Ext.create('Ext.grid.Panel', {
                 id: div,
-                cls: 'custom-grid', 
+                cls: 'custom-grid',
                 columnLines: true,
                 store: Ext.data.StoreManager.lookup(widget.key),
                 columns: data.columns,
-                width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)),
-                height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
+                width: width,
+                height: height,
                 header: false,
                 border: false,
                 enableLocking: true,
                 autoScroll: true,
                 renderTo: div,
+                plugins: plugins,
+                selModel: selModel,
+                iconCls: 'icon-grid',
                // forceFit: true,
                 //layout:'fit',
                 listeners: {
                     cellclick: function(gridView,htmlElement,columnIndex,dataRecord) {
-                    
+
                         year = dataRecord.data.year;
-                        
+
                         obj.page = $('#data').data('page_id');
                         obj.grid = $('#data').data('grid' + obj.page);
                         extra_params = {
                             year: year,
                         }
                         month = columnIndex;
-                        
-
-                        
 
                         if(widget.window.key == 'w1') {
-                        
+
                             // year view
                             if(columnIndex == 0) {
-                                        
+
                                 refreshWindow('w3', obj, extra_params);
                                 refreshWindow('w4', obj, extra_params);
                                 refreshWindow('w5', obj, extra_params);
-                                
+
                             // month view
                             } else if(columnIndex < 13) {
                                 refreshHoldPerfBar(year + '-' + month + '-1', obj.fund, true);
-                                
+
                                 monthTable(year, month);
                             }
-                        }       
-                        
+                        }
+
                         if(widget.window.key == 'w6') {
-                        
+
                             // year view
                             if(columnIndex == 0) {
-                            
+
                                 // save this for W8, 9 and 10
                                 $('#data').data('year', year);
-                            
+
                                 //obj = {};
                                 //obj.month = month;
                                 //obj.year = year;
@@ -2070,23 +2228,23 @@ console.log('initiating grid');
                                 //widget.params.fund = "FUND";
                                 //widget.params.fields = "nav";
                                 //widget.type = "euro_percent_table";
-                                
+
                                 refreshWindow('w8', obj, extra_params);
                                 refreshWindow('w9', obj, extra_params);
                                 refreshWindow('w10', obj, extra_params);
-                                
+
                             // month view
                             } else if(columnIndex < 13) {
                                 refreshHoldPerfBar(year + '-' + month + '-1', obj.fund, true, 'performance', 'weight');
                             }
-                        }   
+                        }
                                // var panel = Ext.getCmp("month-table");
                                 //panel.remove('month-table-content');
-                                
+
                                 /*
                                 monthly calendar view disabled for this type of fund
                                 $('<div id="asdf"></div>').appendTo('#1');
-                                
+
                                 obj = {};
                                 obj.month = month;
                                 obj.year = year;
@@ -2098,27 +2256,58 @@ console.log('initiating grid');
                                 widget.type = "month_table";
                                 createWidget(obj, widget, 'asdf'); //panel.renderTo);
                                 */
-                               
+
                     }
                 }
-               
+
             });
 
+
+            if(widget.params.subtable == 'true') {
+
+
+                panel.view.on('expandBody', function (rowNode, record, expandRow, eOpts) {
+
+                    if(typeof $('#data').data('year') == 'undefined' || $('#data').data('year') === false) {
+                        year = new Date().getFullYear();
+                    } else {
+                        year = $('#data').data('year');
+                    }
+
+                    fund = $('#data').data('fund');
+
+                    var id = record.get('id');
+
+                    // not used atm
+                    if(widget.window.key == 'w5b') {
+                        $.getJSON('/api/country-breakdown/?fund=' + fund + '&holding_category=' + id + '&value_date__year=' + year + '&date=value_date&name=country__name&value=mtd&fields=id,value_date,country__name,mtd,si,ytd', function(widget_data) {
+                            displayInnerGrid(widget, widget_data, id, true);
+                        });
+                    }
+
+                    if(typeof $('#data').data('last-open-subgrid') != 'undefined') {
+                        //destroyInnerGrid($('#data').data('last-open-subgrid'));
+                    }
+                });
+                panel.view.on('collapsebody', function (rowNode, record, expandRow, eOpts) {
+                    destroyInnerGrid(record, widget.id);
+                });
+            }
             return panel;
         });
     }
-    
+
     function refreshWindow(window_key, obj, extra_params) {
         $.getJSON('/api/widgets/?window__key=' + window_key, function(widget_data) {
-        
-            
+
+
             for(x=0; x<widget_data.length; x++) {
-            
+
                 var window_id = 'page_' + obj.page + '_win_' + widget_data[x].window.id;
                 var widget_id = window_id + '_widget_' + widget_data[x].id;
-                
+
                 var title = widget_data[x].window.name;
-        
+
                 if(extra_params.year != 'undefined') {
                     date = extra_params.year;
                 } else {
@@ -2126,40 +2315,39 @@ console.log('initiating grid');
                 }
                 title = title.replace('FUND_NAME', $('#data').data('fund_name'));
                 title = title.replace('DATE', date);
-                
+
                 win = Ext.getCmp(window_id);
                 win.setTitle(title);
-                        
+
                 if(widget_data[x].type == 'data_table') {
                     var widget_obj = Ext.getCmp(widget_id);
-                    
+
                 } else {
                     var widget_obj = $('#' + widget_id).highcharts();
                 }
                 try {
                     widget_obj.destroy();
                 } catch(err) {
-                
+
                 }
-                
+
                 $('<div id="' + widget_id + '"></div>').appendTo('#' + window_id);
-                
+
                 createWidget(obj, widget_data[x], widget_id, extra_params);
             }
-            
+
         });
     }
-    
+
     function dataTableSub(obj, widget, div) {
-    
+
         $.getJSON(widget.url + widget.qs, function(data) {
-        
+
             fields = ['id'];
             for(i=0; i < data.columns.length; i++) {
                 fields[i] = data.columns[i].dataIndex;
             }
-         
-           //console.log(data);
+
             var mainStore = Ext.create('Ext.data.Store', {
                 //storeId: widget.key,
                 fields: fields,
@@ -2172,12 +2360,12 @@ console.log('initiating grid');
                     }
                 }
             });
-            
-            console.log('data sub');
-            console.log(data.columns);
+
             var mainGrid = Ext.create('Ext.grid.Panel', {
                 store: mainStore,
                 columns: data.columns,
+                columnLines: true,
+                cls: 'custom-grid',
                 //autoWidth: true,
                 selModel: {
                     selType: 'cellmodel'
@@ -2201,54 +2389,74 @@ console.log('initiating grid');
             });
 
             mainGrid.view.on('expandBody', function (rowNode, record, expandRow, eOpts) {
-                
+
                 var id = record.get('id');
-                
+
                 if(widget.key == 'fundperfholdtable') {
-                    
-                    $.getJSON("/api/widget/fundperfholdtradetable/?holding=" + id + "&holding__fund=" + obj.fund + '&column_width=80,80', function(w11) {
-        
+
+                    $.getJSON("/api/widget/fundperfholdtradetable/?holding=" + id + "&holding__fund=" + obj.fund + '&column_width=150,80', function(w11) {
+
                         displayInnerGrid(widget, w11,id);
-                                
+
                         widget.holding = record.get('id');
                         widget.fund = obj.fund;
-                        lineBarChart(widget);                        
+                        lineBarChart(widget);
                     });
-                    
+
                 } else if(widget.key == 'fundregister') {
 
                     $.getJSON("/api/widget/subscriptionredemption/?&fund=" + obj.fund + '&client=' + id + '&column_width=100,100', function(w12) {
-        
+
                         displayInnerGrid(widget, w12, id);
                     });
                 }
 
+                if(typeof $('#data').data('year') == 'undefined' || $('#data').data('year') === false) {
+                    year = new Date().getFullYear();
+                } else {
+                    year = $('#data').data('year');
+                }
 
-                
+                fund = $('#data').data('fund');
+
+                if(widget.window.key == 'w5b') {
+                    $.getJSON('/api/country-breakdown/?fund=' + fund + '&holding_category=' + id + '&value_date__year=' + year + '&date=value_date&name=country__name&value=mtd&fields=id,value_date,country__name,mtd,si,ytd&column_width=80,50', function(widget_data) {
+                        displayInnerGrid(widget, widget_data, id, true, 50);
+                    });
+                }
+                if(widget.window.key == 'w31') {
+                    $.getJSON('/api/holding-history/?holding=' + id + '&value_date__year=' + year + '&date_type=m&fields=value_date,drawdown,various,distribution,expense,valuation,total_value&total=true&column_width=80,50', function(widget_data) {
+                        displayInnerGrid(widget, widget_data, id, false, 150);
+                    });
+                }
+
+
+
+
                 if(typeof $('#data').data('last-open-subgrid') != 'undefined') {
                     //destroyInnerGrid($('#data').data('last-open-subgrid'));
                 }
             });
             mainGrid.view.on('collapsebody', function (rowNode, record, expandRow, eOpts) {
                //console.log(record);
-                //destroyInnerGrid(record);
-            }); 
-            
+                destroyInnerGrid(record, widget.id);
+            });
+
         });
-    
+
     }
 
     function pieChart(obj, widget, div) {
-        $('#data').data('piechart-div-' + widget.window.key, div); 
+        $('#data').data('piechart-div-' + widget.window.key, div);
 
         if(widget.key == "fundnavpie") {
-            $('#data').data('linebar-div', div); //re-name 
+            $('#data').data('linebar-div', div); //re-name
 
             $('#' + div).append('<p>Please click on a month</p>');
             return
         }
-       
-        
+
+
         $.getJSON(widget.url + widget.qs, function(data) {
        //console.log(widget.url + widget.qs);
        //console.log(data);
@@ -2278,7 +2486,7 @@ console.log('initiating grid');
     }
 
 
-    function enableReload(storeId) { 
+    function enableReload(storeId) {
 
 ////console.log(storeId);
             setInterval(function() {
@@ -2345,7 +2553,7 @@ console.log('initiating grid');
         autoScroll: true,
         //renderTo: 'center1',
         viewConfig: {
-            loadMask: false 
+            loadMask: false
         },
         dockedItems: [{
             xtype: 'pagingtoolbar',
@@ -2363,7 +2571,7 @@ console.log('initiating grid');
 
 
     // So the window dimensions stay 100% when the window is resized
-    Ext.EventManager.onWindowResize(overviewGrid.doLayout, overviewGrid); 
+    Ext.EventManager.onWindowResize(overviewGrid.doLayout, overviewGrid);
 */
 
     Ext.QuickTips.init();
@@ -2456,7 +2664,7 @@ console.log('initiating grid');
                             try {
                                 var btn = Ext.getCmp('add_widget_btn');
                                 btn.enable();
-                            } catch(err) { 
+                            } catch(err) {
                                 //console.log("'add_widget_btn' could not be enabled");
                             }
                         }
@@ -2502,7 +2710,7 @@ console.log('initiating grid');
                             grid.widget = data.resource_uri;
                             grid.page = "/api/page/" + page + "/";
                             grid.row = 1;
-                            grid.col = 1;     
+                            grid.col = 1;
                             grid.size_y = data.size_y;
                             grid.size_x = data.size_x;
 
@@ -2534,11 +2742,11 @@ console.log('initiating grid');
                     }],
                 }).show();
                 // So the window dimensions stay 100% when the window is resized
-                //Ext.EventManager.onWindowResize(overviewGrid.doLayout, win); 
+                //Ext.EventManager.onWindowResize(overviewGrid.doLayout, win);
 
-            }, 
+            },
             error: function(data) {
-                  //console.log('error');      
+                  //console.log('error');
             }
         });
 
@@ -2556,7 +2764,7 @@ console.log('initiating grid');
                 col: grid[i].col,
                 row: grid[i].row,
             }
-    
+
             $.ajax({
                 type: "PATCH",
                 url: "/api/pagewindow/" + grid[i].pagewindow + '/',
@@ -2567,18 +2775,18 @@ console.log('initiating grid');
                     //console.log('problem saving widget position');
                     //console.log(err);
                 },
-            });  
+            });
         }
     }
 
     function panelStandard() {
         return Ext.create('Ext.panel.Panel', {
-            region: 'center', 
-            id: 'panel-home', 
-            contentEl: 'menu', 
+            region: 'center',
+            id: 'panel-home',
+            contentEl: 'menu',
             autoDestroy: true,
             autoScroll: true,
-            defaults: {autoScroll: true}, // enables scrolling temporary 
+            defaults: {autoScroll: true}, // enables scrolling temporary
         });
     }
 
@@ -2586,13 +2794,13 @@ console.log('initiating grid');
 ////console.log('creating tab panel with el: ' + el);
         return Ext.create('Ext.tab.Panel', {
             region: 'center',
-            contentEl: 'menu', 
-            id: 'panel-tab', 
+            contentEl: 'menu',
+            id: 'panel-tab',
             autoDestroy: true,
             autoScroll: true,
             //style: 'overflow: auto',
-            layout: 'fit'
-            
+            //layout: 'fit'  //commented this 28th of june 08:03
+
         });
     }
 
@@ -2616,7 +2824,7 @@ console.log('initiating grid');
                     } else if(tab.id  == "remove_widget") {
 
 
-                    } 
+                    }
                 }
             }
         },
@@ -2635,7 +2843,7 @@ console.log('initiating grid');
         //},
         {
             text: 'Change Theme',
-            menu: {      
+            menu: {
                 items: [
                     {
                         text: 'Default',
@@ -2659,7 +2867,7 @@ console.log('initiating grid');
 	        text: 'Lock Panels',
             id: 'disable_drag',
             hidden: true,
-        },{        
+        },{
 	        text: 'Log out',
             id: 'log_out',
         }],
@@ -2687,7 +2895,7 @@ console.log('initiating grid');
 
                         logout();
 
-                    } 
+                    }
                 }
             }
         },
@@ -2719,18 +2927,19 @@ console.log('initiating grid');
             }
         });
     }
-    
+
     function setFundName(id) {
          $.ajax({
             type: "GET",
-            url: '/api/fund/' + id,
+            url: '/api/fund/' + id + '?fields=name,classification__key',
             success: function(data) {
                 $('#data').data("fund_name", data.name);
+                $('#data').data("classification", data.classification__key);
             }
-        });    
+        });
     }
 
-    
+
     function viewPort() {
 
          $.ajax({
@@ -2758,7 +2967,7 @@ console.log('initiating grid');
                         }
                     },
                 });
-                
+
                 var tree = Ext.create('Ext.tree.Panel', {
                     id: 'main-menu',
                     store: store,
@@ -2771,9 +2980,9 @@ console.log('initiating grid');
                     listeners: {
                         itemexpand: {
                             fn: function(record, opts) {
-                            
+
                                 nodeId = record.data.id;
-                                
+
                                 //console.log(nodeId);
 
                             }
@@ -2781,21 +2990,23 @@ console.log('initiating grid');
                         itemclick: {
                             fn: function(view, record, item, index, event, opts) {
 
+                                console.log(record);
+
                                 // Expand & collapse node on single click
                                 if(record.isExpanded()) {
                                     record.collapse();
                                 } else {
                                     record.expand();
                                 }
-                                
+
                                //console.log(record.raw);
                                if(typeof record.raw.fund != 'undefined') {
                                     $('#data').data('fund', record.raw.fund);
                                     setFundName(record.raw.fund);
                                 }
-                                
+
                                 if(record.raw.page !== null) {
-                                
+
                                     if (typeof record.raw.page === 'object') {
                                         record.raw.page = record.raw.page.id;
                                     } else {
@@ -2803,7 +3014,8 @@ console.log('initiating grid');
                                         record.raw.page = str.replace(/\D/g, '');
                                     }
                                 }
-                               //console.log('RCRD RAW');
+                               console.log('RCRD RAW');
+                               console.log(record.raw);
                                 initPage(record.raw);
 
                             }
@@ -2829,10 +3041,10 @@ console.log('initiating grid');
 
                 var viewport = Ext.create('Ext.container.Viewport', {
                     layout: 'border',
-                    id: 'viewport', 
+                    id: 'viewport',
                     items: [panel_west, panelStandard()]
                 });
-                
+
                 Ext.EventManager.onWindowResize(viewport.doLayout, viewport);
 
              }
@@ -2840,44 +3052,44 @@ console.log('initiating grid');
     }
 
 
- 
-    
+
+
      Ext.QuickTips.init();
- 
-    var login = new Ext.FormPanel({ 
+
+    var login = new Ext.FormPanel({
         labelWidth: 80,
-        url: '/api/user/login/', 
-        frame: true, 
+        url: '/api/user/login/',
+        frame: true,
         defaultType: 'textfield',
         monitorValid: true,
         header: false,
         style: 'padding:10px',
         headers: { 'Content-Type': 'application/json' },
         items:[
-            { 
-                fieldLabel:'Username', 
-                name:'username', 
-                allowBlank:false 
-            },{ 
-                fieldLabel:'Password', 
-                name:'password', 
-                inputType:'password', 
-                allowBlank:false 
+            {
+                fieldLabel:'Username',
+                name:'username',
+                allowBlank:false
+            },{
+                fieldLabel:'Password',
+                name:'password',
+                inputType:'password',
+                allowBlank:false
         }],
- 
-        buttons:[{ 
+
+        buttons:[{
             text:'Login',
-            formBind: true,	 
-            handler:function() { 
-                login.getForm().submit({ 
-                    method:'POST', 
-                    //waitTitle:'Connecting', 
+            formBind: true,
+            handler:function() {
+                login.getForm().submit({
+                    method:'POST',
+                    //waitTitle:'Connecting',
                     //waitMsg:'Sending data...',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-HTTP-Method-Override': 'POST'
                     },
-                    success:function() { 
+                    success:function() {
 
                         //location.reload();
                         win.close();
@@ -2886,16 +3098,16 @@ console.log('initiating grid');
                         setGlobal('page');
 
                     	viewPort();
-                    	
+
                     	page = new Object();
                     	page.page = 1;
                         initGrid(page);
                     },
-                    failure:function(form, action){ 
-                        Ext.Msg.alert('Login failed!', 'Wrong user name or passsword'); 
-                        login.getForm().reset(); 
-                    } 
-                }); 
+                    failure:function(form, action){
+                        Ext.Msg.alert('Login failed!', 'Wrong user name or passsword');
+                        login.getForm().reset();
+                    }
+                });
             }
         }],
     });
@@ -2903,7 +3115,7 @@ console.log('initiating grid');
     var win = new Ext.Window({
         closeAction: 'hide',
         id: 'login-window',
-        title: 'Please Login', 
+        title: 'Please Login',
         layout:'fit',
         width:300,
         height:150,
@@ -2914,7 +3126,7 @@ console.log('initiating grid');
         items: [login]
     });
     $('#data').data('login-window', win);
-    
+
 
     function logout() {
         $.ajax({
@@ -2928,7 +3140,7 @@ console.log('initiating grid');
             },
             failure: function() {
                 Ext.Msg.alert('Logout failed!', 'You could not be logged out.');
-                //@TODO: Log this 
+                //@TODO: Log this
             }
         });
     }
@@ -2972,7 +3184,7 @@ $.ajax({
         viewPort();
 
         $('<div id="page1"></div>').appendTo('#menu');
-        $('#data').data('active-panel', 'panel-home'); 
+        $('#data').data('active-panel', 'panel-home');
     	page = new Object();
     	page.page = 1;
         initGrid(page);
@@ -2983,12 +3195,12 @@ $.ajax({
 
         $('<div id="menu" class="gridster"></div>').appendTo('body');
         $('<div id="page1"></div>').appendTo('#menu');
-        $('#data').data('active-panel', 'panel-home'); 
+        $('#data').data('active-panel', 'panel-home');
 
         win.show();
     }
 });
 
 
-    
+
 });

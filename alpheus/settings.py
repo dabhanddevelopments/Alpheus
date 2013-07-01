@@ -106,6 +106,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'django.middleware.gzip.GZipMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'alpheus.middleware.SQLLogMiddleware',
     'django.middleware.common.CommonMiddleware',

@@ -546,7 +546,7 @@ table.month_table td a {
 
 
 .custom-grid .x-grid-row-alt { 
-    background-color: yellow; 
+    background-color: #E0E0E0; 
 }
 
 /* Overall Performance has a top border */
@@ -554,5 +554,7 @@ table.month_table td a {
  border-top:  1px solid #000 !important;
 }
 
-
+.custom-grid-group .x-grid-group-hd {
+   padding: 3px 4px 1px 4px;
+}
 

@@ -14,6 +14,7 @@ class WidgetAdmin(admin.ModelAdmin):
     filter_horizontal = ['widget_param']
     list_editable = ['key']
     list_filter = ['widget_type']
+    save_as = True
 
 
 class WidgetInline(admin.TabularInline):
@@ -23,7 +24,7 @@ class WidgetInline(admin.TabularInline):
 
 class WindowAdmin(admin.ModelAdmin):
     list_display = ('name', 'key', 'size_x', 'size_y', 'layout') #'access')
-
+    save_as = True
     inlines = [
         WidgetInline,
     ]
@@ -35,7 +36,7 @@ class PageAdmin(FeinCMSModelAdmin):
     pass
 
 class PageWindowAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ['page__title']
 
 class FundPerfDailyAdmin(admin.ModelAdmin):
     list_display = ('fund', 'performance', 'value_date')

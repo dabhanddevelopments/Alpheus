@@ -115,7 +115,7 @@ class UnusedResource(WidgetBaseResource):
 # W1 Month View
 # http://localhost:8000/api/widget/fundperfhistcalview/?fund=1&order_by=weight&value_date__year=2013&value_date__month=5&format=json
 class FundPerfHistCalView(MainBaseResource):
-    fund = fields.ForeignKey(FundResource, 'fund')
+    fund = fields.ForeignKey(FundResourceOld, 'fund')
 
     class Meta(MainBaseResource.Meta):
         queryset = FundPerf.objects.select_related('fund')
@@ -185,7 +185,7 @@ widget.register(asdf())
 #       Do we have access to `request` in the Resource's constructor?
 # http://localhost:8000/api/widget/fundperfmonthmin/?format=json&fund=2&fields=performance
 class FundPerfMonthMin(MainBaseResource):
-    fund = fields.ForeignKey(FundResource, 'fund', full=True)
+    fund = fields.ForeignKey(FundResourceOld, 'fund', full=True)
 
     class Meta(MainBaseResource.Meta):
         queryset = FundPerfMonth.objects.select_related('fund')#.only('ann_return1')
@@ -243,7 +243,7 @@ widget.register(FundPerfMonthMin())
 # W1, W18 Data Table
 # http://localhost:8000/api/widget/fundperfmonth/?format=json&fund=2&fields=performance
 class FundPerfMonth(MainBaseResource):
-    fund = fields.ForeignKey(FundResource, 'fund')
+    fund = fields.ForeignKey(FundResourceOld, 'fund')
 
     class Meta(MainBaseResource.Meta):
         queryset = FundPerfMonth.objects.select_related('fund')
@@ -313,7 +313,7 @@ widget.register(FundPerfMonth())
 # W2, W7 Graph
 # http://localhost:8007/api/widget/fundperfholdperfbar/?fund=2&value_date=2013-5-30&legend=false&format=json
 class FundPerfHoldPerfBar(MainBaseResource):
-    fund = fields.ForeignKey(FundResource, 'fund')
+    fund = fields.ForeignKey(FundResourceOld, 'fund')
     holding = fields.ForeignKey(HoldingResource, 'holding', full=True)
     holding_category = fields.ForeignKey(HoldingCategoryResource, 'holding_category', null=True)
 
@@ -353,7 +353,7 @@ widget.register(FundPerfHoldPerfBar())
 
 
 class FundPerfHoldGroupPie(MainBaseResource):
-    fund = fields.ForeignKey(FundResource, 'fund')
+    fund = fields.ForeignKey(FundResourceOld, 'fund')
     holding = fields.ForeignKey(HoldingResource, 'holding', full=True)
     holding_category = fields.ForeignKey(HoldingCategoryResource, 'holding_category', null=True, full=True)
 
@@ -395,7 +395,7 @@ widget.register(FundPerfHoldGroupPie())
 # W3, W4, W5, W8, W9, W10 Data Table
 # http://localhost:8007/api/widget/fundperfgrouptable/?fund=2&value_date__year=2013&holding_category__holding_group=loc&format=json&fields=performance
 class FundPerfGroupTable(MainBaseResource):
-    fund = fields.ForeignKey(FundResource, 'fund')
+    fund = fields.ForeignKey(FundResourceOld, 'fund')
     holding_category = fields.ForeignKey(HoldingCategoryResource, 'holding_category', full=True)
 
     class Meta(MainBaseResource.Meta):
@@ -408,13 +408,9 @@ class FundPerfGroupTable(MainBaseResource):
             'holding_category': ALL_WITH_RELATIONS,
         }
 
-
-    # without the fund we won't get any results
-    # so we make it mandatory
     def build_filters(self, filters=None):
         self.check_params(['fund', 'holding_category__holding_group', 'fields', 'value_date__year'], filters)
         return super(FundPerfGroupTable, self).build_filters(filters)
-
 
     def alter_list_data_to_serialize(self, request, data):
 
@@ -454,6 +450,7 @@ class FundPerfGroupTable(MainBaseResource):
                         dic[cat_id]['si'] = row.data['ytd']
 
         for key, val in dic.iteritems():
+            val['id'] = key
             lis.append(val)
 
 
@@ -484,7 +481,7 @@ widget.register(FundPerfGroupTable())
 # W3, W4 and W5 - Bar Graph
 # http://localhost:8009/api/widget/fundperfgroupbar/?year__fund=2&value_date__year=2013&holding_category__holding_group=loc&format=json
 class FundPerfGroupBar(MainBaseResource):
-    fund = fields.ForeignKey(FundResource, 'fund')
+    fund = fields.ForeignKey(FundResourceOld, 'fund')
     holding_category = fields.ForeignKey(HoldingCategoryResource, 'holding_category')
 
     class Meta(MainBaseResource.Meta):
@@ -544,7 +541,7 @@ widget.register(FundPerfGroupBar())
 
 # @TODO: This should be merged with the bar chart
 class FundPerfGroupPie(MainBaseResource):
-    fund = fields.ForeignKey(FundResource, 'fund')
+    fund = fields.ForeignKey(FundResourceOld, 'fund')
     holding_category = fields.ForeignKey(HoldingCategoryResource, 'holding_category', full=True)
 
     class Meta(MainBaseResource.Meta):
@@ -617,7 +614,7 @@ widget.register(FundNavPie())
 class FundPerfHoldTable(MainBaseResource):
 
 
-    fund = fields.ForeignKey(FundResource, 'fund')
+    fund = fields.ForeignKey(FundResourceOld, 'fund')
     currency = fields.ForeignKey(CurrencyResource, 'currency', full=True)
     sector = fields.ForeignKey(HoldingCategoryResource, 'sector', \
                                      related_name='sec', full=True)
@@ -806,7 +803,7 @@ widget.register(FundPerfBenchCompLine())
 # http://localhost:8000/api/widget/befundperfbenchcomptable/?funds=2&format=json
 class FundPerfBenchCompTable(MainBaseResource):
 
-    funds = fields.ToManyField(FundResource, 'funds', related_name='asdf')
+    funds = fields.ToManyField(FundResourceOld, 'funds', related_name='asdf')
 
     class Meta(MainBaseResource.Meta):
         queryset = FundBench.objects.all()
@@ -943,7 +940,7 @@ class HoldTradeResource(ModelResource):
 
 
 class HoldLiquidity(MainBaseResource):
-    fund = fields.ForeignKey(FundResource, 'fund')
+    fund = fields.ForeignKey(FundResourceOld, 'fund')
     asset_class = fields.ForeignKey(HoldingCategoryResource, 'asset_class', null=True)
     
     class Meta(MainBaseResource.Meta):
@@ -1130,7 +1127,7 @@ widget.register(FundSummary())
 
 # @TODO limit columns
 class FundRegister(MainBaseResource):
-    #funds = fields.ManyToManyField(FundResource, 'fund', related_name='funds')
+    #funds = fields.ManyToManyField(FundResourceOld, 'fund', related_name='funds')
     
     class Meta(MainBaseResource.Meta):
         queryset = Client.objects.prefetch_related('fund')
@@ -1156,7 +1153,7 @@ widget.register(FundRegister())
 """
 not used - moved to views becaue of get_FOO_display()
 class SubscriptionRedemption(MainBaseResource):
-    fund = fields.ForeignKey(FundResource, 'fund')
+    fund = fields.ForeignKey(FundResourceOld, 'fund')
     client = fields.ForeignKey(ClientResource, 'client')
     
     class Meta(MainBaseResource.Meta):
@@ -1213,6 +1210,24 @@ class FundPerfMonthResource(MainBaseResource):
                 month=datetime.date.today().month
             )
 """
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 widget.register(InfoResource())

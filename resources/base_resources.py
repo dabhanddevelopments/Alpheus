@@ -10,7 +10,15 @@ from tastypie.exceptions import BadRequest
 class TestResource(ModelResource):
     class Meta:
         serializer = PrettyJSONSerializer()
-            
+
+
+DATE_TYPE_DAY = 'd'
+DATE_TYPE_WEEK = 'w'
+DATE_TYPE_MONTH = 'm'
+
+DATA_TYPE_YEARLY = 'yearly'
+DATA_TYPE_GROUP = 'group'
+DATA_TYPE_GRAPH = 'graph'
 
 # Base Model Resource
 class MainBaseResource(ModelResource):
@@ -32,6 +40,9 @@ class MainBaseResource(ModelResource):
         base_bundle = self.build_bundle(request=request)
         objects = self.obj_get_list(bundle=base_bundle,
                                     **self.remove_api_resource_names(kwargs))
+
+
+
         bundles = []
 
         for obj in objects:
@@ -54,6 +65,9 @@ class MainBaseResource(ModelResource):
         columns = []
         for key, value in enumerate(column_names):
 
+            if value == 'id':
+                continue
+
             try:
                 split = value.split('__')
                 try:
@@ -65,7 +79,7 @@ class MainBaseResource(ModelResource):
                     column = split[0]
                 dic = {
                     'text': column.title().replace('_', ' '),
-                    'dataIndex': column,
+                    'dataIndex': value,
                     'align': 'center',
                 }
             except:
@@ -80,14 +94,14 @@ class MainBaseResource(ModelResource):
                     raise
             if column == column_border_y:
                 dic['tdCls'] = 'horizonal-border-column'
-            
+
             if key == 0:
                 dic['width'] = column_width[0]
                 dic['align'] = 'left'
             else:
                 dic['width'] = column_width[1]
                 dic['align'] = align
-            
+
             columns.append(dic)
 
         return columns
@@ -106,7 +120,7 @@ class MainBaseResource(ModelResource):
         Currently it only supports two levels
         """
         to_delete = []
-        
+
         for row in self._meta.fields:
             fields = row.split('__')
             if len(fields) > 1:
@@ -140,11 +154,11 @@ class MainBaseResource(ModelResource):
                 pass
 
         return bundle
-        
-        
+
+
     def build_filters(self, filters=None):
-    
-        """ 
+
+        """
         Adds support for negation filtering
         """
         if not filters:
@@ -164,27 +178,27 @@ class MainBaseResource(ModelResource):
         return applicable_filters
 
     def apply_filters(self, request, applicable_filters):
-    
+
         from django.db.models import Q
         import operator
         from types import *
-        
-        """ 
+
+        """
         Adds support for:
         1. negation filtering: value_date__year!=2013
         2. multiple filtering value_date__year=2013,2012
         """
-        
+
         objects = self.get_object_list(request)
 
         f = applicable_filters.get('filter')
-        
-        if f:    
-            # Q Filters for multiple values (1,2,3 etc)    
+
+        if f:
+            # Q Filters for multiple values (1,2,3 etc)
             q_filters = []
             for key, val in f.iteritems():
                 string = str(val)
-                if ',' in string:                
+                if ',' in string:
                     for excl_filter in string.split(','):
                         q_filters.append((key, excl_filter))
 
@@ -193,12 +207,12 @@ class MainBaseResource(ModelResource):
                 try:
                     del f[x[0]]
                 except:
-                    pass 
+                    pass
             if q_list:
                 objects = objects.filter(reduce(operator.or_, q_list), **f)
             else:
                 objects = objects.filter(**f)
-                
+
         e = applicable_filters.get('exclude')
         if e:
             objects = objects.exclude(**e)
@@ -212,35 +226,81 @@ class MainBaseResource2(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         pass
 
+    def get_month_list(self):
+        import calendar
+        months = []
+        for month in range(1, 13):
+            months.append(calendar.month_abbr[month].lower())
+        return months
+
+    def dispatch(self, request_type, request, **kwargs):
+
+
+        self.data_type = request.GET.get("data_type", False)
+        self.date_type = request.GET.get("date_type", False)
+
+        if self.data_type == 'yearly':
+            self.yearly = {
+                'value': request.GET.get("value", 0),
+                'date': request.GET.get("date", 0),
+                'name': request.GET.get("name", 0),
+                'extra_fields': request.GET.get("extra_fields", []).split(','),
+            }
+            self.external_fields = [
+                'id',
+                self.yearly['name'],
+                self.yearly['value'],
+                self.yearly['date'],
+            ] + self.yearly['extra_fields']
+
+        else:
+            self.external_fields = []
+            fields = request.GET.get("fields", False)
+            if fields:
+                self.external_fields = fields.split(',')
+
+        return super(MainBaseResource2, self).dispatch(request_type, request, **kwargs)
+
     def get_object_list(self, request):
-    
+
         """
         Only fetches the specified columns
         Automatically sets `select_related`
         Sets the verbose name of the field to `column_names`
         """
-        
+
         from django.db import models
-    
-        fields = request.GET.get("fields", '')
-        
+
         objects = super(MainBaseResource2, self).get_object_list(request)
-        
+
         from django.utils.datastructures import SortedDict
         self.column_names = SortedDict()
-        
+
         self.select_related = []
-        
-        field_lis = fields.split(',')
-        
-        for field in field_lis:
+
+        if len(self.external_fields):
+            self.internal_fields = self.external_fields
+        else:
+            self.internal_fields = self._meta.allowed_fields
+
+
+        # Removes fields that do not exist for this model
+        # Like fields that are model methods
+        only_fields = []
+        for field in objects.model._meta.fields:
+            if field.verbose_name in self.internal_fields:
+                only_fields.append(field.verbose_name)
+
+        objects = objects.only(*only_fields)
+
+        for field in self.internal_fields:
 
             related_fields = field.split('__')
 
             if len(related_fields) > 1:
-            
+
                 self.select_related.append(related_fields[0])
-                
+
                 model_name = related_fields[0].replace('_', ' ').title() \
                                                             .replace(' ', '')
                 model = models.get_model('app', model_name)
@@ -248,17 +308,16 @@ class MainBaseResource2(MainBaseResource):
                     if related_fields[1] == rel_field.name:
                         self.column_names[field] = rel_field.verbose_name \
                                                                 .capitalize()
-                        
             else:
                 for meta_field in objects.model._meta._fields():
                     if field == meta_field.name:
                         self.column_names[field] = meta_field.verbose_name \
                                                                 .capitalize()
-                        
-        objects = objects.only(*field_lis).select_related(*self.select_related)
-        
+        if len(self.select_related):
+            objects = objects.select_related(*self.select_related)
+
         return objects
-                                                
+
     def full_dehydrate(self, bundle, for_list=False):
         """
         Given a bundle with an object instance, extract the information from it
@@ -283,13 +342,13 @@ class MainBaseResource2(MainBaseResource):
 
     def dehydrate(self, bundle):
 
-        fields = bundle.request.GET.get("fields", '')
-        field_lis = fields.split(',')
-
-        for row in field_lis:
+        for row in self.internal_fields:
             fields = row.split('__')
             if len(fields) == 1:
-                bundle.data[row] = getattr(bundle.obj, fields[0])
+                try:
+                    bundle.data[row] = getattr(bundle.obj, fields[0])()
+                except:
+                    bundle.data[row] = getattr(bundle.obj, fields[0])
             elif len(fields) == 2:
                 try:
                     bundle.data[row] = getattr(getattr(bundle.obj, \
@@ -316,9 +375,9 @@ class MainBaseResource2(MainBaseResource):
             if isinstance(val, Decimal):
                 bundle.data[key] = Decimal("%.2f" % val)
 
-        return bundle        
-        
-        
+        return bundle
+
+
     def get_columns(self, request, column_names):
 
         column_width = request.GET.get('column_width', '50,50').split(',')
@@ -335,31 +394,77 @@ class MainBaseResource2(MainBaseResource):
             }
             if key == column_border_y:
                 dic['tdCls'] = 'horizonal-border-column'
-            
+
             if counter == 0:
                 dic['width'] = column_width[0]
                 dic['align'] = 'left'
             else:
                 dic['width'] = column_width[1]
                 dic['align'] = align
-            
+
             columns.append(dic)
             counter += 1
 
         return columns
 
-        
+
     def alter_list_data_to_serialize(self, request, data):
-    
-        data = {
-            'columns': self.get_columns(request, self.column_names),
-            'rows': data['objects'],
-        }
-        return data
-        
-        
-     
-        
+
+
+        # format value_date for months
+        if self.date_type == DATE_TYPE_MONTH:
+            for key, val in enumerate(data['objects']):
+                data['objects'][key].data['value_date'] = data['objects'][key] \
+                                             .data['value_date'].strftime("%b %Y")
+
+
+        if self.data_type == DATA_TYPE_YEARLY:
+            import calendar
+            value = self.yearly['value']
+            date = self.yearly['date']
+            name = self.yearly['name']
+            extra_fields = self.yearly['extra_fields']
+
+            categories = set([row.data[name] for row in data['objects']])
+
+            months = []
+            for category in categories:
+                dic = {name: category}
+                for row in data['objects']:
+                    if row.data[name] == category:
+                        month = row.data[date].month
+                        month_name = calendar.month_abbr[month].lower()
+                        dic[month_name] = row.data[value]
+                        for extra_field in extra_fields:
+                            dic[extra_field] = row.data[extra_field]
+                months.append(dic)
+
+            columns = [name] + self.get_month_list() + extra_fields
+            return {
+                'columns': self.set_columns(request, columns),
+                'rows': months,
+            }
+
+        else:
+            total = request.GET.get("total", False)
+            if total:
+                total_dic = {self.internal_fields[0]: 'Total'}
+                for field in self.internal_fields[1:]:
+                    total_dic[field] = 0
+                    for val in data['objects']:
+                        try:
+                            total_dic[field] += val.data[field]
+                        except:
+                            pass
+                data['objects'].insert(0, total_dic)
+
+            return {
+                'columns': self.set_columns(request, self.internal_fields),
+                'rows': data['objects'],
+            }
+
+
+
 from mptt.templatetags.mptt_tags import cache_tree_children
 
 class TreeBaseResource(ModelResource):
@@ -430,7 +535,6 @@ class UserObjectsOnlyAuthorization(DjangoAuthorization):
         # Sorry user, no deletes for you!
         raise Unauthorized("Sorry, no deletes.")
     """
-
     def delete_detail(self, object_list, bundle):
         return bundle.obj.user == bundle.request.user
 
