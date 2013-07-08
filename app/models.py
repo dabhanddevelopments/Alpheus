@@ -299,6 +299,7 @@ class Client(models.Model):
     proceed = models.DecimalField(max_digits=15, decimal_places=5)
     commit = models.DecimalField(max_digits=15, decimal_places=5)
     various = models.DecimalField(max_digits=15, decimal_places=5)
+    irr = models.DecimalField(max_digits=15, decimal_places=5)
 
     def name(self):
         return '%s %s' % (self.first_name, self.last_name)
@@ -395,6 +396,7 @@ HOLDING_GROUP = (
 class Holding(models.Model):
     name = models.CharField(max_length=50)
     fee = models.ForeignKey(Fee, blank=True, null=True)
+    client = models.ManyToManyField(Client, blank=True, null=True)
     fund = models.ForeignKey(Fund)
     currency = models.ForeignKey(Currency)
     country = models.ForeignKey(Country)
@@ -607,7 +609,8 @@ class FundPerfMonth(models.Model):
     receivables = models.DecimalField(max_digits=20, decimal_places=2)
     cash = models.DecimalField(max_digits=20, decimal_places=2)
     accrued_interest = models.DecimalField(max_digits=20, decimal_places=2)
-    interest_receivable_on_banks = models.DecimalField(max_digits=20, decimal_places=2)
+    interest_receivable_on_banks = models.DecimalField(max_digits=20, decimal_places=2,\
+                                            verbose_name="Interest receivable by banks")
     recv_for_transactions = models.DecimalField(max_digits=20, decimal_places=2)
     prepaid_or_recov_amounts = models.DecimalField(max_digits=20, decimal_places=2)
     transitory_assets = models.DecimalField(max_digits=20, decimal_places=2)
@@ -653,6 +656,7 @@ class FundPerfMonth(models.Model):
 
     assets_liabilities = models.DecimalField(max_digits=20, decimal_places=2)
     total_liabilities = models.DecimalField(max_digits=20, decimal_places=2)
+    total_liabilities_payable = models.DecimalField(max_digits=20, decimal_places=2)
 
 
     #used by W28 - total holding
@@ -662,6 +666,18 @@ class FundPerfMonth(models.Model):
     outflow_dollar = models.DecimalField(max_digits=20, decimal_places=2)
     delta_valuation = models.DecimalField(max_digits=20, decimal_places=2)
     delta_flow = models.DecimalField(max_digits=20, decimal_places=2)
+
+    irr = models.DecimalField(max_digits=20, decimal_places=2,
+                                                verbose_name="IRR")
+    drawdown = models.DecimalField(max_digits=15, decimal_places=5)
+    distribution = models.DecimalField(max_digits=15, decimal_places=5)
+    residual_commit = models.DecimalField(max_digits=15, decimal_places=5)
+    valuation = models.DecimalField(max_digits=15, decimal_places=5)
+    total_value = models.DecimalField(max_digits=15, decimal_places=5)
+    proceed = models.DecimalField(max_digits=15, decimal_places=5)
+    commit = models.DecimalField(max_digits=15, decimal_places=5)
+    various = models.DecimalField(max_digits=15, decimal_places=5)
+
 
 
 

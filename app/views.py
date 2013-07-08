@@ -43,7 +43,7 @@ def set_columns(request, column_names):
 
     columns = []
     for key, column in enumerate(column_names):
-    
+
         try:
             dic = {
                 'text': column.title().replace('_', ' '),
@@ -57,10 +57,10 @@ def set_columns(request, column_names):
                 }
             except:
                 raise
-                
+
         if column == column_border_y:
             dic['tdCls'] = 'horizonal-border-column'
-        
+
         if key == 0:
             dic['width'] = column_width[0]
         else:
@@ -94,14 +94,15 @@ def fund_perf_data_table(request):
     for year in years:
         dic = {
             'year': year.value_date.year,
-            'ytd': year.ytd,
+            'ytd': str(year.ytd),
+            'si': str(year.si),
         }
         months = year.month.all()
         for month in months:
             num = month.value_date.month
 
             name = calendar.month_abbr[num]
-            dic[name.lower()] = month.performance
+            dic[name.lower()] = str(month.performance)
         lis.append(dic)
 
     # create columns
@@ -110,6 +111,7 @@ def fund_perf_data_table(request):
         abbr = calendar.month_abbr[month]
         columns.append(abbr.lower())
     columns.append('ytd')
+    columns.append('si')
     columns = set_columns(request, columns)
 
     dic = {
@@ -136,7 +138,7 @@ def fundallochistnav(request):
     for year in years:
         dic = {
             'year': year.value_date.year,
-            'ytd': year.ytd,
+            #'ytd': year.ytd,
         }
         months = year.month.all()
         for month in months:
@@ -151,7 +153,7 @@ def fundallochistnav(request):
     for month in range(1, 13):
         abbr = calendar.month_abbr[month]
         columns.append(abbr.lower())
-    columns.append('ytd')
+    #columns.append('ytd')
     columns = set_columns(request, columns)
 
     dic = {
@@ -287,6 +289,9 @@ def fundreturn(request):
         dic[year] = {}
         for row in funds:
             if year == row.value_date.year:
+                dic[year]['ann_return1'] = row.ann_return1
+                dic[year]['ann_volatility1'] = row.ann_volatility1
+                dic[year]['sharpe_ratio1'] = row.sharpe_ratio1
                 dic[year][row.fund.name] = row.performance  # change to: ytd
                 if row.fund.name not in fund_column:
                     fund_column.append(row.fund.name)
@@ -300,7 +305,8 @@ def fundreturn(request):
                     bench_columns.append(row.benchmark.name)
 
     # sort the bench columns by name
-    columns = fund_column + sorted(bench_columns)
+    columns = fund_column + sorted(bench_columns) + ['ann_return1', \
+                                    'ann_volatility1', 'sharpe_ratio1']
 
     result = []
     for key, val in dic.iteritems():
@@ -360,23 +366,23 @@ def fundbestworst(request):
     funds = FundPerfMonth.objects.filter(value_date__month=12, fund=fund) \
                             .values('fund__name') \
                             .annotate(Max('performance'), Min('performance'),
-                                Min('net_drawdown')) \
+                                Min('drawdown')) \
                             .order_by('fund__name')
     for row in funds:
         best[row['fund__name']] = row['performance__max']
         worst[row['fund__name']] = row['performance__min']
-        drawdown[row['fund__name']] = row['net_drawdown__min']
+        drawdown[row['fund__name']] = row['drawdown__min']
 
     benchmarks = FundBenchHist.objects.filter(
                          value_date__month=12, benchmark__funds=fund) \
                                 .values('benchmark__name') \
                                 .annotate(Max('performance'), Min('performance'),
-                                    Min('net_drawdown')) \
+                                    Min('drawdown')) \
                                 .order_by('benchmark__name')
     for bench in benchmarks:
         best[bench['benchmark__name']] = bench['performance__max']
         worst[bench['benchmark__name']] = bench['performance__min']
-        drawdown[bench['benchmark__name']] = bench['net_drawdown__min']
+        drawdown[bench['benchmark__name']] = bench['drawdown__min']
     lis.append(best)
     lis.append(worst)
     lis.append(drawdown)
@@ -785,107 +791,109 @@ def fundgrossasset(request, grid):
 
     return JsonResponse(data)
 
-# W13a
+# W13
 def fundgrossasset1(request):
     grid = {
         'previous_nav': 'NAV',
-        'performance_fees_added_back': 'NAV',
+        'euro_nav': 'NAV',
         'subscription_amount': 'NAV',
         'redemption_amount': 'NAV',
-        'net_movement': 'NAV',
+        'performance_fee_added_back': 'NAV',
         'gross_assets_after_subs_red': 'NAV',
 
         'nav_securities': 'Assets',
-        'nav_securities_total': 'Assets',
         'nav_cash': 'Assets',
         'nav_other_assets': 'Assets',
+        'nav_securities_total': 'Assets',
 
-        'administration_fees': 'Liabilities',
-        'audit_fees': 'Liabilities',
-        'capital_payable': 'Liabilities',
-        'corporate_secretarial_fees': 'Liabilities',
-        'custodian_fees': 'Liabilities',
-        'financial_statement_prep_fees': 'Liabilities',
-        'sub_advisory_fees': 'Liabilities',
-        'management_fees': 'Liabilities',
-        'performance_fees': 'Liabilities',
-        'other_liabilities': 'Liabilities',
-        'total_liabilities': 'Liabilities',
+        'administrator_fee_payable': 'Liabilities & Fees',
+        'auditor_fee_payable': 'Liabilities',
+        'capital_fee_payable': 'Liabilities',
+        'corporate_secretarial_payable': 'Liabilities',
+        'custodian_fee_payable': 'Liabilities',
+        'financial_statement_prep_payable': 'Liabilities',
+        'sub_advisory_fee_payable': 'Liabilities',
+        'management_fee_payable': 'Liabilities',
+        'performance_fee_payable': 'Liabilities',
+        'other_liabilities_payable': 'Liabilities',
+        'total_liabilities_payable': 'Liabilities',
+        'assets_liabilities': 'Liabilities',
     }
-    self.fundgrossasset(request, grid)
+    return fundgrossasset(request, grid)
 
 # W13b
 def fundgrossasset2(request):
     grid = {
-        'nav': 'NAV',
+        'euro_nav': 'NAV',
         'net_movement': 'NAV',
         'subscription_amount': 'NAV',
         'redemption_amount': 'NAV',
         'gross_assets_after_subs_red': 'NAV',
-        'performance_fees_added_back': 'NAV',
+        'performance_fee_added_back': 'NAV',
 
-        'nav_cash': 'Assets',
         'long_portfolio': 'Assets',
+        'nav_cash': 'Assets',
         'fet_valuation': 'Assets',
         'accrued_interest': 'Assets',
-        'dividens_receivable': 'Assets',
+        'interest_receivable_on_banks': 'Assets',
+        'dividends_receivable': 'Assets',
         'recv_for_transactions': 'Assets',
-        'securities_total': 'Assets',
+        'nav_securities_total': 'Assets',
 
-        'transaction_fees_payable': 'Liabilities',
-        'management_fees_payable': 'Liabilities',
-        'serv_act_fees_payable': 'Liabilities',
-        'trustee_fees_payable': 'Liabilities',   #column did not exist
-        'audit_fees_payable': 'Liabilities',
-        'performance_fees_payable': 'Liabilities',
-        'other_liabilities_payable': 'Liabilities',  #column did not exist
+        'transaction_fee_payable': 'Liabilities',
+        'management_fee_payable': 'Liabilities',
+        'serv_act_fee_payable': 'Liabilities',
+        'trustee_fee_payable': 'Liabilities',   #column did not exist
+        'auditor_fee_payable': 'Liabilities',
+        'performance_fee_payable': 'Liabilities',
+        'other_liabilities': 'Liabilities',
         'total_liabilities': 'Liabilities',
         'assets_liabilities': 'Liabilities',
     }
-    self.fundgrossasset(request, grid)
+    return fundgrossasset(request, grid)
 
 # W13c
 def fundgrossasset3(request):
     grid = {
-        'nav': 'NAV',
+        'euro_nav_fund': 'NAV',
         'net_movement': 'NAV',
         'subscription_amount': 'NAV',
         'redemption_amount': 'NAV',
         'gross_assets_after_subs_red': 'NAV',
-        'performance_fees_added_back': 'NAV',
-        
+        'performance_fee_added_back': 'NAV',
+
         'nav_securities': 'Assets',
         'put_options': 'Assets',  #column did not exist
         'call_options': 'Assets',  #column did not exist
         'financial_futures': 'Assets',  #column did not exist
         'nav_cash': 'Assets',
         'fet_valuation': 'Assets',
-        'accrued_interest': 'Assets',
-        'dividens_receivable': 'Assets',
+        'dividends_receivable': 'Assets',
         'interest_receivable_on_banks': 'Assets',
-        'securities_total': 'Assets',
+        #'accrued_interest': 'Assets', # not clear if this should be here
+        'nav_securities_total': 'Assets',
 
-        'transaction_fees_payable': 'Liabilities',
-        'management_fees_payable': 'Liabilities',
-        'serv_act_fees_payable': 'Liabilities',
-        'trustee_fees': 'Liabilities',
-        'audit_fees_payable': 'Liabilities',
-        'performance_fees_payable': 'Liabilities',
-        'other_liabilities': 'Liabilities',
-        'total_liabilities': 'Liabilities',
+        'transaction_fee_payable': 'Liabilities',
+        'management_fee_payable': 'Liabilities',
+        'serv_act_fee_payable': 'Liabilities',
+        'trustee_fee_payable': 'Liabilities',
+        'auditor_fee_payable': 'Liabilities',
+        'performance_fee_payable': 'Liabilities',
+        'other_liabilities_payable': 'Liabilities',
+        'total_liabilities_payable  ': 'Liabilities',
         'assets_liabilities': 'Liabilities',
     }
-    self.fundgrossasset(request, grid)        
-        
-# W13c
+    return fundgrossasset(request, grid)
+
+#W13d
 def fundgrossasset4(request):
     grid = {
-        'nav': 'NAV',
+        'euro_nav': 'NAV',
         'net_movement': 'NAV',
         'subscription_amount': 'NAV',
         'redemption_amount': 'NAV',
         'gross_assets_after_subs_red': 'NAV',
-        'performance_fees_added_back': 'NAV',
+        'performance_fee_added_back': 'NAV',
 
 
         'long_portfolio': 'Assets',
@@ -895,17 +903,47 @@ def fundgrossasset4(request):
         'financial_futures': 'Assets',
         'transitory_assets': 'Assets',  #column did not exist
 
-        'securities_total': 'Liabilities',  #column did not exist
-        'transaction_fees_payable': 'Liabilities',
-        'management_fees_payable': 'Liabilities',
-        'serv_act_fees_payable': 'Liabilities',
-        'trustee_fees_payable': 'Liabilities',
-        'audit_fees_payable': 'Liabilities',
-        'performance_fees_payable': 'Liabilities',
-        'other_liabilities': 'Liabilities',
-        'total_liabilities': 'Liabilities',
-        'liabilities_subtotal': 'Liabilities',
+        'nav_securities_total': 'Liabilities',  #column did not exist
+        'transaction_fee_payable': 'Liabilities',
+        'management_fee_payable': 'Liabilities',
+        'serv_act_fee_payable': 'Liabilities',
+        'trustee_fee_payable': 'Liabilities',
+        'auditor_fee_payable': 'Liabilities',
+        'performance_fee_payable': 'Liabilities',
+        'other_liabilities_payable': 'Liabilities',
+        'total_liabilities_payable': 'Liabilities',
         'assets_liabilities': 'Liabilities',
     }
-    self.fundgrossasset(request, grid)        
-        
+    return fundgrossasset(request, grid)
+
+#W13e
+def fundgrossasset5(request):
+    grid = {
+        'euro_nav': 'NAV',
+        'net_movement': 'NAV',
+        'subscription_amount': 'NAV',
+        'redemption_amount': 'NAV',
+        'gross_assets_after_subs_red': 'NAV',
+        'performance_fee_added_back': 'NAV',
+
+
+        'nav_securities': 'Assets',
+        'nav_cash': 'Assets',
+        'fet_valuation': 'Assets',  #column did not exist
+        'interest_receivable_on_banks': 'Assets',  #column did not exist
+        'receivables': 'Assets',  #column did not exist
+        'prepaid_or_recov_amounts': 'Assets',
+
+        'nav_securities_total': 'Liabilities',  #column did not exist
+        'transaction_fee_payable': 'Liabilities',
+        'management_fee_payable': 'Liabilities',
+        'serv_act_fee_payable': 'Liabilities',
+        'trustee_fee_payable': 'Liabilities',
+        'auditor_fee_payable': 'Liabilities',
+        'performance_fee_payable': 'Liabilities',
+        'other_fee': 'Liabilities',
+        'total_liabilities_payable': 'Liabilities',
+        'assets_liabilities': 'Liabilities',
+    }
+    return fundgrossasset(request, grid)
+

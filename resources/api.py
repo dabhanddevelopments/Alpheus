@@ -228,11 +228,6 @@ class PageWindowResource(MainBaseResource):
 
 
 
-class ClassificationResource(MainBaseResource):
-
-    class Meta(MainBaseResource.Meta):
-        queryset = Classification.objects.all()
-
 
 class FundTypeResource(MainBaseResource):
 
@@ -291,7 +286,7 @@ class MenuResource(TreeBaseResource, MainBaseResource):
     parent = fields.ForeignKey('self', 'parent', null=True)
 
     class Meta(MainBaseResource.Meta):
-        queryset = Menu.objects.all().select_related('parent', 'page')
+        queryset = Menu.objects.all().select_related('parent', 'page', 'fund')
         allowed_methods = ['get']
         fields = ['id', 'name', 'page']
 
@@ -324,7 +319,6 @@ class MenuResource(TreeBaseResource, MainBaseResource):
 
 
     def get_object_list(self, request):
-        print request.user.is_authenticated()
 
         obj = super(MenuResource, self).get_object_list(request)
 
@@ -444,28 +438,53 @@ class FundResource(MainBaseResource2):
     class Meta(MainBaseResource2.Meta):
         queryset = Fund.objects.all()
         filtering = {
-            "fund": ALL,
+            'id': ALL,
         }
 api.register(FundResource())
 
+class FundHistoryResource(MainBaseResource2):
+    fund = fields.ForeignKey(FundResource, "fund")
 
+    class Meta(MainBaseResource2.Meta):
+        queryset = FundPerfMonth.objects.all()
+        resource_name = 'fund-history'
+        filtering = {
+            'value_date': ALL,
+            'fund': ALL,
+        }
+api.register(FundHistoryResource())
 
+class ClientResource(MainBaseResource2):
+    fund = fields.ManyToManyField(FundResource, 'fund', related_name='fund')
 
+    class Meta(MainBaseResource2.Meta):
+        #queryset = Client.objects.prefetch_related('fund').only('fund__management_fee')
+        queryset = Client.objects.all()
+        filtering = {
+            'fund': ALL_WITH_RELATIONS,
+        }
+api.register(ClientResource())
 
 class HoldingResource(MainBaseResource2):
     fund = fields.ForeignKey(FundResource, "fund")
+    #client = fields.ForeignKey('ClientResource', "client")
+    client = fields.ManyToManyField(ClientResource, 'client', related_name='client')
+    currency = fields.ForeignKey(CurrencyResource, 'currency')
 
     class Meta(MainBaseResource2.Meta):
         queryset = Holding.objects.all()
         filtering = {
             "value_date": ALL,
             "fund": ALL,
+            "client": ALL,
+            "holding_category": ALL_WITH_RELATIONS,
         }
 api.register(HoldingResource())
 
 class HoldingHistoryResource(MainBaseResource2):
     fund = fields.ForeignKey(FundResource, "fund")
     holding = fields.ForeignKey(HoldingResource, "holding")
+    holding_category = fields.ForeignKey(HoldingCategoryResource, 'holding_category')
 
     class Meta(MainBaseResource2.Meta):
         queryset = HoldPerfMonth.objects.all()
@@ -474,6 +493,7 @@ class HoldingHistoryResource(MainBaseResource2):
             "fund": ALL,
             "holding": ALL,
             "value_date": ALL,
+            "holding_category": ALL_WITH_RELATIONS,
         }
 api.register(HoldingHistoryResource())
 
@@ -563,7 +583,7 @@ class FundValuationResource(MainBaseResource2):
         queryset = FundPerfMonth.objects.all()
         resource_name = 'fund-valuation'
         allowed_fields = [
-            'net_movement', 'value_date', 'delta_valuation', 'delta_flow',
+            'net_movement', 'valuation', 'value_date', 'delta_valuation', 'delta_flow',
             'inflow_euro', 'inflow_dollar', 'outflow_euro', 'outflow_dollar'
         ]
         filtering = {
@@ -588,6 +608,7 @@ class FundValuationResource(MainBaseResource2):
                     dic[extra_field] = row.data[extra_field]
             fields.append(dic)
 
+        set_fields('valuation', 'Valuation', 'Total')
         set_fields('net_movement', 'Net Movement', 'Total')
         set_fields('inflow_euro', 'Euro', 'Inflow')
         set_fields('inflow_dollar', 'US Dollar', 'Inflow')
@@ -600,18 +621,6 @@ class FundValuationResource(MainBaseResource2):
             'rows': fields,
         }
 api.register(FundValuationResource())
-
-
-class ClientResource(MainBaseResource2):
-    #funds = fields.ManyToManyField(FundResourceOld, 'fund', related_name='funds')
-
-    class Meta(MainBaseResource2.Meta):
-        queryset = Client.objects.all()
-        filtering = {
-            'funds': ALL_WITH_RELATIONS,
-        }
-
-api.register(ClientResource())
 
 
 

@@ -16,7 +16,7 @@ DATE_TYPE_DAY = 'd'
 DATE_TYPE_WEEK = 'w'
 DATE_TYPE_MONTH = 'm'
 
-DATA_TYPE_YEARLY = 'yearly'
+DATA_TYPE_YEAR = 'year'
 DATA_TYPE_GROUP = 'group'
 DATA_TYPE_GRAPH = 'graph'
 
@@ -165,6 +165,7 @@ class MainBaseResource(ModelResource):
             return filters
 
         applicable_filters = {}
+        self.filters = filters
 
         # Normal filtering
         filter_params = dict([(x, filters[x]) for x in filter(lambda x: not x.endswith('!'), filters)])
@@ -172,7 +173,6 @@ class MainBaseResource(ModelResource):
 
         # Exclude filtering
         exclude_params = dict([(x[:-1], filters[x]) for x in filter(lambda x: x.endswith('!'), filters)])
-        print exclude_params
         applicable_filters['exclude'] = super(MainBaseResource, self).build_filters(exclude_params)
 
         return applicable_filters
@@ -224,7 +224,7 @@ class MainBaseResource(ModelResource):
 # v2
 class MainBaseResource2(MainBaseResource):
     class Meta(MainBaseResource.Meta):
-        pass
+        allowed_fields = []
 
     def get_month_list(self):
         import calendar
@@ -233,25 +233,31 @@ class MainBaseResource2(MainBaseResource):
             months.append(calendar.month_abbr[month].lower())
         return months
 
-    def dispatch(self, request_type, request, **kwargs):
+    #def dispatch(self, request_type, request, **kwargs):
+    def get_object_list(self, request):
 
+    #def apply_filters(self, request, applicable_filters):
 
         self.data_type = request.GET.get("data_type", False)
         self.date_type = request.GET.get("date_type", False)
 
-        if self.data_type == 'yearly':
-            self.yearly = {
+        if self.data_type == 'year':
+            try:
+                extra_fields = request.GET.get("extra_fields", []).split(',')
+            except:
+                extra_fields = []
+            self.year = {
                 'value': request.GET.get("value", 0),
                 'date': request.GET.get("date", 0),
-                'name': request.GET.get("name", 0),
-                'extra_fields': request.GET.get("extra_fields", []).split(','),
+                'title': request.GET.get("title", 0),
+                'extra_fields': extra_fields,
             }
             self.external_fields = [
                 'id',
-                self.yearly['name'],
-                self.yearly['value'],
-                self.yearly['date'],
-            ] + self.yearly['extra_fields']
+                self.year['title'],
+                self.year['value'],
+                self.year['date'],
+            ] + self.year['extra_fields']
 
         else:
             self.external_fields = []
@@ -259,9 +265,10 @@ class MainBaseResource2(MainBaseResource):
             if fields:
                 self.external_fields = fields.split(',')
 
-        return super(MainBaseResource2, self).dispatch(request_type, request, **kwargs)
+        #return super(MainBaseResource2, self).dispatch(request_type, request, **kwargs)
+        #return super(MainBaseResource2, self).apply_filters(self, request, applicable_filters)
 
-    def get_object_list(self, request):
+        #def get_object_list(self, request):
 
         """
         Only fetches the specified columns
@@ -284,18 +291,47 @@ class MainBaseResource2(MainBaseResource):
             self.internal_fields = self._meta.allowed_fields
 
 
+        # do distinct on m2m filters
+        """
+        not used atm, but works
+        Use this later and make distinct true by default when there is an m2m filter
+        distinct = False
+        for field in self.filters:
+            try:
+                m2m = objects.model._meta.get_field_by_name(field)[0]
+                if m2m.get_internal_type() == 'ManyToManyField':
+                    #distinct = True
+                    pass
+            except:
+                pass
+        """
+
         # Removes fields that do not exist for this model
         # Like fields that are model methods
+        """
         only_fields = []
         for field in objects.model._meta.fields:
-            if field.verbose_name in self.internal_fields:
-                only_fields.append(field.verbose_name)
+            if field.name in self.internal_fields:
+                only_fields.append(field.name)
+        """
+        only_fields = []
+        for field in objects.model._meta.fields:
+            for internal_field in self.internal_fields:
+                try:
+                    related_field = internal_field.split('__')
+                    if field.name == related_field[0]:
+                        only_fields.append(field.name)
+                except:
+                    pass
 
         objects = objects.only(*only_fields)
 
         for field in self.internal_fields:
 
-            related_fields = field.split('__')
+            try:
+                related_fields = field.split('__')
+            except:
+                related_fields = []
 
             if len(related_fields) > 1:
 
@@ -313,8 +349,12 @@ class MainBaseResource2(MainBaseResource):
                     if field == meta_field.name:
                         self.column_names[field] = meta_field.verbose_name \
                                                                 .capitalize()
+
         if len(self.select_related):
             objects = objects.select_related(*self.select_related)
+
+        if request.GET.get('distinct', False) == 'true':
+            objects = objects.distinct()
 
         return objects
 
@@ -343,7 +383,10 @@ class MainBaseResource2(MainBaseResource):
     def dehydrate(self, bundle):
 
         for row in self.internal_fields:
-            fields = row.split('__')
+            try:
+                fields = row.split('__')
+            except:
+                pass
             if len(fields) == 1:
                 try:
                     bundle.data[row] = getattr(bundle.obj, fields[0])()
@@ -362,7 +405,7 @@ class MainBaseResource2(MainBaseResource):
                 except:
                     raise Exception("'%s' not found." % row)
 
-            # `choices` fields
+            # display actual values for `choices` fields
             try:
                 method = getattr(bundle.obj, "get_%s_display" % fields[0], None)
                 bundle.data[fields[0]] = method()
@@ -413,17 +456,18 @@ class MainBaseResource2(MainBaseResource):
 
         # format value_date for months
         if self.date_type == DATE_TYPE_MONTH:
-            for key, val in enumerate(data['objects']):
-                data['objects'][key].data['value_date'] = data['objects'][key] \
-                                             .data['value_date'].strftime("%b %Y")
+            pass
+            #for key, val in enumerate(data['objects']):
+            #    data['objects'][key].data['value_date'] = data['objects'][key] \
+            #                                 .data['value_date'].strftime("%b %Y")
 
 
-        if self.data_type == DATA_TYPE_YEARLY:
+        if self.data_type == DATA_TYPE_YEAR:
             import calendar
-            value = self.yearly['value']
-            date = self.yearly['date']
-            name = self.yearly['name']
-            extra_fields = self.yearly['extra_fields']
+            value = self.year['value']
+            date = self.year['date']
+            name = self.year['title']
+            extra_fields = self.year['extra_fields']
 
             categories = set([row.data[name] for row in data['objects']])
 
@@ -453,9 +497,13 @@ class MainBaseResource2(MainBaseResource):
                     total_dic[field] = 0
                     for val in data['objects']:
                         try:
-                            total_dic[field] += val.data[field]
+                            if isinstance(val.data[field], basestring):
+                                total_dic[field] = ''
+                            else:
+                                total_dic[field] += val.data[field]
                         except:
                             pass
+                data['objects'].insert(0, {}) # empty row is separator
                 data['objects'].insert(0, total_dic)
 
             return {

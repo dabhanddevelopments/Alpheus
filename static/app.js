@@ -42,7 +42,7 @@ function displayInnerGrid(widget, data, renderId, hideHeaders, height) {
                 }
             }
         });
-            console.log(data.rows);
+           //console.log(data.rows);
         var innerGrid = Ext.create('Ext.grid.Panel', {
             store: insideGridStore,
             selModel: {
@@ -56,22 +56,29 @@ function displayInnerGrid(widget, data, renderId, hideHeaders, height) {
             iconCls: 'icon-grid',
             hideHeaders: hideHeaders,
             renderTo: 'innergrid-' + widget.id + '-' + renderId,
+            /*
             listeners: {
-                cellclick: function(gridView,htmlElement,columnIndex,dataRecord) {
+                //cellclick:  function(grid, rowIndex, columnIndex, e) {
+                itemclick: function (self, record, item, index, e, eOpts) {
 
-                    console.log(dataRecord);
-                    var win = new Ext.Window({
-                        renderTo: Ext.getBody(),
-                        html: html,
-                        //items: items,
-                        height: 300,
-                        width: 400,
-                    });
-                    win.show();
+                  //console.log(record);
+                  //console.log(item);
+                  //console.log(index);
+                  //console.log(index);
+                    if(widget.window.key == 'w12b') {
+                        var win = new Ext.Window({
+                            renderTo: Ext.getBody(),
+                            html: 'asdf',
+                            //items: items,
+                            height: 300,
+                            width: 400,
+                        });
+                        //win.show();
 
-                    console.log('asdf');
+                    }
                 }
             },
+           */
         });
         innerGrid.getEl().swallowEvent([
             'mousedown', 'mouseup', 'click',
@@ -239,7 +246,10 @@ function lineBarChart(widget) {
                 chart: {
                     renderTo: div,
                     marginTop: 5,
+                    marginBottom: 50,
                     marginRight: 50,
+                    spacingBottom: 50,
+                    spacingRight: 50,
                 },
                 navigator:{
                     enabled:true,
@@ -346,7 +356,7 @@ function lineBarChart(widget) {
 
                 },
                 {
-                    name: 'Volume by time',
+                    name: 'Volume',
                     yAxis: 1,
                     stack: 0,
                     data: data2,
@@ -397,7 +407,7 @@ function refreshHoldPerfBar(date, fund, monthly, fields, order_by) {
     var div = $('#data').data('div-fundperfholdperfbar');
 
     // get the window div so we can set the title, super ugly
-    win_div = div.slice(0, div.indexOf("_widget"));
+    //win_div = div.slice(0, div.indexOf("_widget"));
 
     var date_title = date
     if(typeof monthly != 'undefined' && monthly == true) {
@@ -410,8 +420,8 @@ function refreshHoldPerfBar(date, fund, monthly, fields, order_by) {
     //title = title.replace('DATE', date_title);
 
     var title = $('#data').data('fund_name') + ' / ' + date_title + ' / Holding Performance Bar Graph';
-    win = Ext.getCmp(win_div);
-    win.setTitle(title);
+    //win = Ext.getCmp(win_div);
+    //win.setTitle(title);
 
     var chart = $('#' + div).highcharts();
 
@@ -424,7 +434,7 @@ function refreshHoldPerfBar(date, fund, monthly, fields, order_by) {
         $.getJSON(url, function(data) {
 
                 widget = {};
-                widget.size_x = 5;
+                widget.size_x = 7;
                 widget.size_y = 3;
                 var chart = new Highcharts.Chart({
                     chart: {
@@ -607,7 +617,7 @@ Ext.onReady(function() {
 
     function initPage(obj) {
 
-        console.log('init page');
+       //console.log('init page');
         var id = obj.page;
        //console.log(id);
        //console.log(obj);
@@ -616,6 +626,9 @@ Ext.onReady(function() {
         var pages = $('#data').data('page');
 
 
+       //console.log(pages);
+       //console.log(obj);
+
         // No need to reload the page if users clicks on a link
         // to a page they are already on
         //if($('#data').data('active-panel') == id) {
@@ -623,38 +636,27 @@ Ext.onReady(function() {
         //}
         for(i=0; i<pages.length; i++) {
 
-            if(pages[i].id == id) {
-            console.log('up to here 1');
-            //    var page = pages[i];
-
-                el = 'page' + id;
+            if(typeof pages[i].children !== 'undefined') {
+                page_id = pages[i].children[0].id;
+            } else {
+                page_id = pages[i].id;
+            }
+            if(page_id == id) {
 
                 // Children are tabs
                 if(pages[i].children !== undefined) {
 
-            console.log('up to here 2');
-                    var panel = panelTab();
-
-                    switchPanel(panel, el);
+                    switchPanel(panelTab());
                     appendTabs(pages[i]);
-
-                    obj.page = pages[i].children[0].id;
-                    //console.log('child tabs');
-                    //console.log(obj);
-                    //console.log(pages[i].children);
-
+                    obj.page = page_id;
 
                 } else {
 
-            console.log('up to here 3');
-                    var panel = panelStandard();
-                    switchPanel(panel, el);
-
+                    switchPanel(panelStandard());
                     $('#data').data('grid' + id, '');
                     $('<div id="page' + id + '"></div>').appendTo('#menu');
                 }
 
-               //console.log(obj);
                 initGrid(obj);
 
                 // stops all widgets to auto reload/refresh
@@ -714,7 +716,7 @@ Ext.onReady(function() {
     }
 
 
-    function switchPanel(panel, el) {
+    function switchPanel(panel) {
 
         var active = $('#data').data('active-panel');
 
@@ -724,9 +726,9 @@ Ext.onReady(function() {
         var ws = Ext.getCmp('viewport');
 
         try {
-            ws.remove(active);
+            ws.remove(active, true);
         } catch(err) {
-           console.log("Failed to remove panel");
+          //console.log("Failed to remove panel");
            //console.log(err);
         }
 
@@ -738,7 +740,7 @@ Ext.onReady(function() {
         try {
             ws.add(panel);
         } catch(err) {
-           console.log("Failed to add panel");
+          //console.log("Failed to add panel");
            //console.log(err);
         }
 
@@ -851,6 +853,10 @@ console.log('initiating grid');
                 id: 'grid' + tabId,
                 border: false,
                 flex: flex,
+                forceFit: true,
+                layout:'fit',
+                margin: "0 0 20 0",
+
                 //height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 20,
                 //width:  (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 20,
                // renderTo: tabId,
@@ -882,7 +888,7 @@ console.log('initiating grid');
 
         //for w13
         function appendGridToGrossAssetTab(tab, year) {
-            $.getJSON('/api/widget/fundgrossasset/?fund=' + obj.fund + '&year=' + year + '&column_width=160,85', function(assets) {
+            $.getJSON('/api/widget/fundgrossasset1/?fund=' + obj.fund + '&year=' + year + '&column_width=160,85', function(assets) {
                 var grid = dataGroupTable(assets, data.window);
                 tab.insert(0, grid);
                 tab.doLayout();
@@ -929,8 +935,8 @@ console.log('initiating grid');
                     var chart = $('#' +  innertab_div + '-bar').highcharts();
 
                     if(typeof chart == 'undefined') {
-                        widget.params.type = 'column';
-                        lineChart('', widget, innertab_div + '-bar');
+                        widget.params.type = 'line';
+                        lineChart('', widget, innertab_div + '-line');
                     }
 
                     // Bar Chart & Line Graph Tabs
@@ -940,26 +946,32 @@ console.log('initiating grid');
                         //width:  (120 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20,
                         height: 600,
                         activeTab: 0,
-                        items: [{
-                            title: 'Bar Chart',
-                            id: 'bar' + tabId,
-                            contentEl: innertab_div + '-bar',
-                        },{
+                        items: [
+                        {
                             title: 'Line Graph',
                             id: 'line' + tabId,
                             contentEl: innertab_div + '-line',
-                        }],
+                        },
+                        {
+                            title: 'Bar Chart',
+                            id: 'bar' + tabId,
+                            contentEl: innertab_div + '-bar',
+                        },
+                        ],
+
                         listeners: {
                             'tabchange': function(tabPanel, tab){
-                                if(tab.id == 'line' + tabId) {
-                                    div2 = innertab_div + '-line';
+                                if(tab.id == 'bar' + tabId) {
+                                    div2 = innertab_div + '-bar';
 
                                     var chart = $('#' + div2).highcharts();
                                    //console.log('got chart');
                                     if(typeof chart == 'undefined') {
                                        //console.log('chart does not exist');
-                                        widget.params.type = 'line';
+
+                                        widget.params.type = 'column';
                                         lineChart('', widget, div2);
+
                                     }
                                 }
                             }
@@ -1369,7 +1381,8 @@ console.log('initiating grid');
 
         } else if(widget.type == 'data_table_sub') {
 
-            return dataTableSub(obj, widget, div);
+            //return dataTableSub(obj, widget, div);
+            return dataTable(obj, widget, div);
 
         } else if(widget.type == 'data_group_table') {
 
@@ -1638,10 +1651,6 @@ console.log('initiating grid');
                 yDecimals = false;
             }
 
-            labels = true;
-            if(typeof widget.params.labels != 'undefined' && widget.params.labels == 'false') {
-                labels = false;
-            }
 
             legend = true;
             if(typeof widget.params.legend != 'undefined' && widget.params.legend == "false") {
@@ -1654,7 +1663,7 @@ console.log('initiating grid');
             }
            //console.log(labels);
 
-            var chart = new Highcharts.Chart({
+            var options = {
                 chart: {
                     //marginRight: 25,
                     //marginTop: 50,
@@ -1693,18 +1702,23 @@ console.log('initiating grid');
                     type: 'category',
                     categories: data.columns,
                     //type : "datetime",
-                    labels: {
-                        rotation: -45,
-                        align: 'right',
-                        style: {
-                            fontSize: '10px',
-                            fontFamily: 'Verdana, sans-serif'
-                        },
-                        enabled: labels,
-                    },
                 },
                 series: data.objects,
-            })
+            }
+
+            if(typeof widget.params.labels != 'undefined' && widget.params.labels == 'rotated') {
+                labels = {
+                    rotation: -45,
+                    align: 'right',
+                    style: {
+                        fontSize: '10px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                }
+                options.xAxis.labels = labels;
+            }
+
+            var chart = new Highcharts.Chart(options);
 
 
 
@@ -1878,6 +1892,9 @@ console.log('initiating grid');
             },
             plugins: plugins,
             selModel: selModel,
+            forceFit: true,
+            layout:'fit',
+
             listeners: {
                 cellclick: function(gridView,htmlElement,columnIndex,dataRecord) {
 
@@ -1886,7 +1903,7 @@ console.log('initiating grid');
 
                     if(month != 0) {
 
-                        if(typeof year == 'undefined') {
+                        if(typeof year == 'undefined' || year === false) {
                             year = new Date().getFullYear();
                         }
 
@@ -1956,11 +1973,15 @@ console.log('initiating grid');
 
     function euroPercentTabTable(obj, widget, div) {
 
-
+        fund = $('#data').data('fund');
 
         $.getJSON(widget.url + widget.qs, function(data) {
-           //console.log('EURO PERCENT');
-           //console.log(div);
+          //console.log('EURO PERCENT');
+          //console.log(data);
+          //console.log(div);
+           var div2 = div + '_' + div
+           $('<div id="' + div2 + '"></div>').appendTo("#" + div);
+
             if(typeof Ext.getCmp(div) != 'undefined') {
                 tabPanel = Ext.getCmp(div);
                 tabPanel.destroy();
@@ -1969,8 +1990,8 @@ console.log('initiating grid');
                 //height: 200, //(120 * data.size_y) + (10 * data.size_y) + (10 * (data.size_y - 1)) - 20,
                 //width:  800, //(120 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20,
                 //layout: 'fit',
-                renderTo: div,
-                id: div,
+                renderTo: div2,
+                id: div2,
             });
 
             widget.params.title = '€';
@@ -1978,6 +1999,7 @@ console.log('initiating grid');
             tabPanel.add(grid);
             tabPanel.doLayout();
 
+            // replace values with percentage
             var qs = widget.qs.replace('fields=nav', 'fields=weight'); // ???
             widget.params.title = '% of Fund';
 
@@ -2046,6 +2068,9 @@ console.log('initiating grid');
                 renderTo: div,
                 width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)),
                 height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
+                forceFit: true,
+                layout:'fit',
+
             });
         });
     }
@@ -2102,16 +2127,24 @@ console.log('initiating grid');
                 //renderTo: div,
                 width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)),
                 height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
+                forceFit: true,
+                layout:'fit',
+
             });
         //});
     }
     function dataTable(obj, widget, div) {
 
+        var hideHeaders = false;
+        if(typeof widget.params.column_header !== 'undefined' && widget.params.column_header == 'false'){
+            hideHeaders = true;
+        }
+
         $.getJSON(widget.url + widget.qs, function(data) {
 
             // for nested header columns as well
             c = 0;
-            fields = {};
+            fields = [];
             for(i=0; i < data.columns.length; i++) {
                 if(typeof data.columns[i].columns != 'undefined') {
                     for(x=0; x < data.columns[i].columns.length; x++) {
@@ -2125,8 +2158,6 @@ console.log('initiating grid');
                     }
                 }
             }
-           console.log(data);
-           console.log(fields);
             Ext.create('Ext.data.Store', {
                 storeId: widget.key,
                 fields: fields,
@@ -2145,47 +2176,51 @@ console.log('initiating grid');
             });
 
             // for innergrids
-            plugins = [];
-            selModel = [];
-
+            if(widget.type == 'data_table_sub') {
+                cls = 'custom-grid-sub';
+            } else {
+                cls = 'custom-grid';
+            }
             var width = (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1));
             var height = (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1));
-            if(widget.params.subtable == 'true') {
-                plugins = [{
-                    ptype: 'rowexpander',
-                    rowBodyTpl: [
-                        '<div id="innergrid-' + widget.id + '-{id}">',
-                        '</div>'
-                    ]
-                }];
-                selModel = {
-                    selType: 'cellmodel'
-                }
-                width = width - 23;
+            plugins = [{
+                ptype: 'rowexpander',
+                rowBodyTpl: [
+                    '<div id="innergrid-' + widget.id + '-{id}">',
+                    '</div>'
+                ]
+            }];
+            selModel = {
+                selType: 'cellmodel'
             }
+            width = width - 23;
 
             var panel = Ext.create('Ext.grid.Panel', {
                 id: div,
-                cls: 'custom-grid',
+                cls: cls,
                 columnLines: true,
+                hideHeaders: hideHeaders,
                 store: Ext.data.StoreManager.lookup(widget.key),
                 columns: data.columns,
                 width: width,
                 height: height,
                 header: false,
                 border: false,
-                enableLocking: true,
+                //enableLocking: true,
                 autoScroll: true,
                 renderTo: div,
                 plugins: plugins,
                 selModel: selModel,
                 iconCls: 'icon-grid',
-               // forceFit: true,
-                //layout:'fit',
+                forceFit: true,
+                layout:'fit',
                 listeners: {
                     cellclick: function(gridView,htmlElement,columnIndex,dataRecord) {
 
                         year = dataRecord.data.year;
+                       //console.log('CLICKED');
+                       //console.log(dataRecord);
+                       //console.log(columnIndex);
 
                         obj.page = $('#data').data('page_id');
                         obj.grid = $('#data').data('grid' + obj.page);
@@ -2197,24 +2232,52 @@ console.log('initiating grid');
                         if(widget.window.key == 'w1') {
 
                             // year view
-                            if(columnIndex == 0) {
+                            if(columnIndex == 1) {
+
+                                if($('#data').data('classification') == 'sp')  {
+                                    refreshWindow('w9c', obj, extra_params);
+                                    refreshWindow('w26', obj, extra_params);
+                                    refreshWindow('w27', obj, extra_params);
+                                    refreshWindow('w28', obj, extra_params);
+                                } else if($('#data').data('classification') == 'pe')  {
+                                    refreshWindow('w5', obj, extra_params);
+                                } else {
+                                    refreshWindow('w3', obj, extra_params);
+                                    refreshWindow('w4', obj, extra_params);
+                                    refreshWindow('w5', obj, extra_params);
+                                }
+
+                            // monthly view
+                            } else if(columnIndex < 14) {
+                                if($('#data').data('classification') == 'pe')  {
+                                    refreshWindow('w2', obj, extra_params);
+                                } else {
+                                    refreshHoldPerfBar(year + '-' + month + '-1', obj.fund, true);
+                                }
+                            }
+                        }
+                        else if(widget.window.key == 'w1b') {
+
+                            // year view
+                            if(columnIndex == 1) {
 
                                 refreshWindow('w3', obj, extra_params);
-                                refreshWindow('w4', obj, extra_params);
-                                refreshWindow('w5', obj, extra_params);
+                                refreshWindow('w4b', obj, extra_params);
+                                refreshWindow('w5b', obj, extra_params);
 
                             // month view
-                            } else if(columnIndex < 13) {
+                            } else if(columnIndex < 14) {
                                 refreshHoldPerfBar(year + '-' + month + '-1', obj.fund, true);
 
                                 monthTable(year, month);
                             }
                         }
 
+
                         if(widget.window.key == 'w6') {
 
                             // year view
-                            if(columnIndex == 0) {
+                            if(columnIndex == 1) {
 
                                 // save this for W8, 9 and 10
                                 $('#data').data('year', year);
@@ -2262,37 +2325,65 @@ console.log('initiating grid');
 
             });
 
+            panel.view.on('expandBody', function (rowNode, record, expandRow, eOpts) {
 
-            if(widget.params.subtable == 'true') {
+                var id = record.get('id');
+
+                if(widget.key == 'fundperfholdtable') {
+
+                    $.getJSON("/api/widget/fundperfholdtradetable/?holding=" + id + "&holding__fund=" + obj.fund + '&column_width=150,80', function(w11) {
+
+                        displayInnerGrid(widget, w11,id);
+
+                        widget.holding = record.get('id');
+                        widget.fund = obj.fund;
+                        lineBarChart(widget);
+                    });
+
+                } else if(widget.key == 'fundregister') {
+
+                    $.getJSON("/api/widget/subscriptionredemption/?&fund=" + obj.fund + '&client=' + id + '&column_width=100,100', function(w12) {
+
+                        displayInnerGrid(widget, w12, id);
+                    });
+                }
+
+                if(typeof $('#data').data('year') == 'undefined' || $('#data').data('year') === false) {
+                    year = new Date().getFullYear();
+                } else {
+                    year = $('#data').data('year');
+                }
+
+                fund = $('#data').data('fund');
+
+                if(widget.window.key == 'w5b') {
+                    $.getJSON('/api/country-breakdown/?fund=' + fund + '&holding_category=' + id + '&value_date__year=' + year + '&date=value_date&name=country__name&value=mtd&fields=id,value_date,country__name,mtd,si,ytd&column_width=80,50', function(widget_data) {
+                        displayInnerGrid(widget, widget_data, id, true, 50);
+                    });
+                }
+                if(widget.window.key == 'w31') {
+                    $.getJSON('/api/holding-history/?holding=' + id + '&holding_category__holding_group__isnull=true&value_date__year=' + year + '&date_type=m&fields=value_date,drawdown,various,distribution,expense,valuation,total_value&total=true&column_width=80,50', function(widget_data) {
+                        displayInnerGrid(widget, widget_data, id, false, 150);
+                    });
+                }
+                if(widget.window.key == 'w12b') {
+                    $.getJSON('/api/holding/?client=' + id + '&distinct=true&total=true&fields=name,currency__name,commit,drawdown,various,residual_commit,distribution,valuation,total_value,proceed,irr', function(widget_data) {
+                        displayInnerGrid(widget, widget_data, id, false, 150);
+                    });
+                }
 
 
-                panel.view.on('expandBody', function (rowNode, record, expandRow, eOpts) {
 
-                    if(typeof $('#data').data('year') == 'undefined' || $('#data').data('year') === false) {
-                        year = new Date().getFullYear();
-                    } else {
-                        year = $('#data').data('year');
-                    }
 
-                    fund = $('#data').data('fund');
 
-                    var id = record.get('id');
-
-                    // not used atm
-                    if(widget.window.key == 'w5b') {
-                        $.getJSON('/api/country-breakdown/?fund=' + fund + '&holding_category=' + id + '&value_date__year=' + year + '&date=value_date&name=country__name&value=mtd&fields=id,value_date,country__name,mtd,si,ytd', function(widget_data) {
-                            displayInnerGrid(widget, widget_data, id, true);
-                        });
-                    }
-
-                    if(typeof $('#data').data('last-open-subgrid') != 'undefined') {
-                        //destroyInnerGrid($('#data').data('last-open-subgrid'));
-                    }
-                });
-                panel.view.on('collapsebody', function (rowNode, record, expandRow, eOpts) {
-                    destroyInnerGrid(record, widget.id);
-                });
-            }
+                if(typeof $('#data').data('last-open-subgrid') != 'undefined') {
+                    //destroyInnerGrid($('#data').data('last-open-subgrid'));
+                }
+            });
+            panel.view.on('collapsebody', function (rowNode, record, expandRow, eOpts) {
+               //console.log(record);
+                destroyInnerGrid(record, widget.id);
+            });
             return panel;
         });
     }
@@ -2425,10 +2516,16 @@ console.log('initiating grid');
                     });
                 }
                 if(widget.window.key == 'w31') {
-                    $.getJSON('/api/holding-history/?holding=' + id + '&value_date__year=' + year + '&date_type=m&fields=value_date,drawdown,various,distribution,expense,valuation,total_value&total=true&column_width=80,50', function(widget_data) {
+                    $.getJSON('/api/holding-history/?holding=' + id + '&holding_category__holding_group__isnull=true&value_date__year=' + year + '&date_type=m&fields=value_date,drawdown,various,distribution,expense,valuation,total_value&total=true&column_width=80,50', function(widget_data) {
                         displayInnerGrid(widget, widget_data, id, false, 150);
                     });
                 }
+                if(widget.window.key == 'w12b') {
+                    $.getJSON('/api/holding/?client=' + id + '&distinct=true&total=true&fields=name,currency__name,commit,drawdown,various,residual_commit,distribution,valuation,total_value,proceed,irr', function(widget_data) {
+                        displayInnerGrid(widget, widget_data, id, false, 150);
+                    });
+                }
+
 
 
 
@@ -2437,7 +2534,7 @@ console.log('initiating grid');
                     //destroyInnerGrid($('#data').data('last-open-subgrid'));
                 }
             });
-            mainGrid.view.on('collapsebody', function (rowNode, record, expandRow, eOpts) {
+            panel.view.on('collapsebody', function (rowNode, record, expandRow, eOpts) {
                //console.log(record);
                 destroyInnerGrid(record, widget.id);
             });
@@ -2623,7 +2720,7 @@ console.log('initiating grid');
                     header: false,
                     region: 'west',
                     width: "60%",
-                    bodyBorder: true,
+                    bodyBorder: false,
                     //border: "0, 0, 0, 95%",
                     hideHeaders: true,
                     features: [groupingFeature],
@@ -2799,7 +2896,7 @@ console.log('initiating grid');
             autoDestroy: true,
             autoScroll: true,
             //style: 'overflow: auto',
-            //layout: 'fit'  //commented this 28th of june 08:03
+            layout: 'fit'  //commented this 28th of june 08:03 // outcommented 3rd of july
 
         });
     }
@@ -2942,12 +3039,14 @@ console.log('initiating grid');
 
     function viewPort() {
 
-         $.ajax({
-            type: "GET",
-            url: '/api/menu/',
-            success: function(data) {
+         //$.ajax({
+         //   type: "GET",
+         //   url: '/api/menu/',
+         //   success: function(data) {
 
-//console.log('menu loaded');
+            $.getJSON('/api/menu/', function(data) {
+           //console.log('menu data:');
+           //console.log(data);
                 var tree_model = Ext.define('tree', {
                     extend: 'Ext.data.Model',
                     fields: [
@@ -2990,7 +3089,8 @@ console.log('initiating grid');
                         itemclick: {
                             fn: function(view, record, item, index, event, opts) {
 
-                                console.log(record);
+                               //console.log('record');
+                               //console.log(record);
 
                                 // Expand & collapse node on single click
                                 if(record.isExpanded()) {
@@ -3014,8 +3114,8 @@ console.log('initiating grid');
                                         record.raw.page = str.replace(/\D/g, '');
                                     }
                                 }
-                               console.log('RCRD RAW');
-                               console.log(record.raw);
+                              //console.log('INIATING PAGE NUMBER:');
+                              //console.log(record.raw);
                                 initPage(record.raw);
 
                             }
@@ -3048,7 +3148,7 @@ console.log('initiating grid');
                 Ext.EventManager.onWindowResize(viewport.doLayout, viewport);
 
              }
-        });
+        );
     }
 
 

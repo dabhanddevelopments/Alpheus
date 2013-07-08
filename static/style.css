@@ -533,6 +533,19 @@ table.month_table td a {
 .x-grid-row .horizonal-border-column { 
     border-left:  1px solid #000 !important;
 }
+/* Grid cells when the mouse cursor is over the row */ 
+.custom-grid-sub .x-grid-row-over .x-grid-cell { 
+    background-color: #BABABA !important; 
+} 
+ 
+/* Grid cells in the selected row */ 
+.custom-grid-sub .x-grid-row-selected .x-grid-cell { 
+    background-color: #CFCFCF !important; 
+}
+
+.custom-grid-sub .x-grid-row-alt { 
+    background-color: #E0E0E0; 
+}
 
 /* Grid cells when the mouse cursor is over the row */ 
 .custom-grid .x-grid-row-over .x-grid-cell { 
@@ -544,7 +557,6 @@ table.month_table td a {
     background-color: #CFCFCF !important; 
 }
 
-
 .custom-grid .x-grid-row-alt { 
     background-color: #E0E0E0; 
 }
@@ -554,7 +566,12 @@ table.month_table td a {
  border-top:  1px solid #000 !important;
 }
 
+.custom-grid .x-grid-row-expander {
+  overflow: hidden;
+  width: 0px;
+}
 .custom-grid-group .x-grid-group-hd {
    padding: 3px 4px 1px 4px;
 }
+
 

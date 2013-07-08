@@ -10,7 +10,7 @@ class WidgetParamAdmin(admin.ModelAdmin):
     pass
 
 class WidgetAdmin(admin.ModelAdmin):
-    list_display = ('name', 'key', 'widget_type', 'window', 'description',)
+    list_display = ('name', 'key', 'widget_type', 'window', 'description', 'v2')
     filter_horizontal = ['widget_param']
     list_editable = ['key']
     list_filter = ['widget_type']
@@ -36,6 +36,7 @@ class PageAdmin(FeinCMSModelAdmin):
     pass
 
 class PageWindowAdmin(admin.ModelAdmin):
+    list_display = ('page', 'window', 'user', 'col', 'row')
     list_filter = ['page__title']
 
 class FundPerfDailyAdmin(admin.ModelAdmin):

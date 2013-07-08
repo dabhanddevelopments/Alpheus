@@ -245,6 +245,7 @@ class EntryResource(ModelResource):
                 proceed = random.randrange(0, 100000),
                 commit = random.randrange(0, 100000),
                 various = random.randrange(0, 100000),
+                irr = random.randrange(0, 100000),
 
 
 
@@ -319,75 +320,70 @@ class EntryResource(ModelResource):
                     sub_red.save()
 
         # Holdings
-        no_holdings = 3
         holding_names = ['Coca Cola', 'Pepsi', 'Pussy']
-        for index in range(0, no_holdings):
 
-            name_rand = random.randrange(0, 5)
+        for holding_name in holding_names:
+            hold = Holding(
+                name = holding_name,
+                mtd  = random.randrange(0, 5),
+                fee = fee[random.randrange(0, int(fee.count()))],
+                fund = fund[0],
+                currency = currency[random.randrange(0, int(currency.count()))],
+                country = country[random.randrange(0, int(country.count()))],
+                counter_party = counter_party[random.randrange(0, int(counter_party.count()))],
+                sector = sector[random.randrange(0, int(sector.count()))],
+                sub_sector = sub_sector[random.randrange(0, int(sub_sector.count()))],
+                location = location[random.randrange(0, int(location.count()))],
+                asset_class = asset_class,
+                description = 'n/a',
+                rep_code = 1,
+                isin = 1,
+                valoren = 1,
+                redemption_frequency = random.randrange(1, 4),
+                redemption_notice = 30,
+                max_redemption = random.randrange(10, 50),
+                payment_days = 30,
+                gate = random.randrange(10, 50),
+                soft_lock = random.randrange(1, 2),
+                redemption_fee12 = random.randrange(1, 2),
+                redemption_fee24 = random.randrange(2, 4),
+                redemption_fee36 = random.randrange(3, 5),
 
-            for holding_name in holding_names:
-
-                hold = Holding(
-                    name = holding_name,
-                    mtd  = random.randrange(0, 5),
-                    fee = fee[random.randrange(0, int(fee.count()))],
-                    fund = fund[0],
-                    currency = currency[random.randrange(0, int(currency.count()))],
-                    country = country[random.randrange(0, int(country.count()))],
-                    counter_party = counter_party[random.randrange(0, int(counter_party.count()))],
-                    sector = sector[random.randrange(0, int(sector.count()))],
-                    sub_sector = sub_sector[random.randrange(0, int(sub_sector.count()))],
-                    location = location[random.randrange(0, int(location.count()))],
-                    asset_class = asset_class,
-                    description = 'n/a',
-                    rep_code = 1,
-                    isin = 1,
-                    valoren = 1,
-                    redemption_frequency = random.randrange(1, 4),
-                    redemption_notice = 30,
-                    max_redemption = random.randrange(10, 50),
-                    payment_days = 30,
-                    gate = random.randrange(10, 50),
-                    soft_lock = random.randrange(1, 2),
-                    redemption_fee12 = random.randrange(1, 2),
-                    redemption_fee24 = random.randrange(2, 4),
-                    redemption_fee36 = random.randrange(3, 5),
-
-                    # historical
-                    nav = random.randrange(100000,10000000),
-                    value_date = self.rand_date(),
-                    dealing_date = self.rand_date(),
-                    redemption_date = self.rand_date(),
-                    interest_rate = 1,
-                    weight = float ('0.' + str(random.randrange(0,99999))),
-                    current_price = random.randrange(50,200),
-                    no_of_units = random.randrange(1,10000),
-                    price_of_unit = random.randrange(1,50),
-                    cumulative_nav = random.randrange(1,10000),
-                    cumulative_weight = random.randrange(1,100),
+                # historical
+                nav = random.randrange(100000,10000000),
+                value_date = self.rand_date(),
+                dealing_date = self.rand_date(),
+                redemption_date = self.rand_date(),
+                interest_rate = 1,
+                weight = float ('0.' + str(random.randrange(0,99999))),
+                current_price = random.randrange(50,200),
+                no_of_units = random.randrange(1,10000),
+                price_of_unit = random.randrange(1,50),
+                cumulative_nav = random.randrange(1,10000),
+                cumulative_weight = random.randrange(1,100),
 
 
-                    inflow_euro = random.randrange(0, 100000),
-                    inflow_dollar = random.randrange(0, 100000),
-                    outflow_euro = random.randrange(0, 100000),
-                    outflow_dollar = random.randrange(0, 100000),
-                    delta_valuation = random.randrange(0, 100000),
-                    delta_flow = random.randrange(0, 100000),
-                    cash_flow = random.randrange(0, 100000),
-                    irr = random.randrange(0, 100000),
+                inflow_euro = random.randrange(0, 100000),
+                inflow_dollar = random.randrange(0, 100000),
+                outflow_euro = random.randrange(0, 100000),
+                outflow_dollar = random.randrange(0, 100000),
+                delta_valuation = random.randrange(0, 100000),
+                delta_flow = random.randrange(0, 100000),
+                cash_flow = random.randrange(0, 100000),
+                irr = random.randrange(0, 100000),
 
-                    drawdown = random.randrange(0, 100000),
-                    distribution = random.randrange(0, 100000),
-                    residual_commit = random.randrange(0, 100000),
-                    valuation = random.randrange(0, 100000),
-                    total_value = random.randrange(0, 100000),
-                    proceed = random.randrange(0, 100000),
-                    commit = random.randrange(0, 100000),
-                    various = random.randrange(0, 100000),
+                drawdown = random.randrange(0, 100000),
+                distribution = random.randrange(0, 100000),
+                residual_commit = random.randrange(0, 100000),
+                valuation = random.randrange(0, 100000),
+                total_value = random.randrange(0, 100000),
+                proceed = random.randrange(0, 100000),
+                commit = random.randrange(0, 100000),
+                various = random.randrange(0, 100000),
 
 
-                )
-                hold.save()
+            )
+            hold.save()
 
         trade_types = TradeType.objects.all()
         purchase_sales = PurchaseSale.objects.all()
@@ -435,7 +431,6 @@ class EntryResource(ModelResource):
                         ytd = random.randrange(1, 5),
                         si = random.randrange(1, 5),
                         performance = random.randrange(1, 5),
-                        drawdown = random.randrange(-100000,1000000),
                         ann_return1 = random.randrange(0, 5),
                         ann_return3 = random.randrange(0, 5),
                         ann_return5 = random.randrange(0, 5),
@@ -460,7 +455,6 @@ class EntryResource(ModelResource):
                         performance_fee_added_back = random.randrange(0, 1000),
                         subscription_amount = random.randrange(0, 100000),
                         redemption_amount = random.randrange(0, 10000),
-                        net_movement = random.randrange(0, 100000),
                         gross_assets_after_subs_red = random.randrange(0, 1000000),
 
                         nav_securities = random.randrange(0, 1000000),
@@ -524,6 +518,16 @@ class EntryResource(ModelResource):
                         delta_valuation = random.randrange(0, 100000),
                         delta_flow = random.randrange(0, 100000),
 
+                        irr = random.randrange(0, 100000),
+                        drawdown = random.randrange(0, 100000),
+                        distribution = random.randrange(0, 100000),
+                        residual_commit = random.randrange(0, 100000),
+                        valuation = random.randrange(0, 100000),
+                        net_movement = random.randrange(0, 100000),
+                        total_value = random.randrange(0, 100000),
+                        proceed = random.randrange(0, 100000),
+                        commit = random.randrange(0, 100000),
+                        various = random.randrange(0, 100000),
 
                         # these two are not used atm. keeping them here as they keep getting renamed back and forth
                         assets_subtotal = random.randrange(0, 10000),
@@ -597,8 +601,8 @@ class EntryResource(ModelResource):
                             delta_flow = random.randrange(0, 100000),
                             cash_flow = random.randrange(0, 100000),
                             expense = random.randrange(0, 100000),
-                            irr = random.randrange(0, 100000),
 
+                            irr = random.randrange(0, 100000),
                             drawdown = random.randrange(0, 100000),
                             distribution = random.randrange(0, 100000),
                             residual_commit = random.randrange(0, 100000),

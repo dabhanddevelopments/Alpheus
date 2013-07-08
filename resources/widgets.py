@@ -149,21 +149,21 @@ class asdf(MainBaseResource2):
             "value_date": ALL,
             "fund": ALL,
         }
-        
+
     def alter_list_data_to_serialize(self, request, data):
         from django.http import QueryDict
         dict = {'fund': '1', 'value_date__year': '2013', }
         qdict = QueryDict('fund=1&fields=ann_return1')
         request.GET = {}
         request.GET = qdict
-        
-        
 
-        
+
+
+
         kwargs = {'api_name': u'widget', 'resource_name': u'fundperfmonthmin'}
         class_name = widget.canonical_resource_for('fundperfmonthmin').__class__.__name__
         fund = globals()[class_name]()
-        
+
         base_bundle = fund.build_bundle(request=request)
         objects = fund.obj_get_list(bundle=base_bundle,
                                     **fund.remove_api_resource_names(kwargs))
@@ -175,13 +175,13 @@ class asdf(MainBaseResource2):
 
         test = bundles
         #test = fund.get_list(request)
-        return {'data1': data, 'data2': test} 
-        
+        return {'data1': data, 'data2': test}
+
 widget.register(asdf())
 
 # W18 Summary Graph
 # TODO: Limit this query so it does not return fields that are not passed in the 'fields' qs
-#       get_fields gets called from ModelResource's Meta. 
+#       get_fields gets called from ModelResource's Meta.
 #       Do we have access to `request` in the Resource's constructor?
 # http://localhost:8000/api/widget/fundperfmonthmin/?format=json&fund=2&fields=performance
 class FundPerfMonthMin(MainBaseResource):
@@ -192,54 +192,54 @@ class FundPerfMonthMin(MainBaseResource):
         ordering = ['value_date']
         serializer = PrettyJSONSerializer()
         fields = [
-            'ann_return1', 'ann_return3', 'ann_return5', 
-            'ann_volatility1', 'ann_volatility3', 'ann_volatility5', 
-            'sharpe_ratio1', 'sharpe_ratio3', 'sharpe_ratio5', 
-            'alpha1', 'alpha3', 'alpha5', 
-            'beta1', 'beta3', 'beta5', 
-            'correlation1', 'correlation3', 'correlation5', 
+            'ann_return1', 'ann_return3', 'ann_return5',
+            'ann_volatility1', 'ann_volatility3', 'ann_volatility5',
+            'sharpe_ratio1', 'sharpe_ratio3', 'sharpe_ratio5',
+            'alpha1', 'alpha3', 'alpha5',
+            'beta1', 'beta3', 'beta5',
+            'correlation1', 'correlation3', 'correlation5',
             'value_date', 'fund__name']
         filtering = {
             "value_date": ALL,
             "fund": ALL,
         }
-  
+
 
     def build_filters(self, filters=None):
         self.check_params(['fields'], filters)
         return super(FundPerfMonthMin, self).build_filters(filters)
-        
+
     def get_object_list(self, request):
-    
+
         """ only fetches the columns in the `_meta.fields` list """
-        
+
         return super(FundPerfMonthMin, self).get_object_list(request) \
                                                 .only(*self._meta.fields)
 
     def alter_list_data_to_serialize(self, request, data):
 
         fields = request.GET.get("fields", 0)
-        
 
-        
+
+
         try:
             fund_name = data['objects'][0].data['fund']
         except:
             fund_name = ''
-        
+
         extracted = []
         for row in data['objects']:
             date = int(mktime(row.data['value_date'].timetuple())) * 1000
             extracted.append([int(date), float(row.data[fields])])
-            
+
         #extracted = [row.data[fields] for row in data['objects']]
         return  [{
             #'fund': fund_name,
             'data': extracted,
         }]
-widget.register(FundPerfMonthMin())        
-        
-    
+widget.register(FundPerfMonthMin())
+
+
 # W1, W18 Data Table
 # http://localhost:8000/api/widget/fundperfmonth/?format=json&fund=2&fields=performance
 class FundPerfMonth(MainBaseResource):
@@ -310,6 +310,12 @@ widget.register(FundPerfMonth())
 
 
 
+
+class HoldingResource(ModelResource):
+    class Meta:
+        queryset = Holding.objects.all()
+
+
 # W2, W7 Graph
 # http://localhost:8007/api/widget/fundperfholdperfbar/?fund=2&value_date=2013-5-30&legend=false&format=json
 class FundPerfHoldPerfBar(MainBaseResource):
@@ -347,7 +353,7 @@ class FundPerfHoldPerfBar(MainBaseResource):
     def build_filters(self, filters=None):
         self.check_params(['fields'], filters)
         return super(FundPerfHoldPerfBar, self).build_filters(filters)
-        
+
 widget.register(FundPerfHoldPerfBar())
 
 
@@ -535,8 +541,8 @@ class FundPerfGroupBar(MainBaseResource):
             'objects': newlist,
         }
         return JsonResponse(dic)
-        
-        
+
+
 widget.register(FundPerfGroupBar())
 
 # @TODO: This should be merged with the bar chart
@@ -553,7 +559,7 @@ class FundPerfGroupPie(MainBaseResource):
         }
 
     def dehydrate(self, bundle):
-        
+
         #print dir(bundle.data)
         #return bundle
         bundle.data = {
@@ -641,13 +647,16 @@ class FundPerfHoldTable(MainBaseResource):
 
     def alter_list_data_to_serialize(self, request, data):
 
-        fields = self._meta.fields;
-        if 'id' in fields: fields.remove('id')
+        fields = self._meta.fields[:]
+        for index, field in enumerate(fields):
+            if field == 'id':
+                fields.remove('id')
+            fields[index] = field.replace('__name', '')
 
         data = {
             'metaData': {'sorting': 'name'},
             'columns': self.set_columns(request, fields),
-            'rows': data,
+            'rows': data['objects'],
         }
         return data
 
@@ -942,7 +951,7 @@ class HoldTradeResource(ModelResource):
 class HoldLiquidity(MainBaseResource):
     fund = fields.ForeignKey(FundResourceOld, 'fund')
     asset_class = fields.ForeignKey(HoldingCategoryResource, 'asset_class', null=True)
-    
+
     class Meta(MainBaseResource.Meta):
         queryset = Holding.objects.select_related('fund').all()
         fields = [
@@ -1115,8 +1124,8 @@ class FundSummary(MainBaseResource):
     administrator =  fields.ForeignKey(AdministratorResource, 'administrator', full=True)
     classification = fields.ForeignKey(ClassificationResource, 'classification', full=True)
     manager = fields.ForeignKey(UserResource, 'manager', full=True)
-    
-    
+
+
     class Meta(MainBaseResource.Meta):
         queryset = Fund.objects.select_related('fund_type', 'benchmark',\
          'custodian', 'auditor', 'administrator', 'classification', \
@@ -1128,7 +1137,7 @@ widget.register(FundSummary())
 # @TODO limit columns
 class FundRegister(MainBaseResource):
     #funds = fields.ManyToManyField(FundResourceOld, 'fund', related_name='funds')
-    
+
     class Meta(MainBaseResource.Meta):
         queryset = Client.objects.prefetch_related('fund')
         filtering = {
@@ -1137,7 +1146,7 @@ class FundRegister(MainBaseResource):
     def dehydrate(self, bundle):
         bundle.data['name'] = bundle.data['first_name'] + ' ' + bundle.data['last_name']
         return bundle
-        
+
     def alter_list_data_to_serialize(self, request, data):
 
         columns = [['name', 'Client'], ['no_of_units', 'No of Units'],
@@ -1155,7 +1164,7 @@ not used - moved to views becaue of get_FOO_display()
 class SubscriptionRedemption(MainBaseResource):
     fund = fields.ForeignKey(FundResourceOld, 'fund')
     client = fields.ForeignKey(ClientResource, 'client')
-    
+
     class Meta(MainBaseResource.Meta):
         queryset = SubscriptionRedemption.objects.all()
         filtering = {
@@ -1165,7 +1174,7 @@ class SubscriptionRedemption(MainBaseResource):
     def dehydrate(self, bundle):
         bundle.data['sub_red'] = bundle.get_sub_red_display()
         bundle.data['percent_released'] = bundle.data['percent_released'].get_percent_released_display()
-        
+
     def alter_list_data_to_serialize(self, request, data):
 
         columns = [['name', 'Sub. or Red.'], 'trade_date',

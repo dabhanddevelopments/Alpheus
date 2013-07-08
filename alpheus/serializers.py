@@ -2,6 +2,17 @@ from django.core.serializers import json
 from django.utils import simplejson
 from tastypie.serializers import Serializer
 from mptt.templatetags.mptt_tags import cache_tree_children
+from json import encoder
+encoder.FLOAT_REPR = lambda o: format(o, '.2f')
+
+
+"""
+class DecimalEncoder(json.DjangoJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return float(obj)
+        return json.JSONEncoder.default(self, obj)
+"""
 
 class PrettyJSONSerializer(Serializer):
     json_indent = 2
