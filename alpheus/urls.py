@@ -1,51 +1,91 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.http import HttpResponse
-from resources.api import api
-from resources.widgets import widget
+#from resources.api import api
+#from resources.widgets import widget
 from app import views
+from fund import views as fund
+from holding import views as holding
+
+from fund.resources import *
+from holding.resources import *
+from client.resources import *
+from comparative.resources import *
 
 admin.autodiscover()
 
 
 from django.conf.urls.defaults import *
 from tastypie.api import Api
-from api_example.resources import EntryResource, UserResource
 
-v1_api = Api(api_name='v1')
-v1_api.register(UserResource())
-v1_api.register(EntryResource())
+api = Api(api_name="api")
+from app.resources import *
+
+# fund
+api.register(FundResource())
+api.register(FundHistoryResource())
+api.register(FundValuationResource())
+api.register(CurrencyPositionResource())
+api.register(FxHedgeResource())
+api.register(FxRateResource())
+api.register(FundClassificationResource())
+
+# holding
+api.register(HoldingResource())
+api.register(HoldingHistoryResource())
+api.register(HoldingValuationResource())
+api.register(BreakdownResource())
+api.register(CountryBreakdownResource())
+api.register(CategoryResource())
+api.register(TradeResource())
+
+# client
+api.register(ClientResource())
+
+# app
+api.register(ImportResource())
+api.register(CurrencyResource())
+api.register(InfoResource())
+api.register(UserResource())
+api.register(WidgetsResource())
+api.register(LoggedInResource())
+api.register(MenuResource())
+api.register(MenuParentItemsResource())
+api.register(PageResource(),canonical=True)
+api.register(PageWindowResource(),canonical=True)
+
+# comparative
+api.register(BenchmarkResource())
+api.register(BenchmarkHistoryResource())
+api.register(PeerResource())
+api.register(PeerHistoryResource())
 
 urlpatterns = patterns('',
     (r'^robots\.txt$', lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain")),
     url(r'^$', views.index, name='index'),
-    url(r'^check-nodes/$', views.check_nodes),
-    url(r'^mainmenu/$', views.mainmenu),
-    url(r'^api/widget/fundperfdatatable/$', views.fund_perf_data_table),
-    url(r'^api/widget/fundallochistnav/$', views.fundallochistnav),
-    url(r'^api/widget/fundperfbenchcomptable/$', views.fundperfbenchcomptable),
-    url(r'^api/widget/fundperfbenchcompline/$', views.fundperfbenchcompline),
-    url(r'^api/widget/fundbestworst/$', views.fundbestworst),
-    url(r'^api/widget/fundreturnhistogram/$', views.fundreturnhistogram),
-    url(r'^api/widget/fundcorrelationmatrix/$', views.fundcorrelationmatrix),
-    url(r'^api/widget/holdcorrelationmatrix/$', views.holdcorrelationmatrix),
-    url(r'^api/widget/fundnegativemonthstable/$', views.fundnegativemonthstable),
-    url(r'^api/widget/fundnegativemonthsgraph/$', views.fundnegativemonthsgraph),
-    url(r'^api/widget/fundnavreconciliation/$', views.fundnavreconciliation),
-    url(r'^api/widget/subscriptionredemptionmonth/$', views.subscriptionredemptionmonth),
-    url(r'^api/widget/subscriptionredemption/$', views.subscriptionredemption),
-    url(r'^api/widget/fundgrossasset1/$', views.fundgrossasset1),
-    url(r'^api/widget/fundgrossasset2/$', views.fundgrossasset2),
-    url(r'^api/widget/fundgrossasset3/$', views.fundgrossasset3),
-    url(r'^api/widget/fundgrossasset4/$', views.fundgrossasset4),
-    url(r'^api/widget/fundsubredtable/$', views.fundsubredtable),
-    url(r'^api/widget/currencyhedge/$', views.currencyhedge),
-    #url(r'^api/widget/holdliquidity/$', views.holdliquidity),
-    url(r'^api/widget/fundreturn/$', views.fundreturn),
-    url(r'api/', include(widget.urls)),
-    url(r'', include(api.urls)),
+    
+    url(r'^api/holding-correlation/$', holding.correlation),
+    url(r'^api/holding-performance-benchmark/$', holding.performancebenchmark),
+    
+    url(r'^api/fund-best-worst/$', fund.bestworst),
+    url(r'^api/fund-returns/$', fund.returns),
+    url(r'^api/fund-performance-benchmark/$', fund.performancebenchmark),
+    url(r'^api/fund-reconciliation/$', fund.reconciliation),
+    url(r'^api/fund-returnhistogram/$', fund.returnhistogram),
+    url(r'^api/fund-correlation/$', fund.correlation),
+    url(r'^api/fund-negativemonths-table/$', fund.negativemonthstable),
+    url(r'^api/fund-negativemonths-graph/$', fund.negativemonthsgraph),
+    url(r'^api/fund-subredtable/$', fund.subredtable),
+    url(r'^api/fund-currencyhedge/$', fund.currencyhedge),
+    url(r'^api/fund-grossasset1/$', fund.grossasset1),
+    url(r'^api/fund-grossasset2/$', fund.grossasset2),
+    url(r'^api/fund-grossasset3/$', fund.grossasset3),
+    url(r'^api/fund-grossasset4/$', fund.grossasset4),
+    url(r'^api/fund-grossasset5/$', fund.grossasset5),
+    
     url(r'admin/', include(admin.site.urls)),
     (r'^grappelli/', include('grappelli.urls')),
-    (r'^api/', include(v1_api.urls)),
+    url(r'api/doc/', include('tastypie_swagger.urls', namespace='tastypie_swagger')),
+    (r'', include(api.urls)),
     )
 

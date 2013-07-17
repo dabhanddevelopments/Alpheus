@@ -636,7 +636,7 @@ Ext.onReady(function() {
         //}
         for(i=0; i<pages.length; i++) {
 
-            if(typeof pages[i].children !== 'undefined') {
+            if(typeof pages[i].children[0].id != 'undefined') {
                 page_id = pages[i].children[0].id;
             } else {
                 page_id = pages[i].id;
@@ -1343,6 +1343,11 @@ console.log('initiating grid');
         if(typeof obj.fund == 'undefined') {
             obj.fund = $('#data').data('fund');
         }
+        obj.id = obj.fund;
+
+        if(typeof obj.holding == 'undefined') {
+            obj.holding = 1; //$('#data').data('fund'); // change this later
+        }
 
         // new way
         if(typeof extra_params != 'undefined') {
@@ -1367,7 +1372,12 @@ console.log('initiating grid');
         } else {
             var api = '/api/widget/';
         }
+        
         widget.url = api + widget.key + '/';
+        
+        if(widget.columns != '') {
+           widget.qs += '&fields=' + widget.columns; 
+        }
 
         // old way
         $.each(obj, function(key, value) {
@@ -1703,7 +1713,7 @@ console.log('initiating grid');
                     categories: data.columns,
                     //type : "datetime",
                 },
-                series: data.objects,
+                //series: data,
             }
 
             if(typeof widget.params.labels != 'undefined' && widget.params.labels == 'rotated') {

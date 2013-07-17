@@ -2,10 +2,17 @@ from django.db import models
 from django.contrib.auth.models import User, Group
 from mptt.models import MPTTModel, TreeForeignKey
 
+DATE_TYPE = (
+    ('d', 'Day'),
+    ('w', 'Week'),
+    ('m', 'Month'),
+)
+
 YES_NO=(
     (1,'Yes'),
     (2,'No'),
 )
+
 SUBSCRIPTION_FREQUENCY=(
     (1,'D'),
     (2,'M'),
@@ -20,18 +27,39 @@ FREQUENCY=(
     (3,'SA'),
     (4,'A'),
 )
+
 SUBSCRIPTION_REDEMPTION=(
     (1,'Subscription'),
     (2,'Redemption'),
 )
+
 BUY_SELL=(
     (1,'Buy'),
     (2,'Sell'),
 )
+
 PERCENT_RELEASED=(
     (90,'90%'),
     (100,'100%'),
 )
+
+
+class MonthlyManager(models.Manager):
+    def get_query_set(self):
+        return super(MonthlyManager, self).get_query_set().filter(date_type='m')
+        
+class DailyManager(models.Manager):
+    def get_query_set(self):
+        return super(MonthlyManager, self).get_query_set().filter(date_type='d')
+        
+
+class ModelBase(models.Model):
+    class Meta:
+        abstract = True
+        
+    objects = models.Manager()
+    days = DailyManager()
+    months = MonthlyManager()
 
 
 class Window(models.Model):
@@ -50,7 +78,6 @@ class Window(models.Model):
 
     def __unicode__(self):
         return '%s - %s' % (self.key, self.name)
-
 
 # Widget types are table, chart, graph etc
 class WidgetType(models.Model):
@@ -83,8 +110,8 @@ class Widget(models.Model):
                                                  max_length=50, help_text="""
             Width of data columns as comma seperated string:
             &lt;first column&gt;,&lt;other columns&gt;""")
-    columns = models.CommaSeparatedIntegerField(blank=True, null=True,
-                                                 max_length=50, help_text="""
+    columns = models.CharField(blank=True, null=True,
+                                                 max_length=300, help_text="""
             Columns as comma seperated string:
             &lt;first column&gt;,&lt;second column&gt;,&lt;third column&gt;""")
     position = models.PositiveSmallIntegerField("Position")
@@ -173,12 +200,78 @@ class Administrator(models.Model):
     def __unicode__(self):
         return self.name
 
+
+
+class Menu(MPTTModel):
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+    page = models.ForeignKey(Page, blank=True, null=True)
+    fund = models.ForeignKey('fund.Fund', blank=True, null=True)
+    name = models.CharField(max_length=50)
+    access = models.ManyToManyField(Group)
+
+    def __unicode__(self):
+        try:
+            self.parent.name
+            return u'%s / %s' % (self.parent.name, self.name)
+        except:
+            return self.name
+
+class Currency(models.Model):
+    name = models.CharField(max_length=50)
+    code = models.CharField(max_length=3)
+    def __unicode__(self):
+        return self.name
+
+class Country(models.Model):
+    name = models.CharField(max_length=50)
+    code = models.CharField(max_length=3)
+
+    def __unicode__(self):
+        return self.name
+
+# deposit, withdrawal, buy sell stocks etc
+class TradeType(models.Model):
+    pass
+
+class PurchaseSale(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __unicode__(self):
+        return self.name
+
+class Alarm(models.Model):
+    name = models.CharField(max_length=50)
+
+class Fee(models.Model):
+    pass
+
+class HistoricalFee(models.Model):
+    fee = models.ForeignKey(Fee)
+
+# company expenses, salary etc
+class Expense(models.Model):
+    pass
+
+# why?
+class HistoricalExpense(models.Model):
+    expense = models.ForeignKey(Expense)
+
+# The person taking your trade order
+class CounterParty(models.Model):
+    name = models.CharField(max_length=50)
+
+
+
+"""
+
 class CurrencyPositionMonth(models.Model):
     fund = models.ForeignKey('Fund')
     currency = models.ForeignKey('Currency')
     nav = models.DecimalField(max_digits=20, decimal_places=5,\
                                              verbose_name="NAV")
     value_date = models.DateField()
+    
+    
 
 class FxRate(models.Model):
     value_date = models.DateField()
@@ -259,21 +352,6 @@ class FundBenchHist(models.Model):
     correlation5 = models.DecimalField(max_digits=4, decimal_places=2)
 
 
-class Menu(MPTTModel):
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
-    page = models.ForeignKey(Page, blank=True, null=True)
-    fund = models.ForeignKey(Fund, blank=True, null=True)
-    name = models.CharField(max_length=50)
-    access = models.ManyToManyField(Group)
-
-    def __unicode__(self):
-        try:
-            self.parent.name
-            return u'%s / %s' % (self.parent.name, self.name)
-        except:
-            return self.name
-
-
 
 class HistoricFund(models.Model):
     fund = models.ForeignKey(Fund)
@@ -310,28 +388,7 @@ class Client(models.Model):
 class HistoricClient(models.Model):
     client = models.ForeignKey(Client)
 
-class Currency(models.Model):
-    name = models.CharField(max_length=50)
-    code = models.CharField(max_length=3)
-    def __unicode__(self):
-        return self.name
 
-class Country(models.Model):
-    name = models.CharField(max_length=50)
-    code = models.CharField(max_length=3)
-
-    def __unicode__(self):
-        return self.name
-
-# deposit, withdrawal, buy sell stocks etc
-class TradeType(models.Model):
-    pass
-
-class PurchaseSale(models.Model):
-    name = models.CharField(max_length=50)
-
-    def __unicode__(self):
-        return self.name
 
 
 # Trade does not have a history table
@@ -704,9 +761,6 @@ class FundPerf(models.Model):
 
 
 
-class Alarm(models.Model):
-    name = models.CharField(max_length=50)
-
 class Benchmark(models.Model):
     pass
 
@@ -783,4 +837,4 @@ class ClientPerfMonth(models.Model):
         ordering = ['value_date']
 
 
-
+"""

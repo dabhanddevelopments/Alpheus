@@ -5,7 +5,11 @@ BASE_DIR = os.path.join( os.path.dirname( __file__ ), '..' )
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+
 TASTYPIE_FULL_DEBUG = DEBUG
+TASTYPIE_SWAGGER_API_MODULE = 'alpheus.urls.api'
+
+API_LIMIT_PER_PAGE = 1000 
 
 INTERNAL_IPS = ('127.0.0.1',)
 
@@ -149,13 +153,17 @@ INSTALLED_APPS = (
     'mptt',
     'debug_toolbar',
     'django_extensions',
+    'tastypie_swagger',
     #'fixture_magic',
 
     # custom
     'app',
-    'app2',
-    'resources',
-    'api_example',
+    'fund',
+    'holding',
+    'client',
+    'comparative',
+    #'resources',
+    #'api_example',
 )
 
 # A sample logging configuration. The only tangible logging

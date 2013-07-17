@@ -1,5 +1,6 @@
 from django.db import connection 
 from django.template import Template, Context
+from django.http import HttpResponse
 
 class SQLLogMiddleware:
 
@@ -24,5 +25,8 @@ Total execution time: {{ time }}
 {% endfor %}
         ''')
 
-        response.content = "%s%s" % ( response.content, t.render(Context({'sqllog':connection.queries,'count':len(connection.queries),'time':time})))
-        return response
+        tpl = t.render(Context({'sqllog':connection.queries,'count':len(connection.queries),'time':time}))
+        content = "%s%s" % ( response.content, tpl)
+        content = content.replace('&#39;', '"') # super ugly but does the trick
+        
+        return HttpResponse(content, content_type="text/text")

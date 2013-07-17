@@ -39,17 +39,6 @@ class PageWindowAdmin(admin.ModelAdmin):
     list_display = ('page', 'window', 'user', 'col', 'row')
     list_filter = ['page__title']
 
-class FundPerfDailyAdmin(admin.ModelAdmin):
-    list_display = ('fund', 'performance', 'value_date')
-
-class FundPerfMonthlyAdmin(admin.ModelAdmin):
-    list_display = ('value_date',)
-
-class HoldingCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'holding_group')
-
-class HoldingAdmin(admin.ModelAdmin):
-    pass
 
 class CurrencyAdmin(admin.ModelAdmin):
     pass
@@ -57,18 +46,29 @@ class CurrencyAdmin(admin.ModelAdmin):
 class CountryAdmin(admin.ModelAdmin):
     pass
 
-admin.site.register(Country, CountryAdmin)
-admin.site.register(Currency, CurrencyAdmin)
-admin.site.register(Holding, HoldingAdmin)
-admin.site.register(HoldingCategory, HoldingCategoryAdmin)
-admin.site.register(Menu, MenuAdmin)
-admin.site.register(CounterParty)
+
 admin.site.register(WidgetType, WidgetTypeAdmin)
 admin.site.register(WidgetParam, WidgetParamAdmin)
 admin.site.register(Widget, WidgetAdmin)
 admin.site.register(Window, WindowAdmin)
 admin.site.register(Page, PageAdmin)
 admin.site.register(PageWindow, PageWindowAdmin)
+admin.site.register(Menu, MenuAdmin)
+admin.site.register(Country, CountryAdmin)
+admin.site.register(Currency, CurrencyAdmin)
+admin.site.register(Classification)
+admin.site.register(Administrator)
+admin.site.register(Auditor)
+admin.site.register(Custodian)
+admin.site.register(CounterParty)
+admin.site.register(Alarm)
+"""
+admin.site.register(Country, CountryAdmin)
+admin.site.register(Currency, CurrencyAdmin)
+admin.site.register(Holding, HoldingAdmin)
+admin.site.register(HoldingCategory, HoldingCategoryAdmin)
+
+
 admin.site.register(Trade)
 admin.site.register(TradeType)
 admin.site.register(Fund)
@@ -82,13 +82,10 @@ admin.site.register(PurchaseSale)
 admin.site.register(FundBench)
 admin.site.register(FundBenchHist)
 admin.site.register(FxHedge)
-admin.site.register(Classification)
-admin.site.register(Administrator)
-admin.site.register(Auditor)
-admin.site.register(Custodian)
+
 admin.site.register(Client)
 admin.site.register(ClientPerfMonth)
 admin.site.register(CurrencyPositionMonth)
 admin.site.register(SubscriptionRedemption)
 admin.site.register(CountryBreakdown)
-
+"""

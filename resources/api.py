@@ -234,7 +234,7 @@ class FundTypeResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = FundType.objects.all()
 
-
+from fund.models import Fund
 class FundResourceAll(ModelResource):
 
     class Meta(MainBaseResource.Meta):
