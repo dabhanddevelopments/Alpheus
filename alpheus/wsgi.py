@@ -14,7 +14,7 @@ framework.
 
 """
 import os, sys
-root = os.path.join(os.path.dirname(__file__), '/srv/alpheus')
+root = os.path.join(os.path.dirname(__file__), '/srv/www/alpheus')
 sys.path.insert(0, root)
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "alpheus.settings")
