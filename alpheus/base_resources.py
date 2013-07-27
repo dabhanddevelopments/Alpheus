@@ -40,7 +40,7 @@ class MainBaseResource(SpecifiedFields):
         base_bundle = self.build_bundle(request=request)
         objects = self.obj_get_list(bundle=base_bundle,
                                     **self.remove_api_resource_names(kwargs))
-        
+
         sorted_objects = self.apply_sorting(objects, options=request.GET)
 
         paginator = self._meta.paginator_class(request.GET, sorted_objects, \
@@ -48,13 +48,13 @@ class MainBaseResource(SpecifiedFields):
                                             limit=self._meta.limit, \
                                             max_limit=self._meta.max_limit, \
                                             collection_name=self._meta.collection_name)
-                
+
         to_be_serialized = paginator.page()
 
         # Dehydrate the bundles in preparation for serialization.
         bundles = []
-        
- 
+
+
         for obj in to_be_serialized[self._meta.collection_name]:
             bundle = self.build_bundle(obj=obj, request=request)
             bundles.append(self.full_dehydrate(bundle))
@@ -102,7 +102,7 @@ class MainBaseResource(SpecifiedFields):
         from django.db.models import Q
         import operator
         from types import *
-        
+
         objects = self.get_object_list(request)
 
         f = applicable_filters.get('filter')
@@ -145,38 +145,38 @@ class MainBaseResource(SpecifiedFields):
 
         self.data_type = request.GET.get("data_type", False)
         #self.date_type = request.GET.get("date_type", False)
-        
+
         self.specified_fields = []
         try:
             self.extra_fields = request.GET.get("extra_fields", []).split(',')
             self.specified_fields += self.extra_fields
         except:
             self.extra_fields = []
-            
+
         self.value = request.GET.get("value", False)
         if self.value:
             self.specified_fields.append(self.value)
-            
+
         self.date = request.GET.get("date", False)
         if self.date:
             self.specified_fields.append(self.date)
-            
+
         self.title = request.GET.get("title", False)
         if self.title:
             self.specified_fields.append(self.title)
-            
+
         self.y1 = request.GET.get("y1", False)
         if self.y1:
             self.specified_fields.append(self.y1)
-            
+
         self.y2 = request.GET.get("y2", False)
         if self.y2:
-            self.specified_fields.append(self.y2)        
+            self.specified_fields.append(self.y2)
 
         return super(MainBaseResource, self).dispatch(request_type, request, **kwargs)
-    
+
     def get_object_list(self, request):
-    
+
         """ Set verbose column names """
 
         # @TODO: Use another hook for this
@@ -184,9 +184,9 @@ class MainBaseResource(SpecifiedFields):
 
         from django.utils.datastructures import SortedDict
         self.column_names = SortedDict()
-                   
+
         for field in self.specified_fields:
-        
+
             try:
                 f = field.split('__')[0]
             except:
@@ -194,27 +194,27 @@ class MainBaseResource(SpecifiedFields):
 
             """
             find another way that does not produce extra queries
-                      
+
             try:
                 self.column_names[f] = objects[0].objects._meta \
                         .get_field_by_name(f)[0].verbose_name.capitalize()
             except:
                 pass
-            """  
+            """
 
         return objects
 
 
     def dehydrate(self, bundle):
-    
+
         """ Round all Decimals to two decimal places """
-        
+
         bundle = super(MainBaseResource, self).dehydrate(bundle)
-        
+
         # @TODO: make this support multiple levels
         from decimal import *
         for key, val in bundle.data.iteritems():
-            
+
             if isinstance(val, Decimal):
                 bundle.data[key] = str(Decimal("%.2f" % val))
 
@@ -234,6 +234,7 @@ class MainBaseResource(SpecifiedFields):
             dic = {
                 'dataIndex': key,
                 'text': value,
+                'menuDisabled': True,
             }
             if key == column_border_y:
                 dic['tdCls'] = 'horizonal-border-column'
@@ -249,7 +250,7 @@ class MainBaseResource(SpecifiedFields):
             counter += 1
 
         return columns
-        
+
 
     def set_columns(self, request, column_names):
 
@@ -276,6 +277,7 @@ class MainBaseResource(SpecifiedFields):
                     'text': column.title().replace('_', ' '),
                     'dataIndex': value.lower(),
                     'align': 'center',
+                'menuDisabled': True,
                 }
             except:
                 try:
@@ -284,6 +286,7 @@ class MainBaseResource(SpecifiedFields):
                         'dataIndex': column[0].lower(),
                         'text': column[1].title().replace('_', ' '),
                         'align': 'center',
+                        'menuDisabled': True,
                     }
                 except:
                     raise
@@ -306,13 +309,13 @@ class MainBaseResource(SpecifiedFields):
 
         if self.data_type == DATA_TYPE_YEAR:
             import calendar
-            
 
-             
-            if self.y1 and self.title:   
+
+
+            if self.y1 and self.title:
 
                 import collections
-                
+
                 newlist = []
                 categories = {}
                 for month in range(1, 13):
@@ -331,22 +334,22 @@ class MainBaseResource(SpecifiedFields):
                         'data': val.values(),
                     }
                     newlist.append(dic)
-                    
+
                 # create columns
                 columns = []
                 for month in range(1, 13):
                     abbr = calendar.month_abbr[month]
                     columns.append(abbr)
-                
+
                 return {
                     'columns': columns,
                     'objects': newlist,
                 }
-            
+
             elif self.title:
 
                 categories = set([row.data[self.title] for row in data['objects']])
-            
+
                 months = []
                 for category in categories:
                     dic = {self.title: category}
@@ -360,10 +363,10 @@ class MainBaseResource(SpecifiedFields):
                     months.append(dic)
 
                 columns = [self.title] + self.get_month_list() + self.extra_fields
-            
+
             else:
                 categories = set([row.data[self.date].year for row in data['objects']])
-            
+
                 months = []
                 for category in categories:
                     dic = {'year': category}
@@ -377,19 +380,19 @@ class MainBaseResource(SpecifiedFields):
                     months.append(dic)
 
                 columns = ['Year'] + self.get_month_list() + self.extra_fields
-            
-            
+
+
             return {
                 'columns': self.set_columns(request, columns),
                 'rows': months,
             }
-            
+
         elif self.data_type == DATA_TYPE_GRAPH:
-        
+
             from time import mktime
-        
+
             if self.y1 and self.y2 and self.date:
-            
+
                 y1 = []
                 y2 = []
                 for row in data['objects']:
@@ -403,9 +406,9 @@ class MainBaseResource(SpecifiedFields):
                     'data': y2,
                     'yAxis': 1,
                 }]
-                
+
             elif self.y1 and self.title:
-            
+
                 y1 = []
                 for row in data['objects']:
                     y1.append({
@@ -413,9 +416,9 @@ class MainBaseResource(SpecifiedFields):
                         'name': row.data[self.title]
                     })
                 return {'objects': [{'data': y1}]}
-                
-            elif self.y1 and self.date:  
-                
+
+            elif self.y1 and self.date:
+
                 extracted = []
                 for row in data['objects']:
                     date = int(mktime(row.data[self.date].timetuple())) * 1000
@@ -423,7 +426,7 @@ class MainBaseResource(SpecifiedFields):
                 data['objects'] = extracted
             else:
                 raise Exception("Mandatory parameter(s) not passed")
-                
+
             return {'data': data['objects']}
 
 

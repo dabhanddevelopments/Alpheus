@@ -15,6 +15,11 @@ Ext.require([
     'Ext.grid.*',
 ]);
 
+
+
+
+
+
 function displayInnerGrid(widget, data, renderId, hideHeaders, height) {
 
         fields = [];
@@ -106,30 +111,30 @@ function zoomGraph(e, widget) {
     range = (e.max / 1000 ) - (e.min / 1000);
     range = Math.round( range );
 
-    var filter = '';
+    var filter = '&date_type=m';
 
     if(range > 300000000) { // more than 9.5 years
 
-        filter = '&value_date__month=2,4,6,8,10,12'; // 1st of month each other month
+        filter += '&value_date__month=2,4,6,8,10,12'; // 1st of month each other month
        //console.log('ALL');
 
     } else if(range >= 240000000) { // more than 7.5 years
 
-        //var filter = '&value_date__month=2,4,6,8,10,12'; // wed
+        filter += '&value_date__month=2,4,6,8,10,12'; // wed
        //console.log('1Y');
 
     } else if(range >= 120000000) { // more than 4 years
 
-        //var filter = '&value_date__week_day=3,5'; // tue, thu
+        filter += '&value_date__week_day=3,5'; // tue, thu
        //console.log('6M');
 
     } else if(range >= 60000000) { // more than 2 years
 
-        //var filter = '&value_date__week_day=2,4,6'; // mon, wed, fri
+        filter += '&value_date__week_day=2,4,6'; // mon, wed, fri
        //console.log('3M');
 
     } else {
-        var filter = ''; // empty means every month
+        filter += ''; // empty means every month
        //console.log('1M');
     }
 
@@ -142,9 +147,9 @@ function zoomGraph(e, widget) {
     chart.showLoading('Loading data from server...');
 
     $.getJSON(widget.url + qs + date + filter, function(data22) {
-        //console.log(data22[0]);
+        console.log(data22);
         //console.log(data22[0].data);
-	     chart.series[0].setData(data22[0].data);
+	     chart.series[0].setData(data22.objects[0].data);
 		 chart.hideLoading();
 	});
 }
@@ -159,7 +164,7 @@ console.log(e);
     var div = $('#data').data('linebar-div');
 
 
-    var qs = '?holding_category__holding_group__isnull=true&holding=' + holding;
+    var qs = '?holding=' + holding + '&data_type=graph&y1=price_of_unit&date=value_date&date_type=d';
 
     var start = new Date(e.min);
     var end = new Date(e.max);
@@ -206,12 +211,14 @@ console.log(e);
     var chart = $('#' + div).highcharts();
     chart.showLoading('Loading data from server...');
 
-    $.getJSON('/api/widget/fundperfholdpriceline/' + qs + date + filter, function(data) {
+    $.getJSON('/api/holding-history/' + qs + date + filter, function(data) {
 
 	     chart.series[0].setData(data);
 		 chart.hideLoading();
 
-        $.getJSON('/api/widget/fundperfholdvolbar/' + qs + date + filter, function(data2) {
+		var qs = '?holding=' + holding + '&data_type=graph&y1=no_of_units&date=trade_date';
+
+        $.getJSON('/api/fund/' + qs + date + filter, function(data2) {
 
 	         chart.series[1].setData(data2);
 		     chart.hideLoading();
@@ -223,8 +230,8 @@ console.log(e);
 
 function lineBarChart(widget) {
 
-    widget.url = '/api/widget/fundperfholdpriceline/';
-    widget.qs = '?holding_category__holding_group__isnull=true&value_date__month=2,4,6,8,10,12&value_date__day=1&holding__fund=' + widget.fund + '&holding=' + widget.holding;
+    widget.url = '/api/holding-history/';
+    widget.qs = '?value_date__month=2,4,6,8,10,12&value_date__day=1&data_type=graph&date=value_date&y1=price_of_unit&date_type=m&holding=' + widget.holding;
 
     $('#data').data('holding', widget.holding);
 
@@ -238,9 +245,17 @@ function lineBarChart(widget) {
 
     $.getJSON(widget.url + widget.qs, function(data) {
 
-        widget.url = '/api/widget/fundperfholdvolbar/';
+        data = data.data;
 
-        $.getJSON(widget.url + widget.qs, function(data2) {
+        widget.url = '/api/trade/';
+
+        qs = '?data_type=graph&date=trade_date&y1=no_of_units&holding=' + widget.holding;
+
+        $.getJSON(widget.url + qs, function(data2) {
+
+        data2 = data2.data;
+
+        console.log(data);
 
             var options = {
                 chart: {
@@ -353,6 +368,9 @@ function lineBarChart(widget) {
 		            tooltip: {
 			            valueDecimals: 2
 		            },
+                    marker: {
+                       enabled: false
+                    }
 
                 },
                 {
@@ -404,7 +422,7 @@ function refreshHoldPerfBar(date, fund, monthly, fields, order_by) {
         order_by = 'weight';
     }
     // gets set when W2 is loaded first time
-    var div = $('#data').data('div-fundperfholdperfbar');
+    var div = $('#data').data('barchart-w2');
 
     // get the window div so we can set the title, super ugly
     //win_div = div.slice(0, div.indexOf("_widget"));
@@ -414,69 +432,113 @@ function refreshHoldPerfBar(date, fund, monthly, fields, order_by) {
         date_title = moment(date).format("MMM YYYY")
     }
 
-
-
     //title = title.replace('FUND_NAME', $('#data').data('fund_name'));
     //title = title.replace('DATE', date_title);
 
-    var title = $('#data').data('fund_name') + ' / ' + date_title + ' / Holding Performance Bar Graph';
+    //var title = $('#data').data('fund_name') + ' / ' + date_title + ' / Holding Performance Bar Graph';
     //win = Ext.getCmp(win_div);
     //win.setTitle(title);
 
     var chart = $('#' + div).highcharts();
+    chart.destroy();
 
-    var url = '/api/widget/fundperfholdperfbar/?value_date=' + date + '&fund=' + fund + '&legend=false&fields=' + fields + '&order_by=' + order_by + '&holding_category__isnull=true';
-    //return monthTable(url, 'fundperfdaily', div);
+    var url = '/api/holding-history/';
 
-    // TODO: check if possible to reload the already existing chart's data instead of below
-    try {
-        chart.destroy();
-        $.getJSON(url, function(data) {
+    widget = {
+        'key': "holding-history",
+        'qs': '?value_date=' + date + '&holding__fund=' + fund + '&legend=false&y1=' + fields + '&order_by=' + order_by + '&data_type=graph&date_type=m&title=holding__name',
+        'type': "bar_chart",
+        'size_x': 6,
+        'size_y': 3,
+        'params': {},
+        'window': {
+            'key': 'w2',
+        }
+    };
+    obj = {
+        'fund': fund,
+    };
 
-                widget = {};
-                widget.size_x = 7;
-                widget.size_y = 3;
-                var chart = new Highcharts.Chart({
-                    chart: {
-                        renderTo: div,
-                        type: 'column',
-                        width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 30,
-                        height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 35,
-                    },
-                    title: {
-                        text: false,
-                    },
-                    legend: {
-                       enabled: false,
-                    },
-                    xAxis: {
-                        type: 'category',
-                        categories: data.columns,
-                    labels: {
-                        rotation: -45,
-                        align: 'right',
-                        style: {
-                            fontSize: '10px',
-                            fontFamily: 'Verdana, sans-serif'
-                        },
-                        enabled: labels,
-                    },
-                    },
-                    series: data.objects,
-                });
-        });
-    } catch (err) {
-        //do nothing
-    }
+
+    return createWidget(obj, widget, div);
 };
 
 
+function holdingTab(id, value) {
+
+    $('#data').data('holding', id);
+    $('#data').data('holding_name', value);
+
+    parent_div = 'page111-holdings' + id;
+
+    $('<div id="' + parent_div + '"></div>').appendTo('body');
+
+    var panel = Ext.getCmp('panel-tab');
+
+    tabs = {
+        112: 'Performance',
+        113: 'Stats',
+        114: 'NAV',
+        115: 'Summary',
+    }
+    items = [];
+    $.each(tabs, function(key, title) {
+
+        var tab_div = 'holdings' + id + '-' + key;
+
+        $('#data').data('grid' + tab_div, '');
+
+        $('<div id="' + tab_div + '" class="gridster"></div>').appendTo('body');
+
+        items.push({
+            title: title,
+            itemId: key,
+            contentEl: tab_div,
+            autoScroll: true,
+            listeners: {
+                activate: function(tab){
+                    //var tabId = tab.itemId.split('-')
+                    obj = {};
+                    //obj.page = tabId[1];
+                    obj.page = tab.itemId;
+                    obj.div = tab_div;
+                    initGrid(obj);
+                }
+            },
+        })
+    });
+
+    parent_id = 'page111-' + id;
+    panel.add({
+        xtype : 'tabpanel',
+        id: parent_id,
+        title: value,
+        contentEl: parent_div,
+        closable: true,
+        autoScroll:true,
+        activeTab: 0,
+        items: items
+    });
+
+
+    panel.setActiveTab(parent_id);
+    console.log('ASDF');
+
+    //obj = {};
+    //obj.page = 112;
+    //initGrid(obj);
+}
+
 Ext.onReady(function() {
+
+    window.holdingTab = holdingTab;
+    window.initGrid = initGrid;
+    window.createWidget = createWidget;
 
 
 
     // W18 summary graphs
-    function summaryGraphs() {
+    function summaryGraphs(type) {
         graphs = {
             1: [
                 {ann_return1: 'Returns one ann'},
@@ -505,7 +567,8 @@ Ext.onReady(function() {
         };
 
 
-        var fund = $('#data').data('fund');
+
+        var id = $('#data').data(type);
 
         items = [];
         for(var row in graphs) {
@@ -524,32 +587,32 @@ Ext.onReady(function() {
                 //$('<div id="' + innertab_div + '-line"></div>').appendTo('#' + tab_div);
 
                 // widget is global for some reason, so using another name
-                win_widget = {}
-                win_widget.url = '/api/widget/fundperfmonthmin/';
-                win_widget.qs = '?fund=' + fund + '&fields=' + key + '&value_date__month=2,4,6,8,10,12';
-                win_widget.size_y = 1.9;
-                win_widget.size_x = 3;
-                win_widget.div = bar_div;
+                win_widget2 = {}
+                win_widget2.url = '/api/' + type + '-history/';
+                win_widget2.qs = '?' + type + '=' + id + '&y1=' + key + '&data_type=graph&date=value_date&value_date__month=2,4,6,8,10,12';
+                win_widget2.size_y = 1.9;
+                win_widget2.size_x = 3;
+                win_widget2.div = bar_div;
 
 
-                win_widget.params = {}
-                win_widget.params.type = 'column';
-                win_widget.params.legend = 'false';
-                win_widget.params.scrollbar = 'false';
-                win_widget.params.navigator = 'true';
-                win_widget.params.zoom = 'true';
-                win_widget.params.rangeSelector = 'true';
-                win_widget.params.title = 'false';
-                win_widget.params.yAxisTitle = graphs[row][chart][key];
-                win_widget.params.date_type = 'month';
+                win_widget2.params = {}
+                win_widget2.params.type = 'column';
+                win_widget2.params.legend = 'false';
+                win_widget2.params.scrollbar = 'false';
+                win_widget2.params.navigator = 'true';
+                win_widget2.params.zoom = 'true';
+                win_widget2.params.rangeSelector = 'true';
+                win_widget2.params.title = 'false';
+                win_widget2.params.yAxisTitle = graphs[row][chart][key];
+                win_widget2.params.date_type = 'month';
 
-                lineChart('', win_widget, bar_div);
+                lineChart('', win_widget2, bar_div);
 
                 children.push({
                      xtype: 'tabpanel',
                      border: 1,
-                     width: (120 * win_widget.size_x) + (10 * win_widget.size_x) + (10 * (win_widget.size_x - 1)) - 20,
-                     height: (120 * win_widget.size_y) + (10 * win_widget.size_y) + (10 * (win_widget.size_y - 1)) + 20,
+                     width: (120 * win_widget2.size_x) + (10 * win_widget2.size_x) + (10 * (win_widget2.size_x - 1)) - 20,
+                     height: (120 * win_widget2.size_y) + (10 * win_widget2.size_y) + (10 * (win_widget2.size_y - 1)) + 20,
                       items: [
                         {
                             xtype : 'panel',
@@ -566,8 +629,8 @@ Ext.onReady(function() {
                     ],
                     listeners: {
                         'tabchange': function(tabPanel, tab){
-                            win_widget.params.type = 'line';
-                            lineChart('', win_widget, tab.id);
+                            win_widget2.params.type = 'line';
+                            lineChart('', win_widget2, tab.id);
                         }
                     }
                 })
@@ -583,6 +646,7 @@ Ext.onReady(function() {
        //console.log("ROW: " + row);
 
 
+        // is this needed?
         Ext.onReady(function(){
             var win = new Ext.Window({
                 renderTo: Ext.getBody(),
@@ -636,7 +700,7 @@ Ext.onReady(function() {
         //}
         for(i=0; i<pages.length; i++) {
 
-            if(typeof pages[i].children[0].id != 'undefined') {
+            if(typeof pages[i].children != 'undefined') {
                 page_id = pages[i].children[0].id;
             } else {
                 page_id = pages[i].id;
@@ -755,6 +819,13 @@ Ext.onReady(function() {
 
         var page = obj.page;
 
+        if(typeof obj.div == 'undefined') {
+            obj.div = 'page' + obj.page
+            var grid_div = 'grid' + page;
+        } else {
+            var grid_div = obj.div;
+        }
+
 console.log('initiating grid');
 
 
@@ -762,13 +833,14 @@ console.log('initiating grid');
 
         // if we have a grid for this page, it means it's already
         // loaded and we do not need to fetch it again
-        if($('#data').data('grid' + page) !== undefined && $('#data').data('grid' + page) !== '') {
+        if($('#data').data(grid_div) !== undefined && $('#data').data(grid_div) !== '') {
 
            //console.log('skipping gridster: grid' + page);
-            return;
+           return;
         }
 
-        obj.grid = $("#page" + page).gridster({
+
+        obj.grid = $("#" + obj.div).gridster({
             widget_margins: [10, 10],
             widget_base_dimensions: [120, 120],
             max_size_x: 10,
@@ -793,14 +865,14 @@ console.log('initiating grid');
 
         obj.grid.disable();
 
-        $('#data').data('grid' + page, obj.grid);
+        $('#data').data(grid_div, obj.grid);
 
         $.ajax({
             type: "GET",
             url: '/api/pagewindow/?page=' + page,
             success: function(data) {
 
-                $('#data').data('grid_data' + page, data);
+                $('#data').data('grid_data' + page, data); // doesn't seem to be used anywhere
 
 
                 // get the window id from pagewindow by filtering by page id (of current page)
@@ -872,11 +944,14 @@ console.log('initiating grid');
                 date[0] = tabId;
                 tabId = tabId + '-1';
            }
-           $.getJSON('/api/widget/fundsubredtable/?fund=' + obj.fund + '&year=' + date[0] + '&month='  + date[1] + '&column_width=80,80', function(data1) {
+           $.getJSON('/api/fund-subredtable/?fund=' + obj.fund + '&year=' + date[0] + '&month='  + date[1] + '&column_width=80,80', function(data1) {
                 tab = Ext.getCmp(tabId);
                 var table = createGrid(tabId, data1, 0);
                 tab.add(table);
-                $.getJSON('/api/widget/subscriptionredemptionmonth/?fund=' + obj.fund + '&year=' + date[0] + '&month='  + date[1] + '&column_width=100,100', function(data2) {
+
+                var fields = "&fields=fields=client__first_name,client__last_name,sub_red,trade_date,no_of_units,euro_nav,percent_released";
+
+                $.getJSON('/api/subscription-redemption/?fund=' + obj.fund + '&year=' + date[0] + '&month='  + date[1] + '&column_width=100,100' + fields, function(data2) {
                     tab = Ext.getCmp(tabId);
                     var table = createGrid('client' + tabId, data2, 1);
                     tab.add(table);
@@ -888,7 +963,7 @@ console.log('initiating grid');
 
         //for w13
         function appendGridToGrossAssetTab(tab, year) {
-            $.getJSON('/api/widget/fundgrossasset1/?fund=' + obj.fund + '&year=' + year + '&column_width=160,85', function(assets) {
+            $.getJSON('/api/fund-grossasset1/?fund=' + obj.fund + '&year=' + year + '&column_width=160,85', function(assets) {
                 var grid = dataGroupTable(assets, data.window);
                 tab.insert(0, grid);
                 tab.doLayout();
@@ -897,7 +972,7 @@ console.log('initiating grid');
 
         // for w18
         function appendGridToTab(tabId) {
-            fund = $('#data').data('fund');
+
 
             // for default child tabs
             var lastCharInString = tabId.toString().slice(-1);
@@ -908,29 +983,43 @@ console.log('initiating grid');
                     tabId = tabId + '1';
                 }
             }
+
+
+            if(data.window.key == 'w18') {
+                var type = 'fund';
+            } else if(data.window.key == 'w38') {
+                var type = 'client';
+            } else {
+                var type = 'holding';
+            }
+
+            var type_value = $('#data').data(type);
+
             if(typeof Ext.getCmp('grid' + tabId) == 'undefined') {
 
                 tab = Ext.getCmp(tabId);
                 // get grid data
-                $.getJSON('/api/widget/fundperfmonth/?fund=' + fund + '&fields=' + tabId + '&column_width=55,60', function(data) {
+                $.getJSON('/api/' + type + '-history/?' + type + '=' + type_value + '&value=' + tabId + '&column_width=55,60&data_type=year&date=value_date&extra_fields=ytd&date_type=m', function(data) {
 
-                    var table = createGrid(tabId, data);
-                    tab.add(table);
+                    //var table = createGrid(tabId, data);
+                    //tab.add(table);
                     // div for inner tabs
                     var innertab_div = 'inner-tab' + tabId;
                     $('<div id="' + innertab_div + '-bar"></div>').appendTo('#' + tab_div);
                     $('<div id="' + innertab_div + '-line"></div>').appendTo('#' + tab_div);
+                    $('<div id="' + innertab_div + '-line-table"></div>').appendTo('#' + tab_div);
 
                     widget = {}
                     widget.url = '';
-                    widget.qs = '/api/widget/fundperfbenchcompline/?fields=' + tabId + '&fund=' + fund;
-                    widget.size_y = 3;
+                    widget.qs = '/api/' + type + '-performance-benchmark/?fields=' + tabId + '&' + type + '=' + type_value;
+                    widget.size_y = 5;
                     widget.size_x = 6;
-                    widget.params = {}
-                    widget.params.title = '';
-                    widget.params.date_type = 'month';
-                    widget.params.navigator = 'true';
-                    widget.params.rangeSelector = 'true';
+                    widget.params = {
+                        'title': '',
+                        'date_type': 'month',
+                        'navigator': 'true',
+                        'rangeSelector': 'true',
+                    }
 
                     var chart = $('#' +  innertab_div + '-bar').highcharts();
 
@@ -944,7 +1033,8 @@ console.log('initiating grid');
                         id: 'inner-tab-id' + tabId,
                         //height: (120 * data.size_y) + (10 * data.size_y) + (10 * (data.size_y - 1)) - 20,
                         //width:  (120 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20,
-                        height: 600,
+                        border: false,
+                        height: 750,
                         activeTab: 0,
                         items: [
                         {
@@ -956,6 +1046,11 @@ console.log('initiating grid');
                             title: 'Bar Chart',
                             id: 'bar' + tabId,
                             contentEl: innertab_div + '-bar',
+                        },
+                        {
+                            title: 'Data Table',
+                            id: 'line-table' + tabId,
+                            contentEl: innertab_div + '-line-table',
                         },
                         ],
 
@@ -970,6 +1065,25 @@ console.log('initiating grid');
                                        //console.log('chart does not exist');
 
                                         widget.params.type = 'column';
+                                        widget.size_y = 5;
+                                        lineChart('', widget, div2);
+
+                                    }
+                                }
+                                if(tab.id == 'line-table' + tabId) {
+
+                                    var table = createGrid(tabId, data);
+                                    tab.add(table);
+
+                                    div2 = innertab_div + '-line-table';
+
+                                    var chart = $('#' + div2).highcharts();
+
+                                    if(typeof chart == 'undefined') {
+
+                                        widget.params.type = 'line';
+                                        widget.size_y = 3;
+
                                         lineChart('', widget, div2);
 
                                     }
@@ -995,30 +1109,80 @@ console.log('initiating grid');
 
         // at TODO:change benchmark to support mtom
         if(data.window.key == 'w15') {
-              $.getJSON('/api/widget/fundsummary/' + obj.fund, function(summary) {
-             //console.log(summary);
-                          widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
-                html = '<div> <table width="100%" class="html_table">' +
-                '<tr><td>Fund Name</td><td>'+ summary.name + '</td></tr>' +
-                '<tr><td>Fund Type</td><td>'+ summary.fund_type.name + '</td></tr>' +
-                '<tr><td>Fund Manager</td><td>'+ summary.manager.first_name + summary.manager.last_name + '</td></tr>' +
-                '<tr><td> Description</td><td>'+ summary.description + '<d></tr>' +
-                '<tr><td>Custodian</td><td>'+ summary.custodian.name + '</td><td>'+ summary.custodian.contact_name + '</td><td>' + summary.custodian.contact_number + '</td><td>Managment Fee</td><td>'+ summary.management_fee + '</td><td>Performance Fee</td><td>'+ summary.performance_fee + '</td></tr>' +
-                '<tr><td>Administrator</td><td>'+ summary.administrator.name + '</td><td>'+ summary.administrator.contact_name + '</td><td>' + summary.administrator.contact_number + '</td><td>Administrator Fee</td><td>'+ summary.administrator.fee + '</td></tr>' +
-                '<tr><td>Auditor</td><td>'+ summary.auditor.name + '</td><td>'+ summary.auditor.contact_name + '</td><td>' + summary.auditor.contact_number + '</td><td>Auditor Fee</td><td>'+ summary.auditor.fee + '</td></tr>' +
-                '<tr><td>Subscription Terms</td><td>'+ summary.subscription_frequency + '</td></tr>' +
-                '<tr><td>Redemption Terms</td><td>'+ summary.redemption_frequency + '</td></tr>' +
-                '<tr><td>Management Fees</td><td>'+ summary.management_fee + '</td></tr>' +
-                '<tr><td>Performance Fees</td><td>'+ summary.performance_fee + '</td></tr>' +
-                '<tr><td>Benchmark</td><td>'+ summary.benchmark.name + '</td></tr>' + '</table> </div>';
 
-                $(html).appendTo('#' + window_id);
+              var fields = 'name,fund_type__name,manager__first_name,performance_fee,manager__last_name,description,custodian__name,custodian__contact_name,custodian__contact_number,custodian_management_fee,custodian_performance_fee,administrator__contact_name,administrator__contact_number,administrator__name,administrator_fee,auditor_fee,auditor__name,auditor__contact_number,auditor__contact_name,subscription_frequency,redemption_frequency,management_fee';
+              $.getJSON('/api/fund/' + obj.fund + '/?fields=' + fields, function(summary) {
+
+             //console.log(summary);
+                     widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
+                    html = '<div> <table width="100%" class="html_table">' +
+                    '<tr><td>Fund Name</td><td>'+ summary.name + '</td></tr>' +
+                    '<tr><td>Fund Type</td><td>'+ summary.fund_type__name + '</td></tr>' +
+                    '<tr><td>Fund Manager</td><td>'+ summary.manager__first_name + summary.manager__last_name + '</td></tr>' +
+                    '<tr><td>Description</td><td>'+ summary.description + '<d></tr>' +
+                    '<tr><td>Custodian</td><td>'+ summary.custodian__name + '</td><td>'+ summary.custodian__contact_name + '</td><td>' + summary.custodian__contact_number + '</td><td>Managment Fee</td><td>'+ summary.custodian_management_fee + '</td><td>Performance Fee</td><td>'+ summary.custodian_performance_fee + '</td></tr>' +
+                    '<tr><td>Administrator</td><td>'+ summary.administrator__name + '</td><td>'+ summary.administrator__contact_name + '</td><td>' + summary.administrator__contact_number + '</td><td>Administrator Fee</td><td>'+ summary.administrator_fee + '</td></tr>' +
+                    '<tr><td>Auditor</td><td>'+ summary.auditor__name + '</td><td>'+ summary.auditor__contact_name + '</td><td>' + summary.auditor__contact_number + '</td><td>Auditor Fee</td><td>'+ summary.auditor_fee + '</td></tr>' +
+                    '<tr><td>Subscription Terms</td><td>'+ summary.subscription_frequency + '</td></tr>' +
+                    '<tr><td>Redemption Terms</td><td>'+ summary.redemption_frequency + '</td></tr>' +
+                    '<tr><td>Management Fees</td><td>'+ summary.management_fee + '</td></tr>' +
+                    '<tr><td>Performance Fees</td><td>'+ summary.performance_fee + '</td></tr>';
+
+
+
+                    $.getJSON('/api/benchmark/?fields=name&fund=' + obj.fund, function(benchmarks) {
+
+                        for(i=0; i<benchmarks.rows.length; i++) {
+                            if(i == 0) {
+                                var td = 'Benchmarks';
+                            } else {
+                                var td = '';
+                            }
+                            html += '<tr><td>' + td + '</td><td>'+ benchmarks.rows[i].name + '</td></tr>';
+                        }
+
+
+                        html += '</table> </div>';
+                        $(html).appendTo('#' + window_id);
+                   });
+            });
+
+            return
+
+        } if(data.window.key == 'w47') {
+
+              var fields = 'first_name,last_name,description,custodian__name,custodian__contact_name,manager__first_name,manager__last_name';
+              $.getJSON('/api/client/' + obj.client + '/?fields=' + fields, function(summary) {
+
+             //console.log(summary);
+                     widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
+                    html = '<div> <table width="100%" class="html_table">' +
+                    '<tr><td>Client Name</td><td>'+ summary.last_name + ', ' + summary.first_name + '</td></tr>' +
+                    '<tr><td>Client Manager</td><td>'+ summary.manager__first_name + summary.manager__last_name + '</td></tr>' +
+                    '<tr><td>Description</td><td>'+ summary.description + '<d></tr>' +
+                    '<tr><td>Custodian</td><td>'+ summary.custodian__name + '</td><td>'+ summary.custodian__contact_name + '</td></tr>' +
+
+                    $.getJSON('/api/benchmark/?fields=name&client=' + obj.client, function(benchmarks) {
+
+                        for(i=0; i<benchmarks.rows.length; i++) {
+                            if(i == 0) {
+                                var td = 'Benchmarks';
+                            } else {
+                                var td = '';
+                            }
+                            html += '<tr><td>' + td + '</td><td>'+ benchmarks.rows[i].name + '</td></tr>';
+                        }
+
+
+                        html += '</table> </div>';
+                        $(html).appendTo('#' + window_id);
+                   });
             });
 
             return
 
         // W18
-        } if(data.window.key == 'w18') {
+        } if(data.window.key == 'w18' || data.window.key == 'w80'  || data.window.key == 'w38' || data.window.key == 'w58') {
 
             parents = [
                 {id: 'ann_return', title: 'Returns'},
@@ -1053,7 +1217,7 @@ console.log('initiating grid');
                 items.push({
                     xtype: 'tabpanel',
                     title: parents[i].title,
-                    id: 'w18-parent-' + parents[i].id,
+                    id: data.window.key + '-parent-' + parents[i].id,
                     activeTab: 0,
                     items: childItems,
                     listeners: {
@@ -1069,9 +1233,15 @@ console.log('initiating grid');
             var tab_div = 'tab-' + data.window.key + '-' + window_id;
             $('<div id="' + tab_div + '"></div>').appendTo('#' + window_id);
 
+            if(data.window.key == 'w80') {
+                var type = 'holding';
+            } else {
+                var type = 'fund';
+            }
+
             var tp = new Ext.TabPanel({
                 renderTo: tab_div,
-                id: 'w18-tabs',
+                id: data.window.key + '-tabs',
                 //height: 500,
                 //width:  (120 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20,
                 activeTab: 0,
@@ -1081,8 +1251,8 @@ console.log('initiating grid');
                     'beforetabchange': function(tabPanel, tab){
 
                         if(tab.id == 'summary-tab') {
-                        summaryGraphs();
-                        return false;
+                            summaryGraphs(type);
+                            return false;
                         }
                         var id = tab.id.split("-");
                        //console.log('APPENDING FROM PARENT TAB ' + id[2]);
@@ -1219,7 +1389,7 @@ console.log('initiating grid');
         // get the widgets for this window
         $.ajax({
             type: "GET",
-            url: '/api/widgets/?window=' + data.window.id,
+            url: '/api/widgets/?window=' + data.window.id + '&enabled=1',
             ajaxI: i,
             success: function(widgets) {
 
@@ -1277,13 +1447,18 @@ console.log('initiating grid');
 
     function widgetWindow(key, page, title, size_x, size_y, pagewindow, window) {
 
+        title = title.replace('YEAR', moment().format('YYYY'));
+        title = title.replace('MONTH', moment().format('MMM'));
 
         // Sets the fund name to the window title
         if(typeof  $('#data').data('fund_name') != 'undefined') {
             title = title.replace('FUND_NAME', $('#data').data('fund_name'));
-            title = title.replace('DATE', moment().format('YYYY')); // for W5, W6 & W7
         }
 
+        // Sets the holding name to the window title
+        if(typeof  $('#data').data('holding_name') != 'undefined') {
+            title = title.replace('HOLDING_NAME', $('#data').data('holding_name'));
+        }
 
         Ext.create('Ext.window.Window', {
             title: title,
@@ -1340,14 +1515,24 @@ console.log('initiating grid');
 
     function createWidget(obj, widget, div, extra_params) {
 
+
+        if(typeof obj.client == 'undefined') {
+            obj.client = $('#data').data('client');
+        }
+
         if(typeof obj.fund == 'undefined') {
             obj.fund = $('#data').data('fund');
         }
-        obj.id = obj.fund;
 
-        if(typeof obj.holding == 'undefined') {
-            obj.holding = 1; //$('#data').data('fund'); // change this later
+        // is this needed?
+        obj.id = obj.fund;
+        obj.holding__fund = obj.fund;
+
+        if(typeof $('#data').data('holding') != 'undefined') {
+            obj.holding = $('#data').data('holding');
+            widget.holding = obj.holding;
         }
+
 
         // new way
         if(typeof extra_params != 'undefined') {
@@ -1355,35 +1540,51 @@ console.log('initiating grid');
                  widget.qs = widget.qs.replace(key.toUpperCase(), value);
             });
         }
-        $.each(widget.params, function(key, value) {
-             //console.log(key.toString() + value.toString());
-             widget.qs = widget.qs.replace(key.toUpperCase(), value);
-        });
+        // is this in use?
+        if(typeof widget.params != 'undefined') {
+            $.each(widget.params, function(key, value) {
+                 widget.qs = widget.qs.replace(key.toUpperCase(), value);
+            });
+        }
 
-        if(typeof obj.year == 'undefined' || typeof obj.month == 'undefined') {
+
+        console.log('OBJECT MONTH: ' + obj.month);
+        if(typeof obj.year == 'undefined') {
             obj.year = new Date().getFullYear();
+        }
+        if(typeof obj.month == 'undefined') {
             obj.month = new Date().getMonth() + 1;
         }
+        var date = new Date(obj.year, obj.month - 1);
 
+        if(typeof widget.name != 'undefined') {
+            widget.name = widget.name.replace('YEAR', moment(date).format('YYYY'));
+            widget.name = widget.name.replace('MONTH', moment(date).format('MMM'));
+        }
+
+        console.log(widget.name);
         widget.div = div; // remove this later
 
-        if(widget.v2 == true) {
-            var api = '/api/';
-        } else {
-            var api = '/api/widget/';
-        }
-        
-        widget.url = api + widget.key + '/';
-        
-        if(widget.columns != '') {
-           widget.qs += '&fields=' + widget.columns; 
-        }
+        widget.url = '/api/' + widget.key + '/';
 
-        // old way
+        console.log('client ' + obj.client);
+
         $.each(obj, function(key, value) {
-             widget.qs = widget.qs.replace(key.toUpperCase(), value);
+            // e.g holding__fund=FUND
+             try {
+                key_val = key.split('__');
+                widget.qs = widget.qs.replace(key_val[1].toUpperCase(), value);
+             } catch(e) {
+                widget.qs = widget.qs.replace(key.toUpperCase(), value);
+             }
+             console.log(key + value);
         });
 
+        console.log(widget.columns);
+
+        if(typeof widget.columns != 'undefined' && widget.columns != '') {
+           widget.qs += '&fields=' + widget.columns;
+        }
 
         if(widget.type == 'data_table') {
 
@@ -1422,7 +1623,13 @@ console.log('initiating grid');
 
             $('#data').data('linebar-div', div);
 
-            $('#' + div).append('<p>Please select a Holding above</p>');
+            if(widget.window.key == 'w11') {
+                $('#' + div).append('<p>Please select a Holding above</p>');
+
+                $('#data').data('linebar-div', div);
+            } else {
+                lineBarChart(widget);
+            }
 
         } else if(widget.type == 'pie_chart') {
 
@@ -1494,7 +1701,11 @@ console.log('initiating grid');
             rangeSelector = false;
         }
 
+
+        console.log(widget.url + widget.qs);
         $.getJSON(widget.url + widget.qs, function(data) {
+
+            console.log(data);
 
             var options = {
                 chart: {
@@ -1509,7 +1720,7 @@ console.log('initiating grid');
                 navigator:{
                     enabled: navigator,
 				    adaptToUpdatedData: false,
-				    series: data,
+				    series: data.objects,
 				    height: 20,
                 },
                 scrollbar: {
@@ -1526,6 +1737,8 @@ console.log('initiating grid');
                 },
                 xAxis: {
                     gridLineWidth: 1,
+                    type: 'category',
+                    categories: data.columns,
                 },
                 yAxis: {
                     title: {
@@ -1549,7 +1762,7 @@ console.log('initiating grid');
                     //y: 100,
                     //borderWidth: 0
                 },
-                series: data,
+                series: data.objects,
             };
 
             if(typeof widget.params.date_type != 'undefined' && widget.params.date_type == 'month') {
@@ -1644,30 +1857,32 @@ console.log('initiating grid');
 
            //console.log('BAR CHART');
            //console.log(obj);
-           //console.log(widget);
+          // console.log(widget);
+           //console.log(data);
 
-            title = false;
+
+
+            var title = false;
             if(typeof widget.params.title != 'undefined' && widget.params.title == "true") {
                 title = widget.name;
             }
 
-            type = 'column';
+            var type = 'column';
             if(typeof widget.params.type != 'undefined') {
                 type = widget.params.type;
             }
 
-            yDecimals = true;
+            var yDecimals = true;
             if(typeof widget.params.yDecimals != 'undefined' && widget.params.yDecimals === 'false') {
                 yDecimals = false;
             }
 
-
-            legend = true;
+            var legend = true;
             if(typeof widget.params.legend != 'undefined' && widget.params.legend == "false") {
                 legend = false;
             }
 
-            scrollbar = false;
+            var scrollbar = false;
             if(typeof widget.params.scrollbar != 'undefined' && widget.params.scrollbar == "true") {
                 scrollbar = true;
             }
@@ -1699,11 +1914,7 @@ console.log('initiating grid');
                 legend: {
                     enabled: legend,
                 },
-                series: [{
-                    //name: name,
-                    data: data,
-                    color: 'white'
-                }],
+
                 exporting: {
                     enabled: true
                 },
@@ -1713,7 +1924,7 @@ console.log('initiating grid');
                     categories: data.columns,
                     //type : "datetime",
                 },
-                //series: data,
+                series: data.objects,
             }
 
             if(typeof widget.params.labels != 'undefined' && widget.params.labels == 'rotated') {
@@ -1728,11 +1939,29 @@ console.log('initiating grid');
                 options.xAxis.labels = labels;
             }
 
-            var chart = new Highcharts.Chart(options);
+            // vertical fund performance line over bar graph
+            if(widget.window.key == 'w2') {
 
+                $.getJSON('/api/fund/' + $('#data').data('fund') + '/?fields=mtd', function(fund) {
+                    options.yAxis.plotLines = [{
+                        value: fund.mtd,
+                        width: 1,
+                        color: 'black',
+                        label: {
+                            text: $('#data').data('fund_name') + ' Performance',
 
+                        },
+                        zIndex: 4,
+                    }];
+                    var chart = new Highcharts.Chart(options);
+               });
+            } else {
 
-         $('#data').data('div-' + widget.key, div);
+                var chart = new Highcharts.Chart(options);
+
+            }
+
+            $('#data').data('barchart-' + widget.window.key, div);
 
         });
 
@@ -1746,10 +1975,9 @@ console.log('initiating grid');
         var fund = $('#data').data('fund');
 
         $('<div id="calendar"></div>').appendTo('body');
-
         mo_widget = {}
-        mo_widget.url = '/api/widget/fundperfhistcalview/';
-        mo_widget.qs = '?fund=' + fund + '&order_by=weight&value_date__year=' + year + '&value_date__month=' + month;
+        mo_widget.url = '/api/fund-history/';
+        mo_widget.qs = '?fund=' + fund + '&fields=value_date,performance&order_by=value_date&value_date__year=' + year + '&value_date__month=' + month;
 
         //console.log(widget.url + widget.qs);
         $.getJSON(mo_widget.url + mo_widget.qs , function(data) {
@@ -1922,21 +2150,28 @@ console.log('initiating grid');
                         extra_params = {
                             year: year,
                         }
+                        obj.year = year;
+                        obj.month = month
 
                         if(widget.window.key == 'w8') {
-                            group = 'sec';
+                            var group = 'sec';
+                            var group_name = 'Sector';
                         } else if(widget.window.key == 'w9') {
-                            group = 'sub';
+                            var group = 'sub';
+                            var group_name = 'Sub-Sector';
                         } else if(widget.window.key == 'w10') {
-                            group = 'loc';
+                            var group = 'loc';
+                            var group_name = 'Location';
                         }
 
                         div = $('#data').data('piechart-div-' + widget.window.key);
                         var window_id = 'page_' + obj.page + '_win_' + widget.window.id;
 
+                        var value_date = "&value_date__year=YEAR&value_date__month=" + month + "&value_date__day=1";
 
-                        widget.key = "fundperfgrouppie";
-                        widget.qs = "?fund=" + fund + "&value_date__year=YEAR&value_date__month=" + month + "&holding_category__holding_group=" + group + "&fields=nav&value_date__day=1";
+                        widget.key = "holding-breakdown";
+                        widget.qs = "?fund=" + fund + "&category__group=" + group + "&y1=nav&data_type=graph&date=value_date&title=category__name" + value_date;
+                        widget.name = 'NAV by ' + group_name + ' MONTH YEAR';
                         widget.params.value_date__year = year;
                         widget.params.holding_category__holding_group = "sec";
                         widget.params.fund = "FUND";
@@ -1986,9 +2221,7 @@ console.log('initiating grid');
         fund = $('#data').data('fund');
 
         $.getJSON(widget.url + widget.qs, function(data) {
-          //console.log('EURO PERCENT');
-          //console.log(data);
-          //console.log(div);
+
            var div2 = div + '_' + div
            $('<div id="' + div2 + '"></div>').appendTo("#" + div);
 
@@ -2143,6 +2376,8 @@ console.log('initiating grid');
             });
         //});
     }
+
+
     function dataTable(obj, widget, div) {
 
         var hideHeaders = false;
@@ -2203,7 +2438,21 @@ console.log('initiating grid');
             selModel = {
                 selType: 'cellmodel'
             }
-            width = width - 23;
+            width = width - 23; // ?
+
+            // link to holding pages from table
+            if(widget.window.key == 'w11') {
+
+                for(i=0; i<data.columns.length; i++) {
+
+                    if(data.columns[i].dataIndex == 'name') {
+                        data.columns[i].renderer = function (value, metaData, record, row, col, store, gridView) {
+                            return '<a href="javascript:holdingTab(' + record.internalId + ',  \'' + value + '\');">' + value + '</a>';
+                        };
+                    }
+
+                }
+            }
 
             var panel = Ext.create('Ext.grid.Panel', {
                 id: div,
@@ -2224,6 +2473,8 @@ console.log('initiating grid');
                 iconCls: 'icon-grid',
                 forceFit: true,
                 layout:'fit',
+
+
                 listeners: {
                     cellclick: function(gridView,htmlElement,columnIndex,dataRecord) {
 
@@ -2237,20 +2488,27 @@ console.log('initiating grid');
                         extra_params = {
                             year: year,
                         }
-                        month = columnIndex;
+                        obj.year = year // for refreshable pie chart name
+                        obj.month = 1;
+                        month = columnIndex - 1;
+
 
                         if(widget.window.key == 'w1') {
 
                             // year view
                             if(columnIndex == 1) {
 
-                                if($('#data').data('classification') == 'sp')  {
+                                if($('#data').data('classification') == '2')  {
                                     refreshWindow('w9c', obj, extra_params);
                                     refreshWindow('w26', obj, extra_params);
                                     refreshWindow('w27', obj, extra_params);
                                     refreshWindow('w28', obj, extra_params);
-                                } else if($('#data').data('classification') == 'pe')  {
+                                } else if($('#data').data('classification') == '1')  {
                                     refreshWindow('w5', obj, extra_params);
+                                } else if($('#data').data('classification') == 'eq')  {
+                                    refreshWindow('w3', obj, extra_params);
+                                    refreshWindow('w4b', obj, extra_params);
+                                    refreshWindow('w5b', obj, extra_params);
                                 } else {
                                     refreshWindow('w3', obj, extra_params);
                                     refreshWindow('w4', obj, extra_params);
@@ -2259,11 +2517,11 @@ console.log('initiating grid');
 
                             // monthly view
                             } else if(columnIndex < 14) {
-                                if($('#data').data('classification') == 'pe')  {
-                                    refreshWindow('w2', obj, extra_params);
-                                } else {
+                                //if($('#data').data('classification') == 'pe')  {
+                                //    refreshWindow('w2', obj, extra_params);
+                                //} else {
                                     refreshHoldPerfBar(year + '-' + month + '-1', obj.fund, true);
-                                }
+                                //}
                             }
                         }
                         else if(widget.window.key == 'w1b') {
@@ -2339,9 +2597,11 @@ console.log('initiating grid');
 
                 var id = record.get('id');
 
-                if(widget.key == 'fundperfholdtable') {
+                if(widget.window.key == 'w11') {
 
-                    $.getJSON("/api/widget/fundperfholdtradetable/?holding=" + id + "&holding__fund=" + obj.fund + '&column_width=150,80', function(w11) {
+                    var fields = 'trade_date,settlement_date,no_of_units,purchase_price_base,fx_euro,purchase_price,nav_purchase';
+                    //var fields = 'trade_date,settlement_date,purchase_sale__name,no_of_units,purchase_price_base,fx_to_euro,purchase_price,nav_purchase';
+                    $.getJSON("/api/trade/?holding=" + id + '&column_width=150,80&fields=' + fields, function(w11) {
 
                         displayInnerGrid(widget, w11,id);
 
@@ -2350,9 +2610,12 @@ console.log('initiating grid');
                         lineBarChart(widget);
                     });
 
-                } else if(widget.key == 'fundregister') {
 
-                    $.getJSON("/api/widget/subscriptionredemption/?&fund=" + obj.fund + '&client=' + id + '&column_width=100,100', function(w12) {
+                } else if(widget.window.key == 'w12' || widget.window.key == 'w12b') {
+
+                    var fields = '&fields=first_name,last_name,no_of_units,nav,pending_nav';
+
+                    $.getJSON("/api/client/?&fund=" + obj.fund + '&client=' + id + '&column_width=100,100' + fields, function(w12) {
 
                         displayInnerGrid(widget, w12, id);
                     });
@@ -2372,7 +2635,7 @@ console.log('initiating grid');
                     });
                 }
                 if(widget.window.key == 'w31') {
-                    $.getJSON('/api/holding-history/?holding=' + id + '&holding_category__holding_group__isnull=true&value_date__year=' + year + '&date_type=m&fields=value_date,drawdown,various,distribution,expense,valuation,total_value&total=true&column_width=80,50', function(widget_data) {
+                    $.getJSON('/api/holding-history/?holding=' + id + '&value_date__year=' + year + '&date_type=m&fields=value_date,drawdown,various,distribution,expense,valuation,total_value&total=true&column_width=80,50', function(widget_data) {
                         displayInnerGrid(widget, widget_data, id, false, 150);
                     });
                 }
@@ -2399,6 +2662,8 @@ console.log('initiating grid');
     }
 
     function refreshWindow(window_key, obj, extra_params) {
+
+
         $.getJSON('/api/widgets/?window__key=' + window_key, function(widget_data) {
 
 
@@ -2407,17 +2672,23 @@ console.log('initiating grid');
                 var window_id = 'page_' + obj.page + '_win_' + widget_data[x].window.id;
                 var widget_id = window_id + '_widget_' + widget_data[x].id;
 
+
+
                 var title = widget_data[x].window.name;
 
-                if(extra_params.year != 'undefined') {
-                    date = extra_params.year;
-                } else {
-                    date = 'Week X'; // fill this in later
-                }
+                year = extra_params.year;
+                week = 1; // fill this dynamic later
+
                 title = title.replace('FUND_NAME', $('#data').data('fund_name'));
-                title = title.replace('DATE', date);
+                title = title.replace('YEAR', year);
+                title = title.replace('WEEK', week);
 
                 win = Ext.getCmp(window_id);
+
+                if(typeof win == 'undefined') {
+                    return;
+                }
+
                 win.setTitle(title);
 
                 if(widget_data[x].type == 'data_table') {
@@ -2493,6 +2764,11 @@ console.log('initiating grid');
 
                 var id = record.get('id');
 
+
+                console.log('outcommented');
+
+                /*
+
                 if(widget.key == 'fundperfholdtable') {
 
                     $.getJSON("/api/widget/fundperfholdtradetable/?holding=" + id + "&holding__fund=" + obj.fund + '&column_width=150,80', function(w11) {
@@ -2537,7 +2813,7 @@ console.log('initiating grid');
                 }
 
 
-
+                */
 
 
                 if(typeof $('#data').data('last-open-subgrid') != 'undefined') {
@@ -2563,7 +2839,6 @@ console.log('initiating grid');
             return
         }
 
-
         $.getJSON(widget.url + widget.qs, function(data) {
        //console.log(widget.url + widget.qs);
        //console.log(data);
@@ -2571,7 +2846,8 @@ console.log('initiating grid');
                 chart: {
                     renderTo: div,
                     //borderWidth: 1,
-                    marginTop: -50,
+                    type: 'pie',
+                    marginTop: 0,
                     marginLeft: 30,
                     marginRight: 30,
                     //width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)),
@@ -2581,13 +2857,9 @@ console.log('initiating grid');
                     width:  (120 * 2) + (10 * 2) + (10 * (2 - 1)),
                 },
                 title: {
-                    text: false
+                    text: widget.name,
                 },
-                series: [{
-                    type: 'pie',
-                    name: widget.name,
-                    data: data
-                }]
+                series: data.objects
             });
         });
     }
@@ -2837,7 +3109,7 @@ console.log('initiating grid');
 
                                     createWidget(data, page);
 
-                                    widgetWindow(data.key, page, data.name, data.size_x, data.size_y);
+                                    widgetWindow('', data.key, page, data.name, data.size_x, data.size_y);
 
         //console.log('finished, closing add widget window');
 
@@ -3038,12 +3310,17 @@ console.log('initiating grid');
     function setFundName(id) {
          $.ajax({
             type: "GET",
-            url: '/api/fund/' + id + '?fields=name,classification__key',
+            url: '/api/fund/' + id + '?fields=name,classification__id',
             success: function(data) {
                 $('#data').data("fund_name", data.name);
-                $('#data').data("classification", data.classification__key);
+                $('#data').data("classification", data.classification__id);
             }
         });
+    }
+
+    function getMenu() {
+
+
     }
 
 
@@ -3055,112 +3332,198 @@ console.log('initiating grid');
          //   success: function(data) {
 
             $.getJSON('/api/menu/', function(data) {
-           //console.log('menu data:');
-           //console.log(data);
-                var tree_model = Ext.define('tree', {
-                    extend: 'Ext.data.Model',
-                    fields: [
-                        {name: 'id',    type: 'int'},
-                        {name: 'text',  type: 'string', mapping: 'name'},
-                        {name: 'page',  type: 'string'},
-                    ]
-                });
 
-                var store = Ext.create('Ext.data.TreeStore', {
-                    model: tree_model,
-                    proxy: {
-                        data : data,
-                        type: 'memory',
-                        reader: {
-                            type: 'json',
+                $.getJSON('/api/client/?fields=first_name,last_name&order_by=last_name', function(clients) {
+
+                    console.log(clients);
+                    client_list = [
+                        {
+                            "expanded": false,
+                            "children": [],
+                            //"fund": 0,
+                            "id": 'client_cat1',
+                            "name": "Clients A - E",
+                            //"page": 0
+                        },
+                        {
+                            "expanded": false,
+                            "children": [],
+                            //"fund": 0,
+                            "id": 'client_cat2',
+                            "name": "Clients F - L",
+                            //"page": 0
+                        },
+                        {
+                            "expanded": false,
+                            "children": [],
+                            //"fund": 0,
+                            "id": 'client_cat3',
+                            "name": "Clients M - R",
+                            //"page": 0
+                        },
+                        {
+                            "expanded": false,
+                            "children": [],
+                            //"fund": 0,
+                            "id": 'client_cat4',
+                            "name": "Clients S - U",
+                            //"page": 0
+                        },
+                        {
+                            "expanded": false,
+                            "children": [],
+                            //"fund": 0,
+                            "id": 'client_cat5',
+                            "name": "Clients V - Z",
+                            //"page": 0
                         }
-                    },
-                });
+                    ]
+                    $.each(clients.rows, function(key, client) {
+                        //if(client.last_name.charCodeAt(0)
+                        //console.log(client);
+                        var ascii = client.last_name.toLowerCase().charCodeAt(0);
 
-                var tree = Ext.create('Ext.tree.Panel', {
-                    id: 'main-menu',
-                    store: store,
-                    rootVisible: false,
-                    preventHeader: true,
-                    border: false,
-                    autoScroll: true,
-                    useArrows: true,
-                    height: 1000,
-                    listeners: {
-                        itemexpand: {
-                            fn: function(record, opts) {
+                        var child = {
+                            "expanded": false,
+                            "client": client.id,
+                            "id": ('client' + client.id).valueOf(),
+                            "leaf": true,
+                            "name": client.last_name + ", " + client.first_name,
+                            "page": 10
+                        }
 
-                                nodeId = record.data.id;
+                        if(ascii < 102) { // a-e
+                            var index = 0;
+                        } else if(ascii < 109) { // f-l
+                            var index = 1;
+                        } else if(ascii < 115) { // m-r
+                            var index = 2;
+                        } else if(ascii < 122) { // s-u
+                            var index = 3;
+                        } else { // v-z
+                            var index = 4;
+                        }
 
-                                //console.log(nodeId);
+                        client_list[index].children.push(child);
+                    });
 
+                    $.each(data, function(key, menu) {
+                        if(menu.id == 21) { // clients
+                            data[key].children = client_list;
+                        }
+                    });
+
+                    var tree_model = Ext.define('tree', {
+                        extend: 'Ext.data.Model',
+                        fields: [
+                            {name: 'id',    type: 'int'},
+                            {name: 'text',  type: 'string', mapping: 'name'},
+                            {name: 'page',  type: 'string'},
+                        ]
+                    });
+
+                    var store = Ext.create('Ext.data.TreeStore', {
+                        model: tree_model,
+                        proxy: {
+                            data : data,
+                            type: 'memory',
+                            reader: {
+                                type: 'json',
                             }
                         },
-                        itemclick: {
-                            fn: function(view, record, item, index, event, opts) {
+                    });
 
-                               //console.log('record');
-                               //console.log(record);
+                    var tree = Ext.create('Ext.tree.Panel', {
+                        id: 'main-menu',
+                        store: store,
+                        rootVisible: false,
+                        preventHeader: true,
+                        border: false,
+                        autoScroll: true,
+                        useArrows: true,
+                        height: 1000,
+                        listeners: {
+                            itemexpand: {
+                                fn: function(record, opts) {
 
-                                // Expand & collapse node on single click
-                                if(record.isExpanded()) {
-                                    record.collapse();
-                                } else {
-                                    record.expand();
+                                    nodeId = record.data.id;
+
+                                    //console.log(nodeId);
+
                                 }
+                            },
+                            itemclick: {
+                                fn: function(view, record, item, index, event, opts) {
 
-                               //console.log(record.raw);
-                               if(typeof record.raw.fund != 'undefined') {
-                                    $('#data').data('fund', record.raw.fund);
-                                    setFundName(record.raw.fund);
-                                }
+                                   //console.log('record');
+                                   //console.log(record);
 
-                                if(record.raw.page !== null) {
-
-                                    if (typeof record.raw.page === 'object') {
-                                        record.raw.page = record.raw.page.id;
+                                    // Expand & collapse node on single click
+                                    if(record.isExpanded()) {
+                                        record.collapse();
                                     } else {
-                                        var str = record.raw.page.toString();
-                                        record.raw.page = str.replace(/\D/g, '');
+                                        record.expand();
                                     }
-                                }
-                              //console.log('INIATING PAGE NUMBER:');
-                              //console.log(record.raw);
-                                initPage(record.raw);
 
+                                    //console.log(record.raw);
+                                    if(typeof record.raw.fund != 'undefined') {
+                                        $('#data').data('fund', record.raw.fund);
+                                        setFundName(record.raw.fund);
+                                    }
+
+                                    //console.log(record.raw);
+                                    if(typeof record.raw.client != 'undefined') {
+                                        $('#data').data('client', record.raw.client);
+                                        console.log(record.raw);
+                                    }
+
+                                    if(record.raw.page !== null) {
+
+                                        if (typeof record.raw.page === 'number') {
+                                            record.raw.page = record.raw.page;
+                                        } else if (typeof record.raw.page === 'object') {
+                                            record.raw.page = record.raw.page.id;
+                                        } else {
+                                            var str = record.raw.page.toString();
+                                            record.raw.page = str.replace(/\D/g, '');
+                                        }
+                                    }
+                                  //console.log('INIATING PAGE NUMBER:');
+                                  //console.log(record.raw);
+                                    initPage(record.raw);
+
+                                }
                             }
                         }
-                    }
-                });
+                    });
 
 
-                var panel_west = Ext.create('Ext.panel.Panel', {
-                    id: 'west',
-                    region: 'west',
-                    collapsible: true,
-                    title: 'Navigation',
-                    width: 150,
-                    items: [tree],
-                    tools: [{
-                       type: 'gear',
-                       handler: function(e, toolEl, panel, tc){
-                         config_menu.showBy(toolEl, 'tr-br?');
-                       }
-                    }],
-                });
+                    var panel_west = Ext.create('Ext.panel.Panel', {
+                        id: 'west',
+                        region: 'west',
+                        collapsible: true,
+                        title: 'Navigation',
+                        width: 150,
+                        items: [tree],
+                        tools: [{
+                           type: 'gear',
+                           handler: function(e, toolEl, panel, tc){
+                             config_menu.showBy(toolEl, 'tr-br?');
+                           }
+                        }],
+                    });
 
-                var viewport = Ext.create('Ext.container.Viewport', {
-                    layout: 'border',
-                    id: 'viewport',
-                    items: [panel_west, panelStandard()]
-                });
+                    var viewport = Ext.create('Ext.container.Viewport', {
+                        layout: 'border',
+                        id: 'viewport',
+                        items: [panel_west, panelStandard()]
+                    });
 
-                Ext.EventManager.onWindowResize(viewport.doLayout, viewport);
+                    Ext.EventManager.onWindowResize(viewport.doLayout, viewport);
 
-             }
-        );
+            });
+        });
     }
-
 
 
 

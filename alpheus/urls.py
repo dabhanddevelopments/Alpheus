@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from app import views
 from fund import views as fund
 from holding import views as holding
+from client import views as client
 
 from fund.resources import *
 from holding.resources import *
@@ -41,6 +42,7 @@ api.register(TradeResource())
 
 # client
 api.register(ClientResource())
+api.register(SubscriptionRedemptionResource())
 
 # app
 api.register(ImportResource())
@@ -64,8 +66,22 @@ urlpatterns = patterns('',
     (r'^robots\.txt$', lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain")),
     url(r'^$', views.index, name='index'),
     
-    url(r'^api/holding-correlation/$', holding.correlation),
     url(r'^api/holding-performance-benchmark/$', holding.performancebenchmark),
+    #url(r'^api/holding-reconciliation/$', holding.reconciliation),
+    url(r'^api/holding-returnhistogram/$', holding.returnhistogram),
+    url(r'^api/holding-correlation/$', holding.correlation),
+    url(r'^api/holding-negativemonths-table/$', holding.negativemonthstable),
+    url(r'^api/holding-negativemonths-graph/$', holding.negativemonthsgraph),
+    url(r'^api/holding-best-worst/$', holding.bestworst),
+    url(r'^api/holding-returns/$', holding.returns),
+
+    #url(r'^api/client-reconciliation/$', client.reconciliation),
+    url(r'^api/client-returnhistogram/$', client.returnhistogram),
+    url(r'^api/client-correlation/$', client.correlation),
+    url(r'^api/client-negativemonths-table/$', client.negativemonthstable),
+    url(r'^api/client-negativemonths-graph/$', client.negativemonthsgraph),
+    url(r'^api/client-best-worst/$', client.bestworst),
+    url(r'^api/client-returns/$', client.returns),
     
     url(r'^api/fund-best-worst/$', fund.bestworst),
     url(r'^api/fund-returns/$', fund.returns),

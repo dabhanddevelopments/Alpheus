@@ -44,19 +44,21 @@ PERCENT_RELEASED=(
 )
 
 
+
+
 class MonthlyManager(models.Manager):
     def get_query_set(self):
         return super(MonthlyManager, self).get_query_set().filter(date_type='m')
-        
+
 class DailyManager(models.Manager):
     def get_query_set(self):
         return super(MonthlyManager, self).get_query_set().filter(date_type='d')
-        
+
 
 class ModelBase(models.Model):
     class Meta:
         abstract = True
-        
+
     objects = models.Manager()
     days = DailyManager()
     months = MonthlyManager()
@@ -98,7 +100,7 @@ class WidgetParam(models.Model):
         return '%s=%s' % (self.key, self.value)
 
 class Widget(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
     key = models.CharField(max_length=50)
     widget_type = models.ForeignKey(WidgetType)
     widget_param = models.ManyToManyField(WidgetParam, null=True, blank=True)
@@ -116,6 +118,7 @@ class Widget(models.Model):
             &lt;first column&gt;,&lt;second column&gt;,&lt;third column&gt;""")
     position = models.PositiveSmallIntegerField("Position")
     v2 = models.BooleanField()
+    disabled = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['position', 'name']
@@ -159,11 +162,6 @@ class PageWindow(models.Model):
             return u'%s / %s' % (self.page.title, self.window.name)
 
 
-class FundType(models.Model):
-    name = models.CharField(max_length=50)
-
-    def __unicode__(self):
-        return self.name
 
 class Classification(models.Model):
     key = models.CharField(max_length=50)
@@ -270,8 +268,8 @@ class CurrencyPositionMonth(models.Model):
     nav = models.DecimalField(max_digits=20, decimal_places=5,\
                                              verbose_name="NAV")
     value_date = models.DateField()
-    
-    
+
+
 
 class FxRate(models.Model):
     value_date = models.DateField()
