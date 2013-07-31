@@ -1,8 +1,10 @@
 from django.contrib import admin
 from holding.models import *
 
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ['name', 'key', 'group']
 
-admin.site.register(Category)
+admin.site.register(Category, CategoryAdmin)
 admin.site.register(Holding)
 admin.site.register(HoldingHistory)
 admin.site.register(CountryBreakdown)

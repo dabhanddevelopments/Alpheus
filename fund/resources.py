@@ -2,7 +2,7 @@ from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie import fields
 from tastypie.api import Api
 
-from fund.models import * 
+from fund.models import *
 from app.resources import *
 from comparative.resources import BenchmarkResource
 from alpheus.base_resources import MainBaseResource, TreeBaseResource
@@ -15,7 +15,7 @@ class FundClassificationResource(MainBaseResource):
     class Meta:
         queryset = Classification.objects.all()
         resource_name = 'fund/classification'
-        
+
 
 class FundTypeResource(MainBaseResource):
 
@@ -27,7 +27,7 @@ class FundTypeResource(MainBaseResource):
 class FundResource(MainBaseResource):
     classification = fields.ForeignKey(FundClassificationResource, "classification")
     benchmark = fields.ManyToManyField(BenchmarkResource, "benchmark")
-    
+
     fund_type = fields.ForeignKey(FundTypeResource,'fund_type')
     custodian = fields.ForeignKey(CustodianResource, 'custodian')
     auditor = fields.ForeignKey(AuditorResource, 'auditor')
@@ -41,6 +41,7 @@ class FundResource(MainBaseResource):
             'id': ALL,
             'value_date': ALL,
             'benchmark': ALL_WITH_RELATIONS,
+            'custodian': ALL_WITH_RELATIONS,
         }
 
 class FundHistoryResource(MainBaseResource):
@@ -60,7 +61,7 @@ class FundHistoryResource(MainBaseResource):
 class CurrencyPositionResource(MainBaseResource):
     currency = fields.ForeignKey(CurrencyResource, "currency")
     fund = fields.ForeignKey(FundResource, 'fund')
-    
+
     class Meta:
         queryset = CurrencyPosition.objects.all()
         resource_name = 'currency-position'
@@ -68,11 +69,11 @@ class CurrencyPositionResource(MainBaseResource):
             "fund": ALL,
             "value_date": ALL,
         }
-        
+
 class FxHedgeResource(MainBaseResource):
     currency = fields.ForeignKey(CurrencyResource, "currency")
     fund = fields.ForeignKey(FundResource, 'fund')
-    
+
     class Meta:
         queryset = FxHedge.objects.all()
         resource_name = 'fxhedge'
@@ -83,7 +84,7 @@ class FxHedgeResource(MainBaseResource):
 
 class FxRateResource(MainBaseResource):
     currency = fields.ForeignKey(CurrencyResource, "currency")
-    
+
     class Meta:
         queryset = FxRate.objects.all()
         resource_name = 'fxrate'
@@ -96,14 +97,14 @@ class FundValuationResource(MainBaseResource):
         queryset = FundHistory.objects.all()
         resource_name = 'fund-valuation'
         allowed_fields = [
-            'net_movement', 
-            'valuation', 
-            'value_date', 
-            'delta_valuation', 
+            'net_movement',
+            'valuation',
+            'value_date',
+            'delta_valuation',
             'delta_flow',
-            'inflow_euro', 
-            'inflow_dollar', 
-            'outflow_euro', 
+            'inflow_euro',
+            'inflow_dollar',
+            'outflow_euro',
             'outflow_dollar'
         ]
         filtering = {
@@ -143,7 +144,8 @@ class FundValuationResource(MainBaseResource):
 
 
 
-        
+
+
 
 """
 class FundByTypeResource(MainBaseResource):

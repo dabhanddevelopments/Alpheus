@@ -19,7 +19,7 @@ class JsonResponse(HttpResponse):
         content = simplejson.dumps(data, indent=2, ensure_ascii=False)
         super(JsonResponse, self).__init__(content=content,
                             mimetype='application/json; charset=utf8')
-   
+
 def set_columns(request, column_names):
 
     column_width = request.GET.get('column_width', '50,50').split(',')

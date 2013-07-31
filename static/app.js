@@ -16,6 +16,118 @@ Ext.require([
 ]);
 
 
+function investmentNAV(div, type) {
+
+    var id = $('#data').data(type);
+
+    if($('#data').data('date') == 'undefined') {
+        var date = new Date();
+    } else {
+        var date = $('#data').data('date');
+    }
+
+    win = Ext.getCmp(div);
+    title = 'asdf';
+    console.log('asdfasdf');
+    console.log(win);
+
+
+    var holdings = {'ad-hoc': 'Ad-hoc', 'cash': 'Cash', 'loan': 'Loans', 'pe': 'PE Commitments', 'hsbc': 'HSBC', 'cs': 'Credit Suisse'};
+    var ajaxReqs = [];
+    var grid_data = [];
+    var columns = [];
+    var i = 0;
+    $.each(holdings, function(key, name) {
+        if(key == 'hsbc' || key == 'cs') {
+            var class_type = 'fund__custodian';
+        } else {
+            var class_type = 'asset_class';
+        }
+        ajaxReqs.push($.ajax({
+            url: '/api/holding-history/?column_border_y=ytd&column_width=100,180&data_type=year&date=value_date&extra_fields=ytd&holding__' + class_type + '__key=' + key + '&holding__' + type + '=' + id + '&title=holding__name&total=true&value=performance&value_date__year=' + moment(date).format('YYYY'),
+            ajaxI: key,
+            success: function(data) {
+                x = this.ajaxI;
+                $.each(data.rows, function(id, arr) {
+                    arr['group'] = holdings[x];
+                    //arr['group'] = x;
+                    arr['group_order'] = i;
+                    i++;
+                    grid_data.push(arr);
+                });
+                columns = data.columns; // it don't matter which one
+            }
+        }));
+    });
+    $.when.apply($, ajaxReqs).then(function() {
+        // all requests are complete
+        console.log('grid_data');
+        console.log(grid_data);
+
+        columns.push({dataIndex: 'group', collapsible: false});
+
+        console.log(columns);
+
+        fields = [];
+        for(i=0; i < columns.length; i++) {
+            fields[i] = {};
+            if(i == 0 || columns[i].dataIndex == 'group') {
+                fields[i]['type'] = 'string';
+            } else {
+                fields[i]['type'] = 'float';
+            }
+            if(typeof columns[i].dataIndex != 'undefined') {
+                fields[i]['name'] = columns[i].dataIndex;
+            }
+        }
+
+        if(typeof columns[1]['summaryType'] != 'undefined') {
+            columns[0]['summaryRenderer'] = function(v, params, data){ return 'Total'};
+        }
+
+        $.each(grid_data, function(parent, row) {
+            $.each(row, function(key, value) {
+                // tastypie returns floats as strings, hence this ugly hack
+                if(value.toString().indexOf('.') != -1) {
+                    grid_data[parent][key] = parseFloat(value.toString());
+                }
+            });
+        });
+
+        var oldPanel = Ext.getCmp('fundperf' + div);
+        if(typeof oldPanel != 'undefined') {
+            oldPanel.destroy();
+        }
+
+        var store = Ext.create('Ext.data.Store', {
+            data: grid_data,
+            groupField: 'group',
+            fields: fields,
+            //sortInfo: {field: 'id', direction: 'ASC'},
+            //remoteGroup: true,
+        });
+
+        var grid = Ext.create('Ext.grid.Panel', {
+            height: 950,
+            //iconCls: 'icon-grid',
+            id: 'fundperf' + div,
+            renderTo: div,
+            store: store,
+            border: false,
+            header: false,
+            forceFit: true,
+            features: [{
+               // id: 'group',
+                ftype: 'groupingsummary',
+                groupHeaderTpl: '{name}',
+                hideGroupedHeader: true,
+               // enableGroupingMenu: false
+            }],
+            columns: columns,
+        });
+        return widgetWindow(data.window.id, page, data.window.name + 'asdf', data.window.size_x, data.window.size_y, data.id, window_id);
+    });
+}
 
 
 
@@ -412,53 +524,57 @@ function destroyInnerGrid(record, widget_id) {
 
 //call W2 chart on click from monthly calendar view W1
 
-function refreshHoldPerfBar(date, fund, monthly, fields, order_by) {
+function refreshHoldPerfBar(widget_key, date, id, monthly, fields, order_by) {
 
+
+    if(widget_key == 'w45' || widget_key == 'w33') {
+        var type = 'client';
+        var size_x = 7;
+    } else {
+        var type = 'fund';
+        var size_x = 6;
+    }
 
     if(typeof fields == 'undefined') {
-        fields = 'nav';
+        fields = 'performance';
     }
     if(typeof order_by == 'undefined') {
         order_by = 'weight';
     }
     // gets set when W2 is loaded first time
-    var div = $('#data').data('barchart-w2');
+    var div = $('#data').data('barchart-' + widget_key);
 
-    // get the window div so we can set the title, super ugly
-    //win_div = div.slice(0, div.indexOf("_widget"));
 
-    var date_title = date
+    $('#data').data('date', date);
+
+    var date_title = date;
     if(typeof monthly != 'undefined' && monthly == true) {
         date_title = moment(date).format("MMM YYYY")
     }
 
-    //title = title.replace('FUND_NAME', $('#data').data('fund_name'));
-    //title = title.replace('DATE', date_title);
 
-    //var title = $('#data').data('fund_name') + ' / ' + date_title + ' / Holding Performance Bar Graph';
-    //win = Ext.getCmp(win_div);
-    //win.setTitle(title);
+    var title = $('#data').data(type + '_name') + ' / ' + date_title + ' / Holding Performance';
+    var win_div = div.slice(0, div.indexOf("_widget"));
+    win = Ext.getCmp(win_div);
+    win.setTitle(title);
+
 
     var chart = $('#' + div).highcharts();
     chart.destroy();
 
-    var url = '/api/holding-history/';
-
     widget = {
         'key': "holding-history",
-        'qs': '?value_date=' + date + '&holding__fund=' + fund + '&legend=false&y1=' + fields + '&order_by=' + order_by + '&data_type=graph&date_type=m&title=holding__name',
+        'qs': '?value_date=' + date + '&holding__' + type + '=' + id + '&legend=false&y1=' + fields + '&order_by=' + order_by + '&data_type=graph&date_type=m&title=holding__name',
         'type': "bar_chart",
-        'size_x': 6,
+        'size_x': size_x,
         'size_y': 3,
         'params': {},
         'window': {
-            'key': 'w2',
+            'key': widget_key,
         }
     };
-    obj = {
-        'fund': fund,
-    };
-
+    obj = {};
+    obj[type] = id;
 
     return createWidget(obj, widget, div);
 };
@@ -484,24 +600,22 @@ function holdingTab(id, value) {
     items = [];
     $.each(tabs, function(key, title) {
 
-        var tab_div = 'holdings' + id + '-' + key;
+        var tab_div = key + '-holdings' + id;
 
         $('#data').data('grid' + tab_div, '');
 
         $('<div id="' + tab_div + '" class="gridster"></div>').appendTo('body');
+        $('<div id="page' + tab_div + '" class="gridster"></div>').appendTo('body');
 
         items.push({
             title: title,
             itemId: key,
-            contentEl: tab_div,
+            contentEl: 'page' + tab_div,
             autoScroll: true,
             listeners: {
                 activate: function(tab){
-                    //var tabId = tab.itemId.split('-')
                     obj = {};
-                    //obj.page = tabId[1];
-                    obj.page = tab.itemId;
-                    obj.div = tab_div;
+                    obj.page = tab_div,
                     initGrid(obj);
                 }
             },
@@ -522,7 +636,6 @@ function holdingTab(id, value) {
 
 
     panel.setActiveTab(parent_id);
-    console.log('ASDF');
 
     //obj = {};
     //obj.page = 112;
@@ -534,6 +647,7 @@ Ext.onReady(function() {
     window.holdingTab = holdingTab;
     window.initGrid = initGrid;
     window.createWidget = createWidget;
+    window.investmentNAV = investmentNAV;
 
 
 
@@ -819,28 +933,29 @@ Ext.onReady(function() {
 
         var page = obj.page;
 
+/*
         if(typeof obj.div == 'undefined') {
             obj.div = 'page' + obj.page
-            var grid_div = 'grid' + page;
+            var 'grid' + page = 'grid' + page;
         } else {
-            var grid_div = obj.div;
+            var 'grid' + page = obj.div;
         }
-
-console.log('initiating grid');
+*/
+//console.log('initiating grid');
 
 
         $('#data').data('page_id', page);
 
         // if we have a grid for this page, it means it's already
         // loaded and we do not need to fetch it again
-        if($('#data').data(grid_div) !== undefined && $('#data').data(grid_div) !== '') {
+        if($('#data').data('grid' + page) !== undefined && $('#data').data('grid' + page) !== '') {
 
            //console.log('skipping gridster: grid' + page);
            return;
         }
 
 
-        obj.grid = $("#" + obj.div).gridster({
+        obj.grid = $("#page" + page).gridster({
             widget_margins: [10, 10],
             widget_base_dimensions: [120, 120],
             max_size_x: 10,
@@ -865,11 +980,17 @@ console.log('initiating grid');
 
         obj.grid.disable();
 
-        $('#data').data(grid_div, obj.grid);
+        $('#data').data('grid' + page, obj.grid);
+
+        try {
+            var pagewindow = page.split('-')[0];
+        } catch(e) {
+            var pagewindow = page;
+        }
 
         $.ajax({
             type: "GET",
-            url: '/api/pagewindow/?page=' + page,
+            url: '/api/pagewindow/?page=' + pagewindow,
             success: function(data) {
 
                 $('#data').data('grid_data' + page, data); // doesn't seem to be used anywhere
@@ -949,7 +1070,7 @@ console.log('initiating grid');
                 var table = createGrid(tabId, data1, 0);
                 tab.add(table);
 
-                var fields = "&fields=fields=client__first_name,client__last_name,sub_red,trade_date,no_of_units,euro_nav,percent_released";
+                var fields = "&fields=client__first_name,client__last_name,sub_red,trade_date,no_of_units,euro_nav,percent_released";
 
                 $.getJSON('/api/subscription-redemption/?fund=' + obj.fund + '&year=' + date[0] + '&month='  + date[1] + '&column_width=100,100' + fields, function(data2) {
                     tab = Ext.getCmp(tabId);
@@ -985,10 +1106,14 @@ console.log('initiating grid');
             }
 
 
+            var prefix = '';
             if(data.window.key == 'w18') {
                 var type = 'fund';
             } else if(data.window.key == 'w38') {
                 var type = 'client';
+            } else if(data.window.key == 'w58') {
+                var type = 'fund';
+                var prefix = 'holding__'
             } else {
                 var type = 'holding';
             }
@@ -999,7 +1124,7 @@ console.log('initiating grid');
 
                 tab = Ext.getCmp(tabId);
                 // get grid data
-                $.getJSON('/api/' + type + '-history/?' + type + '=' + type_value + '&value=' + tabId + '&column_width=55,60&data_type=year&date=value_date&extra_fields=ytd&date_type=m', function(data) {
+                $.getJSON('/api/' + type + '-history/?' + prefix + type + '=' + type_value + '&value=' + tabId + '&column_width=55,60&data_type=year&date=value_date&extra_fields=ytd&date_type=m', function(data) {
 
                     //var table = createGrid(tabId, data);
                     //tab.add(table);
@@ -1384,6 +1509,24 @@ console.log('initiating grid');
 
         }
 
+        // div for window
+        var window_id = 'page_' + page + '_' + data.window.id;
+        $('<div id="' + window_id + '"></div>').appendTo('body');
+
+        if(data.window.key == 'w55') {
+
+            investmentNAV(window_id, 'fund');
+            return widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
+
+        } else if(data.window.key == 'w46') {
+
+            investmentNAV(window_id, 'client');
+        } else if(data.window.key == 'w68') { // alpheus funds
+
+            investmentNAV(window_id, 'fund');
+        }
+
+
        //console.log(data.window.key)
 
         // get the widgets for this window
@@ -1447,12 +1590,21 @@ console.log('initiating grid');
 
     function widgetWindow(key, page, title, size_x, size_y, pagewindow, window) {
 
-        title = title.replace('YEAR', moment().format('YYYY'));
-        title = title.replace('MONTH', moment().format('MMM'));
+        if(typeof $('#data').data('date') !== 'undefined') {
+            var date = $('#data').data('date');
+        } else {
+            var date = new Date();
+        }
+        title = title.replace('YEAR', moment(date).format('YYYY'));
+        title = title.replace('MONTH', moment(date).format('MMM'));
 
         // Sets the fund name to the window title
         if(typeof  $('#data').data('fund_name') != 'undefined') {
             title = title.replace('FUND_NAME', $('#data').data('fund_name'));
+        }
+
+        if(typeof  $('#data').data('client_name') != 'undefined') {
+            title = title.replace('CLIENT_NAME', $('#data').data('client_name'));
         }
 
         // Sets the holding name to the window title
@@ -1548,7 +1700,6 @@ console.log('initiating grid');
         }
 
 
-        console.log('OBJECT MONTH: ' + obj.month);
         if(typeof obj.year == 'undefined') {
             obj.year = new Date().getFullYear();
         }
@@ -1562,12 +1713,10 @@ console.log('initiating grid');
             widget.name = widget.name.replace('MONTH', moment(date).format('MMM'));
         }
 
-        console.log(widget.name);
         widget.div = div; // remove this later
 
         widget.url = '/api/' + widget.key + '/';
 
-        console.log('client ' + obj.client);
 
         $.each(obj, function(key, value) {
             // e.g holding__fund=FUND
@@ -1577,10 +1726,8 @@ console.log('initiating grid');
              } catch(e) {
                 widget.qs = widget.qs.replace(key.toUpperCase(), value);
              }
-             console.log(key + value);
         });
 
-        console.log(widget.columns);
 
         if(typeof widget.columns != 'undefined' && widget.columns != '') {
            widget.qs += '&fields=' + widget.columns;
@@ -1855,13 +2002,6 @@ console.log('initiating grid');
 
         $.getJSON(widget.url + widget.qs, function(data) {
 
-           //console.log('BAR CHART');
-           //console.log(obj);
-          // console.log(widget);
-           //console.log(data);
-
-
-
             var title = false;
             if(typeof widget.params.title != 'undefined' && widget.params.title == "true") {
                 title = widget.name;
@@ -1939,8 +2079,9 @@ console.log('initiating grid');
                 options.xAxis.labels = labels;
             }
 
+            console.log(widget.window.key);
             // vertical fund performance line over bar graph
-            if(widget.window.key == 'w2') {
+            if(widget.window.key == 'w2' || widget.window.key == 'w52') {
 
                 $.getJSON('/api/fund/' + $('#data').data('fund') + '/?fields=mtd', function(fund) {
                     options.yAxis.plotLines = [{
@@ -1951,12 +2092,11 @@ console.log('initiating grid');
                             text: $('#data').data('fund_name') + ' Performance',
 
                         },
-                        zIndex: 4,
+                        zIndex: 5,
                     }];
                     var chart = new Highcharts.Chart(options);
                });
             } else {
-
                 var chart = new Highcharts.Chart(options);
 
             }
@@ -2036,7 +2176,7 @@ console.log('initiating grid');
                     }
 
                 }
-                html += '<td>' + i + '<a href="#" onclick="refreshHoldPerfBar(\'' + date + '\', ' + fund + ');">' + val + '</a></td>';
+                html += '<td>' + i + '<a href="#" onclick="refreshHoldPerfBar(\'w2\', \'' + date + '\', ' + fund + ');">' + val + '</a></td>';
             }
 
             html += "</tr></table>";
@@ -2153,13 +2293,13 @@ console.log('initiating grid');
                         obj.year = year;
                         obj.month = month
 
-                        if(widget.window.key == 'w8') {
+                        if(widget.window.key == 'w8' || widget.window.key == 'w66') {
                             var group = 'sec';
                             var group_name = 'Sector';
                         } else if(widget.window.key == 'w9') {
                             var group = 'sub';
                             var group_name = 'Sub-Sector';
-                        } else if(widget.window.key == 'w10') {
+                        } else if(widget.window.key == 'w10' || widget.window.key == 'w67') {
                             var group = 'loc';
                             var group_name = 'Location';
                         }
@@ -2378,6 +2518,15 @@ console.log('initiating grid');
     }
 
 
+    function renderGridValue(value) {
+        console.log(value);
+        try {
+            return parseFloat(value).toFixed(2);
+        } catch(e) {
+            return valuel
+        }
+    }
+
     function dataTable(obj, widget, div) {
 
         var hideHeaders = false;
@@ -2388,21 +2537,44 @@ console.log('initiating grid');
         $.getJSON(widget.url + widget.qs, function(data) {
 
             // for nested header columns as well
-            c = 0;
             fields = [];
             for(i=0; i < data.columns.length; i++) {
+                fields[i] = {};
+                if(i == 0) {
+                    fields[i]['type'] = 'string';
+                } else {
+                    fields[i]['type'] = 'float';
+                }
                 if(typeof data.columns[i].columns != 'undefined') {
                     for(x=0; x < data.columns[i].columns.length; x++) {
-                        fields[c] = data.columns[i].columns[x].dataIndex;
-                        c++;
+                        fields[i]['name'] = data.columns[i].columns[x].dataIndex;
                     }
                 } else {
                     if(typeof data.columns[i].dataIndex != 'undefined') {
-                        fields[c] = data.columns[i].dataIndex;
-                        c++;
+                        fields[i]['name'] = data.columns[i].dataIndex;
                     }
                 }
             }
+
+            if(typeof data.columns[1]['summaryType'] != 'undefined') {
+                data.columns[0]['summaryRenderer'] = function(v, params, data){ return 'Total'};
+
+                //$.each(data.columns, function(key, value) {
+                //    data.columns[key]['renderer'] = renderGridValue;
+                //});
+            }
+
+            $.each(data.rows, function(parent, row) {
+                $.each(row, function(key, value) {
+
+                    // tastypie returns floats as strings, hence this ugly hack
+                    if(value.toString().indexOf('.') != -1) {
+                        data.rows[parent][key] = parseFloat(value.toString());
+                    }
+                 });
+            });
+
+            console.log(data.rows);
             Ext.create('Ext.data.Store', {
                 storeId: widget.key,
                 fields: fields,
@@ -2473,6 +2645,9 @@ console.log('initiating grid');
                 iconCls: 'icon-grid',
                 forceFit: true,
                 layout:'fit',
+                features: [{
+                    ftype: 'summary'
+                }],
 
 
                 listeners: {
@@ -2492,24 +2667,60 @@ console.log('initiating grid');
                         obj.month = 1;
                         month = columnIndex - 1;
 
+                        /*
+                        Fund Classifications
+                        11 Alpheus
+                        10 Private Equity
+                        9 Side Pockets
+                        8 Limited Holdings
+                        7 CS Options
+                        6 CS Cal/Vol
+                        5 CS Equities
+                        4 HSBC Equities, Options, Futures
+                        3 CS Fixed Income & Treasuries
+                        2 HSBC Fixed Income & Treasuries
+                        1 Fund (Fund of Fund)
+
+                        @TODO: Rewrite this properly
+                        */
 
                         if(widget.window.key == 'w1') {
 
                             // year view
                             if(columnIndex == 1) {
 
-                                if($('#data').data('classification') == '2')  {
-                                    refreshWindow('w9c', obj, extra_params);
-                                    refreshWindow('w26', obj, extra_params);
-                                    refreshWindow('w27', obj, extra_params);
-                                    refreshWindow('w28', obj, extra_params);
-                                } else if($('#data').data('classification') == '1')  {
+                                if($('#data').data('classification') == 9)  {
+
+                                    refreshWindow('w3', obj, extra_params);
+                                    refreshWindow('w4d', obj, extra_params);
                                     refreshWindow('w5', obj, extra_params);
-                                } else if($('#data').data('classification') == 'eq')  {
+
+                                } else if($('#data').data('classification') == 4)  {
+
                                     refreshWindow('w3', obj, extra_params);
                                     refreshWindow('w4b', obj, extra_params);
                                     refreshWindow('w5b', obj, extra_params);
-                                } else {
+
+                                } else if($('#data').data('classification') == 10)  {
+
+                                    refreshWindow('w3', obj, extra_params);
+                                    refreshWindow('w5', obj, extra_params);
+                                    refreshWindow('w31', obj, extra_params);
+
+                                } else if($('#data').data('classification') == 8)  {
+
+                                    refreshWindow('w3b', obj, extra_params);
+                                    refreshWindow('w4b', obj, extra_params);
+                                    refreshWindow('w5', obj, extra_params);
+
+                                } else if($('#data').data('classification') == 2)  {
+
+                                    refreshWindow('w3', obj, extra_params);
+                                    refreshWindow('w4b', obj, extra_params);
+                                    refreshWindow('w5', obj, extra_params);
+
+                                } else if($('#data').data('classification') == 1)  {
+
                                     refreshWindow('w3', obj, extra_params);
                                     refreshWindow('w4', obj, extra_params);
                                     refreshWindow('w5', obj, extra_params);
@@ -2520,7 +2731,7 @@ console.log('initiating grid');
                                 //if($('#data').data('classification') == 'pe')  {
                                 //    refreshWindow('w2', obj, extra_params);
                                 //} else {
-                                    refreshHoldPerfBar(year + '-' + month + '-1', obj.fund, true);
+                                    refreshHoldPerfBar('w2', year + '-' + month + '-1', obj.fund, true);
                                 //}
                             }
                         }
@@ -2529,13 +2740,23 @@ console.log('initiating grid');
                             // year view
                             if(columnIndex == 1) {
 
-                                refreshWindow('w3', obj, extra_params);
-                                refreshWindow('w4b', obj, extra_params);
-                                refreshWindow('w5b', obj, extra_params);
+                                if($('#data').data('classification') == 3)  {
+
+                                    refreshWindow('w3', obj, extra_params);
+                                    refreshWindow('w4b', obj, extra_params);
+                                    refreshWindow('w5', obj, extra_params);
+
+                                } else if($('#data').data('classification') == 5)  {
+
+                                    refreshWindow('w3', obj, extra_params);
+                                    refreshWindow('w4', obj, extra_params);
+                                    refreshWindow('w5', obj, extra_params);
+                                }
+
 
                             // month view
                             } else if(columnIndex < 14) {
-                                refreshHoldPerfBar(year + '-' + month + '-1', obj.fund, true);
+                                refreshHoldPerfBar('w2', year + '-' + month + '-1', obj.fund, true);
 
                                 monthTable(year, month);
                             }
@@ -2550,43 +2771,143 @@ console.log('initiating grid');
                                 // save this for W8, 9 and 10
                                 $('#data').data('year', year);
 
-                                //obj = {};
-                                //obj.month = month;
-                                //obj.year = year;
-                                //obj.fund = fund;
-                                //widget.key = "fundperfgrouptable";
-                                //widget.params.value_date__year = year;
-                                //widget.params.fund = "FUND";
-                                //widget.params.fields = "nav";
-                                //widget.type = "euro_percent_table";
+                                if($('#data').data('classification') == 9)  {
 
-                                refreshWindow('w8', obj, extra_params);
-                                refreshWindow('w9', obj, extra_params);
-                                refreshWindow('w10', obj, extra_params);
+                                    refreshWindow('w9c', obj, extra_params);
+                                    refreshWindow('w26', obj, extra_params);
+                                    refreshWindow('w27', obj, extra_params);
+
+                                } else if($('#data').data('classification') == 4)  {
+
+                                    refreshWindow('w8', obj, extra_params);
+                                    refreshWindow('w4b', obj, extra_params);
+                                    refreshWindow('w10b', obj, extra_params);
+
+                                } else if($('#data').data('classification') == 10)  {
+
+                                    refreshWindow('w8', obj, extra_params);
+                                    refreshWindow('w10', obj, extra_params);
+                                    refreshWindow('w31', obj, extra_params);
+
+                                } else if($('#data').data('classification') == 8)  {
+
+                                    refreshWindow('w8b', obj, extra_params);
+                                    refreshWindow('w9b', obj, extra_params);
+                                    refreshWindow('w10', obj, extra_params);
+
+                                } else if($('#data').data('classification') == 2)  {
+
+                                    refreshWindow('w8', obj, extra_params);
+                                    refreshWindow('w9b', obj, extra_params);
+                                    refreshWindow('w10', obj, extra_params);
+
+                                } else if($('#data').data('classification') == 1)  {
+
+                                    refreshWindow('w8', obj, extra_params);
+                                    refreshWindow('w9', obj, extra_params);
+                                    refreshWindow('w10', obj, extra_params);
+                                }
 
                             // month view
                             } else if(columnIndex < 13) {
-                                refreshHoldPerfBar(year + '-' + month + '-1', obj.fund, true, 'performance', 'weight');
+                                refreshHoldPerfBar('w7', year + '-' + month + '-1', obj.fund, true, 'performance', 'weight');
                             }
                         }
-                               // var panel = Ext.getCmp("month-table");
-                                //panel.remove('month-table-content');
+                        else if(widget.window.key == 'w6b') {
 
-                                /*
-                                monthly calendar view disabled for this type of fund
-                                $('<div id="asdf"></div>').appendTo('#1');
+                            // year view
+                            if(columnIndex == 1) {
 
-                                obj = {};
-                                obj.month = month;
-                                obj.year = year;
-                                obj.fund = fund;
-                                widget.key = "fundperfhistcalview";
-                                widget.params.value_date__year = "YEAR";
-                                widget.params.value_date__month = "MONTH";
-                                widget.params.fund = "FUND";
-                                widget.type = "month_table";
-                                createWidget(obj, widget, 'asdf'); //panel.renderTo);
-                                */
+                                if($('#data').data('classification') == 3)  {
+
+                                    refreshWindow('w8', obj, extra_params);
+                                    refreshWindow('w9b', obj, extra_params);
+                                    refreshWindow('w10b', obj, extra_params);
+
+                                } else if($('#data').data('classification') == 5)  {
+
+                                    refreshWindow('w8', obj, extra_params);
+                                    refreshWindow('w9', obj, extra_params);
+                                    refreshWindow('w10', obj, extra_params);
+                                }
+
+
+                            // month view
+                            } else if(columnIndex < 14) {
+                                refreshHoldPerfBar('w7', year + '-' + month + '-1', obj.fund, true);
+
+                                monthTable(year, month);
+                            }
+                        }
+                        else if(widget.window.key == 'w44') {
+
+                            // year view
+                            if(columnIndex == 1) {
+
+                                    refreshWindow('w8', obj, extra_params);
+
+                            // month view
+                            } else if(columnIndex < 14) {
+                                refreshHoldPerfBar('w45', year + '-' + month + '-1', obj.client, true);
+                            }
+                        }
+                        else if(widget.window.key == 'w32') {
+
+                            // year view
+                            if(columnIndex == 1) {
+
+                                refreshWindow('w34', obj, extra_params);
+
+                            // month view
+                            } else if(columnIndex < 14) {
+                                refreshHoldPerfBar('w33', year + '-' + month + '-1', obj.client, true);
+                            }
+                        }
+                        else if(widget.window.key == 'w51') {
+
+                            // year view
+                            if(columnIndex == 1) {
+
+                                    refreshWindow('w53', obj, extra_params);
+                                    refreshWindow('w54', obj, extra_params);
+
+                                    // div for window w55
+                                    var window_id = 'page_' + obj.page + '_82';
+                                    //$('<div id="' + window_id + '"></div>').appendTo('body');
+
+                                   $('#data').data('date', new Date(year));
+
+                                    investmentNAV(window_id, 'fund');
+
+                                    var title = 'Alpheus / YEAR / Alpheus Performance by Fund';
+                                    title = title.replace('YEAR', moment(new Date(year)).format("YYYY"))
+                                    win = Ext.getCmp('page_14_win_82');
+                                    win.setTitle(title);
+
+                            // month view
+                            } else if(columnIndex < 14) {
+                                refreshHoldPerfBar('w52', year + '-' + month + '-1', obj.fund, true);
+                            }
+                        }
+                        else if(widget.window.key == 'w64') {
+
+                            // year view
+                            if(columnIndex == 1) {
+
+                                    refreshWindow('w67', obj, extra_params);
+                                    refreshWindow('w66', obj, extra_params);
+
+                            // month view
+                            } else if(columnIndex < 14) {
+                                refreshHoldPerfBar('w65', year + '-' + month + '-1', obj.fund, true);
+                            }
+                        }
+
+
+
+
+
+
 
                     }
                 }
@@ -2685,11 +3006,12 @@ console.log('initiating grid');
 
                 win = Ext.getCmp(window_id);
 
-                if(typeof win == 'undefined') {
-                    return;
+                if(typeof win != 'undefined') {
+                    win.setTitle(title);
+                    //return;
+                } else {
+                    console.log(window_id);
                 }
-
-                win.setTitle(title);
 
                 if(widget_data[x].type == 'data_table') {
                     var widget_obj = Ext.getCmp(widget_id);
@@ -3314,15 +3636,20 @@ console.log('initiating grid');
             success: function(data) {
                 $('#data').data("fund_name", data.name);
                 $('#data').data("classification", data.classification__id);
+                console.log(data);
             }
         });
     }
 
-    function getMenu() {
-
-
+    function setClientName(id) {
+         $.ajax({
+            type: "GET",
+            url: '/api/client/' + id + '?fields=first_name,last_name',
+            success: function(data) {
+                $('#data').data("client_name", data.last_name + ', ' + data.first_name);
+            }
+        });
     }
-
 
     function viewPort() {
 
@@ -3474,7 +3801,7 @@ console.log('initiating grid');
                                     //console.log(record.raw);
                                     if(typeof record.raw.client != 'undefined') {
                                         $('#data').data('client', record.raw.client);
-                                        console.log(record.raw);
+                                        setClientName(record.raw.client);
                                     }
 
                                     if(record.raw.page !== null) {
@@ -3484,8 +3811,13 @@ console.log('initiating grid');
                                         } else if (typeof record.raw.page === 'object') {
                                             record.raw.page = record.raw.page.id;
                                         } else {
-                                            var str = record.raw.page.toString();
+                                            try {
+                                                var str = record.raw.page.toString();
+                                            } catch(e) {
+                                                var str = record.raw.page;
+                                            }
                                             record.raw.page = str.replace(/\D/g, '');
+
                                         }
                                     }
                                   //console.log('INIATING PAGE NUMBER:');

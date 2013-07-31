@@ -161,9 +161,14 @@ class MainBaseResource(SpecifiedFields):
         if self.date:
             self.specified_fields.append(self.date)
 
-        self.title = request.GET.get("title", False)
-        if self.title:
-            self.specified_fields.append(self.title)
+        title = request.GET.get("title", False)
+        if title:
+            self.title = title.split(',')
+        else:
+            self.title = []
+
+        if len(self.title):
+            self.specified_fields += self.title
 
         self.y1 = request.GET.get("y1", False)
         if self.y1:
@@ -216,7 +221,7 @@ class MainBaseResource(SpecifiedFields):
         for key, val in bundle.data.iteritems():
 
             if isinstance(val, Decimal):
-                bundle.data[key] = str(Decimal("%.2f" % val))
+                bundle.data[key] = Decimal("%.2f" % val)
 
         return bundle
 
@@ -257,6 +262,7 @@ class MainBaseResource(SpecifiedFields):
         column_width = request.GET.get('column_width', '50,50').split(',')
         column_border_y = request.GET.get('column_border_y', 'ytd')
         align = request.GET.get('align', 'left')
+        total = request.GET.get('total', False) == 'true'
 
         columns = []
         for key, value in enumerate(column_names):
@@ -293,6 +299,9 @@ class MainBaseResource(SpecifiedFields):
             if column == column_border_y:
                 dic['tdCls'] = 'horizonal-border-column'
 
+            if total and key != 0:
+                dic['summaryType'] = 'sum'
+
             if key == 0:
                 dic['width'] = column_width[0]
                 dic['align'] = 'left'
@@ -310,9 +319,7 @@ class MainBaseResource(SpecifiedFields):
         if self.data_type == DATA_TYPE_YEAR:
             import calendar
 
-
-
-            if self.y1 and self.title:
+            if self.y1 and len(self.title):
 
                 import collections
 
@@ -321,10 +328,10 @@ class MainBaseResource(SpecifiedFields):
                 for month in range(1, 13):
                     for row in data['objects']:
                         try:
-                            categories[row.data[self.title]][row.data[self.date].month] =  float(row.data[self.y1])
+                            categories[row.data[self.title[0]]][row.data[self.date].month] =  float(row.data[self.y1])
                         except:
-                            categories[row.data[self.title]] = {}
-                            categories[row.data[self.title]][row.data[self.date].month] = float(row.data[self.y1])
+                            categories[row.data[self.title[0]]] = {}
+                            categories[row.data[self.title[0]]][row.data[self.date].month] = float(row.data[self.y1])
 
                 #od = collections.OrderedDict(sorted(categories.items()))
 
@@ -346,15 +353,15 @@ class MainBaseResource(SpecifiedFields):
                     'objects': newlist,
                 }
 
-            elif self.title:
+            elif len(self.title):
 
-                categories = set([row.data[self.title] for row in data['objects']])
+                categories = set([row.data[self.title[0]] for row in data['objects']])
 
                 months = []
                 for category in categories:
-                    dic = {self.title: category}
+                    dic = {self.title[0]: category}
                     for row in data['objects']:
-                        if row.data[self.title] == category:
+                        if row.data[self.title[0]] == category:
                             month = row.data[self.date].month
                             month_name = calendar.month_abbr[month].lower()
                             dic[month_name] = row.data[self.value]
@@ -362,7 +369,7 @@ class MainBaseResource(SpecifiedFields):
                                 dic[extra_field] = row.data[extra_field]
                     months.append(dic)
 
-                columns = [self.title] + self.get_month_list() + self.extra_fields
+                columns = [self.title[0]] + self.get_month_list() + self.extra_fields
 
             else:
                 categories = set([row.data[self.date].year for row in data['objects']])
@@ -407,13 +414,13 @@ class MainBaseResource(SpecifiedFields):
                     'yAxis': 1,
                 }]
 
-            elif self.y1 and self.title:
+            elif self.y1 and len(self.title):
 
                 y1 = []
                 for row in data['objects']:
                     y1.append({
                         'y': float(row.data[self.y1]), #@TODO: Perm fix for float bug
-                        'name': row.data[self.title]
+                        'name': ' '.join([row.data[title] for title in self.title]),
                     })
                 return {'objects': [{'data': y1}]}
 

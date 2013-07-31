@@ -17,7 +17,7 @@
             "is_active": true,
             "is_superuser": true,
             "is_staff": true,
-            "last_login": "2013-07-19T19:23:16Z",
+            "last_login": "2013-07-29T07:14:25Z",
             "groups": [],
             "user_permissions": [],
             "password": "pbkdf2_sha256$10000$l8bXV0IQO3vt$5K40ZfpJsZ415w++TboOA0H9Qs83V+8rO6Dm1kURo5w=",
@@ -138,6 +138,14 @@
         }
     },
     {
+        "pk": "d348832e15063aa4d2c5d6c730373a69",
+        "model": "sessions.session",
+        "fields": {
+            "expire_date": "2013-08-12T07:14:25Z",
+            "session_data": "ZjIxNzE1NmJjNGMxM2IxZWI0ODllZDViMTFjMjI2YjI0MDI5NzUzYTqAAn1xAShVEl9hdXRoX3Vz\nZXJfYmFja2VuZHECVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZHED\nVQ1fYXV0aF91c2VyX2lkcQSKAQF1Lg==\n"
+        }
+    },
+    {
         "pk": "e66f456d3ee062d20b9c360bbb3566ce",
         "model": "sessions.session",
         "fields": {
@@ -154,11 +162,4483 @@
         }
     },
     {
+        "pk": "f230120c7404e3dc91f9b26569eab40d",
+        "model": "sessions.session",
+        "fields": {
+            "expire_date": "2013-08-12T07:11:14Z",
+            "session_data": "NTk0MzkwNTZiOTZiYjk5NTY5M2E5YmQ2MjFhZTE4YTA0OTJkNmUwYzqAAn1xAVUKdGVzdGNvb2tp\nZXECVQZ3b3JrZWRxA3Mu\n"
+        }
+    },
+    {
         "pk": 1,
         "model": "sites.site",
         "fields": {
             "domain": "example.com",
             "name": "example.com"
+        }
+    },
+    {
+        "pk": 2164,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T13:55:55Z",
+            "object_repr": "Coca Cola",
+            "object_id": "1",
+            "change_message": "Changed fund and client.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "holding"
+            ]
+        }
+    },
+    {
+        "pk": 2163,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T13:54:53Z",
+            "object_repr": "Overview",
+            "object_id": "20",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2162,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T13:54:48Z",
+            "object_repr": "HSBC Funds / Gale B",
+            "object_id": "70",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2161,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T12:51:32Z",
+            "object_repr": "Clients A - E / Surname, First Name",
+            "object_id": "31",
+            "change_message": "No fields changed.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2160,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T12:48:14Z",
+            "object_repr": "Private Equity / Private Equity",
+            "object_id": "18",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2159,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T12:48:02Z",
+            "object_repr": "Credit Suisse / CS Options",
+            "object_id": "74",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2158,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T12:47:52Z",
+            "object_repr": "Credit Suisse / CS Fixed Income & Treasuries",
+            "object_id": "73",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2157,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T12:47:42Z",
+            "object_repr": "Credit Suisse / CS Volatility",
+            "object_id": "19",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2156,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T12:47:31Z",
+            "object_repr": "Credit Suisse / CS Asia Equity",
+            "object_id": "16",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2155,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T12:47:21Z",
+            "object_repr": "Credit Suisse / CS US Equity",
+            "object_id": "15",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2154,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T12:47:13Z",
+            "object_repr": "Credit Suisse / CS European Equity",
+            "object_id": "14",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2153,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T12:44:39Z",
+            "object_repr": "HSBC Funds / Gale N",
+            "object_id": "11",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2152,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T12:44:30Z",
+            "object_repr": "HSBC Funds / Gale N",
+            "object_id": "11",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2151,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T12:44:18Z",
+            "object_repr": "HSBC Funds / Gale M",
+            "object_id": "10",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2150,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T12:44:11Z",
+            "object_repr": "HSBC Funds / Gale L",
+            "object_id": "9",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2149,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T12:44:02Z",
+            "object_repr": "HSBC Funds / Gale K",
+            "object_id": "8",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2148,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T12:43:51Z",
+            "object_repr": "HSBC Funds / Gale I",
+            "object_id": "76",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2147,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T12:43:44Z",
+            "object_repr": "HSBC Funds / Gale H",
+            "object_id": "75",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2146,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T12:43:36Z",
+            "object_repr": "HSBC Funds / Gale G",
+            "object_id": "72",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2145,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T12:43:25Z",
+            "object_repr": "HSBC Funds / Gale E",
+            "object_id": "6",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2144,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T12:43:18Z",
+            "object_repr": "HSBC Funds / Gale B",
+            "object_id": "70",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2143,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T12:43:10Z",
+            "object_repr": "Overview",
+            "object_id": "20",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2142,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T11:23:22Z",
+            "object_repr": "HSBC Funds / Gale B",
+            "object_id": "70",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2141,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T11:23:14Z",
+            "object_repr": "Overview",
+            "object_id": "20",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2140,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T10:32:22Z",
+            "object_repr": "W.71 Alpheus Gross Asset Calculation",
+            "object_id": "131",
+            "change_message": "Changed widget_type.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2139,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T10:31:50Z",
+            "object_repr": "W.71 Alpheus Gross Asset Calculation",
+            "object_id": "131",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2138,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T10:26:03Z",
+            "object_repr": "Overview",
+            "object_id": "20",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2137,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T10:25:55Z",
+            "object_repr": "HSBC Funds / Gale B",
+            "object_id": "70",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2136,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T10:07:22Z",
+            "object_repr": "w71 - Alpheus / Gross Assets Calculation",
+            "object_id": "28",
+            "change_message": "Changed key for widget \"W.71 Alpheus Gross Asset Calculation\".",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2135,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T10:01:16Z",
+            "object_repr": "w71 - Alpheus / Gross Assets Calculation",
+            "object_id": "28",
+            "change_message": "Changed name. Added widget \"W.71 Alpheus Gross Asset Calculation\".",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2134,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T09:58:58Z",
+            "object_repr": "w72 - Alpheus / Summary",
+            "object_id": "88",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2133,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T07:32:29Z",
+            "object_repr": "W.69 - Fund Share Holder Register Table",
+            "object_id": "130",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2132,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T07:31:51Z",
+            "object_repr": "w69 - Alpheus Share Holder Register",
+            "object_id": "86",
+            "change_message": "Added widget \"W.69 - Fund Share Holder Register Table\".",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2131,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T07:29:18Z",
+            "object_repr": "w69 - Alpheus Share Holder Register",
+            "object_id": "86",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2130,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T01:50:10Z",
+            "object_repr": "w55 - Alpheus / YEAR / Alpheus Performance by Fund",
+            "object_id": "82",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2129,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T01:49:59Z",
+            "object_repr": "w54 - Alpheus / YEAR / Performance by Location",
+            "object_id": "80",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2128,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T01:49:44Z",
+            "object_repr": "w53 - Alpheus / YEAR / Performance by Sector",
+            "object_id": "79",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2127,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T01:29:01Z",
+            "object_repr": "Credit Suisse / CS Asia Equity",
+            "object_id": "16",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2126,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T01:24:55Z",
+            "object_repr": "Pepsi",
+            "object_id": "2",
+            "change_message": "Changed fund, client and redemption_frequency.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "holding"
+            ]
+        }
+    },
+    {
+        "pk": 2125,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T01:24:36Z",
+            "object_repr": "Coca Cola",
+            "object_id": "1",
+            "change_message": "Changed fund and client.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "holding"
+            ]
+        }
+    },
+    {
+        "pk": 2124,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T01:24:17Z",
+            "object_repr": "Credit Suisse / CS US Equity",
+            "object_id": "15",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2123,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T01:24:00Z",
+            "object_repr": "Credit Suisse / CS European Equity",
+            "object_id": "14",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2122,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T01:22:46Z",
+            "object_repr": "HSBC Funds / Gale N",
+            "object_id": "11",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2121,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T01:22:39Z",
+            "object_repr": "HSBC Funds / Gale M",
+            "object_id": "10",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2120,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T01:22:32Z",
+            "object_repr": "HSBC Funds / Gale L",
+            "object_id": "9",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2119,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T01:22:25Z",
+            "object_repr": "HSBC Funds / Gale K",
+            "object_id": "8",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2118,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T01:22:16Z",
+            "object_repr": "HSBC Funds / Gale I",
+            "object_id": "76",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2117,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T01:22:09Z",
+            "object_repr": "Overview",
+            "object_id": "20",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2116,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T01:22:00Z",
+            "object_repr": "HSBC Funds / Gale H",
+            "object_id": "75",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2115,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T01:21:52Z",
+            "object_repr": "HSBC Funds / Gale G",
+            "object_id": "72",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2114,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T01:21:44Z",
+            "object_repr": "HSBC Funds / Gale E",
+            "object_id": "6",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2113,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-31T01:20:52Z",
+            "object_repr": "HSBC Funds / Gale B",
+            "object_id": "70",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2112,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T22:03:29Z",
+            "object_repr": "W.2 - Fund Holding Performance Bar Graph",
+            "object_id": "7",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2111,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T17:33:55Z",
+            "object_repr": "Private Equity / Private Equity",
+            "object_id": "18",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2110,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T16:09:12Z",
+            "object_repr": "W78 - Line Graph",
+            "object_id": "75",
+            "change_message": "Changed size_y.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2109,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T16:07:00Z",
+            "object_repr": "w78 - HOLDING_NAME / MTD Performance Line graph",
+            "object_id": "45",
+            "change_message": "Changed name. Deleted widget \"W78 - Holding Data Table\". Deleted widget \"W78 - Benchmark Data Table\".",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2108,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T15:09:05Z",
+            "object_repr": "W.11 - Holding Trade Data Table",
+            "object_id": "1",
+            "change_message": "Changed columns.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2107,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T15:03:11Z",
+            "object_repr": "W.16 - MTD Performance Line Graph",
+            "object_id": "3",
+            "change_message": "Changed name and widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2106,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T14:54:37Z",
+            "object_repr": "Equities, Options, Futures CS Options / FUND_NAME / Historical Performance",
+            "object_id": "256",
+            "change_message": "Changed window.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 2105,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T14:54:05Z",
+            "object_repr": "Equities, Options, Futures CS Cal/Vol / FUND_NAME / Historical Performance",
+            "object_id": "208",
+            "change_message": "Changed window.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 2104,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T14:53:12Z",
+            "object_repr": "Fixed Income & Treasuries CS Fixed Income / FUND_NAME / Historical Performance",
+            "object_id": "182",
+            "change_message": "Changed window.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 2103,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T14:52:25Z",
+            "object_repr": "Equities, Options, Futures CS Equities / FUND_NAME / Historical Performance",
+            "object_id": "232",
+            "change_message": "Changed window.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 2102,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T14:22:01Z",
+            "object_repr": "w16 - FUND_NAME / MTD Performance Line Graph",
+            "object_id": "2",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2101,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T13:49:11Z",
+            "object_repr": "w57 - FUND_NAME / Cash Positions and Hedges",
+            "object_id": "84",
+            "change_message": "Changed size_x.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2100,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T13:48:52Z",
+            "object_repr": "w56 - FUND_NAME /  Foreign Currency Positions and Hedges",
+            "object_id": "83",
+            "change_message": "Changed size_x.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2099,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T13:44:42Z",
+            "object_repr": "w52 - FUND_NAME / YEAR /  Holding Performance",
+            "object_id": "68",
+            "change_message": "Changed size_x. Changed size_x for widget \"W.52 - Alpheus Holding Performance Bar Graph\".",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2098,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T13:14:01Z",
+            "object_repr": "W56 - Alpheus Currency Hedges",
+            "object_id": "129",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2097,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T13:10:05Z",
+            "object_repr": "w55 - FUND / YEAR / Alpheus Performance by Fund",
+            "object_id": "82",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2096,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T13:06:41Z",
+            "object_repr": "Overview / FUND_NAME /  Alpheus Summary",
+            "object_id": "332",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 2095,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T13:06:07Z",
+            "object_repr": "w72 - FUND_NAME /  Alpheus Summary",
+            "object_id": "88",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2094,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T13:03:08Z",
+            "object_repr": "Fund (Fund of Fund) / FUND_NAME /  Gross Assets Calculation",
+            "object_id": "29",
+            "change_message": "Changed window.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 2093,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T12:55:54Z",
+            "object_repr": "W13 - Fund Gross Assets",
+            "object_id": "128",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2092,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T12:49:51Z",
+            "object_repr": "w13 - FUND_NAME /  Gross Assets Calculation",
+            "object_id": "87",
+            "change_message": "No fields changed.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2091,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T12:48:05Z",
+            "object_repr": "Overview / FUND_NAME /  Alpheus Gross Assets Calculation",
+            "object_id": "331",
+            "change_message": "Changed window.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 2090,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T12:47:27Z",
+            "object_repr": "w71 - FUND_NAME /  Alpheus Gross Assets Calculation",
+            "object_id": "28",
+            "change_message": "Changed key.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2089,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T12:45:52Z",
+            "object_repr": "w13 - FUND_NAME /  Gross Assets Calculation",
+            "object_id": "87",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2088,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T12:44:00Z",
+            "object_repr": "Overview / FUND_NAME /  Foreign Currency Positions and Hedges",
+            "object_id": "331",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 2087,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T12:42:01Z",
+            "object_repr": "w70 - FUND_NAME /  Alpheus Gross Assets Calculation",
+            "object_id": "28",
+            "change_message": "Changed name and key. Deleted widget \"W.13 - Fund Gross Assets\".",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2086,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T12:40:16Z",
+            "object_repr": "Overview / FUND_NAME / Alpheus Share Holder Register",
+            "object_id": "330",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 2085,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T12:39:47Z",
+            "object_repr": "w69 - FUND_NAME / Alpheus Share Holder Register",
+            "object_id": "86",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2084,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T12:35:10Z",
+            "object_repr": "w55 - Alpheus / YEAR / Performance by Fund",
+            "object_id": "82",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2083,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T12:34:57Z",
+            "object_repr": "w68 - Alpheus / YEAR / NAV by Fund",
+            "object_id": "85",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2082,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T12:34:46Z",
+            "object_repr": "w66 - Alpheus / YEAR / NAV by Sector",
+            "object_id": "76",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2081,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T12:33:56Z",
+            "object_repr": "w67 - Alpheus / YEAR / NAV by Location",
+            "object_id": "77",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2080,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T12:29:44Z",
+            "object_repr": "w58 - Alpheus / Historical Statistics",
+            "object_id": "13",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2079,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T12:27:06Z",
+            "object_repr": "Overview / Alpheus NAV by Fund / YEAR",
+            "object_id": "329",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 2078,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T12:26:36Z",
+            "object_repr": "w68 - Alpheus NAV by Fund / YEAR",
+            "object_id": "85",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2077,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T12:26:24Z",
+            "object_repr": "w65 - Alpheus / YEAR / Allocation NAV Bar",
+            "object_id": "75",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2076,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T12:21:41Z",
+            "object_repr": "Overview / FUND_NAME / Alpheus Historical Statistics",
+            "object_id": "328",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 2075,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T12:20:54Z",
+            "object_repr": "w64 - Alpheus Historical NAV Table",
+            "object_id": "74",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2074,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T12:19:57Z",
+            "object_repr": "w58 - FUND_NAME / Alpheus Historical Statistics",
+            "object_id": "13",
+            "change_message": "Changed name and key.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2073,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T12:16:20Z",
+            "object_repr": "Overview / FUND_NAME /  Foreign Currency Positions and Hedges",
+            "object_id": "327",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 2072,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T12:15:54Z",
+            "object_repr": "Overview / FUND_NAME / Cash Positions and Hedges",
+            "object_id": "326",
+            "change_message": "Changed window.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 2071,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T12:15:30Z",
+            "object_repr": "w57 - FUND_NAME / Cash Positions and Hedges",
+            "object_id": "84",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2070,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T12:14:50Z",
+            "object_repr": "w51 - Alpheus / Historical Performance",
+            "object_id": "67",
+            "change_message": "Changed name. Changed position for widget \"W.51 - Alpheus Historical Performance Data Table\".",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2069,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T12:14:19Z",
+            "object_repr": "w56 - FUND_NAME /  Foreign Currency Positions and Hedges",
+            "object_id": "83",
+            "change_message": "Changed size_y and size_x.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2068,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T12:12:52Z",
+            "object_repr": "w55 - Alpheus Performance by Fund / YEAR",
+            "object_id": "82",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2067,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T12:12:42Z",
+            "object_repr": "Overview / FUND_NAME /  Foreign Currency Positions and Hedges",
+            "object_id": "326",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 2066,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T12:12:02Z",
+            "object_repr": "w56 - FUND_NAME /  Foreign Currency Positions and Hedges",
+            "object_id": "83",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2065,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T12:11:11Z",
+            "object_repr": "w55 - Alpheus Performance by Fund",
+            "object_id": "82",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2064,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T12:05:17Z",
+            "object_repr": "Overview / FUND_NAME / Alpheus Performance by Fund",
+            "object_id": "325",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 2063,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T12:04:49Z",
+            "object_repr": "w55 - FUND_NAME / Alpheus Performance by Fund",
+            "object_id": "82",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2062,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 3,
+            "action_time": "2013-07-30T12:01:19Z",
+            "object_repr": "w18 - FUND_NAME / Historical Statistics",
+            "object_id": "81",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2061,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T12:00:58Z",
+            "object_repr": "w18 - FUND_NAME / Historical Statistics",
+            "object_id": "81",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2060,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T10:50:37Z",
+            "object_repr": "w45 - CLIENT_NAME / MONTH YEAR / Allocation NAV Bar",
+            "object_id": "65",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2059,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T10:49:57Z",
+            "object_repr": "w45 - CLIENT_NAME / DATE / Allocation NAV Bar",
+            "object_id": "65",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2058,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T10:10:08Z",
+            "object_repr": "W.53 -  Alpheus Performance by Sector Bar Chart",
+            "object_id": "123",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2057,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T10:09:43Z",
+            "object_repr": "W.53 - Total Alpheus Performance by Sector Data Table",
+            "object_id": "124",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2056,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T10:09:18Z",
+            "object_repr": "W.54 -  Alpheus Performance by Location Bar Chart",
+            "object_id": "126",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2055,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T10:08:57Z",
+            "object_repr": "W.54 - Total Alpheus Performance by Location Data Table",
+            "object_id": "125",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2054,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T10:08:32Z",
+            "object_repr": "W.54 - Alpheus Performance by Location Data table",
+            "object_id": "127",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2053,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T10:04:53Z",
+            "object_repr": "W.52 - Alpheus Holding Performance Bar Graph",
+            "object_id": "105",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2052,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T10:04:28Z",
+            "object_repr": "W.51 - Alpheus Historical Performance Data Table",
+            "object_id": "110",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2051,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T10:01:46Z",
+            "object_repr": "W.54 - Performance by Location Data table",
+            "object_id": "127",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2050,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T09:58:26Z",
+            "object_repr": "Overview / FUND_NAME / Performance by Location",
+            "object_id": "324",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 2049,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T09:56:52Z",
+            "object_repr": "W.54 - Performance by Location Data table",
+            "object_id": "127",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2048,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T09:43:55Z",
+            "object_repr": "W.54 -  Performance by Location Bar Chart",
+            "object_id": "126",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2047,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T09:36:14Z",
+            "object_repr": "W.54 - Total Fund Performance by Location Data Table",
+            "object_id": "125",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2046,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T09:35:49Z",
+            "object_repr": "w54 - FUND_NAME / Performance by Location",
+            "object_id": "80",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2045,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T09:27:00Z",
+            "object_repr": "W.53 - Total Fund Performance by Sector Data Table",
+            "object_id": "124",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2044,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T09:23:55Z",
+            "object_repr": "W.53 -  Performance by Sector Bar Chart",
+            "object_id": "123",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2043,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T09:02:11Z",
+            "object_repr": "W32  - Client Historical Performance",
+            "object_id": "90",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2042,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 3,
+            "action_time": "2013-07-30T09:00:19Z",
+            "object_repr": "Overview / FUND_NAME / Performance by Sector",
+            "object_id": "323",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 2041,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T08:58:50Z",
+            "object_repr": "Overview / FUND_NAME / Performance by Sector",
+            "object_id": "323",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 2040,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T08:58:46Z",
+            "object_repr": "Overview / FUND_NAME / Performance by Sector",
+            "object_id": "322",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 2039,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T08:49:59Z",
+            "object_repr": "W.53 - Alpheus Performance by Sector Data Table",
+            "object_id": "122",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2038,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-30T08:49:30Z",
+            "object_repr": "w53 - FUND_NAME / Performance by Sector",
+            "object_id": "79",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2037,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T08:31:25Z",
+            "object_repr": "w33 - CLIENT_NAME / YEAR / Holding Performance",
+            "object_id": "56",
+            "change_message": "Changed size_y for widget \"W33 - Client Holding Performance Bar Graph\".",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2036,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T08:30:55Z",
+            "object_repr": "w33 - CLIENT_NAME / YEAR / Holding Performance",
+            "object_id": "56",
+            "change_message": "Changed name. Changed size_y for widget \"W33 - Client Holding Performance Bar Graph\".",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2035,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T08:29:31Z",
+            "object_repr": "W52 - Alpheus Holding Performance Bar Graph",
+            "object_id": "105",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2034,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T08:29:15Z",
+            "object_repr": "w52 - FUND_NAME / YEAR /  Holding Performance",
+            "object_id": "68",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2033,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T08:13:52Z",
+            "object_repr": "Credit Suisse / CS Options",
+            "object_id": "74",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2032,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T08:13:40Z",
+            "object_repr": "Credit Suisse / CS Fixed Income & Treasuries",
+            "object_id": "73",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2031,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T08:13:31Z",
+            "object_repr": "Credit Suisse / CS Volatility",
+            "object_id": "19",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2030,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T08:13:19Z",
+            "object_repr": "Credit Suisse / CS Asia Equity",
+            "object_id": "16",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2029,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T08:13:11Z",
+            "object_repr": "Credit Suisse / CS US Equity",
+            "object_id": "15",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2028,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T08:13:03Z",
+            "object_repr": "Credit Suisse / CS European Equity",
+            "object_id": "14",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2027,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T08:12:49Z",
+            "object_repr": "W45 - Client Historical NAV Bar",
+            "object_id": "102",
+            "change_message": "Changed key and widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2026,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T08:12:46Z",
+            "object_repr": "HSBC Funds / Gale N",
+            "object_id": "11",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2025,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T08:12:26Z",
+            "object_repr": "HSBC Funds / Gale M",
+            "object_id": "10",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2024,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T08:12:18Z",
+            "object_repr": "HSBC Funds / Gale L",
+            "object_id": "9",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2023,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T08:12:11Z",
+            "object_repr": "HSBC Funds / Gale K",
+            "object_id": "8",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2022,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T08:12:03Z",
+            "object_repr": "HSBC Funds / Gale I",
+            "object_id": "76",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2021,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T08:11:55Z",
+            "object_repr": "HSBC Funds / Gale H",
+            "object_id": "75",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2020,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T08:11:48Z",
+            "object_repr": "HSBC Funds / Gale G",
+            "object_id": "72",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2019,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T08:11:38Z",
+            "object_repr": "HSBC Funds / Gale E",
+            "object_id": "6",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2018,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T06:55:44Z",
+            "object_repr": "NAV by Location DATE",
+            "object_id": "115",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2017,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T06:52:00Z",
+            "object_repr": "W.67 - Alpheus NAV Weight by Location Table",
+            "object_id": "116",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2016,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T06:38:28Z",
+            "object_repr": "Overview",
+            "object_id": "20",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2015,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T05:44:42Z",
+            "object_repr": "W45 - Client Historical NAV Bar",
+            "object_id": "102",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2014,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T05:34:55Z",
+            "object_repr": "W44 - Client Historical NAV Bar",
+            "object_id": "102",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2013,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T04:35:06Z",
+            "object_repr": "Credit Suisse",
+            "object_id": "1",
+            "change_message": "Changed key.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "custodian"
+            ]
+        }
+    },
+    {
+        "pk": 2012,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T04:35:02Z",
+            "object_repr": "HSBC",
+            "object_id": "2",
+            "change_message": "Changed key.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "custodian"
+            ]
+        }
+    },
+    {
+        "pk": 2011,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T04:34:55Z",
+            "object_repr": "Private Equity",
+            "object_id": "3",
+            "change_message": "Changed key.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "custodian"
+            ]
+        }
+    },
+    {
+        "pk": 2010,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T04:06:42Z",
+            "object_repr": "Private Equity",
+            "object_id": "9",
+            "change_message": "Changed fund and client.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "holding"
+            ]
+        }
+    },
+    {
+        "pk": 2009,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T04:06:30Z",
+            "object_repr": "CS Volaility",
+            "object_id": "11",
+            "change_message": "Changed fund, client and redemption_frequency.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "holding"
+            ]
+        }
+    },
+    {
+        "pk": 2008,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-30T04:06:15Z",
+            "object_repr": "CS European Equity",
+            "object_id": "6",
+            "change_message": "Changed fund and client.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "holding"
+            ]
+        }
+    },
+    {
+        "pk": 2007,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T11:54:29Z",
+            "object_repr": "Gale M",
+            "object_id": "16",
+            "change_message": "Changed fund and client.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "holding"
+            ]
+        }
+    },
+    {
+        "pk": 2006,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T11:52:09Z",
+            "object_repr": "Gale K",
+            "object_id": "12",
+            "change_message": "Changed fund and client.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "holding"
+            ]
+        }
+    },
+    {
+        "pk": 2005,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T10:19:38Z",
+            "object_repr": "w46 - CLIENT_NAME / Investment NAV",
+            "object_id": "66",
+            "change_message": "Changed size_y for widget \"Client NAV - PE commitments\". Changed size_y for widget \"Client NAV - Ad-hoc\". Changed size_y for widget \"Client NAV - Loan\". Changed size_y for widget \"Client NAV - Cash\".",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2004,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T10:18:17Z",
+            "object_repr": "Pepsi",
+            "object_id": "2",
+            "change_message": "Changed fund and client.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "holding"
+            ]
+        }
+    },
+    {
+        "pk": 2003,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T10:18:07Z",
+            "object_repr": "Coca Cola",
+            "object_id": "1",
+            "change_message": "Changed fund and client.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "holding"
+            ]
+        }
+    },
+    {
+        "pk": 2002,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T10:16:33Z",
+            "object_repr": "w46 - CLIENT_NAME / Investment NAV",
+            "object_id": "66",
+            "change_message": "Changed position for widget \"Client NAV - Ad-hoc\". Changed position for widget \"Client NAV - Cash\". Changed position for widget \"Client NAV - Loan\".",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 2001,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T10:15:46Z",
+            "object_repr": "Client NAV - Ad-hoc",
+            "object_id": "121",
+            "change_message": "Changed name and widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 2000,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-29T10:15:00Z",
+            "object_repr": "Client NAV - Cash",
+            "object_id": "121",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1999,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T10:14:34Z",
+            "object_repr": "Client NAV - Cash",
+            "object_id": "119",
+            "change_message": "Changed name and widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1998,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-29T10:14:16Z",
+            "object_repr": "Client NAV - Loan",
+            "object_id": "120",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1997,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T10:13:55Z",
+            "object_repr": "Client NAV - Ad-hoc ",
+            "object_id": "119",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1996,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T10:13:35Z",
+            "object_repr": "Client NAV - PE commitments",
+            "object_id": "103",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1995,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T10:13:27Z",
+            "object_repr": "Client NAV - Ad-hoc ",
+            "object_id": "119",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1994,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-29T10:12:49Z",
+            "object_repr": "PE commitments",
+            "object_id": "119",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1993,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T10:12:42Z",
+            "object_repr": "PE commitments",
+            "object_id": "103",
+            "change_message": "Changed name and widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1992,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T10:08:17Z",
+            "object_repr": "HSBC Funds / Gale B",
+            "object_id": "70",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1991,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T09:54:15Z",
+            "object_repr": "Fund",
+            "object_id": "17",
+            "change_message": "Changed key.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "category"
+            ]
+        }
+    },
+    {
+        "pk": 1990,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-29T09:54:12Z",
+            "object_repr": "Cash",
+            "object_id": "27",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "category"
+            ]
+        }
+    },
+    {
+        "pk": 1989,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-29T09:54:04Z",
+            "object_repr": "Loans",
+            "object_id": "26",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "category"
+            ]
+        }
+    },
+    {
+        "pk": 1988,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-29T09:53:51Z",
+            "object_repr": "PE commitments",
+            "object_id": "25",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "category"
+            ]
+        }
+    },
+    {
+        "pk": 1987,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-29T09:53:35Z",
+            "object_repr": "Ad-hoc",
+            "object_id": "24",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "category"
+            ]
+        }
+    },
+    {
+        "pk": 1986,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T07:21:02Z",
+            "object_repr": "Private Equity / Private Equity",
+            "object_id": "18",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1985,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T07:20:18Z",
+            "object_repr": "Credit Suisse / CS Options",
+            "object_id": "74",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1984,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T07:20:08Z",
+            "object_repr": "Credit Suisse / CS Fixed Income & Treasuries",
+            "object_id": "73",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1983,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T07:19:58Z",
+            "object_repr": "Credit Suisse / CS Volatility",
+            "object_id": "19",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1982,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T07:19:49Z",
+            "object_repr": "Credit Suisse / CS Asia Equity",
+            "object_id": "16",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1981,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T07:19:34Z",
+            "object_repr": "Credit Suisse / CS US Equity",
+            "object_id": "15",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1980,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T07:18:58Z",
+            "object_repr": "Credit Suisse / CS European Equity",
+            "object_id": "14",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1979,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T07:18:22Z",
+            "object_repr": "HSBC Funds / Gale N",
+            "object_id": "11",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1978,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T07:17:15Z",
+            "object_repr": "HSBC Funds / Gale M",
+            "object_id": "10",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1977,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T07:17:07Z",
+            "object_repr": "HSBC Funds / Gale L",
+            "object_id": "9",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1976,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T07:16:55Z",
+            "object_repr": "HSBC Funds / Gale K",
+            "object_id": "8",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1975,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T07:16:45Z",
+            "object_repr": "HSBC Funds / Gale I",
+            "object_id": "76",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1974,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T07:16:37Z",
+            "object_repr": "HSBC Funds / Gale H",
+            "object_id": "75",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1973,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T07:16:28Z",
+            "object_repr": "HSBC Funds / Gale G",
+            "object_id": "72",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1972,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T07:16:17Z",
+            "object_repr": "HSBC Funds / Gale E",
+            "object_id": "6",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1971,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T07:16:10Z",
+            "object_repr": "HSBC Funds / Gale B",
+            "object_id": "70",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1970,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T07:16:00Z",
+            "object_repr": "Overview",
+            "object_id": "20",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1969,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 3,
+            "action_time": "2013-07-29T07:15:49Z",
+            "object_repr": "Click here",
+            "object_id": "71",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1968,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T05:40:01Z",
+            "object_repr": "Pussy",
+            "object_id": "3",
+            "change_message": "Changed fund and client.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "holding"
+            ]
+        }
+    },
+    {
+        "pk": 1967,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T05:39:52Z",
+            "object_repr": "Coca Cola",
+            "object_id": "1",
+            "change_message": "Changed fund and client.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "holding"
+            ]
+        }
+    },
+    {
+        "pk": 1966,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-29T05:37:23Z",
+            "object_repr": "holding__asset_class__key=cash",
+            "object_id": "119",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widgetparam"
+            ]
+        }
+    },
+    {
+        "pk": 1965,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-29T05:37:19Z",
+            "object_repr": "holding__asset_class__key=loan",
+            "object_id": "118",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widgetparam"
+            ]
+        }
+    },
+    {
+        "pk": 1964,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-29T05:37:10Z",
+            "object_repr": "holding__asset_class__key=ad-hoc",
+            "object_id": "117",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widgetparam"
+            ]
+        }
+    },
+    {
+        "pk": 1963,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-29T05:36:54Z",
+            "object_repr": "holding__asset_class__key=pe",
+            "object_id": "116",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widgetparam"
+            ]
+        }
+    },
+    {
+        "pk": 1962,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T05:31:38Z",
+            "object_repr": "Click here",
+            "object_id": "71",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1961,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T05:30:20Z",
+            "object_repr": "w46 - Client NAV by Investment",
+            "object_id": "103",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1960,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-29T05:27:54Z",
+            "object_repr": "total=true",
+            "object_id": "115",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widgetparam"
+            ]
+        }
+    },
+    {
+        "pk": 1959,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T01:52:54Z",
+            "object_repr": "Equities",
+            "object_id": "12",
+            "change_message": "Changed key.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "category"
+            ]
+        }
+    },
+    {
+        "pk": 1958,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-29T01:51:56Z",
+            "object_repr": "Cash",
+            "object_id": "20",
+            "change_message": "Changed key.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "category"
+            ]
+        }
+    },
+    {
+        "pk": 1957,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T09:08:34Z",
+            "object_repr": "W.12.b - Fund Shareholder Register Data Table",
+            "object_id": "54",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1956,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T09:07:26Z",
+            "object_repr": "W.12.b - Fund Register Table",
+            "object_id": "54",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1955,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T09:07:03Z",
+            "object_repr": "W.12 - Fund Share Holder Register Table",
+            "object_id": "34",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1954,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T09:05:46Z",
+            "object_repr": "W.13 - Fund Gross Assets",
+            "object_id": "36",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1953,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T09:04:00Z",
+            "object_repr": "HSBC Funds / Gale M",
+            "object_id": "10",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1952,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T09:03:49Z",
+            "object_repr": "HSBC Funds / Gale L",
+            "object_id": "9",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1951,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T09:03:12Z",
+            "object_repr": "HSBC Funds / Gale K",
+            "object_id": "8",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1950,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T09:03:03Z",
+            "object_repr": "HSBC Funds / Gale I",
+            "object_id": "76",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1949,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T09:02:54Z",
+            "object_repr": "HSBC Funds / Gale H",
+            "object_id": "75",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1948,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T09:02:45Z",
+            "object_repr": "HSBC Funds / Gale G",
+            "object_id": "72",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1947,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T09:02:34Z",
+            "object_repr": "HSBC Funds / Gale B",
+            "object_id": "70",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1946,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-28T08:37:37Z",
+            "object_repr": "Client / CLIENT_NAME / Historical Statistics ",
+            "object_id": "321",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "pagewindow"
+            ]
+        }
+    },
+    {
+        "pk": 1945,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 3,
+            "action_time": "2013-07-28T08:34:57Z",
+            "object_repr": "W80 - Holding Historical Statistics",
+            "object_id": "88",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1944,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 3,
+            "action_time": "2013-07-28T08:34:36Z",
+            "object_repr": "W38 - Holding Historical Statistics",
+            "object_id": "119",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1943,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T08:34:22Z",
+            "object_repr": "w38 - CLIENT_NAME / Historical Statistics ",
+            "object_id": "78",
+            "change_message": "Changed name and key. Changed name for widget \"W38 - Holding Historical Statistics\".",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 1942,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-28T08:32:07Z",
+            "object_repr": "w80 - HOLDING_NAME / Historical Statistics ",
+            "object_id": "78",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "window"
+            ]
+        }
+    },
+    {
+        "pk": 1941,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T06:20:22Z",
+            "object_repr": "Pepsi",
+            "object_id": "2",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "holding"
+            ]
+        }
+    },
+    {
+        "pk": 1940,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T05:51:38Z",
+            "object_repr": "Coca Cola",
+            "object_id": "1",
+            "change_message": "Changed fund and client.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "holding"
+            ]
+        }
+    },
+    {
+        "pk": 1939,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T03:29:56Z",
+            "object_repr": "Click here",
+            "object_id": "71",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1938,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T02:12:43Z",
+            "object_repr": "Coca Cola",
+            "object_id": "1",
+            "change_message": "Changed fund and client.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "holding"
+            ]
+        }
+    },
+    {
+        "pk": 1937,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T02:08:41Z",
+            "object_repr": "W32  - Client Historical Performance",
+            "object_id": "90",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1936,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T02:07:05Z",
+            "object_repr": "W.34 - Client Investment Performance",
+            "object_id": "92",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1935,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T02:03:47Z",
+            "object_repr": "W32  - Client Historical Performance",
+            "object_id": "90",
+            "change_message": "Changed key.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1934,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T01:58:16Z",
+            "object_repr": "W32  - Client Historical Performance",
+            "object_id": "90",
+            "change_message": "Changed name.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1933,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T01:56:36Z",
+            "object_repr": "w46 - Client NAV by Investment",
+            "object_id": "103",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1932,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T01:17:43Z",
+            "object_repr": "W44 - Client Historical NAV Bar",
+            "object_id": "102",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1931,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-28T01:17:31Z",
+            "object_repr": "title=client__last_name,client__first_name",
+            "object_id": "114",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widgetparam"
+            ]
+        }
+    },
+    {
+        "pk": 1930,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T00:52:59Z",
+            "object_repr": "W44 - Client Historical NAV Bar",
+            "object_id": "102",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1929,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-28T00:52:47Z",
+            "object_repr": "W44 - Client Historical NAV Bar",
+            "object_id": "102",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1928,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-28T00:52:43Z",
+            "object_repr": "y1=euro_nav",
+            "object_id": "113",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widgetparam"
+            ]
+        }
+    },
+    {
+        "pk": 1927,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-27T20:47:54Z",
+            "object_repr": "W44 - Client Historical NAV",
+            "object_id": "101",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1926,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-27T20:47:52Z",
+            "object_repr": "W44 - Client Historical NAV Bar",
+            "object_id": "102",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1925,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-07-27T20:47:04Z",
+            "object_repr": "value=euro_nav",
+            "object_id": "112",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widgetparam"
+            ]
+        }
+    },
+    {
+        "pk": 1924,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-27T20:35:40Z",
+            "object_repr": "W42 -  Client Avg Perf in Neg Months Table",
+            "object_id": "99",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1923,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-27T20:35:09Z",
+            "object_repr": "w41 - client correlation matrix",
+            "object_id": "98",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1922,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-27T13:49:48Z",
+            "object_repr": "HSBC Funds / Gale G",
+            "object_id": "72",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1921,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-27T13:49:37Z",
+            "object_repr": "HSBC Funds / Gale E",
+            "object_id": "6",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1920,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-27T13:49:30Z",
+            "object_repr": "HSBC Funds / Gale B",
+            "object_id": "70",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 1919,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-27T07:57:19Z",
+            "object_repr": "W33 - Client Holding Performance Bar Graph",
+            "object_id": "91",
+            "change_message": "Changed widget_param.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widget"
+            ]
+        }
+    },
+    {
+        "pk": 1918,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-27T07:33:44Z",
+            "object_repr": "Benchmark object",
+            "object_id": "1",
+            "change_message": "Changed fund, holding and client.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "comparative",
+                "benchmark"
+            ]
+        }
+    },
+    {
+        "pk": 1917,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-07-27T07:33:35Z",
+            "object_repr": "Benchmark object",
+            "object_id": "3",
+            "change_message": "Changed fund, holding and client.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "comparative",
+                "benchmark"
+            ]
         }
     },
     {
@@ -11486,7 +15966,7 @@
         "model": "app.window",
         "fields": {
             "layout": "v",
-            "name": "FUND_NAME / Performance against Benchmarks",
+            "name": "FUND_NAME / MTD Performance Line Graph",
             "access": [
                 [
                     "manager"
@@ -11662,7 +16142,7 @@
         "model": "app.window",
         "fields": {
             "layout": "v",
-            "name": "FUND_NAME / Historical Statistics",
+            "name": "Alpheus / Historical Statistics",
             "access": [
                 [
                     "manager"
@@ -11670,7 +16150,7 @@
             ],
             "size_x": 6,
             "size_y": 6,
-            "key": "w18"
+            "key": "w58"
         }
     },
     {
@@ -11886,7 +16366,7 @@
         "model": "app.window",
         "fields": {
             "layout": "v",
-            "name": "FUND_NAME /  Gross Assets Calculation",
+            "name": "Alpheus / Gross Assets Calculation",
             "access": [
                 [
                     "manager"
@@ -11894,7 +16374,7 @@
             ],
             "size_x": 9,
             "size_y": 6,
-            "key": "w13"
+            "key": "w71"
         }
     },
     {
@@ -12158,7 +16638,7 @@
         "model": "app.window",
         "fields": {
             "layout": "v",
-            "name": "HOLDING_NAME / Performance against Benchmarks",
+            "name": "HOLDING_NAME / MTD Performance Line graph",
             "access": [
                 [
                     "manager"
@@ -12334,7 +16814,7 @@
         "model": "app.window",
         "fields": {
             "layout": "v",
-            "name": "CLIENT_NAME / YEAR / Holding Performance Bar Graph",
+            "name": "CLIENT_NAME / YEAR / Holding Performance",
             "access": [
                 [
                     "manager"
@@ -12462,7 +16942,7 @@
         "model": "app.window",
         "fields": {
             "layout": "v",
-            "name": "CLIENT_NAME / YEAR / Allocation NAV Bar",
+            "name": "CLIENT_NAME / MONTH YEAR / Allocation NAV Bar",
             "access": [
                 [
                     "manager"
@@ -12494,7 +16974,7 @@
         "model": "app.window",
         "fields": {
             "layout": "v",
-            "name": "FUND_NAME / Historical Performance",
+            "name": "Alpheus / Historical Performance",
             "access": [
                 [
                     "manager"
@@ -12510,13 +16990,13 @@
         "model": "app.window",
         "fields": {
             "layout": "v",
-            "name": "FUND_NAME / YEAR /  Holding Performance Bar Graph",
+            "name": "FUND_NAME / YEAR /  Holding Performance",
             "access": [
                 [
                     "manager"
                 ]
             ],
-            "size_x": 6,
+            "size_x": 8,
             "size_y": 3,
             "key": "w52"
         }
@@ -12606,7 +17086,7 @@
         "model": "app.window",
         "fields": {
             "layout": "v",
-            "name": "FUND_NAME / Alpheus Historical NAV Table",
+            "name": "Alpheus Historical NAV Table",
             "access": [
                 [
                     "manager"
@@ -12622,7 +17102,7 @@
         "model": "app.window",
         "fields": {
             "layout": "v",
-            "name": "FUND_NAME / YEAR / Alpheus Allocation NAV Bar",
+            "name": "Alpheus / YEAR / Allocation NAV Bar",
             "access": [
                 [
                     "manager"
@@ -12638,7 +17118,7 @@
         "model": "app.window",
         "fields": {
             "layout": "h",
-            "name": "FUND_NAME / YEAR / NAV by Sector",
+            "name": "Alpheus / YEAR / NAV by Sector",
             "access": [
                 [
                     "manager"
@@ -12654,7 +17134,7 @@
         "model": "app.window",
         "fields": {
             "layout": "h",
-            "name": "FUND_NAME / YEAR / NAV by Location",
+            "name": "Alpheus / YEAR / NAV by Location",
             "access": [
                 [
                     "manager"
@@ -12663,6 +17143,166 @@
             "size_x": 9,
             "size_y": 2,
             "key": "w67"
+        }
+    },
+    {
+        "pk": 78,
+        "model": "app.window",
+        "fields": {
+            "layout": "v",
+            "name": "CLIENT_NAME / Historical Statistics ",
+            "access": [
+                [
+                    "manager"
+                ]
+            ],
+            "size_x": 6,
+            "size_y": 6,
+            "key": "w38"
+        }
+    },
+    {
+        "pk": 79,
+        "model": "app.window",
+        "fields": {
+            "layout": "v",
+            "name": "Alpheus / YEAR / Performance by Sector",
+            "access": [
+                [
+                    "manager"
+                ]
+            ],
+            "size_x": 6,
+            "size_y": 3,
+            "key": "w53"
+        }
+    },
+    {
+        "pk": 80,
+        "model": "app.window",
+        "fields": {
+            "layout": "v",
+            "name": "Alpheus / YEAR / Performance by Location",
+            "access": [
+                [
+                    "manager"
+                ]
+            ],
+            "size_x": 6,
+            "size_y": 3,
+            "key": "w54"
+        }
+    },
+    {
+        "pk": 82,
+        "model": "app.window",
+        "fields": {
+            "layout": "v",
+            "name": "Alpheus / YEAR / Alpheus Performance by Fund",
+            "access": [
+                [
+                    "manager"
+                ]
+            ],
+            "size_x": 6,
+            "size_y": 6,
+            "key": "w55"
+        }
+    },
+    {
+        "pk": 83,
+        "model": "app.window",
+        "fields": {
+            "layout": "v",
+            "name": "FUND_NAME /  Foreign Currency Positions and Hedges",
+            "access": [
+                [
+                    "manager"
+                ]
+            ],
+            "size_x": 4,
+            "size_y": 3,
+            "key": "w56"
+        }
+    },
+    {
+        "pk": 84,
+        "model": "app.window",
+        "fields": {
+            "layout": "v",
+            "name": "FUND_NAME / Cash Positions and Hedges",
+            "access": [
+                [
+                    "manager"
+                ]
+            ],
+            "size_x": 4,
+            "size_y": 3,
+            "key": "w57"
+        }
+    },
+    {
+        "pk": 85,
+        "model": "app.window",
+        "fields": {
+            "layout": "v",
+            "name": "Alpheus / YEAR / NAV by Fund",
+            "access": [
+                [
+                    "manager"
+                ]
+            ],
+            "size_x": 6,
+            "size_y": 6,
+            "key": "w68"
+        }
+    },
+    {
+        "pk": 86,
+        "model": "app.window",
+        "fields": {
+            "layout": "v",
+            "name": "Alpheus Share Holder Register",
+            "access": [
+                [
+                    "manager"
+                ]
+            ],
+            "size_x": 14,
+            "size_y": 6,
+            "key": "w69"
+        }
+    },
+    {
+        "pk": 87,
+        "model": "app.window",
+        "fields": {
+            "layout": "v",
+            "name": "FUND_NAME /  Gross Assets Calculation",
+            "access": [
+                [
+                    "manager"
+                ]
+            ],
+            "size_x": 9,
+            "size_y": 6,
+            "key": "w13"
+        }
+    },
+    {
+        "pk": 88,
+        "model": "app.window",
+        "fields": {
+            "layout": "v",
+            "name": "Alpheus / Summary",
+            "access": [
+                [
+                    "manager"
+                ]
+            ],
+            "size_x": 6,
+            "size_y": 5,
+            "key": "w72"
         }
     },
     {
@@ -12778,18 +17418,10 @@
         }
     },
     {
-        "pk": 45,
+        "pk": 8,
         "model": "app.widgetparam",
         "fields": {
-            "value": "ass",
-            "key": "category__group"
-        }
-    },
-    {
-        "pk": 22,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "loc",
+            "value": "all",
             "key": "category__group"
         }
     },
@@ -12798,14 +17430,6 @@
         "model": "app.widgetparam",
         "fields": {
             "value": "hol",
-            "key": "category__group"
-        }
-    },
-    {
-        "pk": 62,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "inv",
             "key": "category__group"
         }
     },
@@ -12826,10 +17450,26 @@
         }
     },
     {
-        "pk": 8,
+        "pk": 62,
         "model": "app.widgetparam",
         "fields": {
-            "value": "all",
+            "value": "inv",
+            "key": "category__group"
+        }
+    },
+    {
+        "pk": 22,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "loc",
+            "key": "category__group"
+        }
+    },
+    {
+        "pk": 45,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "ass",
             "key": "category__group"
         }
     },
@@ -12858,82 +17498,10 @@
         }
     },
     {
-        "pk": 47,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "60,60",
-            "key": "column_width"
-        }
-    },
-    {
-        "pk": 66,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "200,40",
-            "key": "column_width"
-        }
-    },
-    {
         "pk": 67,
         "model": "app.widgetparam",
         "fields": {
             "value": "40,50",
-            "key": "column_width"
-        }
-    },
-    {
-        "pk": 56,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "115,130",
-            "key": "column_width"
-        }
-    },
-    {
-        "pk": 49,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "100,100",
-            "key": "column_width"
-        }
-    },
-    {
-        "pk": 55,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "100,85",
-            "key": "column_width"
-        }
-    },
-    {
-        "pk": 48,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "50,80",
-            "key": "column_width"
-        }
-    },
-    {
-        "pk": 50,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "120,80",
-            "key": "column_width"
-        }
-    },
-    {
-        "pk": 54,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "80,50",
-            "key": "column_width"
-        }
-    },
-    {
-        "pk": 51,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "100,80",
             "key": "column_width"
         }
     },
@@ -12946,10 +17514,82 @@
         }
     },
     {
+        "pk": 48,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "50,80",
+            "key": "column_width"
+        }
+    },
+    {
+        "pk": 49,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "100,100",
+            "key": "column_width"
+        }
+    },
+    {
+        "pk": 47,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "60,60",
+            "key": "column_width"
+        }
+    },
+    {
+        "pk": 54,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "80,50",
+            "key": "column_width"
+        }
+    },
+    {
+        "pk": 55,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "100,85",
+            "key": "column_width"
+        }
+    },
+    {
+        "pk": 66,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "200,40",
+            "key": "column_width"
+        }
+    },
+    {
+        "pk": 50,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "120,80",
+            "key": "column_width"
+        }
+    },
+    {
+        "pk": 56,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "115,130",
+            "key": "column_width"
+        }
+    },
+    {
         "pk": 58,
         "model": "app.widgetparam",
         "fields": {
             "value": "80,90",
+            "key": "column_width"
+        }
+    },
+    {
+        "pk": 51,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "100,80",
             "key": "column_width"
         }
     },
@@ -13058,30 +17698,6 @@
         }
     },
     {
-        "pk": 28,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "nav",
-            "key": "fields"
-        }
-    },
-    {
-        "pk": 69,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "cash_flow",
-            "key": "fields"
-        }
-    },
-    {
-        "pk": 27,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "performance",
-            "key": "fields"
-        }
-    },
-    {
         "pk": 68,
         "model": "app.widgetparam",
         "fields": {
@@ -13098,10 +17714,34 @@
         }
     },
     {
+        "pk": 27,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "performance",
+            "key": "fields"
+        }
+    },
+    {
+        "pk": 28,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "nav",
+            "key": "fields"
+        }
+    },
+    {
         "pk": 29,
         "model": "app.widgetparam",
         "fields": {
             "value": "weight",
+            "key": "fields"
+        }
+    },
+    {
+        "pk": 69,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "cash_flow",
             "key": "fields"
         }
     },
@@ -13154,6 +17794,38 @@
         }
     },
     {
+        "pk": 116,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "pe",
+            "key": "holding__asset_class__key"
+        }
+    },
+    {
+        "pk": 117,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "ad-hoc",
+            "key": "holding__asset_class__key"
+        }
+    },
+    {
+        "pk": 119,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "cash",
+            "key": "holding__asset_class__key"
+        }
+    },
+    {
+        "pk": 118,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "loan",
+            "key": "holding__asset_class__key"
+        }
+    },
+    {
         "pk": 111,
         "model": "app.widgetparam",
         "fields": {
@@ -13170,18 +17842,18 @@
         }
     },
     {
-        "pk": 106,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "HOLDING",
-            "key": "id"
-        }
-    },
-    {
         "pk": 101,
         "model": "app.widgetparam",
         "fields": {
             "value": "FUND",
+            "key": "id"
+        }
+    },
+    {
+        "pk": 106,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "HOLDING",
             "key": "id"
         }
     },
@@ -13242,18 +17914,18 @@
         }
     },
     {
-        "pk": 39,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "performance",
-            "key": "order_by"
-        }
-    },
-    {
         "pk": 105,
         "model": "app.widgetparam",
         "fields": {
             "value": "-dealing_date",
+            "key": "order_by"
+        }
+    },
+    {
+        "pk": 39,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "performance",
             "key": "order_by"
         }
     },
@@ -13282,50 +17954,10 @@
         }
     },
     {
-        "pk": 15,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "true",
-            "key": "title"
-        }
-    },
-    {
-        "pk": 71,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "fund__name",
-            "key": "title"
-        }
-    },
-    {
         "pk": 109,
         "model": "app.widgetparam",
         "fields": {
             "value": "client__name",
-            "key": "title"
-        }
-    },
-    {
-        "pk": 14,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "false",
-            "key": "title"
-        }
-    },
-    {
-        "pk": 31,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "% of Fund",
-            "key": "title"
-        }
-    },
-    {
-        "pk": 77,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "category__name",
             "key": "title"
         }
     },
@@ -13338,11 +17970,67 @@
         }
     },
     {
+        "pk": 114,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "client__last_name,client__first_name",
+            "key": "title"
+        }
+    },
+    {
         "pk": 96,
         "model": "app.widgetparam",
         "fields": {
             "value": "holding__name",
             "key": "title"
+        }
+    },
+    {
+        "pk": 15,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "true",
+            "key": "title"
+        }
+    },
+    {
+        "pk": 14,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "false",
+            "key": "title"
+        }
+    },
+    {
+        "pk": 77,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "category__name",
+            "key": "title"
+        }
+    },
+    {
+        "pk": 31,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "% of Fund",
+            "key": "title"
+        }
+    },
+    {
+        "pk": 71,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "fund__name",
+            "key": "title"
+        }
+    },
+    {
+        "pk": 115,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "true",
+            "key": "total"
         }
     },
     {
@@ -13362,46 +18050,6 @@
         }
     },
     {
-        "pk": 110,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "euro_nav_client",
-            "key": "value"
-        }
-    },
-    {
-        "pk": 94,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "euro_nav_fund",
-            "key": "value"
-        }
-    },
-    {
-        "pk": 100,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "euro_nav_holding",
-            "key": "value"
-        }
-    },
-    {
-        "pk": 99,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "euro_weight_holding_in_fund",
-            "key": "value"
-        }
-    },
-    {
-        "pk": 80,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "nav",
-            "key": "value"
-        }
-    },
-    {
         "pk": 83,
         "model": "app.widgetparam",
         "fields": {
@@ -13410,10 +18058,10 @@
         }
     },
     {
-        "pk": 84,
+        "pk": 110,
         "model": "app.widgetparam",
         "fields": {
-            "value": "cash_flow_percent",
+            "value": "euro_nav_client",
             "key": "value"
         }
     },
@@ -13430,6 +18078,54 @@
         "model": "app.widgetparam",
         "fields": {
             "value": "performance",
+            "key": "value"
+        }
+    },
+    {
+        "pk": 100,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "euro_nav_holding",
+            "key": "value"
+        }
+    },
+    {
+        "pk": 80,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "nav",
+            "key": "value"
+        }
+    },
+    {
+        "pk": 112,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "euro_nav",
+            "key": "value"
+        }
+    },
+    {
+        "pk": 84,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "cash_flow_percent",
+            "key": "value"
+        }
+    },
+    {
+        "pk": 99,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "euro_weight_holding_in_fund",
+            "key": "value"
+        }
+    },
+    {
+        "pk": 94,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "euro_nav_fund",
             "key": "value"
         }
     },
@@ -13466,10 +18162,18 @@
         }
     },
     {
-        "pk": 86,
+        "pk": 113,
         "model": "app.widgetparam",
         "fields": {
-            "value": "cash_flow_percent",
+            "value": "euro_nav",
+            "key": "y1"
+        }
+    },
+    {
+        "pk": 92,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "cumulative_weight",
             "key": "y1"
         }
     },
@@ -13490,18 +18194,10 @@
         }
     },
     {
-        "pk": 87,
+        "pk": 86,
         "model": "app.widgetparam",
         "fields": {
-            "value": "nav",
-            "key": "y1"
-        }
-    },
-    {
-        "pk": 95,
-        "model": "app.widgetparam",
-        "fields": {
-            "value": "performance",
+            "value": "cash_flow_percent",
             "key": "y1"
         }
     },
@@ -13514,10 +18210,18 @@
         }
     },
     {
-        "pk": 92,
+        "pk": 87,
         "model": "app.widgetparam",
         "fields": {
-            "value": "cumulative_weight",
+            "value": "nav",
+            "key": "y1"
+        }
+    },
+    {
+        "pk": 95,
+        "model": "app.widgetparam",
+        "fields": {
+            "value": "performance",
             "key": "y1"
         }
     },
@@ -13551,6 +18255,37 @@
         "fields": {
             "value": "FUND",
             "key": "year__fund"
+        }
+    },
+    {
+        "pk": 103,
+        "model": "app.widget",
+        "fields": {
+            "disabled": false,
+            "widget_param": [
+                46,
+                54,
+                73,
+                72,
+                81,
+                116,
+                111,
+                96,
+                115,
+                70,
+                19
+            ],
+            "name": "Client NAV - PE commitments",
+            "v2": true,
+            "widget_type": 2,
+            "window": 66,
+            "size_x": "6.9",
+            "size_y": "1.0",
+            "key": "holding-history",
+            "column_width": "",
+            "position": 0,
+            "columns": "",
+            "description": ""
         }
     },
     {
@@ -13608,34 +18343,6 @@
         }
     },
     {
-        "pk": 116,
-        "model": "app.widget",
-        "fields": {
-            "disabled": false,
-            "widget_param": [
-                22,
-                54,
-                73,
-                72,
-                16,
-                77,
-                80,
-                19
-            ],
-            "name": "W.10 - Alpheus NAV Weight by Location Table",
-            "v2": true,
-            "widget_type": 9,
-            "window": 77,
-            "size_x": "7.0",
-            "size_y": "2.0",
-            "key": "holding-breakdown",
-            "column_width": "",
-            "position": 0,
-            "columns": "",
-            "description": ""
-        }
-    },
-    {
         "pk": 21,
         "model": "app.widget",
         "fields": {
@@ -13682,7 +18389,74 @@
             "key": "holding",
             "column_width": "",
             "position": 0,
-            "columns": "name,sector,sub_sector,location,asset_class,currency,ave_purchase_price_base,no_of_units,price_of_unit,nav,performance,ytd,si",
+            "columns": "name,sector,sub_sector,location,asset_class,currency,ave_purchase_price_base,no_of_units,price_of_unit,nav,performance,ytd",
+            "description": "n/a"
+        }
+    },
+    {
+        "pk": 34,
+        "model": "app.widget",
+        "fields": {
+            "disabled": false,
+            "widget_param": [
+                1
+            ],
+            "name": "W.12 - Fund Share Holder Register Table",
+            "v2": true,
+            "widget_type": 6,
+            "window": 25,
+            "size_x": "5.0",
+            "size_y": "6.0",
+            "key": "client",
+            "column_width": "",
+            "position": 0,
+            "columns": "first_name,last_name,no_of_units,euro_nav,pending_nav",
+            "description": ""
+        }
+    },
+    {
+        "pk": 54,
+        "model": "app.widget",
+        "fields": {
+            "disabled": false,
+            "widget_param": [
+                1
+            ],
+            "name": "W.12.b - Fund Shareholder Register Data Table",
+            "v2": true,
+            "widget_type": 6,
+            "window": 37,
+            "size_x": "7.0",
+            "size_y": "6.0",
+            "key": "client",
+            "column_width": "",
+            "position": 0,
+            "columns": "first_name,last_name,commit,drawdown,various,residual_commit,distribution,valuation,total_value,proceed,irr",
+            "description": ""
+        }
+    },
+    {
+        "pk": 3,
+        "model": "app.widget",
+        "fields": {
+            "disabled": false,
+            "widget_param": [
+                27,
+                1,
+                18,
+                43,
+                14
+            ],
+            "name": "W.16 - MTD Performance Line Graph",
+            "v2": true,
+            "widget_type": 8,
+            "window": 2,
+            "size_x": "6.9",
+            "size_y": "2.8",
+            "key": "fund-performance-benchmark",
+            "column_width": "",
+            "position": 0,
+            "columns": "",
             "description": "n/a"
         }
     },
@@ -13698,7 +18472,6 @@
                 18,
                 4,
                 96,
-                97,
                 41,
                 20,
                 19,
@@ -13789,8 +18562,8 @@
                 73,
                 72,
                 81,
-                109,
-                78,
+                96,
+                70,
                 19
             ],
             "name": "W.34 - Client Investment Performance",
@@ -13958,6 +18731,124 @@
         }
     },
     {
+        "pk": 110,
+        "model": "app.widget",
+        "fields": {
+            "disabled": false,
+            "widget_param": [
+                59,
+                73,
+                72,
+                89,
+                81,
+                3,
+                78
+            ],
+            "name": "W.51 - Alpheus Historical Performance Data Table",
+            "v2": true,
+            "widget_type": 2,
+            "window": 67,
+            "size_x": "6.9",
+            "size_y": "3.0",
+            "key": "fund-history",
+            "column_width": "",
+            "position": 0,
+            "columns": "",
+            "description": ""
+        }
+    },
+    {
+        "pk": 105,
+        "model": "app.widget",
+        "fields": {
+            "disabled": false,
+            "widget_param": [
+                82,
+                89,
+                25,
+                76,
+                18,
+                96,
+                97,
+                41,
+                20,
+                19,
+                95
+            ],
+            "name": "W.52 - Alpheus Holding Performance Bar Graph",
+            "v2": true,
+            "widget_type": 4,
+            "window": 68,
+            "size_x": "8.0",
+            "size_y": "3.0",
+            "key": "holding-history",
+            "column_width": "",
+            "position": 0,
+            "columns": "",
+            "description": ""
+        }
+    },
+    {
+        "pk": 122,
+        "model": "app.widget",
+        "fields": {
+            "disabled": false,
+            "widget_param": [
+                9,
+                46,
+                54,
+                73,
+                72,
+                81,
+                1,
+                77,
+                78,
+                19
+            ],
+            "name": "W.53 - Alpheus Performance by Sector Data Table",
+            "v2": true,
+            "widget_type": 2,
+            "window": 79,
+            "size_x": "6.0",
+            "size_y": "0.8",
+            "key": "holding-breakdown",
+            "column_width": "",
+            "position": 0,
+            "columns": "",
+            "description": ""
+        }
+    },
+    {
+        "pk": 127,
+        "model": "app.widget",
+        "fields": {
+            "disabled": false,
+            "widget_param": [
+                22,
+                46,
+                54,
+                73,
+                72,
+                81,
+                1,
+                77,
+                78,
+                19
+            ],
+            "name": "W.54 - Alpheus Performance by Location Data table",
+            "v2": true,
+            "widget_type": 2,
+            "window": 80,
+            "size_x": "6.0",
+            "size_y": "1.0",
+            "key": "holding-breakdown",
+            "column_width": "",
+            "position": 0,
+            "columns": "",
+            "description": ""
+        }
+    },
+    {
         "pk": 16,
         "model": "app.widget",
         "fields": {
@@ -14013,6 +18904,55 @@
         }
     },
     {
+        "pk": 116,
+        "model": "app.widget",
+        "fields": {
+            "disabled": false,
+            "widget_param": [
+                22,
+                54,
+                73,
+                72,
+                16,
+                77,
+                80,
+                19
+            ],
+            "name": "W.67 - Alpheus NAV Weight by Location Table",
+            "v2": true,
+            "widget_type": 9,
+            "window": 77,
+            "size_x": "7.0",
+            "size_y": "2.0",
+            "key": "holding-breakdown",
+            "column_width": "",
+            "position": 0,
+            "columns": "",
+            "description": ""
+        }
+    },
+    {
+        "pk": 130,
+        "model": "app.widget",
+        "fields": {
+            "disabled": false,
+            "widget_param": [
+                1
+            ],
+            "name": "W.69 - Fund Share Holder Register Table",
+            "v2": true,
+            "widget_type": 6,
+            "window": 86,
+            "size_x": "5.0",
+            "size_y": "6.0",
+            "key": "client",
+            "column_width": "",
+            "position": 0,
+            "columns": "first_name,last_name,no_of_units,euro_nav,pending_nav",
+            "description": ""
+        }
+    },
+    {
         "pk": 17,
         "model": "app.widget",
         "fields": {
@@ -14038,6 +18978,28 @@
             "size_x": "7.0",
             "size_y": "3.0",
             "key": "holding-history",
+            "column_width": "",
+            "position": 0,
+            "columns": "",
+            "description": ""
+        }
+    },
+    {
+        "pk": 131,
+        "model": "app.widget",
+        "fields": {
+            "disabled": false,
+            "widget_param": [
+                1,
+                6
+            ],
+            "name": "W.71 Alpheus Gross Asset Calculation",
+            "v2": true,
+            "widget_type": 11,
+            "window": 28,
+            "size_x": "9.0",
+            "size_y": "6.0",
+            "key": "fund-grossasset6",
             "column_width": "",
             "position": 0,
             "columns": "",
@@ -14190,49 +19152,7 @@
         }
     },
     {
-        "pk": 34,
-        "model": "app.widget",
-        "fields": {
-            "disabled": false,
-            "widget_param": [
-                1
-            ],
-            "name": "W12 - Fund Register Table",
-            "v2": true,
-            "widget_type": 6,
-            "window": 25,
-            "size_x": "5.0",
-            "size_y": "6.0",
-            "key": "client",
-            "column_width": "",
-            "position": 0,
-            "columns": "first_name,last_name,no_of_units,euro_nav,pending_nav",
-            "description": ""
-        }
-    },
-    {
-        "pk": 54,
-        "model": "app.widget",
-        "fields": {
-            "disabled": false,
-            "widget_param": [
-                1
-            ],
-            "name": "W12b - Fund Register Table",
-            "v2": true,
-            "widget_type": 6,
-            "window": 37,
-            "size_x": "7.0",
-            "size_y": "6.0",
-            "key": "client",
-            "column_width": "",
-            "position": 0,
-            "columns": "first_name,last_name,commit,drawdown,various,residual_commit,distribution,valuation,total_value,proceed,irr",
-            "description": ""
-        }
-    },
-    {
-        "pk": 36,
+        "pk": 128,
         "model": "app.widget",
         "fields": {
             "disabled": false,
@@ -14243,7 +19163,7 @@
             "name": "W13 - Fund Gross Assets",
             "v2": true,
             "widget_type": 11,
-            "window": 28,
+            "window": 87,
             "size_x": "9.0",
             "size_y": "6.0",
             "key": "fund-grossasset1",
@@ -14295,30 +19215,6 @@
             "position": 0,
             "columns": "",
             "description": ""
-        }
-    },
-    {
-        "pk": 3,
-        "model": "app.widget",
-        "fields": {
-            "disabled": false,
-            "widget_param": [
-                27,
-                1,
-                43,
-                14
-            ],
-            "name": "W16 - Line Graph",
-            "v2": true,
-            "widget_type": 8,
-            "window": 2,
-            "size_x": "6.9",
-            "size_y": "2.8",
-            "key": "fund-performance-benchmark",
-            "column_width": "",
-            "position": 0,
-            "columns": "",
-            "description": "n/a"
         }
     },
     {
@@ -14590,19 +19486,20 @@
             "disabled": false,
             "widget_param": [
                 59,
+                107,
                 73,
                 72,
                 89,
                 81,
-                78
+                70
             ],
-            "name": "W32  - Data Table",
+            "name": "W32  - Client Historical Performance",
             "v2": true,
             "widget_type": 2,
             "window": 55,
             "size_x": "6.9",
             "size_y": "3.0",
-            "key": "client-table",
+            "key": "client-history",
             "column_width": "",
             "position": 0,
             "columns": "",
@@ -14615,9 +19512,9 @@
         "fields": {
             "disabled": false,
             "widget_param": [
-                107,
                 82,
                 89,
+                111,
                 18,
                 96,
                 97,
@@ -14631,7 +19528,7 @@
             "widget_type": 4,
             "window": 56,
             "size_x": "6.9",
-            "size_y": "5.0",
+            "size_y": "3.0",
             "key": "holding-history",
             "column_width": "",
             "position": 0,
@@ -14688,8 +19585,8 @@
         "fields": {
             "disabled": false,
             "widget_param": [
-                51,
-                1
+                107,
+                51
             ],
             "name": "w41 - client correlation matrix",
             "v2": true,
@@ -14710,8 +19607,8 @@
         "fields": {
             "disabled": false,
             "widget_param": [
-                50,
-                1
+                107,
+                50
             ],
             "name": "W42 -  Client Avg Perf in Neg Months Table",
             "v2": true,
@@ -14761,7 +19658,7 @@
                 73,
                 72,
                 89,
-                110
+                112
             ],
             "name": "W44 - Client Historical NAV",
             "v2": true,
@@ -14782,7 +19679,6 @@
         "fields": {
             "disabled": false,
             "widget_param": [
-                107,
                 82,
                 72,
                 89,
@@ -14795,13 +19691,13 @@
                 19,
                 87
             ],
-            "name": "W44 - Client Historical NAV Bar",
+            "name": "W45 - Client Historical NAV Bar",
             "v2": true,
             "widget_type": 4,
             "window": 65,
             "size_x": "7.0",
             "size_y": "3.0",
-            "key": "client-history",
+            "key": "holding-history",
             "column_width": "",
             "position": 0,
             "columns": "",
@@ -14809,58 +19705,21 @@
         }
     },
     {
-        "pk": 103,
+        "pk": 129,
         "model": "app.widget",
         "fields": {
             "disabled": false,
             "widget_param": [
-                107,
-                46,
-                54,
-                73,
-                72,
-                81,
-                109,
-                78,
-                19
+                58,
+                1
             ],
-            "name": "w46 - Client NAV by Investment",
+            "name": "W56 - Alpheus Currency Hedges",
             "v2": true,
             "widget_type": 2,
-            "window": 66,
-            "size_x": "6.9",
-            "size_y": "5.9",
-            "key": "holding-history",
-            "column_width": "",
-            "position": 0,
-            "columns": "",
-            "description": ""
-        }
-    },
-    {
-        "pk": 105,
-        "model": "app.widget",
-        "fields": {
-            "disabled": false,
-            "widget_param": [
-                82,
-                89,
-                25,
-                18,
-                96,
-                97,
-                41,
-                20,
-                19,
-                95
-            ],
-            "name": "W52 - Alpheus Holding Performance Bar Graph",
-            "v2": true,
-            "widget_type": 4,
-            "window": 68,
-            "size_x": "6.0",
-            "size_y": "3.0",
-            "key": "holding-history",
+            "window": 83,
+            "size_x": "4.0",
+            "size_y": "2.0",
+            "key": "fund-currencyhedge",
             "column_width": "",
             "position": 0,
             "columns": "",
@@ -15145,7 +20004,7 @@
             "widget_type": 8,
             "window": 45,
             "size_x": "6.9",
-            "size_y": "1.8",
+            "size_y": "3.0",
             "key": "holding-performance-benchmark",
             "column_width": "",
             "position": 0,
@@ -15173,25 +20032,6 @@
             "position": 0,
             "columns": "name,sector__name,sub_sector__name,location__name,asset_class__name,currency__name,ave_purchase_price_base,no_of_units,price_of_unit,nav,performance,ytd,si",
             "description": ""
-        }
-    },
-    {
-        "pk": 88,
-        "model": "app.widget",
-        "fields": {
-            "disabled": false,
-            "widget_param": [],
-            "name": "W80 - Holding Historical Statistics",
-            "v2": true,
-            "widget_type": 2,
-            "window": 51,
-            "size_x": "6.0",
-            "size_y": "6.0",
-            "key": "holding-history",
-            "column_width": null,
-            "position": 0,
-            "columns": "",
-            "description": null
         }
     },
     {
@@ -15357,34 +20197,6 @@
         }
     },
     {
-        "pk": 115,
-        "model": "app.widget",
-        "fields": {
-            "disabled": false,
-            "widget_param": [
-                22,
-                82,
-                72,
-                1,
-                77,
-                20,
-                19,
-                87
-            ],
-            "name": " Alpheus Weight by Location Pie",
-            "v2": true,
-            "widget_type": 1,
-            "window": 77,
-            "size_x": "2.0",
-            "size_y": "2.0",
-            "key": "holding-breakdown",
-            "column_width": "",
-            "position": 1,
-            "columns": "",
-            "description": ""
-        }
-    },
-    {
         "pk": 117,
         "model": "app.widget",
         "fields": {
@@ -15403,6 +20215,65 @@
             "v2": true,
             "widget_type": 1,
             "window": 76,
+            "size_x": "2.0",
+            "size_y": "2.0",
+            "key": "holding-breakdown",
+            "column_width": "",
+            "position": 1,
+            "columns": "",
+            "description": ""
+        }
+    },
+    {
+        "pk": 121,
+        "model": "app.widget",
+        "fields": {
+            "disabled": false,
+            "widget_param": [
+                46,
+                54,
+                73,
+                72,
+                81,
+                117,
+                111,
+                96,
+                115,
+                70,
+                19
+            ],
+            "name": "Client NAV - Ad-hoc",
+            "v2": true,
+            "widget_type": 2,
+            "window": 66,
+            "size_x": "6.9",
+            "size_y": "1.0",
+            "key": "holding-history",
+            "column_width": "",
+            "position": 1,
+            "columns": "",
+            "description": ""
+        }
+    },
+    {
+        "pk": 115,
+        "model": "app.widget",
+        "fields": {
+            "disabled": false,
+            "widget_param": [
+                22,
+                82,
+                72,
+                1,
+                77,
+                20,
+                19,
+                87
+            ],
+            "name": "NAV by Location DATE",
+            "v2": true,
+            "widget_type": 1,
+            "window": 77,
             "size_x": "2.0",
             "size_y": "2.0",
             "key": "holding-breakdown",
@@ -15627,6 +20498,60 @@
         }
     },
     {
+        "pk": 124,
+        "model": "app.widget",
+        "fields": {
+            "disabled": false,
+            "widget_param": [
+                73,
+                72,
+                81,
+                1,
+                71,
+                78,
+                19
+            ],
+            "name": "W.53 - Total Alpheus Performance by Sector Data Table",
+            "v2": true,
+            "widget_type": 2,
+            "window": 79,
+            "size_x": "6.0",
+            "size_y": "0.5",
+            "key": "fund-history",
+            "column_width": "",
+            "position": 1,
+            "columns": "",
+            "description": ""
+        }
+    },
+    {
+        "pk": 125,
+        "model": "app.widget",
+        "fields": {
+            "disabled": false,
+            "widget_param": [
+                73,
+                72,
+                81,
+                1,
+                71,
+                78,
+                19
+            ],
+            "name": "W.54 - Total Alpheus Performance by Location Data Table",
+            "v2": true,
+            "widget_type": 2,
+            "window": 80,
+            "size_x": "6.0",
+            "size_y": "0.5",
+            "key": "fund-history",
+            "column_width": "",
+            "position": 1,
+            "columns": "",
+            "description": ""
+        }
+    },
+    {
         "pk": 28,
         "model": "app.widget",
         "fields": {
@@ -15727,33 +20652,6 @@
         }
     },
     {
-        "pk": 110,
-        "model": "app.widget",
-        "fields": {
-            "disabled": false,
-            "widget_param": [
-                59,
-                73,
-                72,
-                89,
-                81,
-                3,
-                78
-            ],
-            "name": "W51 - Data Table",
-            "v2": true,
-            "widget_type": 2,
-            "window": 67,
-            "size_x": "6.9",
-            "size_y": "3.0",
-            "key": "fund-history",
-            "column_width": "",
-            "position": 1,
-            "columns": "",
-            "description": ""
-        }
-    },
-    {
         "pk": 32,
         "model": "app.widget",
         "fields": {
@@ -15777,28 +20675,6 @@
             "column_width": "",
             "position": 1,
             "columns": "",
-            "description": ""
-        }
-    },
-    {
-        "pk": 74,
-        "model": "app.widget",
-        "fields": {
-            "disabled": false,
-            "widget_param": [
-                49,
-                12
-            ],
-            "name": "W78 - Holding Data Table",
-            "v2": true,
-            "widget_type": 2,
-            "window": 45,
-            "size_x": "6.9",
-            "size_y": "0.4",
-            "key": "holding",
-            "column_width": "",
-            "position": 1,
-            "columns": "name,ann_return1,ann_volatility1,sharpe_ratio1",
             "description": ""
         }
     },
@@ -16015,6 +20891,37 @@
         }
     },
     {
+        "pk": 120,
+        "model": "app.widget",
+        "fields": {
+            "disabled": false,
+            "widget_param": [
+                46,
+                54,
+                73,
+                72,
+                81,
+                118,
+                111,
+                96,
+                115,
+                70,
+                19
+            ],
+            "name": "Client NAV - Loan",
+            "v2": true,
+            "widget_type": 2,
+            "window": 66,
+            "size_x": "6.9",
+            "size_y": "1.0",
+            "key": "holding-history",
+            "column_width": "",
+            "position": 2,
+            "columns": "",
+            "description": ""
+        }
+    },
+    {
         "pk": 10,
         "model": "app.widget",
         "fields": {
@@ -16204,6 +21111,60 @@
         }
     },
     {
+        "pk": 123,
+        "model": "app.widget",
+        "fields": {
+            "disabled": false,
+            "widget_param": [
+                9,
+                73,
+                72,
+                1,
+                77,
+                19,
+                88
+            ],
+            "name": "W.53 -  Alpheus Performance by Sector Bar Chart",
+            "v2": true,
+            "widget_type": 4,
+            "window": 79,
+            "size_x": "6.0",
+            "size_y": "1.7",
+            "key": "holding-breakdown",
+            "column_width": "",
+            "position": 2,
+            "columns": "",
+            "description": ""
+        }
+    },
+    {
+        "pk": 126,
+        "model": "app.widget",
+        "fields": {
+            "disabled": false,
+            "widget_param": [
+                9,
+                73,
+                72,
+                1,
+                77,
+                19,
+                88
+            ],
+            "name": "W.54 -  Alpheus Performance by Location Bar Chart",
+            "v2": true,
+            "widget_type": 4,
+            "window": 80,
+            "size_x": "6.0",
+            "size_y": "1.7",
+            "key": "holding-breakdown",
+            "column_width": "",
+            "position": 2,
+            "columns": "",
+            "description": ""
+        }
+    },
+    {
         "pk": 118,
         "model": "app.widget",
         "fields": {
@@ -16233,27 +21194,6 @@
         }
     },
     {
-        "pk": 86,
-        "model": "app.widget",
-        "fields": {
-            "disabled": false,
-            "widget_param": [
-                12
-            ],
-            "name": "W78 - Benchmark Data Table",
-            "v2": true,
-            "widget_type": 2,
-            "window": 45,
-            "size_x": "6.9",
-            "size_y": "1.0",
-            "key": "benchmark",
-            "column_width": "",
-            "position": 2,
-            "columns": "name,ann_return1,ann_volatility1,sharpe_ratio1",
-            "description": ""
-        }
-    },
-    {
         "pk": 77,
         "model": "app.widget",
         "fields": {
@@ -16270,6 +21210,37 @@
             "key": "holding-performance-benchmark",
             "column_width": "",
             "position": 2,
+            "columns": "",
+            "description": ""
+        }
+    },
+    {
+        "pk": 119,
+        "model": "app.widget",
+        "fields": {
+            "disabled": false,
+            "widget_param": [
+                46,
+                54,
+                73,
+                72,
+                81,
+                119,
+                111,
+                96,
+                115,
+                70,
+                19
+            ],
+            "name": "Client NAV - Cash",
+            "v2": true,
+            "widget_type": 2,
+            "window": 66,
+            "size_x": "6.9",
+            "size_y": "1.0",
+            "key": "holding-history",
+            "column_width": "",
+            "position": 3,
             "columns": "",
             "description": ""
         }
@@ -17834,7 +22805,7 @@
             "size_x": 4,
             "size_y": 3,
             "row": 1,
-            "col": 9,
+            "col": 7,
             "user": [
                 "andy"
             ]
@@ -17863,8 +22834,8 @@
             "window": 16,
             "size_x": 1,
             "size_y": 1,
-            "row": 1,
-            "col": 7,
+            "row": 3,
+            "col": 11,
             "user": [
                 "andy"
             ]
@@ -17879,7 +22850,7 @@
             "size_x": 1,
             "size_y": 1,
             "row": 1,
-            "col": 13,
+            "col": 11,
             "user": [
                 "andy"
             ]
@@ -18025,7 +22996,7 @@
         "model": "app.pagewindow",
         "fields": {
             "page": 29,
-            "window": 28,
+            "window": 87,
             "size_x": 1,
             "size_y": 1,
             "row": 1,
@@ -19708,7 +24679,7 @@
             "window": 12,
             "size_x": 1,
             "size_y": 1,
-            "row": 1,
+            "row": 3,
             "col": 16,
             "user": [
                 "andy"
@@ -19723,7 +24694,7 @@
             "window": 10,
             "size_x": 1,
             "size_y": 1,
-            "row": 3,
+            "row": 5,
             "col": 16,
             "user": [
                 "andy"
@@ -19840,7 +24811,7 @@
         "model": "app.pagewindow",
         "fields": {
             "page": 76,
-            "window": 3,
+            "window": 38,
             "size_x": 1,
             "size_y": 1,
             "row": 1,
@@ -20215,7 +25186,7 @@
         "model": "app.pagewindow",
         "fields": {
             "page": 94,
-            "window": 3,
+            "window": 38,
             "size_x": 1,
             "size_y": 1,
             "row": 1,
@@ -20560,7 +25531,7 @@
         "model": "app.pagewindow",
         "fields": {
             "page": 87,
-            "window": 3,
+            "window": 38,
             "size_x": 1,
             "size_y": 1,
             "row": 1,
@@ -20920,7 +25891,7 @@
         "model": "app.pagewindow",
         "fields": {
             "page": 101,
-            "window": 3,
+            "window": 38,
             "size_x": 1,
             "size_y": 1,
             "row": 1,
@@ -21254,7 +26225,7 @@
             "size_x": 1,
             "size_y": 1,
             "row": 1,
-            "col": 1,
+            "col": 16,
             "user": [
                 "andy"
             ]
@@ -21613,7 +26584,7 @@
             "window": 64,
             "size_x": 7,
             "size_y": 3,
-            "row": 1,
+            "row": 4,
             "col": 1,
             "user": [
                 "andy"
@@ -21644,7 +26615,7 @@
             "size_x": 1,
             "size_y": 1,
             "row": 1,
-            "col": 1,
+            "col": 8,
             "user": [
                 "andy"
             ]
@@ -21831,36 +26802,204 @@
         }
     },
     {
+        "pk": 321,
+        "model": "app.pagewindow",
+        "fields": {
+            "page": 11,
+            "window": 78,
+            "size_x": 1,
+            "size_y": 1,
+            "row": 1,
+            "col": 1,
+            "user": [
+                "andy"
+            ]
+        }
+    },
+    {
+        "pk": 322,
+        "model": "app.pagewindow",
+        "fields": {
+            "page": 14,
+            "window": 79,
+            "size_x": 1,
+            "size_y": 1,
+            "row": 1,
+            "col": 22,
+            "user": [
+                "andy"
+            ]
+        }
+    },
+    {
+        "pk": 324,
+        "model": "app.pagewindow",
+        "fields": {
+            "page": 14,
+            "window": 80,
+            "size_x": 1,
+            "size_y": 1,
+            "row": 4,
+            "col": 22,
+            "user": [
+                "andy"
+            ]
+        }
+    },
+    {
+        "pk": 325,
+        "model": "app.pagewindow",
+        "fields": {
+            "page": 14,
+            "window": 82,
+            "size_x": 1,
+            "size_y": 1,
+            "row": 1,
+            "col": 16,
+            "user": [
+                "andy"
+            ]
+        }
+    },
+    {
+        "pk": 326,
+        "model": "app.pagewindow",
+        "fields": {
+            "page": 14,
+            "window": 84,
+            "size_x": 1,
+            "size_y": 1,
+            "row": 4,
+            "col": 8,
+            "user": [
+                "andy"
+            ]
+        }
+    },
+    {
+        "pk": 327,
+        "model": "app.pagewindow",
+        "fields": {
+            "page": 14,
+            "window": 83,
+            "size_x": 1,
+            "size_y": 1,
+            "row": 4,
+            "col": 12,
+            "user": [
+                "andy"
+            ]
+        }
+    },
+    {
+        "pk": 328,
+        "model": "app.pagewindow",
+        "fields": {
+            "page": 15,
+            "window": 13,
+            "size_x": 1,
+            "size_y": 1,
+            "row": 1,
+            "col": 1,
+            "user": [
+                "andy"
+            ]
+        }
+    },
+    {
+        "pk": 329,
+        "model": "app.pagewindow",
+        "fields": {
+            "page": 16,
+            "window": 85,
+            "size_x": 1,
+            "size_y": 1,
+            "row": 1,
+            "col": 17,
+            "user": [
+                "andy"
+            ]
+        }
+    },
+    {
+        "pk": 330,
+        "model": "app.pagewindow",
+        "fields": {
+            "page": 17,
+            "window": 86,
+            "size_x": 1,
+            "size_y": 1,
+            "row": 1,
+            "col": 1,
+            "user": [
+                "andy"
+            ]
+        }
+    },
+    {
+        "pk": 331,
+        "model": "app.pagewindow",
+        "fields": {
+            "page": 18,
+            "window": 28,
+            "size_x": 1,
+            "size_y": 1,
+            "row": 1,
+            "col": 1,
+            "user": [
+                "andy"
+            ]
+        }
+    },
+    {
+        "pk": 332,
+        "model": "app.pagewindow",
+        "fields": {
+            "page": 19,
+            "window": 88,
+            "size_x": 1,
+            "size_y": 1,
+            "row": 1,
+            "col": 11,
+            "user": [
+                "andy"
+            ]
+        }
+    },
+    {
         "pk": 1,
         "model": "app.custodian",
         "fields": {
-            "contact_name": "Aron Simmons",
-            "performance_fee": "6.00000",
+            "contact_number": "0136 666 666",
             "name": "Credit Suisse",
+            "key": "cs",
             "management_fee": "6.00000",
-            "contact_number": "0136 666 666"
+            "performance_fee": "6.00000",
+            "contact_name": "Aron Simmons"
         }
     },
     {
         "pk": 2,
         "model": "app.custodian",
         "fields": {
-            "contact_name": "0041 2225 2225 22 ",
-            "performance_fee": "3.00000",
+            "contact_number": "0041 2225 2225 22",
             "name": "HSBC",
+            "key": "hsbc",
             "management_fee": "4.00000",
-            "contact_number": "0041 2225 2225 22"
+            "performance_fee": "3.00000",
+            "contact_name": "0041 2225 2225 22 "
         }
     },
     {
         "pk": 3,
         "model": "app.custodian",
         "fields": {
-            "contact_name": "na",
-            "performance_fee": "0.00000",
+            "contact_number": "na",
             "name": "Private Equity",
+            "key": "pe",
             "management_fee": "0.00000",
-            "contact_number": "na"
+            "performance_fee": "0.00000",
+            "contact_name": "na"
         }
     },
     {
@@ -21890,7 +27029,7 @@
             "rght": 2,
             "name": "Overview",
             "parent": null,
-            "fund": 17,
+            "fund": null,
             "level": 0,
             "access": [
                 [
@@ -21900,25 +27039,6 @@
             "lft": 1,
             "tree_id": 4,
             "page": 14
-        }
-    },
-    {
-        "pk": 71,
-        "model": "app.menu",
-        "fields": {
-            "rght": 2,
-            "name": "Click here",
-            "parent": null,
-            "fund": 10,
-            "level": 0,
-            "access": [
-                [
-                    "manager"
-                ]
-            ],
-            "lft": 1,
-            "tree_id": 5,
-            "page": 40
         }
     },
     {
@@ -21966,7 +27086,7 @@
             "rght": 4,
             "name": "Gale B",
             "parent": 12,
-            "fund": 14,
+            "fund": null,
             "level": 2,
             "access": [
                 [
@@ -22023,7 +27143,7 @@
             "rght": 10,
             "name": "Gale H",
             "parent": 12,
-            "fund": 10,
+            "fund": null,
             "level": 2,
             "access": [
                 [
@@ -22042,7 +27162,7 @@
             "rght": 12,
             "name": "Gale I",
             "parent": 12,
-            "fund": 9,
+            "fund": null,
             "level": 2,
             "access": [
                 [
@@ -22061,7 +27181,7 @@
             "rght": 14,
             "name": "Gale K",
             "parent": 12,
-            "fund": 8,
+            "fund": null,
             "level": 2,
             "access": [
                 [
@@ -22156,7 +27276,7 @@
             "rght": 24,
             "name": "CS European Equity",
             "parent": 13,
-            "fund": 3,
+            "fund": null,
             "level": 2,
             "access": [
                 [
@@ -23111,6 +28231,90 @@
         }
     },
     {
+        "pk": 16,
+        "model": "app.alarm",
+        "fields": {
+            "name": "alarm1"
+        }
+    },
+    {
+        "pk": 17,
+        "model": "app.alarm",
+        "fields": {
+            "name": "alarm1"
+        }
+    },
+    {
+        "pk": 18,
+        "model": "app.alarm",
+        "fields": {
+            "name": "alarm1"
+        }
+    },
+    {
+        "pk": 19,
+        "model": "app.alarm",
+        "fields": {
+            "name": "alarm1"
+        }
+    },
+    {
+        "pk": 20,
+        "model": "app.alarm",
+        "fields": {
+            "name": "alarm1"
+        }
+    },
+    {
+        "pk": 21,
+        "model": "app.alarm",
+        "fields": {
+            "name": "alarm1"
+        }
+    },
+    {
+        "pk": 22,
+        "model": "app.alarm",
+        "fields": {
+            "name": "alarm1"
+        }
+    },
+    {
+        "pk": 23,
+        "model": "app.alarm",
+        "fields": {
+            "name": "alarm1"
+        }
+    },
+    {
+        "pk": 24,
+        "model": "app.alarm",
+        "fields": {
+            "name": "alarm1"
+        }
+    },
+    {
+        "pk": 25,
+        "model": "app.alarm",
+        "fields": {
+            "name": "alarm1"
+        }
+    },
+    {
+        "pk": 26,
+        "model": "app.alarm",
+        "fields": {
+            "name": "alarm1"
+        }
+    },
+    {
+        "pk": 27,
+        "model": "app.alarm",
+        "fields": {
+            "name": "alarm1"
+        }
+    },
+    {
         "pk": 1,
         "model": "app.fee",
         "fields": {}
@@ -23197,7 +28401,8 @@
         "model": "holding.category",
         "fields": {
             "group": "sec",
-            "name": "Utilities"
+            "name": "Utilities",
+            "key": null
         }
     },
     {
@@ -23205,7 +28410,8 @@
         "model": "holding.category",
         "fields": {
             "group": "sec",
-            "name": "Financials"
+            "name": "Financials",
+            "key": null
         }
     },
     {
@@ -23213,7 +28419,8 @@
         "model": "holding.category",
         "fields": {
             "group": "sub",
-            "name": "Banking"
+            "name": "Banking",
+            "key": null
         }
     },
     {
@@ -23221,7 +28428,8 @@
         "model": "holding.category",
         "fields": {
             "group": "sub",
-            "name": "Insurance"
+            "name": "Insurance",
+            "key": null
         }
     },
     {
@@ -23229,7 +28437,8 @@
         "model": "holding.category",
         "fields": {
             "group": "sub",
-            "name": "Water"
+            "name": "Water",
+            "key": null
         }
     },
     {
@@ -23237,7 +28446,8 @@
         "model": "holding.category",
         "fields": {
             "group": "sub",
-            "name": "Electric"
+            "name": "Electric",
+            "key": null
         }
     },
     {
@@ -23245,7 +28455,8 @@
         "model": "holding.category",
         "fields": {
             "group": "loc",
-            "name": "Asia"
+            "name": "Asia",
+            "key": null
         }
     },
     {
@@ -23253,7 +28464,8 @@
         "model": "holding.category",
         "fields": {
             "group": "loc",
-            "name": "US"
+            "name": "US",
+            "key": null
         }
     },
     {
@@ -23261,7 +28473,8 @@
         "model": "holding.category",
         "fields": {
             "group": "loc",
-            "name": "EM"
+            "name": "EM",
+            "key": null
         }
     },
     {
@@ -23269,7 +28482,8 @@
         "model": "holding.category",
         "fields": {
             "group": "loc",
-            "name": "Latin America"
+            "name": "Latin America",
+            "key": null
         }
     },
     {
@@ -23277,7 +28491,8 @@
         "model": "holding.category",
         "fields": {
             "group": "ass",
-            "name": "Equities"
+            "name": "Equities",
+            "key": "equity"
         }
     },
     {
@@ -23285,7 +28500,8 @@
         "model": "holding.category",
         "fields": {
             "group": "sec",
-            "name": "Mining "
+            "name": "Mining ",
+            "key": null
         }
     },
     {
@@ -23293,7 +28509,8 @@
         "model": "holding.category",
         "fields": {
             "group": "cur",
-            "name": "Euro"
+            "name": "Euro",
+            "key": null
         }
     },
     {
@@ -23301,7 +28518,8 @@
         "model": "holding.category",
         "fields": {
             "group": "cur",
-            "name": "USD"
+            "name": "USD",
+            "key": null
         }
     },
     {
@@ -23309,7 +28527,8 @@
         "model": "holding.category",
         "fields": {
             "group": "all",
-            "name": "CHF"
+            "name": "CHF",
+            "key": null
         }
     },
     {
@@ -23317,7 +28536,8 @@
         "model": "holding.category",
         "fields": {
             "group": "ass",
-            "name": "Fund"
+            "name": "Fund",
+            "key": "fund"
         }
     },
     {
@@ -23325,7 +28545,8 @@
         "model": "holding.category",
         "fields": {
             "group": "inv",
-            "name": "Side Pockets"
+            "name": "Side Pockets",
+            "key": null
         }
     },
     {
@@ -23333,7 +28554,8 @@
         "model": "holding.category",
         "fields": {
             "group": "inv",
-            "name": "Fund of Funds"
+            "name": "Fund of Funds",
+            "key": null
         }
     },
     {
@@ -23341,7 +28563,8 @@
         "model": "holding.category",
         "fields": {
             "group": "inv",
-            "name": "Cash"
+            "name": "Cash",
+            "key": "cash"
         }
     },
     {
@@ -23349,7 +28572,8 @@
         "model": "holding.category",
         "fields": {
             "group": "hol",
-            "name": "Pussy"
+            "name": "Pussy",
+            "key": null
         }
     },
     {
@@ -23357,7 +28581,8 @@
         "model": "holding.category",
         "fields": {
             "group": "hol",
-            "name": "Coca Cola"
+            "name": "Coca Cola",
+            "key": null
         }
     },
     {
@@ -23365,7 +28590,44 @@
         "model": "holding.category",
         "fields": {
             "group": "inv",
-            "name": "Pepsi"
+            "name": "Pepsi",
+            "key": null
+        }
+    },
+    {
+        "pk": 24,
+        "model": "holding.category",
+        "fields": {
+            "group": "ass",
+            "name": "Ad-hoc",
+            "key": "ad-hoc"
+        }
+    },
+    {
+        "pk": 25,
+        "model": "holding.category",
+        "fields": {
+            "group": "ass",
+            "name": "PE commitments",
+            "key": "pe"
+        }
+    },
+    {
+        "pk": 26,
+        "model": "holding.category",
+        "fields": {
+            "group": "ass",
+            "name": "Loans",
+            "key": "loan"
+        }
+    },
+    {
+        "pk": 27,
+        "model": "holding.category",
+        "fields": {
+            "group": "ass",
+            "name": "Cash",
+            "key": "cash"
         }
     }
 ]

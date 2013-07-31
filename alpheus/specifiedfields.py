@@ -3,17 +3,17 @@ from tastypie.resources import ModelResource
 class SpecifiedFields(ModelResource):
 
     def get_object_list(self, request):
-        
+
         filters = super(SpecifiedFields, self).build_filters()
 
         objects = super(SpecifiedFields, self).get_object_list(request)
 
         distinct = request.GET.get('distinct', False) == 'true'
         fields = request.GET.get("fields", False)
-        
+
         if fields:
             fields = 'id,' + fields
-        
+
         if fields:
             try:
                 self.specified_fields += fields.split(',')
@@ -22,7 +22,7 @@ class SpecifiedFields(ModelResource):
                     self.specified_fields = fields.split(',')
                 except:
                     self.specified_fields = []
-                
+
         if not fields and not len(self.specified_fields):
             return objects
 
@@ -39,8 +39,10 @@ class SpecifiedFields(ModelResource):
         only_fields = []
         select_related = []
 
+
         for specified_field in self.specified_fields:
 
+            # rewrite this to check for ForeignKeys instead
             try:
                 fields = specified_field.split('__')
             except:
@@ -77,7 +79,7 @@ class SpecifiedFields(ModelResource):
         """
         This override disables `full=True` and other things we don't use
         """
-        
+
         # default behaviour if `fields` is not set
         try:
             self.specified_fields
@@ -113,7 +115,7 @@ class SpecifiedFields(ModelResource):
                 continue
 
             bundle.data[row] = reduce(getattr, f, bundle.obj)
-            
+
             if bundle.data[row] == None:
                 bundle.data[row] = ''
 

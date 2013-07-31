@@ -2,7 +2,7 @@ from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie import fields
 from tastypie.api import Api
 
-from holding.models import * 
+from holding.models import *
 from alpheus.base_resources import MainBaseResource, TreeBaseResource
 from app.resources import CurrencyResource
 from fund.resources import FundResource
@@ -14,16 +14,16 @@ class CategoryResource(MainBaseResource):
         queryset = Category.objects.all()
         resource_name = 'holding-category'
         filtering = {
+            "key": ALL,
             'group': ALL,
         }
 
-
-
 class HoldingResource(MainBaseResource):
-    fund = fields.ManyToManyField(Fund, 'fund', related_name='holding_fund')
+    fund = fields.ManyToManyField(FundResource, 'fund', related_name='holding_fund')
     client = fields.ManyToManyField(ClientResource, 'client', \
                                     related_name='holding_client')
     currency = fields.ForeignKey(CurrencyResource, 'currency')
+    category = fields.ForeignKey(CategoryResource, 'category')
     sector = fields.ForeignKey(CategoryResource, 'sector', \
                                      related_name='sec')
     sub_sector = fields.ForeignKey(CategoryResource, 'sub_sector', \
@@ -34,14 +34,15 @@ class HoldingResource(MainBaseResource):
                                                             related_name='inv')
     asset_class = fields.ForeignKey(CategoryResource, 'asset_class', \
                                                     related_name='ass')
-                                    
+
     class Meta(MainBaseResource.Meta):
         queryset = Holding.objects.all()
         resource_name = 'holding'
         filtering = {
             "value_date": ALL,
+            "asset_class": ALL_WITH_RELATIONS,
             "fund": ALL_WITH_RELATIONS,
-            "client": ALL,
+            "client": ALL_WITH_RELATIONS,
             "date_type": ALL,
             "id": ALL,
         }
@@ -55,12 +56,11 @@ class HoldingHistoryResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = HoldingHistory.objects.all()
         resource_name = 'holding-history'
-        ordering = ['value_date', 'dealing_date', 'weight']
+        ordering = ['value_date', 'dealing_date', 'weight', 'performance']
         filtering = {
             #"fund": ALL,
             "holding": ALL_WITH_RELATIONS,
             "value_date": ALL,
-            #"category": ALL_WITH_RELATIONS,
             "date_type": ALL,
         }
 
@@ -118,7 +118,7 @@ class BreakdownResource(MainBaseResource):
     category = fields.ForeignKey(CategoryResource, 'category')
 
     class Meta(MainBaseResource.Meta):
-        queryset = Breakdown.objects.all() 
+        queryset = Breakdown.objects.all()
         resource_name = 'holding-breakdown'
         filtering = {
             "fund": ALL,
@@ -149,7 +149,7 @@ class TradeResource(MainBaseResource):
     holding = fields.ForeignKey(HoldingResource, 'holding')
 
     class Meta(MainBaseResource.Meta):
-        queryset = Trade.objects.all() 
+        queryset = Trade.objects.all()
         resource_name = 'trade'
         filtering = {
             "fund": ALL,
@@ -157,4 +157,41 @@ class TradeResource(MainBaseResource):
             "trade_date": ALL,
             "holding": ALL_WITH_RELATIONS,
         }
+
+
+
+
+class AlpheusSubscriptionResource(MainBaseResource):
+    holding = fields.ForeignKey(FundResource, 'holding')
+    client = fields.ForeignKey(ClientResource, 'client')
+
+    class Meta(MainBaseResource.Meta):
+        queryset = HoldingHistory.months.filter(client__isnull=False)
+        resource_name = 'alpheus-subscription'
+        filtering = {
+            "fund": ALL,
+            "value_date": ALL,
+            "date_type": ALL,
+        }
+        ordering = ['value_date']
+
+    def alter_list_data_to_serialize(self, request, data):
+
+        holdings = set([row.data['holding__name'] for row in data['objects']])
+
+        dic = {}
+        lis = []
+        for row in data['objects']:
+            for holding in holdings:
+                if row.data['holding__name'] == holding:
+                    key = holding.replace(' ', '_').lower()
+                    dic['euro_nav' + key] = row.data['euro_nav']
+                    dic['no_of_units' + key] = row.data['no_of_units']
+            dic['client__first_name'] = row.data['client__first_name']
+            lis.append(dic)
+
+
+
+        return lis
+
 

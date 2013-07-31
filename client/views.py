@@ -31,9 +31,9 @@ def returns(request):
                 dic[year]['ann_return1'] = row.ann_return1
                 dic[year]['ann_volatility1'] = row.ann_volatility1
                 dic[year]['sharpe_ratio1'] = row.sharpe_ratio1
-                dic[year][row.client.name] = row.performance  # change to: ytd
-                if row.client.name not in client_column:
-                    client_column.append(row.client.name)
+                dic[year][row.client.name()] = row.performance  # change to: ytd
+                if row.client.name() not in client_column:
+                    client_column.append(row.client.name())
     # benchmarks
     bench_columns = []
     for year in range(1970, date.today().year + 1):
@@ -54,14 +54,14 @@ def returns(request):
             result.append(val)
 
     from operator import itemgetter
-    
+
     dic = {
         'metaData': {'sorting': 'year'},
         'columns': set_columns(request, columns),
         'rows': sorted(result, key=itemgetter('year'), reverse=True),
     }
     return JsonResponse(dic)
-    
+
 @login_required
 def bestworst(request):
 
@@ -80,7 +80,7 @@ def bestworst(request):
                     .filter(value_date__month=12, client=client) \
                     .only('performance', 'client__first_name', 'client__last_name')
     p = f.filter(performance__gt=0)
-    client_name = f.values('client__name')[0]['client__name']
+    client_name = str(f[0].client).replace(', ', '_').lower()
     positive[client_name] = p.count() / f.count() * 100
     columns.append(client_name)
 
@@ -107,14 +107,17 @@ def bestworst(request):
     worst = {'best_worst_months': 'Worst Monthly Return'}
     drawdown = {'best_worst_months': 'Worst Drawdown'}
     clients = ClientHistory.months.filter(value_date__month=12, client=client) \
-                            .values('client__name') \
+                            .values('client__last_name', 'client__first_name') \
                             .annotate(Max('performance'), Min('performance'),
                                 Min('drawdown')) \
-                            .order_by('client__name')
+                            .order_by('client__last_name', 'client__first_name')
+
+
     for row in clients:
-        best[row['client__name']] = row['performance__max']
-        worst[row['client__name']] = row['performance__min']
-        drawdown[row['client__name']] = row['drawdown__min']
+        client_name = ' '.join([row['client__last_name'], row['client__first_name']])
+        best[client_name] = row['performance__max']
+        worst[client_name] = row['performance__min']
+        drawdown[client_name] = row['drawdown__min']
 
     benchmarks = BenchmarkHistory.months.filter(
                          value_date__month=12, benchmark__client=client) \
@@ -136,7 +139,7 @@ def bestworst(request):
         'rows': lis,
     }
     return JsonResponse(dic)
-    
+
 
 @login_required
 def returnhistogram(request):
@@ -209,13 +212,13 @@ def correlation(request):
                                         .latest('value_date')
     benchmarks = Benchmark.objects.filter(client=client_id)
 
-    columns = ['Correlation Matrix', client.client.name]
+    columns = ['Correlation Matrix', client.client.name()]
     lis = []
     dic = {}
 
     # client correlation
-    dic['Correlation Matrix'] = client.client.name
-    dic[client.client.name] = client.performance / client.performance
+    dic['Correlation Matrix'] = client.client.name()
+    dic[client.client.name()] = client.performance / client.performance
     for bench in benchmarks:
         dic[bench.name] = client.performance / bench.performance
     lis.append(dic)
@@ -245,11 +248,12 @@ def negativemonths(request):
     client_id = request.GET.get('client', 0)
 
     clients = ClientHistory.months.filter(client=client_id) \
-                                    .values('client__name') \
+                                    .values('client__first_name', 'client__last_name') \
                                     .annotate(Avg('performance')) \
-                                    .order_by('client__name')[0]
+                                    .order_by('client__last_name', 'client__first_name')[0]
+    client_name = '_'.join([clients['client__last_name'], clients['client__first_name']]).lower()
     dic = {
-        clients['client__name']: clients['performance__avg'],
+        client_name: clients['performance__avg'],
     }
 
     benchmarks = BenchmarkHistory.months.filter(benchmark__client=client_id,
@@ -415,4 +419,67 @@ def reconciliation(request):
         'rows': lis
     }
     return JsonResponse(data)
+
+
+
+
+# W16 - Line Graph & Bar Chart
+# http://localhost:8000/api/client-performance-benchmark/?client=2&fields=performance&format=json
+@login_required
+def performancebenchmark(request):
+
+    client = request.GET.get('client', 0)
+    fields = request.GET.get("fields", 0)
+
+    objects = BenchmarkHistory.months.select_related('benchmark') \
+            .filter(benchmark__client=client).only('id', 'value_date', 'benchmark__name', fields)
+
+    # benchmarks
+    # TODO: redo this
+    dic = {}
+    for row in objects:
+        date = int(mktime(row.value_date.timetuple())) * 1000
+        output = [int(date), row.performance]
+        bench_id = int(row.benchmark.id)
+
+        try:
+            dic[bench_id]['name'] = row.benchmark.name
+        except:
+            dic[bench_id] = {}
+            dic[bench_id]['name'] = row.benchmark.name
+        try:
+            dic[bench_id]['data'].append(output)
+        except:
+            dic[bench_id]['data'] = []
+            dic[bench_id]['data'].append(output)
+
+    response_list = []
+    for key, val in dic.iteritems():
+        response_list.append(val)
+
+    # clients
+    clients = ClientHistory.months.select_related('client') \
+             .filter(client=client, fund__isnull=True).only('id', 'client__first_name', 'client__last_name', 'value_date', fields)
+
+    dic = {}
+    for row in clients:
+        date = int(mktime(row.value_date.timetuple())) * 1000
+        output = [int(date), getattr(row, fields)]
+        client_id = int(row.client.id)
+
+        try:
+            dic[client_id]['name'] = row.client.name()
+        except:
+            dic[client_id] = {}
+            dic[client_id]['name'] = row.client.name()
+        try:
+            dic[client_id]['data'].append(output)
+        except:
+            dic[client_id]['data'] = []
+            dic[client_id]['data'].append(output)
+
+    for key, val in dic.iteritems():
+        response_list.append(val)
+
+    return JsonResponse({'objects': response_list})
 

@@ -39,9 +39,11 @@ api.register(BreakdownResource())
 api.register(CountryBreakdownResource())
 api.register(CategoryResource())
 api.register(TradeResource())
+api.register(AlpheusSubscriptionResource())
 
 # client
 api.register(ClientResource())
+api.register(ClientHistoryResource())
 api.register(SubscriptionRedemptionResource())
 
 # app
@@ -65,7 +67,7 @@ api.register(PeerHistoryResource())
 urlpatterns = patterns('',
     (r'^robots\.txt$', lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain")),
     url(r'^$', views.index, name='index'),
-    
+
     url(r'^api/holding-performance-benchmark/$', holding.performancebenchmark),
     #url(r'^api/holding-reconciliation/$', holding.reconciliation),
     url(r'^api/holding-returnhistogram/$', holding.returnhistogram),
@@ -82,7 +84,7 @@ urlpatterns = patterns('',
     url(r'^api/client-negativemonths-graph/$', client.negativemonthsgraph),
     url(r'^api/client-best-worst/$', client.bestworst),
     url(r'^api/client-returns/$', client.returns),
-    
+
     url(r'^api/fund-best-worst/$', fund.bestworst),
     url(r'^api/fund-returns/$', fund.returns),
     url(r'^api/fund-performance-benchmark/$', fund.performancebenchmark),
@@ -98,7 +100,8 @@ urlpatterns = patterns('',
     url(r'^api/fund-grossasset3/$', fund.grossasset3),
     url(r'^api/fund-grossasset4/$', fund.grossasset4),
     url(r'^api/fund-grossasset5/$', fund.grossasset5),
-    
+    url(r'^api/fund-grossasset6/$', fund.grossasset6),
+
     url(r'admin/', include(admin.site.urls)),
     (r'^grappelli/', include('grappelli.urls')),
     url(r'api/doc/', include('tastypie_swagger.urls', namespace='tastypie_swagger')),

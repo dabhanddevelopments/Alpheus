@@ -8,14 +8,14 @@ from django.contrib.auth.models import User
 
 from alpheus.base_resources import MainBaseResource, TreeBaseResource, StandardBaseResource
 from app.models import *
+from holding.models import *
 from fund.models import *
 from client.models import *
-from holding.models import *
 from comparative.models import *
 
 import random
 from datetime import datetime, date
-
+from django.http import HttpResponse
 
 
 
@@ -24,7 +24,7 @@ class LoggedInResource(Resource):
         pass
 
     def get_list(self, request, **kwargs):
-    
+
         from django.http import HttpResponse
 
         if request.user.is_authenticated():
@@ -236,6 +236,9 @@ class CustodianResource(StandardBaseResource):
 
     class Meta:
         queryset = Custodian.objects.all()
+        filtering = {
+            'key': ALL,
+        }
 
 
 class AuditorResource(StandardBaseResource):
@@ -333,7 +336,7 @@ class CurrencyResource(StandardBaseResource):
 
     class Meta:
         queryset = Currency.objects.all()
-        
+
 # not used atm
 class WidgetBaseResource(StandardBaseResource):
 
@@ -424,10 +427,10 @@ class DuplicateResource(StandardBaseResource):
     def get_object_list(self, request):
 
         objects = super(SpecifiedFields, self).get_object_list(request)
-        
+
         for obj in objects:
             obj.name
-        
+
 class ImportResource(StandardBaseResource):
 
     class Meta:
@@ -436,7 +439,7 @@ class ImportResource(StandardBaseResource):
 
     def rand_str(self, size = 8):
         import string
-        
+
 
         allowed = string.ascii_letters # add any other allowed characters here
         allowed2 = allowed[random.randint(0, len(allowed) - 1)]
@@ -451,7 +454,7 @@ class ImportResource(StandardBaseResource):
             if field.get_internal_type() == 'DecimalField':
                 field_data[field.name] = random.randrange(0, 2000)
         return field_data
-                    
+
     def alter_list_data_to_serialize(self, request, data):
 
         def rand_date():
@@ -470,15 +473,15 @@ class ImportResource(StandardBaseResource):
 
         currency = Currency.objects.all()
         counter_party = CounterParty.objects.all()
-        
+
 
         fee = Fee.objects.all()
 
         country = Country.objects.all()
-        
+
         alarm = Alarm(name="alarm1").save()
         alarm = Alarm.objects.all() # is this needed?
-        
+
         fund_type = FundType.objects.all()
         administrator = Administrator.objects.all()
         auditor = Auditor.objects.all()
@@ -513,22 +516,26 @@ class ImportResource(StandardBaseResource):
             'Equities, Options, Futures CS Options',
             'Limited Holdings',
             'Side Pockets',
-            'Private Equity' #10
+            'Private Equity', #10
+            'Alpheus',
         ]
         classifications = [Classification(name=name) for name in classification_names]
         Classification.objects.bulk_create(classifications, batch_size=100)
-        classifications = Classification.objects.all()
-        
+        #classifications = Classification.objects.all()
+
         # Fund
         fund_names = {
-            'Gale B': 1, 'Gale E': 1, 'Gale G': 2, 
-            'Gale H': 8, 'Gale I': 8, 'Gale K': 9, 
-            'Gale L': 4, 'Gale M': 4, 'Gale N': 4, 
-            'CS European Equity': 5, 'CS US Equity': 5, 
-            'CS Asia Equity': 5, 'CS Volaility': 6, 
+            'Gale B': 1, 'Gale E': 1, 'Gale G': 2,
+            'Gale H': 8, 'Gale I': 8, 'Gale K': 9,
+            'Gale L': 4, 'Gale M': 4, 'Gale N': 4,
+            'CS European Equity': 5, 'CS US Equity': 5,
+            'CS Asia Equity': 5, 'CS Volaility': 6,
             'CS Fixed Income & Treasuries': 3, 'CS Options': 7,
-            'Private Equity': 10
+            'Private Equity': 10,
+            'Alpheus': 11,
         }
+
+        #from fund.models import Classification as FundClassification
 
         data = []
         for name, classification in fund_names.iteritems():
@@ -536,7 +543,7 @@ class ImportResource(StandardBaseResource):
                 cp = counter_party[1]
             else:
                 cp = counter_party[0]
-                
+
             fields = self.get_field_data(Fund)
             fields['name'] = name
             fields['subscription_frequency'] = 'm'
@@ -546,18 +553,18 @@ class ImportResource(StandardBaseResource):
             fields['custodian'] = Custodian.objects.order_by('?')[0]
             fields['auditor'] = Auditor.objects.order_by('?')[0]
             fields['administrator'] = Administrator.objects.order_by('?')[0]
-            fields['classification'] = Classification.objects.order_by('?')[0]
+            fields['classification'] = Classification.objects.get(pk=classification)
             fields['manager'] = User.objects.order_by('?')[0]
             fields['fund_type'] = FundType.objects.order_by('?')[0]
-            fields['classification'] = classifications.get(pk=classification)
+            #fields['classification'] = classifications.get(pk=classification)
             fields['value_date'] = '2013-07-10' #whatever current date
             data.append(Fund(**fields))
-            
+
         Fund.objects.bulk_create(data, batch_size=100)
-        
+
         # Fund History
         funds = Fund.objects.all()
-        data = []        
+        data = []
         for fund in funds:
             for year in range(year_start, year_end):
                 for month in range(month_start, month_end):
@@ -568,14 +575,14 @@ class ImportResource(StandardBaseResource):
                     fields['value_date'] = date(year, month, 1)
                     data.append(FundHistory(**fields))
                     for day in range(day_start, day_end):
-                    
+
                         # skip weekends
                         try:
                             if date(year, month, day).weekday() > 4:
                                 continue
                         except:
                             continue
-                        
+
                         fields = self.get_field_data(Fund)
                         fields['fund'] = fund
                         fields['date_type'] = 'd'
@@ -583,7 +590,7 @@ class ImportResource(StandardBaseResource):
                         data.append(FundHistory(**fields))
 
         FundHistory.objects.bulk_create(data, batch_size=100)
-        
+
         # Benchmarks
         benchmark_names = ['IBEX - 50', 'EUROSTOXX 500', 'FTSE 100']
         data = []
@@ -592,12 +599,12 @@ class ImportResource(StandardBaseResource):
             fields['name'] = name
             fields['value_date'] = '2013-07-10' #whatever current date
             data.append(Benchmark(**fields))
-            
+
         Benchmark.objects.bulk_create(data)
 
-        # Benchmark History        
+        # Benchmark History
         benchmarks = Benchmark.objects.all()
-        data = []        
+        data = []
         for benchmark in benchmarks:
             for year in range(year_start, year_end):
                 for month in range(month_start, month_end):
@@ -607,24 +614,24 @@ class ImportResource(StandardBaseResource):
                     fields['value_date'] = date(year, month, 1)
                     data.append(BenchmarkHistory(**fields))
                     for day in range(day_start, day_end):
-                    
+
                         # skip weekends
                         try:
                             if date(year, month, day).weekday() > 4:
                                 continue
                         except:
                             continue
-                            
+
                         fields = self.get_field_data(Benchmark)
                         fields['benchmark'] = benchmark
                         fields['date_type'] = 'd'
                         fields['value_date'] = date(year, month, day)
                         data.append(BenchmarkHistory(**fields))
-                        
+
         BenchmarkHistory.objects.bulk_create(data, batch_size=100)
         benchmark = Benchmark.objects.all()
-        
-        
+
+
         # Client
         client_names = [
             ['Tianna', 'Toft'],
@@ -735,48 +742,17 @@ class ImportResource(StandardBaseResource):
             fields['last_name'] = name[1]
             fields['value_date'] = '2013-07-10' #whatever current date
             data.append(Client(**fields))
-            
+
         Client.objects.bulk_create(data, batch_size=100)
-        
-        # Client History
-        clients = Client.objects.all()
-        data = []
-        for client in clients:
-            for fund in client.fund.all():
-                for year in range(year_start, year_end):
-                    for month in range(month_start, month_end):
-                        fields = self.get_field_data(Client)
-                        fields['client'] = client
-                        fields['fund'] = fund
-                        fields['date_type'] = 'm'
-                        fields['value_date'] = date(year, month, 1)
-                        fields['date_type'] = 'm'
-                        data.append(ClientHistory(**fields))
-                        for day in range(day_start, day_end):
-                        
-                            # skip weekends
-                            try:
-                                if date(year, month, day).weekday() > 4:
-                                    continue
-                            except:
-                                continue
-                               
-                            fields = self.get_field_data(Client)
-                            fields['client'] = client
-                            fields['fund'] = fund
-                            fields['date_type'] = 'd'
-                            fields['value_date'] = date(year, month, day)
-                            data.append(ClientHistory(**fields))
-                        
-        ClientHistory.objects.bulk_create(data, batch_size=100)
-        client = Client.objects.all()
+
 
         # Subscription Redemption
         funds = Fund.objects.all()
-        data = []        
+        clients = Client.objects.all()
+        data = []
         for fund in funds:
             for client in clients:
-                
+
                 # do not assign every client to every fund
                 if not random.randrange(0, 2):
                     fields = self.get_field_data(SubscriptionRedemption)
@@ -787,14 +763,18 @@ class ImportResource(StandardBaseResource):
                     fields['sub_red'] = random.randrange(0, 5)
                     fields['percent_released'] = 90
                     data.append(SubscriptionRedemption(**fields))
-                        
+
         SubscriptionRedemption.objects.bulk_create(data, batch_size=100)
         client = Client.objects.all()
-        
 
 
+
+
+        classification_names = ['CS Funds', 'Gale Funds', 'PE commitments', 'Ad-hoc', 'Loans', 'Cash' ]
+
+        fund_lis = [fund_name for fund_name, classification in fund_names.iteritems()]
         # Holding
-        holding_names = ['Coca Cola', 'Pepsi', 'Pussy']
+        holding_names = ['Coca Cola', 'Pepsi', 'Pussy'] + fund_lis
         data = []
         for holding_name in holding_names:
             fields = self.get_field_data(Holding)
@@ -808,7 +788,7 @@ class ImportResource(StandardBaseResource):
             fields['investment_type'] = Category.objects.filter(group='inv').order_by('?')[0]
             fields['asset_class'] = Category.objects.filter(group='ass').order_by('?')[0]
             fields['isin'] = self.rand_str()
-            fields['rep_code'] = self.rand_str() 
+            fields['rep_code'] = self.rand_str()
             fields['description'] = self.rand_str(100)
             fields['valoren'] = random.randrange(0, 10)
             fields['redemption_frequency'] = random.randrange(0, 4)
@@ -816,23 +796,25 @@ class ImportResource(StandardBaseResource):
             fields['value_date'] = rand_date()
             fields['dealing_date'] = rand_date()
             data.append(Holding(**fields))
-            
+
         Holding.objects.bulk_create(data, batch_size=100)
         holdings = Holding.objects.all()
-        
+
         for holding in holdings:
-            random_funds = Fund.objects.order_by('?')[:random.randrange(0, 10)]
-            for random_fund in random_funds:
-                holding.fund.add(random_fund)
-                
+
+            #random_funds = Fund.objects.order_by('?')[:random.randrange(0, 10)]
+            #for random_fund in random_funds:
+            #    holding.fund.add(random_fund)
+
+            # assign random client to holding
             random_clients = Client.objects.order_by('?')[:random.randrange(0, 3)]
             for random_client in random_clients:
                 holding.client.add(random_client)
-                
-        Holding.objects.bulk_create(data, batch_size=100)
+
+        #Holding.objects.bulk_create(data, batch_size=100)
 
         # Holding History
-        data = []        
+        data = []
         for holding in holdings:
             for year in range(year_start, year_end):
                 for month in range(month_start, month_end):
@@ -845,28 +827,90 @@ class ImportResource(StandardBaseResource):
                     fields['date_type'] = 'm'
                     data.append(HoldingHistory(**fields))
                     for day in range(day_start, day_end):
-                    
+
                         # skip weekends
                         try:
                             if date(year, month, day).weekday() > 4:
                                 continue
                         except:
                             continue
-                           
+
                         fields = self.get_field_data(HoldingHistory)
-                        fields['holding'] = holding 
+                        fields['holding'] = holding
                         fields['date_type'] = 'd'
                         fields['value_date'] = date(year, month, day)
                         fields['dealing_date'] = rand_date()
                         data.append(HoldingHistory(**fields))
-                        
+
         HoldingHistory.objects.bulk_create(data, batch_size=100)
-        
-        
-        # Trade  
-        data = []      
+
+
+
+
+        # Client History
+        data = []
+        for client in clients:
+
+            # limit client history, otherwise it would take too long
+            if client.last_name[0].lower() == 'c':
+
+                for holding in Holding.objects.all():
+                    for year in range(year_start, year_end):
+                        for month in range(month_start, month_end):
+                            fields = self.get_field_data(Client)
+                            fields['client'] = client
+                            fields['holding'] = holding
+                            fields['value_date'] = date(year, month, 1)
+                            fields['date_type'] = 'm'
+                            data.append(ClientHistory(**fields))
+                            for day in range(day_start, day_end):
+
+                                # skip weekends
+                                try:
+                                    if date(year, month, day).weekday() > 4:
+                                        continue
+                                except:
+                                    continue
+
+                                fields = self.get_field_data(Client)
+                                fields['client'] = client
+                                fields['holding'] = holding
+                                fields['date_type'] = 'd'
+                                fields['value_date'] = date(year, month, day)
+                                data.append(ClientHistory(**fields))
+
+                # blatant copy & paste
+                for year in range(year_start, year_end):
+                    for month in range(month_start, month_end):
+                        fields = self.get_field_data(Client)
+                        fields['client'] = client
+                        fields['value_date'] = date(year, month, 1)
+                        fields['date_type'] = 'm'
+                        data.append(ClientHistory(**fields))
+                        for day in range(day_start, day_end):
+
+                            # skip weekends
+                            try:
+                                if date(year, month, day).weekday() > 4:
+                                    continue
+                            except:
+                                continue
+
+                            fields = self.get_field_data(Client)
+                            fields['client'] = client
+                            fields['date_type'] = 'd'
+                            fields['value_date'] = date(year, month, day)
+                            data.append(ClientHistory(**fields))
+
+
+        ClientHistory.objects.bulk_create(data, batch_size=100)
+
+
+
+        # Trade
+        data = []
         for index in range(1, no_of_trades):
-        
+
             fields = self.get_field_data(Trade)
             fields['holding'] = Holding.objects.order_by('?')[0]
             #fields['trade_type'] = TradeType.objects.order_by('?')[0]
@@ -876,33 +920,33 @@ class ImportResource(StandardBaseResource):
             fields['settlement_date'] = rand_date()
             fields['trade_date'] = rand_date()
             data.append(Trade(**fields))
-            
+
         Trade.objects.bulk_create(data, batch_size=100)
 
 
         # CurrencyPosition
         data = []
         funds = Fund.objects.all()
-        currencies = Currency.objects.all()        
+        currencies = Currency.objects.all()
         for fund in funds:
             for currency in currencies:
                 for year in range(year_start, year_end):
                     for month in range(month_start, month_end):
                         for day in range(day_start, day_end):
-                            
+
                             # skip weekends
                             try:
                                 if date(year, month, day).weekday() > 4:
                                     continue
                             except:
                                 continue
-                               
+
                             fields = self.get_field_data(CurrencyPosition)
                             fields['fund'] = fund
                             fields['currency'] = currency
                             fields['value_date'] = date(year, month, day)
                             data.append(CurrencyPosition(**fields))
-                            
+
         CurrencyPosition.objects.bulk_create(data, batch_size=100)
 
         # Breakdown
@@ -914,21 +958,21 @@ class ImportResource(StandardBaseResource):
                 for year in range(year_start, year_end):
                     for month in range(month_start, month_end):
                         #for day in range(day_start, day_end):
-                            
+
                         # skip weekends
                         #try:
                         #    if date(year, month, day).weekday() > 4:
                         #        continue
                         #except:
                         #    continue
-                       
+
                         fields = self.get_field_data(Breakdown)
                         fields['fund'] = fund
                         fields['category'] = cat
                         fields['value_date'] = date(year, month, 1)
                         data.append(Breakdown(**fields))
-                        
-        
+
+
                         # Country Breakdown
                         if cat.group == 'loc':
 
@@ -940,7 +984,7 @@ class ImportResource(StandardBaseResource):
                                 countries = ['Singapore', 'China', 'Japan']
                             else:
                                 countries = False
-                                
+
                             if countries:
                                 for country in countries:
                                     fields = self.get_field_data(CountryBreakdown)
@@ -949,7 +993,7 @@ class ImportResource(StandardBaseResource):
                                     fields['category'] = cat
                                     fields['value_date'] = date(year, month, 1)
                                     data_cb.append(CountryBreakdown(**fields))
-                                        
+
         Breakdown.objects.bulk_create(data, batch_size=100)
         CountryBreakdown.objects.bulk_create(data_cb, batch_size=100)
         return {'done'}

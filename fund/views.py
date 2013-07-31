@@ -129,7 +129,7 @@ def returns(request):
             result.append(val)
 
     from operator import itemgetter
-    
+
     dic = {
         'metaData': {'sorting': 'year'},
         'columns': set_columns(request, columns),
@@ -496,7 +496,7 @@ def grossasset(request, grid):
 
     from fund.models import FundHistory
     from client.models import Client
-    
+
     columns = [field for field, group in grid.iteritems()]
     columns.append('value_date')
 
@@ -504,7 +504,7 @@ def grossasset(request, grid):
     year = request.GET.get('year', 0)
 
     qs = FundHistory.months.filter(fund=fund, value_date__year=year).only(*columns)
-    
+
     fields = []
     columns = [['type', '']] + get_month_list()
 
@@ -584,7 +584,7 @@ def grossasset2(request):
         'trustee_fee_payable': 'Liabilities',   #column did not exist
         'auditor_fee_payable': 'Liabilities',
         'performance_fee_payable': 'Liabilities',
-        'other_liabilities_payable': 'Liabilities', 
+        'other_liabilities_payable': 'Liabilities',
         'total_liabilities': 'Liabilities',
         'assets_liabilities': 'Liabilities',
     }
@@ -683,6 +683,57 @@ def grossasset5(request):
         'auditor_fee_payable': 'Liabilities',
         'performance_fee_payable': 'Liabilities',
         'other_fee': 'Liabilities',
+        'total_liabilities_payable': 'Liabilities',
+        'assets_liabilities': 'Liabilities',
+    }
+    return grossasset(request, grid)
+
+#W13e
+@login_required
+def grossasset6(request):
+    grid = {
+        'euro_nav': 'NAV',
+        'net_movement': 'NAV',
+        'subscription_amount': 'NAV',
+        'redemption_amount': 'NAV',
+        'gross_assets_after_subs_red': 'NAV',
+        'performance_fee_added_back': 'NAV',
+
+        'nav_securities': 'Assets',
+        'nav_cash': 'Assets',
+        'nav_other_assets': 'Assets',
+        'pe_total': 'Assets',
+        'alpheus_cash': 'Assets',
+        'dividends_receivable': 'Assets',
+        'recv_for_transactions': 'Assets',
+        'put_options': 'Assets',
+        'call_options': 'Assets',
+        'financial_futures': 'Assets',
+        'fet_valuation': 'Assets',
+        'interest_receivable_on_banks': 'Assets',
+        'accrued_interest': 'Assets',
+        'long_portfolio': 'Assets',
+        'receivables': 'Assets',
+        'prepaid_or_recov_amounts': 'Assets',
+        'financial_futures': 'Assets',
+        'transitory_assets': 'Assets',
+        'nav_securities_total': 'Assets',
+
+
+        'administrator_fee_payable': 'Liabilities',
+        'auditor_fee_payable': 'Liabilities',
+        'capital_fee_payable': 'Liabilities',
+        'corporate_secretarial_payable': 'Liabilities',
+        'custodian_fee_payable': 'Liabilities',
+        'financial_statement_prep_payable': 'Liabilities',
+        'sub_advisory_fee_payable': 'Liabilities',
+        'management_fee_payable': 'Liabilities',
+        'performance_fee_payable': 'Liabilities',
+        'other_liabilities_payable': 'Liabilities',
+        'alpheus_loans': 'Liabilities',
+        'transaction_fee_payable': 'Liabilities',
+        'serv_act_fee_payable': 'Liabilities',
+        'trustee_fee_payable': 'Liabilities',
         'total_liabilities_payable': 'Liabilities',
         'assets_liabilities': 'Liabilities',
     }

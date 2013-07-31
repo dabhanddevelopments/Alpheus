@@ -21,6 +21,7 @@ class Category(models.Model):
         (GROUP_ASS, 'Asset Class'),
     )
 
+    key = models.CharField(max_length=10, null=True, blank=True)
     name = models.CharField(max_length=50)
     group = models.CharField(max_length=3, choices=HOLDING_GROUP, \
                                                     default=GROUP_ALL)
@@ -31,7 +32,7 @@ class HoldingBase(ModelBase):
 
     class Meta:
         abstract = True
-    
+
     performance = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     ytd = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     si = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
@@ -86,9 +87,8 @@ class HoldingBase(ModelBase):
     value_date = models.DateField()
 
 class Holding(HoldingBase):
-        
     fund = models.ManyToManyField(Fund)
-    client = models.ManyToManyField(Client)
+    client = models.ManyToManyField(Client, related_name="holding_client")
     currency = models.ForeignKey(Currency, related_name='holding_currency')
     country = models.ForeignKey(Country, related_name='holding_country')
     fee = models.ForeignKey(Fee, blank=True, null=True, related_name='holding_fee')
@@ -121,7 +121,7 @@ class Holding(HoldingBase):
 
     class Meta:
         ordering = ["id"]
-        
+
     def __unicode__(self):
         return self.name
 
@@ -149,11 +149,11 @@ class Breakdown(models.Model):
     si = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
     nav = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
     weight = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
-    cash_flow_value = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True) 
+    cash_flow_value = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
     cash_flow_percent = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
     net_movement = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
     value_date = models.DateField()
-    
+
 class Trade(models.Model):
     holding = models.ForeignKey(Holding)
     fund = models.ForeignKey(Fund, blank=True, null=True)
@@ -169,7 +169,7 @@ class Trade(models.Model):
     nav_purchase = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     fx_euro = models.DecimalField(max_digits=20, decimal_places=8,\
                                                 blank=True, null=True, verbose_name="FX to Euro")
-                                                
+
     drawdown = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     various = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     distribution = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
@@ -181,7 +181,7 @@ class Trade(models.Model):
     # purchase_price_euro = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     trade_date = models.DateField()
     settlement_date = models.DateField()
-    
 
-        
-        
+
+
+

@@ -171,6 +171,7 @@ class Classification(models.Model):
         return self.name
 
 class Custodian(models.Model):
+    key = models.CharField(max_length=10)
     name = models.CharField(max_length=50)
     contact_name = models.CharField(max_length=50)
     contact_number = models.CharField(max_length=50)

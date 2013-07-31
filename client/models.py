@@ -3,12 +3,12 @@ from django.contrib.auth.models import User
 from fund.models import Fund, Alarm
 from app.models import DATE_TYPE, PERCENT_RELEASED, ModelBase
 from comparative.models import Benchmark
-    
+
 class ClientBase(ModelBase):
 
     class Meta:
         abstract = True
-        
+
     value_date = models.DateField()
     no_of_units = models.DecimalField(max_digits=20, decimal_places=5,blank=True, null=True, verbose_name="No. of Units")
     euro_nav = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
@@ -57,7 +57,8 @@ class ClientBase(ModelBase):
     net_movement = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     gross_assets_after_subs_red = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     core_non_core = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    
+
+
 class Client(ClientBase):
     fund = models.ManyToManyField(Fund, through="SubscriptionRedemption", \
                                                         blank=True, null=True)
@@ -67,19 +68,22 @@ class Client(ClientBase):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
 
+    # this will give you the vars in the model method:
+    # Client.objects.all()[0].name.__code__.co_names
+
     def name(self):
         return u'%s %s' % (self.first_name, self.last_name)
 
     def __unicode__(self):
-        return u'%s / %s' % (self.first_name, self.last_name)
+        return u'%s, %s' % (self.last_name, self.first_name)
 
 class ClientHistory(ClientBase):
-    fund = models.ForeignKey(Fund, blank=True, null=True)
+    holding = models.ForeignKey('holding.Holding', blank=True, null=True)
     client = models.ForeignKey(Client)
     date_type = models.CharField(max_length=1, choices=DATE_TYPE)
 
     class Meta:
-        verbose_name = 'Client history'    
+        verbose_name = 'Client history'
 
 class SubscriptionRedemption(models.Model):
 
@@ -96,4 +100,4 @@ class SubscriptionRedemption(models.Model):
     euro_nav = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     percent_released = models.SmallIntegerField(choices=PERCENT_RELEASED)
 
-    
+
