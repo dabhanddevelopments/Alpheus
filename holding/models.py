@@ -41,6 +41,7 @@ class HoldingBase(ModelBase):
     error_range = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     cash_flow = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     nav = models.DecimalField(max_digits=20, decimal_places=5,blank=True, null=True, verbose_name="NAV")
+    euro_nav = models.DecimalField(max_digits=20, decimal_places=5,blank=True, null=True, verbose_name="NAV")
     no_of_units = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     price_of_unit = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     cumulative_nav = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
@@ -87,8 +88,8 @@ class HoldingBase(ModelBase):
     value_date = models.DateField()
 
 class Holding(HoldingBase):
-    fund = models.ManyToManyField(Fund)
-    client = models.ManyToManyField(Client, related_name="holding_client")
+    fund = models.ForeignKey(Fund, blank=True, null=True)
+    client = models.ForeignKey(Client, blank=True, null=True)
     currency = models.ForeignKey(Currency, related_name='holding_currency')
     country = models.ForeignKey(Country, related_name='holding_country')
     fee = models.ForeignKey(Fee, blank=True, null=True, related_name='holding_fee')
@@ -98,12 +99,12 @@ class Holding(HoldingBase):
     location = models.ForeignKey(Category, related_name='location')
     investment_type = models.ForeignKey(Category, related_name='investment_type')
     asset_class = models.ForeignKey(Category, related_name='asset_class')
+
     name = models.CharField(max_length=50)
     isin = models.CharField(max_length=12)
     rep_code = models.CharField(max_length=50)
     description = models.TextField()
     valoren = models.IntegerField()
-
     redemption_frequency = models.SmallIntegerField(choices=FREQUENCY)
     redemption_date = models.DateField()
     redemption_notice = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)

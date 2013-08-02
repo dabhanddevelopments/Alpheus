@@ -162,11 +162,12 @@ class TradeResource(MainBaseResource):
 
 
 class AlpheusSubscriptionResource(MainBaseResource):
-    holding = fields.ForeignKey(FundResource, 'holding')
+    holding = fields.ForeignKey(HoldingResource, 'holding')
+    fund = fields.ForeignKey(FundResource, 'fund')
     client = fields.ForeignKey(ClientResource, 'client')
 
     class Meta(MainBaseResource.Meta):
-        queryset = HoldingHistory.months.filter(client__isnull=False)
+        queryset = Holding.objects.filter(client__isnull=False)
         resource_name = 'alpheus-subscription'
         filtering = {
             "fund": ALL,
@@ -177,21 +178,52 @@ class AlpheusSubscriptionResource(MainBaseResource):
 
     def alter_list_data_to_serialize(self, request, data):
 
-        holdings = set([row.data['holding__name'] for row in data['objects']])
+        from collections import OrderedDict
 
-        dic = {}
-        lis = []
+        holding_names = set([row.data['name'] for row in data['objects']])
+
+        columns = [
+            {'text': "First Name", 'dataIndex': 'client__first_name'},
+            {'text': "Last Name", 'dataIndex': 'client__last_name'},
+        ]
+        dic = OrderedDict()
         for row in data['objects']:
-            for holding in holdings:
-                if row.data['holding__name'] == holding:
-                    key = holding.replace(' ', '_').lower()
-                    dic['euro_nav' + key] = row.data['euro_nav']
-                    dic['no_of_units' + key] = row.data['no_of_units']
-            dic['client__first_name'] = row.data['client__first_name']
-            lis.append(dic)
+            key = str(row.data['id'])
+            try:
+                dic[row.data['name']]['euro_nav' + key]
+            except:
+                dic[row.data['name']] = {}
+
+            dic[row.data['name']]['euro_nav' + key] = "Euro NAV"
+            dic[row.data['name']]['no_of_units' + key] = "No of Units"
+
+        for holding, row in dic.iteritems():
+            sub_columns = []
+            for sub_index, sub in row.iteritems():
+                sub_columns.append({'text': sub, 'dataIndex': sub_index})
+            columns.append({'text': holding, 'columns': sub_columns})
 
 
+        response = []
+        dic = {}
+        for row in data['objects']:
+            key = str(row.data['id'])
+            try:
+                dic[row.data['client__id']]['euro_nav' + key]
+            except:
+                dic[row.data['client__id']] = {}
 
-        return lis
+            dic[row.data['client__id']]['euro_nav' + key] = row.data['euro_nav']
+            dic[row.data['client__id']]['no_of_units' + key] = row.data['no_of_units']
+            dic[row.data['client__id']]['client__first_name'] = row.data['client__first_name']
+            dic[row.data['client__id']]['client__last_name'] = row.data['client__last_name']
+        for client, row in dic.iteritems():
+            response.append(row)
+
+
+        return {
+            'rows': response,
+            'columns': columns,
+        }
 
 

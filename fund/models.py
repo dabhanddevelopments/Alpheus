@@ -38,7 +38,10 @@ class CurrencyPosition(models.Model):
     currency = models.ForeignKey(Currency, related_name='currency_position')
     nav = models.DecimalField(max_digits=20, decimal_places=5,\
                                              blank=True, null=True, verbose_name="NAV")
+    base_nav = models.DecimalField(max_digits=20, decimal_places=5)
+    euro_nav = models.DecimalField(max_digits=20, decimal_places=5)
     value_date = models.DateField()
+
 
 class FxRate(models.Model):
     value_date = models.DateField()
@@ -214,11 +217,14 @@ class FxHedge(models.Model):
     amount = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
 
 
-
-
-
-
-
-
+class Deposit(models.Model):
+    fund = models.ForeignKey(Fund, blank=True, null=True)
+    client = models.ForeignKey('client.Client', blank=True, null=True)
+    currency = models.ForeignKey(Currency, related_name='currency_deposit')
+    trade_date = models.DateField()
+    expiration_date = models.DateField()
+    amount_base = models.DecimalField(max_digits=20, decimal_places=5)
+    deposit_interest_received_base = models.DecimalField(max_digits=20, decimal_places=5)
+    deposit_interest_received_euro = models.DecimalField(max_digits=20, decimal_places=5)
 
 

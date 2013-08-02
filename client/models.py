@@ -78,7 +78,6 @@ class Client(ClientBase):
         return u'%s, %s' % (self.last_name, self.first_name)
 
 class ClientHistory(ClientBase):
-    holding = models.ForeignKey('holding.Holding', blank=True, null=True)
     client = models.ForeignKey(Client)
     date_type = models.CharField(max_length=1, choices=DATE_TYPE)
 

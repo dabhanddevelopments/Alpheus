@@ -1730,7 +1730,11 @@ Ext.onReady(function() {
 
 
         if(typeof widget.columns != 'undefined' && widget.columns != '') {
-           widget.qs += '&fields=' + widget.columns;
+           if(widget.qs.length > 0) {
+               widget.qs += '&fields=' + widget.columns;
+           } else {
+               widget.qs += '?fields=' + widget.columns;
+           }
         }
 
         if(widget.type == 'data_table') {
@@ -2518,15 +2522,6 @@ Ext.onReady(function() {
     }
 
 
-    function renderGridValue(value) {
-        console.log(value);
-        try {
-            return parseFloat(value).toFixed(2);
-        } catch(e) {
-            return valuel
-        }
-    }
-
     function dataTable(obj, widget, div) {
 
         var hideHeaders = false;
@@ -2539,29 +2534,37 @@ Ext.onReady(function() {
             // for nested header columns as well
             fields = [];
             for(i=0; i < data.columns.length; i++) {
-                fields[i] = {};
-                if(i == 0) {
-                    fields[i]['type'] = 'string';
-                } else {
-                    fields[i]['type'] = 'float';
-                }
                 if(typeof data.columns[i].columns != 'undefined') {
                     for(x=0; x < data.columns[i].columns.length; x++) {
-                        fields[i]['name'] = data.columns[i].columns[x].dataIndex;
+                        arr = {};
+                        row = data.columns[i].columns[x].dataIndex;
+
+
+                        if(row.indexOf("name") != -1) {
+                            arr['type'] = 'string';
+                        } else {
+                            arr['type'] = 'float';
+                        }
+                        arr['name'] = row
+                        fields.push(arr);
                     }
                 } else {
-                    if(typeof data.columns[i].dataIndex != 'undefined') {
-                        fields[i]['name'] = data.columns[i].dataIndex;
+                    row = data.columns[i].dataIndex;
+                    if(typeof row != 'undefined') {
+                        arr = {};
+                        if(row.indexOf("name") != -1 || row.indexOf('Matrix') != -1 || row.indexOf('best_worst') != -1) {
+                            arr['type'] = 'string';
+                        } else {
+                            arr['type'] = 'float';
+                        }
+                        arr['name'] = row
+                        fields.push(arr);
                     }
                 }
             }
 
             if(typeof data.columns[1]['summaryType'] != 'undefined') {
                 data.columns[0]['summaryRenderer'] = function(v, params, data){ return 'Total'};
-
-                //$.each(data.columns, function(key, value) {
-                //    data.columns[key]['renderer'] = renderGridValue;
-                //});
             }
 
             $.each(data.rows, function(parent, row) {
@@ -2574,7 +2577,8 @@ Ext.onReady(function() {
                  });
             });
 
-            console.log(data.rows);
+            console.log("fields:");
+            console.log(fields);
             Ext.create('Ext.data.Store', {
                 storeId: widget.key,
                 fields: fields,

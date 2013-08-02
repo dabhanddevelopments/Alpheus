@@ -408,6 +408,22 @@ def currencyhedge(request):
     }
     return JsonResponse(data)
 
+def cashdeposit(request):
+
+    from django.db.models import Sum
+    from datetime import date
+
+    fund = request.GET.get('fund', 0)
+    response = []
+    currencies = Currency.objects.all().order_by('name')
+    for currency in currencies:
+        cash_position = currency.currency_position.latest('value_date')
+        money_market = currency.currency_deposit.filter(experation_date__gt=date.today()).aggregate(Sum('amount_base'))
+        response.append({
+            'cash_position': cash_position,
+            'money_market': money_market,
+        })
+    return JsonResponse(response)
 
 
 @login_required

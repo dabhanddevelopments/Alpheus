@@ -3,6 +3,7 @@ from fund.models import *
 
 
 admin.site.register(CurrencyPosition)
+admin.site.register(Deposit)
 admin.site.register(FxHedge)
 admin.site.register(FxRate)
 admin.site.register(Fund)

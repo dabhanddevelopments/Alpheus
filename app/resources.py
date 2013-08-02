@@ -462,7 +462,7 @@ class ImportResource(StandardBaseResource):
                     str(random.randrange(month_start, month_end)) + '-' + \
                                                 str(random.randrange(1, 28))
 
-        year_start = 2012
+        year_start = 2003
         year_end = 2014
         month_start = 1
         month_end = 13
@@ -769,6 +769,64 @@ class ImportResource(StandardBaseResource):
 
 
 
+        # Client History
+        data = []
+        for client in clients:
+
+            # limit client history, otherwise it would take too long
+            if client.last_name[0].lower() == 'c':
+
+                for year in range(year_start, year_end):
+                    for month in range(month_start, month_end):
+                        fields = self.get_field_data(Client)
+                        fields['client'] = client
+                        fields['value_date'] = date(year, month, 1)
+                        fields['date_type'] = 'm'
+                        data.append(ClientHistory(**fields))
+                        for day in range(day_start, day_end):
+
+                            # skip weekends
+                            try:
+                                if date(year, month, day).weekday() > 4:
+                                    continue
+                            except:
+                                continue
+
+                            fields = self.get_field_data(Client)
+                            fields['client'] = client
+                            fields['date_type'] = 'd'
+                            fields['value_date'] = date(year, month, day)
+                            data.append(ClientHistory(**fields))
+
+                # blatant copy & paste
+                for year in range(year_start, year_end):
+                    for month in range(month_start, month_end):
+                        fields = self.get_field_data(Client)
+                        fields['client'] = client
+                        fields['value_date'] = date(year, month, 1)
+                        fields['date_type'] = 'm'
+                        data.append(ClientHistory(**fields))
+                        for day in range(day_start, day_end):
+
+                            # skip weekends
+                            try:
+                                if date(year, month, day).weekday() > 4:
+                                    continue
+                            except:
+                                continue
+
+                            fields = self.get_field_data(Client)
+                            fields['client'] = client
+                            fields['date_type'] = 'd'
+                            fields['value_date'] = date(year, month, day)
+                            data.append(ClientHistory(**fields))
+
+
+        ClientHistory.objects.bulk_create(data, batch_size=100)
+
+
+
+
 
         classification_names = ['CS Funds', 'Gale Funds', 'PE commitments', 'Ad-hoc', 'Loans', 'Cash' ]
 
@@ -798,24 +856,10 @@ class ImportResource(StandardBaseResource):
             data.append(Holding(**fields))
 
         Holding.objects.bulk_create(data, batch_size=100)
-        holdings = Holding.objects.all()
-
-        for holding in holdings:
-
-            #random_funds = Fund.objects.order_by('?')[:random.randrange(0, 10)]
-            #for random_fund in random_funds:
-            #    holding.fund.add(random_fund)
-
-            # assign random client to holding
-            random_clients = Client.objects.order_by('?')[:random.randrange(0, 3)]
-            for random_client in random_clients:
-                holding.client.add(random_client)
-
-        #Holding.objects.bulk_create(data, batch_size=100)
 
         # Holding History
         data = []
-        for holding in holdings:
+        for holding in Holding.objects.all():
             for year in range(year_start, year_end):
                 for month in range(month_start, month_end):
                     fields = self.get_field_data(HoldingHistory)
@@ -843,67 +887,6 @@ class ImportResource(StandardBaseResource):
                         data.append(HoldingHistory(**fields))
 
         HoldingHistory.objects.bulk_create(data, batch_size=100)
-
-
-
-
-        # Client History
-        data = []
-        for client in clients:
-
-            # limit client history, otherwise it would take too long
-            if client.last_name[0].lower() == 'c':
-
-                for holding in Holding.objects.all():
-                    for year in range(year_start, year_end):
-                        for month in range(month_start, month_end):
-                            fields = self.get_field_data(Client)
-                            fields['client'] = client
-                            fields['holding'] = holding
-                            fields['value_date'] = date(year, month, 1)
-                            fields['date_type'] = 'm'
-                            data.append(ClientHistory(**fields))
-                            for day in range(day_start, day_end):
-
-                                # skip weekends
-                                try:
-                                    if date(year, month, day).weekday() > 4:
-                                        continue
-                                except:
-                                    continue
-
-                                fields = self.get_field_data(Client)
-                                fields['client'] = client
-                                fields['holding'] = holding
-                                fields['date_type'] = 'd'
-                                fields['value_date'] = date(year, month, day)
-                                data.append(ClientHistory(**fields))
-
-                # blatant copy & paste
-                for year in range(year_start, year_end):
-                    for month in range(month_start, month_end):
-                        fields = self.get_field_data(Client)
-                        fields['client'] = client
-                        fields['value_date'] = date(year, month, 1)
-                        fields['date_type'] = 'm'
-                        data.append(ClientHistory(**fields))
-                        for day in range(day_start, day_end):
-
-                            # skip weekends
-                            try:
-                                if date(year, month, day).weekday() > 4:
-                                    continue
-                            except:
-                                continue
-
-                            fields = self.get_field_data(Client)
-                            fields['client'] = client
-                            fields['date_type'] = 'd'
-                            fields['value_date'] = date(year, month, day)
-                            data.append(ClientHistory(**fields))
-
-
-        ClientHistory.objects.bulk_create(data, batch_size=100)
 
 
 
