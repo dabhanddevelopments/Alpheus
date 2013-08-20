@@ -13,7 +13,7 @@ class WidgetAdmin(admin.ModelAdmin):
     list_display = ('name', 'key', 'widget_type', 'window', 'description', 'v2')
     filter_horizontal = ['widget_param']
     list_editable = ['key']
-    list_filter = ['widget_type']
+    list_filter = ['widget_type', 'widget_param']
     save_as = True
 
 
@@ -21,6 +21,8 @@ class WidgetInline(admin.TabularInline):
     model = Widget
     sortable_field_name = 'position'
     exclude = ('widget_param', 'description', 'column_width')
+    change_list_template = "admin/change_list_filter_sidebar.html"
+    change_list_filter_template = "admin/filter_listing.html"
 
 class WindowAdmin(admin.ModelAdmin):
     list_display = ('name', 'key', 'size_x', 'size_y', 'layout') #'access')

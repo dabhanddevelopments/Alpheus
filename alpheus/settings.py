@@ -9,7 +9,7 @@ TEMPLATE_DEBUG = DEBUG
 TASTYPIE_FULL_DEBUG = DEBUG
 TASTYPIE_SWAGGER_API_MODULE = 'alpheus.urls.api'
 
-API_LIMIT_PER_PAGE = 1000 
+API_LIMIT_PER_PAGE = 1000
 
 INTERNAL_IPS = ('127.0.0.1',)
 
@@ -94,8 +94,8 @@ STATICFILES_DIRS = (
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
@@ -154,6 +154,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'django_extensions',
     'tastypie_swagger',
+    'south',
     #'fixture_magic',
 
     # custom

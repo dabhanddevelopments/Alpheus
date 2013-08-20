@@ -20,6 +20,7 @@ Some dependencies only work with Django 1.4, so that is what we use for now. Dow
 ### Install Grappelli
     sudo pip install django-grappelli
 
+
 ### Install Tastypie
     sudo apt-get install python-dateutil python-mimeparse
     git clone https://github.com/toastdriven/django-tastypie.git

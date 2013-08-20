@@ -24,6 +24,8 @@ DATA_TYPE_YEAR = 'year'
 DATA_TYPE_GROUP = 'group'
 DATA_TYPE_GRAPH = 'graph'
 DATA_TYPE_TOTAL = 'total'
+DATA_TYPE_COMPACT = 'compact'
+DATA_TYPE_LIST = 'list'
 
 # Base Model Resource
 class MainBaseResource(SpecifiedFields):
@@ -403,6 +405,8 @@ class MainBaseResource(SpecifiedFields):
                 y1 = []
                 y2 = []
                 for row in data['objects']:
+                    if len(y1) > 10:
+                        continue
                     date = int(mktime(row.data[self.date].timetuple())) * 1000
                     y1.append([date, float(row.data[self.y1])])
                     y2.append([date, float(row.data[self.y2])])
@@ -434,7 +438,7 @@ class MainBaseResource(SpecifiedFields):
             else:
                 raise Exception("Mandatory parameter(s) not passed")
 
-            return {'data': data['objects']}
+            return {'objects': [{'data': data['objects']}]}
 
 
         elif self.data_type == DATA_TYPE_TOTAL:
@@ -452,9 +456,35 @@ class MainBaseResource(SpecifiedFields):
             data['objects'].insert(0, {}) # empty row is separator
             data['objects'].insert(0, total_dic)
 
+        elif self.data_type == DATA_TYPE_COMPACT:
+            response = []
+            for row in data['objects']:
+                lis = []
+                for field in self.specified_fields:
+                    try:
+                        lis.append(row.data[field])
+                    except:
+                        pass
+                response.append(lis)
+            data['objects'] = response
+
+
+        elif self.data_type == DATA_TYPE_LIST:
+
+            response = []
+
+            for row in data['objects']:
+                dic = {}
+                for field in self.specified_fields:
+                    dic[field] = row.data[field]
+                response.append(dic)
+            return response
+
+
         if self.specified_fields:
             return {
                 'columns': self.set_columns(request, self.specified_fields),
+                'fields': self.specified_fields,
                 'rows': data['objects'],
             }
         else:

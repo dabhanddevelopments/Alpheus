@@ -325,14 +325,17 @@ console.log(e);
 
     $.getJSON('/api/holding-history/' + qs + date + filter, function(data) {
 
-	     chart.series[0].setData(data);
+        console.log('DATA');
+        console.log(data);
+
+	     chart.series[0].setData(data.objects[0].data);
 		 chart.hideLoading();
 
 		var qs = '?holding=' + holding + '&data_type=graph&y1=no_of_units&date=trade_date';
 
         $.getJSON('/api/fund/' + qs + date + filter, function(data2) {
 
-	         chart.series[1].setData(data2);
+	         chart.series[1].setData(data2.objects[0].data);
 		     chart.hideLoading();
 
 	    });
@@ -357,17 +360,12 @@ function lineBarChart(widget) {
 
     $.getJSON(widget.url + widget.qs, function(data) {
 
-        data = data.data;
-
         widget.url = '/api/trade/';
 
         qs = '?data_type=graph&date=trade_date&y1=no_of_units&holding=' + widget.holding;
 
         $.getJSON(widget.url + qs, function(data2) {
 
-        data2 = data2.data;
-
-        console.log(data);
 
             var options = {
                 chart: {
@@ -381,9 +379,7 @@ function lineBarChart(widget) {
                 navigator:{
                     enabled:true,
 				    adaptToUpdatedData: false,
-				    series : {
-					    data : data
-				    }
+				    series : data.objects[0].data,
 			    },
                 scrollbar: {
                     enabled:false, //remove ugly scrollbar
@@ -476,7 +472,7 @@ function lineBarChart(widget) {
                     stack: 0,
 
                     //data: [1, 12, 32, 43],
-                    data: data,
+                    data: data.objects[0].data,
 		            tooltip: {
 			            valueDecimals: 2
 		            },
@@ -489,7 +485,7 @@ function lineBarChart(widget) {
                     name: 'Volume',
                     yAxis: 1,
                     stack: 0,
-                    data: data2,
+                    data: data2.objects[0].data,
 		            tooltip: {
 			            valueDecimals: 2
 		            },
@@ -527,9 +523,14 @@ function destroyInnerGrid(record, widget_id) {
 function refreshHoldPerfBar(widget_key, date, id, monthly, fields, order_by) {
 
 
+    console.log('widget_key');
+    console.log(widget_key);
     if(widget_key == 'w45' || widget_key == 'w33') {
         var type = 'client';
         var size_x = 7;
+    } else if(widget_key == 'w7') {
+        var type = 'fund';
+        var size = 7;
     } else {
         var type = 'fund';
         var size_x = 6;
@@ -807,7 +808,6 @@ Ext.onReady(function() {
        //console.log(pages);
        //console.log(obj);
 
-        // No need to reload the page if users clicks on a link
         // to a page they are already on
         //if($('#data').data('active-panel') == id) {
         //    return
@@ -1856,8 +1856,6 @@ Ext.onReady(function() {
         console.log(widget.url + widget.qs);
         $.getJSON(widget.url + widget.qs, function(data) {
 
-            console.log(data);
-
             var options = {
                 chart: {
                     type: type,
@@ -1889,7 +1887,7 @@ Ext.onReady(function() {
                 xAxis: {
                     gridLineWidth: 1,
                     type: 'category',
-                    categories: data.columns,
+                    categories: data.objects.columns,
                 },
                 yAxis: {
                     title: {
@@ -1990,6 +1988,9 @@ Ext.onReady(function() {
 			    title : {
 				    text : false
 			    },
+                xAxis: {
+                    type: 'datetime'
+                },
                 yAxis: [{
 			        //title : {
 				    //    text : false
@@ -2005,6 +2006,7 @@ Ext.onReady(function() {
     function barChart(obj, widget, div) {
 
         $.getJSON(widget.url + widget.qs, function(data) {
+
 
             var title = false;
             if(typeof widget.params.title != 'undefined' && widget.params.title == "true") {
@@ -2540,22 +2542,23 @@ Ext.onReady(function() {
                         row = data.columns[i].columns[x].dataIndex;
 
 
-                        if(row.indexOf("name") != -1) {
-                            arr['type'] = 'string';
-                        } else {
+                        if($.isNumeric(row)) {
                             arr['type'] = 'float';
+                        } else {
+                            arr['type'] = 'string';
                         }
                         arr['name'] = row
                         fields.push(arr);
                     }
                 } else {
                     row = data.columns[i].dataIndex;
+
                     if(typeof row != 'undefined') {
                         arr = {};
-                        if(row.indexOf("name") != -1 || row.indexOf('Matrix') != -1 || row.indexOf('best_worst') != -1) {
-                            arr['type'] = 'string';
-                        } else {
+                        if($.isNumeric(row)) {
                             arr['type'] = 'float';
+                        } else {
+                            arr['type'] = 'string';
                         }
                         arr['name'] = row
                         fields.push(arr);
@@ -2568,13 +2571,22 @@ Ext.onReady(function() {
             }
 
             $.each(data.rows, function(parent, row) {
-                $.each(row, function(key, value) {
+
+                if($.isArray(row)) {
+                    $.each(row, function(key, value) {
+
+                        // tastypie returns floats as strings, hence this ugly hack
+                        if(value.toString().indexOf('.') != -1) {
+                            data.rows[parent][key] = parseFloat(value.toString());
+                        }
+                    });
+                } else {
 
                     // tastypie returns floats as strings, hence this ugly hack
-                    if(value.toString().indexOf('.') != -1) {
-                        data.rows[parent][key] = parseFloat(value.toString());
+                    if(row.toString().indexOf('.') != -1) {
+                        data.rows[parent] = parseFloat(row.toString());
                     }
-                 });
+                }
             });
 
             console.log("fields:");
@@ -3779,9 +3791,10 @@ Ext.onReady(function() {
 
                                     nodeId = record.data.id;
 
-                                    //console.log(nodeId);
-
                                 }
+                            },
+                            dblclick: function() {
+                                return false;
                             },
                             itemclick: {
                                 fn: function(view, record, item, index, event, opts) {
@@ -3797,7 +3810,7 @@ Ext.onReady(function() {
                                     }
 
                                     //console.log(record.raw);
-                                    if(typeof record.raw.fund != 'undefined') {
+                                    if(typeof record.raw.fund != 'undefined' && record.raw.fund != 0) {
                                         $('#data').data('fund', record.raw.fund);
                                         setFundName(record.raw.fund);
                                     }
@@ -3953,6 +3966,657 @@ Ext.onReady(function() {
             }
         });
     }
+
+
+
+
+
+
+
+
+
+
+
+
+var projectDropDown = new Ext.data.Store({
+    autoLoad: true,
+    url: '/api/holding-category/',
+    storeId: 'projectDropDown',
+    reader: new Ext.data.JsonReader(
+    {
+        root: 'objects'
+    }),
+    idProperty: 'id',
+    fields: [ 'id', 'name' ]
+});
+
+
+
+Ext.define('Category', {
+    extend: 'Ext.data.Model',
+    fields: ['id', 'name'],
+
+    proxy: {
+        type: 'rest',
+        url : '/api/holding-category/',
+    }
+});
+
+
+
+    var formPanel = Ext.create('Ext.form.Panel', {
+        //renderTo: Ext.getBody(),
+        frame: true,
+        title:'XML Form',
+        width: 340,
+        bodyPadding: 5,
+        waitMsgTarget: true,
+
+        fieldDefaults: {
+            labelAlign: 'right',
+            labelWidth: 85,
+            msgTarget: 'side'
+        },
+
+
+        items: [{
+            xtype: 'fieldset',
+            title: 'Contact Information',
+            defaultType: 'textfield',
+            defaults: {
+                width: 280
+            },
+            items: [{
+                    fieldLabel: 'First Name',
+                    emptyText: 'First Name',
+                    name: 'name'
+                }, {
+                    fieldLabel: 'Last Name',
+                    emptyText: 'Last Name',
+                    name: 'last'
+                }, {
+                    xtype: 'combobox',
+                    fieldLabel: 'Asset Class',
+                    name: 'asset_class',
+                    //queryMode: 'local',
+                    store: {
+                        //autoLoad: true,
+                        fields: ['id', 'name'],
+                            root: 'objects',
+                        proxy: {
+                            type: 'ajax',
+                            url: '/api/holding-category/?group=ass&fields=id,name&data_type=list',
+                        }
+                    },
+                    valueField: 'id',
+                    displayField: 'name',
+                    typeAhead: true,
+                    emptyText: 'Select an Asset Class...',
+                    //triggerAction: 'all',
+                }
+            ]
+        }],
+
+        buttons: [{
+            text: 'Submit',
+            disabled: true,
+            formBind: true,
+            handler: function(){
+                console.log(this.up('form').getForm().getValues());
+
+                //grid.window = "/api/pagewindow/1/";
+                grid = this.up('form').getForm().getValues();
+                grid.dealing_date = '2013-01-01';
+                grid.value_date = '2013-01-01';
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/holding/",
+                    data: JSON.stringify(grid),
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function(pagewindow) {
+                        console.log('holding added');
+                    },
+                });
+            }
+        }],
+
+        onChange: function(field, value) {
+
+            console.log(field, value);
+
+            if(field == 'asset_class') {
+
+                switch(value) {
+                    case 27:
+                        console.log('fit view');
+                        // do something else
+                        break;
+                    case 2:
+                        this.child('#dateFrom').hide();
+                        this.child('#dateTo').hide();
+                        break;
+                    case 3:
+                        this.child('#dateFrom').show();
+                        this.child('#dateTo').show();
+                        break;
+                }
+            }
+        },
+    });
+
+Ext.define('TooltipForm', {
+    extend: 'Ext.form.Panel',
+        frame: true,
+        title:'Add Trade',
+        width: 800,
+        bodyPadding: 5,
+        waitMsgTarget: true,
+
+        fieldDefaults: {
+            labelAlign: 'right',
+            labelWidth: 85,
+            msgTarget: 'side'
+        },
+
+
+
+    initComponent: function() {
+        Ext.apply(this, {
+            fieldDefaults: {
+                labelAlign: 'top',
+                labelWidth: 100,
+                //labelStyle: 'font-weight:bold'
+            },
+
+
+
+
+
+            items: [{
+                xtype: 'fieldset',
+                id: 'holding_fs',
+                title: 'Holding',
+                itemId: 'holding_fs',
+                anchor: '100%',
+                layout: {
+                    type: 'hbox',
+                    defaultMargins: {top: 0, right: 150, bottom: 0, left: 0}
+                },
+                items: [{
+                        xtype: 'fieldcontainer',
+                        id: 'holding_fc',
+                        itemId: 'holding_fc',
+                        msgTarget : 'side',
+                        layout: 'vbox',
+                        defaults: {
+                            flex: 1,
+                            labelAlign: 'left',
+                            labelWidth: 150,
+                            width: 275,
+                        },
+                        items: [
+                            {
+                                xtype: 'combobox',
+                                fieldLabel: 'Holding',
+                                itemId: 'holding',
+                                name: 'holding',
+                                queryMode: 'local',
+                                store: {
+                                    autoLoad: true,
+                                    fields: ['id', 'name'],
+                                    proxy: {
+                                        type: 'ajax',
+                                        url: '/api/holding/?fields=id,name&data_type=list',
+                                    }
+                                },
+                                valueField: 'id',
+                                displayField: 'name',
+                                typeAhead: true,
+                                emptyText: 'Select a Holding...',
+                                triggerAction: 'all',
+                            },
+                            {
+                                xtype     : 'textfield',
+                                itemId: 'sector',
+                                name      : 'sector',
+                                disabled: 'true',
+                                fieldLabel: 'Sector',
+                            },
+                            {
+                                xtype     : 'textfield',
+                                itemId: 'location',
+                                name      : 'location',
+                                disabled: 'true',
+                                fieldLabel: 'Location',
+                            },
+                            {
+                                xtype     : 'textfield',
+                                itemId: 'country',
+                                name      : 'country',
+                                disabled: 'true',
+                                fieldLabel: 'Country',
+                            },
+                            {
+                                xtype     : 'textfield',
+                                itemId: 'currency',
+                                name      : 'currency',
+                                disabled: 'true',
+                                fieldLabel: 'Currency',
+                            },
+
+                            {
+                                xtype     : 'textfield',
+                                itemId: 'sec_id',
+                                name      : 'sec_id',
+                                disabled: 'true',
+                                fieldLabel: 'Security ID',
+                            },
+
+                            {
+                                xtype     : 'textfield',
+                                itemId: 'bloomberg_code',
+                                name      : 'bloomberg_code',
+                                disabled: 'true',
+                                fieldLabel: 'Bloomberg Code',
+                            },
+
+                            {
+                                xtype     : 'textfield',
+                                itemId: 'redemption_fee12_percent',
+                                name      : 'redemption_fee12_percent',
+                                disabled: 'true',
+                                fieldLabel: 'Redemption Fee 12 %',
+                            },
+
+                            {
+                                xtype     : 'textfield',
+                                itemId: 'redemption_fee24_percent',
+                                name      : 'redemption_fee24_percent',
+                                disabled: 'true',
+                                fieldLabel: 'Redemption Fee 24 %',
+                            },
+
+                            {
+                                xtype     : 'textfield',
+                                itemId: 'redemption_fee36_percent',
+                                name      : 'redemption_fee36_percent',
+                                disabled: 'true',
+                                fieldLabel: 'Redemption Fee 36 %',
+                            },
+
+                        ]
+                    },{
+                        xtype: 'fieldcontainer',
+                        id: 'holding_fc2',
+                        itemId: 'holding_fc2',
+                        msgTarget : 'side',
+                        layout: 'vbox',
+                        defaults: {
+                            labelAlign: 'left',
+                            labelWidth: 150,
+                            width: 275,
+                        },
+                        items: [
+                            {
+                            size: 1,
+                                xtype     : 'textfield',
+                                itemId: 'no_of_units',
+                                name      : 'no_of_units',
+                                fieldLabel: 'No of Units',
+                                disabled: true,
+                                allowBlank: false
+                            },
+                            {
+                                xtype     : 'textfield',
+                                itemId: 'price_of_unit',
+                                name      : 'price_of_unit',
+                                fieldLabel: 'Price of Units',
+                                disabled: true,
+                                allowBlank: false
+                            },
+                            {
+                                xtype     : 'textfield',
+                                itemId: 'euro_nav',
+                                name      : 'euro_nav',
+                                fieldLabel: 'NAV',
+                                disabled: true,
+                                allowBlank: false
+                            },
+                            {
+                                xtype     : 'textfield',
+                                itemId: 'ave_purchase_price_base',
+                                name      : 'ave_purchase_price_base',
+                                fieldLabel: 'Ave Purchase Price',
+                                disabled: true,
+                                allowBlank: false
+                            },
+                            {
+                                xtype     : 'textfield',
+                                itemId: 'redemption_frequency',
+                                name      : 'redemption_frequency',
+                                fieldLabel: 'Redemption Frequency',
+                                disabled: true,
+                                allowBlank: false
+                            },
+                            {
+                                xtype     : 'textfield',
+                                itemId: 'redemption_notice',
+                                name      : 'redemption_notice',
+                                fieldLabel: 'Redemption Notice',
+                                disabled: true,
+                                allowBlank: false
+                            },
+                            {
+                                xtype     : 'textfield',
+                                itemId: 'max_redemption',
+                                name      : 'max_redemption',
+                                fieldLabel: 'Max Redemption',
+                                disabled: true,
+                                allowBlank: false
+                            },
+                            {
+                                xtype     : 'textfield',
+                                itemId: 'payment_days',
+                                name      : 'payment_days',
+                                fieldLabel: 'Payment Days',
+                                disabled: true,
+                                allowBlank: false
+                            },
+                            {
+                                xtype     : 'textfield',
+                                itemId: 'gate',
+                                name      : 'price_of_unit',
+                                fieldLabel: 'Gate',
+                                disabled: true,
+                                allowBlank: false
+                            },
+                            {
+                                xtype     : 'textfield',
+                                itemId: 'soft_lock',
+                                name      : 'soft_lock',
+                                fieldLabel: 'Soft Lock',
+                                disabled: true,
+                                allowBlank: false
+                            },
+
+                        ]
+                    },
+                ],
+            },
+            {
+                xtype: 'fieldset',
+                id: 'trade_fs',
+                title: 'Trade',
+                itemId: 'trade_fs',
+                defaults: {
+                    labelWidth: 89,
+                    anchor: '100%',
+                    layout: {
+                        type: 'hbox',
+                        defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
+                    }
+                },
+                items: [{
+                        xtype: 'fieldcontainer',
+                        id: 'trade_fc',
+                        itemId: 'trade_fc',
+                        msgTarget : 'side',
+                        layout: 'hbox',
+                        defaults: {
+                            flex: 1,
+                        },
+                        items: [
+                            {
+                                xtype     : 'textfield',
+                                itemId      : 'no_of_units',
+                                name      : 'no_of_units',
+                                fieldLabel: 'No of Units',
+                                allowBlank: false
+                            },
+                            {
+                                xtype     : 'textfield',
+                                itemId      : 'trade_price_base',
+                                name      : 'trade_price_base',
+                                fieldLabel: 'Price',
+                                allowBlank: false
+                            },
+                            {
+                                xtype     : 'textfield',
+                                itemId      : 'total_value',
+                                name      : 'total_value',
+                                fieldLabel: 'Total Value',
+                                allowBlank: false
+                            },
+
+                        ]
+                    },{
+                        itemId: 'range',
+                        width: 50,
+                        xtype: 'combo',
+                        value: 'fit',
+                        triggerAction: 'all',
+                        forceSelection: true,
+                        editable: false,
+                        fieldLabel: this.rangeFieldLabel,
+                        name: 'range',
+                        queryMode: 'local',
+                        store: ['fit', 'complete', 'date range']
+                    }, {
+                        itemId: 'dateFrom',
+                        width: 50,
+                        xtype: 'datefield',
+                        fieldLabel: 'date from',
+                        name: 'datefrom',
+                        hidden: true
+                    }, {
+                        itemId: 'dateTo',
+                        width: 50,
+                        xtype: 'datefield',
+                        fieldLabel: 'date to',
+                        name: 'dateto',
+                        hidden: true,
+                    }, {
+                        xtype: 'combobox',
+                        itemId: 'asset_class',
+                        fieldLabel: 'Asset Class',
+                        name: 'asset_class',
+                        queryMode: 'local',
+                        store: {
+                            autoLoad: true,
+                            fields: ['id', 'name'],
+                                root: 'objects',
+                            proxy: {
+                                type: 'ajax',
+                                url: '/api/holding-category/?group=ass&fields=id,name&data_type=list',
+                            }
+                        },
+                        valueField: 'id',
+                        displayField: 'name',
+                        typeAhead: true,
+                        emptyText: 'Select an Asset Class...',
+                        triggerAction: 'all',
+                    },
+                ],
+            },
+        ],
+
+
+        buttons: [{
+            text: 'Submit',
+            disabled: true,
+            formBind: true,
+            handler: function(){
+                console.log(this.up('form').getForm().getValues());
+
+                //grid.window = "/api/pagewindow/1/";
+                grid = this.up('form').getForm().getValues();
+                grid.dealing_date = '2013-01-01';
+                grid.value_date = '2013-01-01';
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/holding/",
+                    data: JSON.stringify(grid),
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function(pagewindow) {
+                        console.log('holding added');
+                    },
+                });
+            }
+        }],
+
+
+
+        });
+
+        this.callParent(arguments);
+        this.child('#trade_fs').child('#asset_class').on('change', this.onChange, this);
+        this.child('#trade_fs').child('#trade_fc').child('#no_of_units').on('blur', this.blur, this);
+        this.child('#trade_fs').child('#trade_fc').child('#trade_price_base').on('blur', this.blur, this);
+        this.child('#holding_fs').child('#holding_fc').child('#holding').on('change', this.onChange, this);
+    },
+
+    blur: function(eOpts) {
+        // automatically calculates the total value from `no_of_units` and `trade_price_base`
+        var children = this.child('#trade_fs').child('#trade_fc')
+        if(typeof children.child('#no_of_units').value != 'undefined' && typeof children.child('#trade_price_base').value != 'undefined') {
+            var total_value = children.child('#no_of_units').value * children.child('#trade_price_base').value;
+            total_value = total_value.toFixed(2); //2 decimal places
+            children.child('#total_value').setValue(total_value);
+        }
+    },
+
+    onChange: function(field, value) {
+
+        if(field.itemId == 'holding') {
+
+            $.getJSON('/api/holding/' + value + '/?fields=asset_class,sector,location,country,currency,sec_id,bloomberg_code,redemption_fee12_percent,redemption_fee24_percent,redemption_fee36_percent,no_of_units,price_of_unit,ave_purchase_price_base,redemption_frequency,redemption_notice,max_redemption,payment_days,gate,soft_lock', function(response) {
+
+                setElementValue('holding_fc', response);
+                setElementValue('holding_fc2', response);
+
+            });
+            //this.child('#holding_fs').child('#email').setValue('asdf');
+        }
+        switch(value) {
+            case 27:
+                console.log('fit view');
+                this.child('#range').hide();
+                // do something else
+                break;
+            case 'complete':
+                this.child('#dateFrom').hide();
+                this.child('#dateTo').hide();
+                break;
+            case 'date range':
+                this.child('#dateFrom').show();
+                this.child('#dateTo').show();
+                break;
+        }
+    },
+});
+
+function setElementValue(id, response) {
+    var holding_fields = Ext.getCmp(id);
+    console.log(holding_fields);
+    $.each(holding_fields.items.items, function(index, row) {
+        if(row.name !== 'holding') {
+            row.setValue(response[row.name]);
+        }
+    });
+}
+
+Ext.onReady(function(){
+    new TooltipForm({
+        //renderTo: document.body,
+        closable: true,
+        draggable: true,
+        style: {
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            marginTop: 10,
+        },
+    });
+});
+
+
+Ext.require(["Ext.util.Cookies", "Ext.Ajax"], function(){
+    // Add csrf token to every ajax request
+    var token = Ext.util.Cookies.get('csrftoken');
+    if(!token){
+        Ext.Error.raise("Missing csrftoken cookie");
+    } else {
+        Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
+            'X-CSRFToken': token
+        });
+    }
+});
+
+/*
+Ext.define('Category', {
+    extend: 'Ext.data.Model',
+    fields: ['name'],
+
+    proxy: {
+        type: 'rest',
+        url: '/api/holding-category/',
+    }
+});
+
+
+var cat_data = {name: '111', group: 'ass'};
+//var user = Ext.ModelManager.create(cat_data, 'Category');
+//user.save(); //POST /users
+
+
+Ext.define('Trade', {
+    extend: 'Ext.data.Model',
+    fields: ['inflow_dollar'],
+
+    proxy: {
+        type: 'rest',
+        url: '/api/trade/',
+    }
+});
+
+//var data = {inflow_dollar: '111'};
+//var user = Ext.ModelManager.create(data, 'Trade');
+//user.save(); //POST /users
+
+
+
+
+
+$.ajax({
+    type: "POST",
+    url: "/api/trade/",
+    data: JSON.stringify(data),
+    dataType: "json",
+    contentType: "application/json",
+    success: function(response) {
+        console.log(response);
+    }
+});
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // sending a csrftoken with every ajax request

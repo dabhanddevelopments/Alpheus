@@ -81,9 +81,7 @@ class SpecifiedFields(ModelResource):
         """
 
         # default behaviour if `fields` is not set
-        try:
-            self.specified_fields
-        except:
+        if not len(self.specified_fields):
             return super(SpecifiedFields, self).full_dehydrate( \
                                                         bundle, for_list)
 

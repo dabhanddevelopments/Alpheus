@@ -1,4 +1,5 @@
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
+from tastypie.resources import Resource, ModelResource
 from tastypie import fields
 from tastypie.api import Api
 
@@ -10,7 +11,7 @@ from client.resources import ClientResource
 
 
 class CategoryResource(MainBaseResource):
-    class Meta:
+    class Meta(MainBaseResource.Meta):
         queryset = Category.objects.all()
         resource_name = 'holding-category'
         filtering = {
@@ -18,22 +19,28 @@ class CategoryResource(MainBaseResource):
             'group': ALL,
         }
 
+
+
+
+from tastypie.authentication import BasicAuthentication
+from tastypie.authorization import Authorization
+
 class HoldingResource(MainBaseResource):
-    fund = fields.ManyToManyField(FundResource, 'fund', related_name='holding_fund')
+    fund = fields.ManyToManyField(FundResource, 'fund', related_name='holding_fund', null=True)
     client = fields.ManyToManyField(ClientResource, 'client', \
-                                    related_name='holding_client')
-    currency = fields.ForeignKey(CurrencyResource, 'currency')
-    category = fields.ForeignKey(CategoryResource, 'category')
+                                    related_name='holding_client', null=True)
+    currency = fields.ForeignKey(CurrencyResource, 'currency', null=True)
+    category = fields.ForeignKey(CategoryResource, 'category', null=True)
     sector = fields.ForeignKey(CategoryResource, 'sector', \
-                                     related_name='sec')
+                                     related_name='sec', null=True)
     sub_sector = fields.ForeignKey(CategoryResource, 'sub_sector', \
-                                        related_name='sub_sec')
+                                        related_name='sub_sec', null=True)
     location = fields.ForeignKey(CategoryResource, 'location', \
-                                                related_name='loc')
+                                                related_name='loc', null=True)
     investment_type = fields.ForeignKey(CategoryResource, 'investment_type', \
-                                                            related_name='inv')
+                                                            related_name='inv', null=True)
     asset_class = fields.ForeignKey(CategoryResource, 'asset_class', \
-                                                    related_name='ass')
+                                                    related_name='ass', null=True)
 
     class Meta(MainBaseResource.Meta):
         queryset = Holding.objects.all()
@@ -46,6 +53,8 @@ class HoldingResource(MainBaseResource):
             "date_type": ALL,
             "id": ALL,
         }
+        #authentication = BasicAuthentication()
+        authorization = Authorization()
 
 
 class HoldingHistoryResource(MainBaseResource):

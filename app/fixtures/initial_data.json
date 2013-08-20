@@ -17,7 +17,7 @@
             "is_active": true,
             "is_superuser": true,
             "is_staff": true,
-            "last_login": "2013-07-29T07:14:25Z",
+            "last_login": "2013-08-05T04:50:06Z",
             "groups": [],
             "user_permissions": [],
             "password": "pbkdf2_sha256$10000$l8bXV0IQO3vt$5K40ZfpJsZ415w++TboOA0H9Qs83V+8rO6Dm1kURo5w=",
@@ -50,6 +50,14 @@
         }
     },
     {
+        "pk": "3fc5f6765d77f51db3b7067624a1e7dc",
+        "model": "sessions.session",
+        "fields": {
+            "expire_date": "2013-08-19T04:45:00Z",
+            "session_data": "OWEwMmI1OTZiMzg1NDQzNWU5NjJmZWQzMDNlYWE0ZGY4YTI3ZDYzZjqAAn1xAShVCkxJU1RfUVVF\nUllVA2FwcHECVQZ3aW5kb3dxA4ZxBFUAhlUNX2F1dGhfdXNlcl9pZIoBAVUSX2F1dGhfdXNlcl9i\nYWNrZW5kVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZFUwd2l6YXJk\nX3hhZG1pbnVzZXJ3aWRnZXRfYWRtaW5fd2l6YXJkX2Zvcm1fcGx1Z2lufXEFKFUKc3RlcF9maWxl\nc31xBlgLAAAAV2lkZ2V0IFR5cGVxB31zVQRzdGVwWA0AAABXaWRnZXQgUGFyYW1zVQpleHRyYV9k\nYXRhfVUJc3RlcF9kYXRhfXEIaAd9cQkoWBIAAABzdGVwXzAtd2lkZ2V0X3R5cGVdcQpYBwAAAGFk\nZGZvcm1xC2FYBQAAAF9zYXZlXXEMWAAAAABhWDYAAAB4YWRtaW51c2Vyd2lkZ2V0X2FkbWluX3dp\nemFyZF9mb3JtX3BsdWdpbi1jdXJyZW50X3N0ZXBdcQ1YCwAAAFdpZGdldCBUeXBlcQ5hWA4AAABz\ndGVwXzAtcGFnZV9pZF1xD1gEAAAAYXNkZnEQYVgEAAAAdXNlcl1xEYoBAWFYEwAAAGNzcmZtaWRk\nbGV3YXJldG9rZW5dcRIoWCAAAABKWFhxWWdldUNrbVRDS25Ld0dZYVFmcWNKTE1hcFJNZHETWCAA\nAABKWFhxWWdldUNrbVRDS25Ld0dZYVFmcWNKTE1hcFJNZHEUZXVzdXUu\n"
+        }
+    },
+    {
         "pk": "52973f243ac6167e54114baea16e71f7",
         "model": "sessions.session",
         "fields": {
@@ -74,11 +82,27 @@
         }
     },
     {
+        "pk": "7168b16215fca4acd84dba144490056d",
+        "model": "sessions.session",
+        "fields": {
+            "expire_date": "2013-08-18T16:15:48Z",
+            "session_data": "ZjIxNzE1NmJjNGMxM2IxZWI0ODllZDViMTFjMjI2YjI0MDI5NzUzYTqAAn1xAShVEl9hdXRoX3Vz\nZXJfYmFja2VuZHECVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZHED\nVQ1fYXV0aF91c2VyX2lkcQSKAQF1Lg==\n"
+        }
+    },
+    {
         "pk": "71c0623c829e9e83ff5c97973a154a46",
         "model": "sessions.session",
         "fields": {
             "expire_date": "2013-07-11T11:47:24Z",
             "session_data": "ZjIxNzE1NmJjNGMxM2IxZWI0ODllZDViMTFjMjI2YjI0MDI5NzUzYTqAAn1xAShVEl9hdXRoX3Vz\nZXJfYmFja2VuZHECVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZHED\nVQ1fYXV0aF91c2VyX2lkcQSKAQF1Lg==\n"
+        }
+    },
+    {
+        "pk": "72d021a0614824ba97daab60c9c081c2",
+        "model": "sessions.session",
+        "fields": {
+            "expire_date": "2013-08-19T04:12:43Z",
+            "session_data": "MDcyYjFkYjM4MThmNjNiNjdiN2MwNjg2MzY3ODJhNGY0Mzk1MTIzODqAAn1xAShVCkxJU1RfUVVF\nUllVBGF1dGhxAlUFZ3JvdXBxA4ZxBFUAhlUSX2F1dGhfdXNlcl9iYWNrZW5kVSlkamFuZ28uY29u\ndHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZFUNX2F1dGhfdXNlcl9pZIoBAXUu\n"
         }
     },
     {
@@ -138,6 +162,14 @@
         }
     },
     {
+        "pk": "cf8ac2acf08be603ed44bf161accb491",
+        "model": "sessions.session",
+        "fields": {
+            "expire_date": "2013-08-19T04:54:55Z",
+            "session_data": "ZDQxM2ExMGMzNWVmMDI0ZDBkNWRlMmZlNjcyYTdjOTFjZmU5YThjNDqAAn1xAShVCkxJU1RfUVVF\nUllVA2FwcHECVQZ3aWRnZXRxA4ZxBFUAhlUNX2F1dGhfdXNlcl9pZIoBAVUSX2F1dGhfdXNlcl9i\nYWNrZW5kVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZHUu\n"
+        }
+    },
+    {
         "pk": "d348832e15063aa4d2c5d6c730373a69",
         "model": "sessions.session",
         "fields": {
@@ -175,6 +207,168 @@
         "fields": {
             "domain": "example.com",
             "name": "example.com"
+        }
+    },
+    {
+        "pk": 2223,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-08-05T13:17:37Z",
+            "object_repr": "order_by=dealing_date",
+            "object_id": "105",
+            "change_message": "Changed value.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "widgetparam"
+            ]
+        }
+    },
+    {
+        "pk": 2222,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-08-05T07:03:50Z",
+            "object_repr": "CS US Equity",
+            "object_id": "8",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "holding"
+            ]
+        }
+    },
+    {
+        "pk": 2221,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-08-05T07:02:32Z",
+            "object_repr": "HSBC Funds / Gale B",
+            "object_id": "70",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2220,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-08-05T06:47:56Z",
+            "object_repr": "Overview",
+            "object_id": "20",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2219,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-08-04T21:34:58Z",
+            "object_repr": "Pepsi",
+            "object_id": "2",
+            "change_message": "Changed fund, client and redemption_frequency.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "holding"
+            ]
+        }
+    },
+    {
+        "pk": 2218,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-08-04T21:34:46Z",
+            "object_repr": "Coca Cola",
+            "object_id": "1",
+            "change_message": "Changed fund and client.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "holding",
+                "holding"
+            ]
+        }
+    },
+    {
+        "pk": 2217,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-08-04T21:33:57Z",
+            "object_repr": "HSBC Funds / Gale B",
+            "object_id": "70",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2216,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2013-08-04T21:33:49Z",
+            "object_repr": "Overview",
+            "object_id": "20",
+            "change_message": "Changed fund.",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "menu"
+            ]
+        }
+    },
+    {
+        "pk": 2215,
+        "model": "admin.logentry",
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2013-08-04T16:15:54Z",
+            "object_repr": "CounterPartyTrader object",
+            "object_id": "1",
+            "change_message": "",
+            "user": [
+                "andy"
+            ],
+            "content_type": [
+                "app",
+                "counterpartytrader"
+            ]
         }
     },
     {
@@ -7167,7 +7361,7 @@
         "fields": {
             "action_flag": 2,
             "action_time": "2013-07-23T21:28:43Z",
-            "object_repr": "W.3.b - Total Fund Performance by Holding Data Table",
+            "object_repr": "W.3.b - Total Fund Performance by Holding",
             "object_id": "71",
             "change_message": "Changed name.",
             "user": [
@@ -18817,7 +19011,7 @@
         "pk": 105,
         "model": "app.widgetparam",
         "fields": {
-            "value": "-dealing_date",
+            "value": "dealing_date",
             "key": "order_by"
         }
     },
@@ -29234,6 +29428,13 @@
         }
     },
     {
+        "pk": 31,
+        "model": "app.alarm",
+        "fields": {
+            "name": "alarm1"
+        }
+    },
+    {
         "pk": 1,
         "model": "app.fee",
         "fields": {}
@@ -29264,6 +29465,14 @@
         "model": "app.counterparty",
         "fields": {
             "name": "Credit Suisse"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "app.counterpartytrader",
+        "fields": {
+            "first_name": "John",
+            "last_name": "Doe"
         }
     },
     {

@@ -462,7 +462,7 @@ class ImportResource(StandardBaseResource):
                     str(random.randrange(month_start, month_end)) + '-' + \
                                                 str(random.randrange(1, 28))
 
-        year_start = 2003
+        year_start = 2012
         year_end = 2014
         month_start = 1
         month_end = 13
@@ -845,6 +845,8 @@ class ImportResource(StandardBaseResource):
             fields['location'] = Category.objects.filter(group='loc').order_by('?')[0]
             fields['investment_type'] = Category.objects.filter(group='inv').order_by('?')[0]
             fields['asset_class'] = Category.objects.filter(group='ass').order_by('?')[0]
+            fields['sec_id'] = self.rand_str()
+            fields['bloomberg_code'] = self.rand_str()
             fields['isin'] = self.rand_str()
             fields['rep_code'] = self.rand_str()
             fields['description'] = self.rand_str(100)
@@ -853,6 +855,7 @@ class ImportResource(StandardBaseResource):
             fields['redemption_date'] = rand_date()
             fields['value_date'] = rand_date()
             fields['dealing_date'] = rand_date()
+            fields['soft_lock_date'] = rand_date()
             data.append(Holding(**fields))
 
         Holding.objects.bulk_create(data, batch_size=100)
@@ -895,6 +898,13 @@ class ImportResource(StandardBaseResource):
         for index in range(1, no_of_trades):
 
             fields = self.get_field_data(Trade)
+            fields['counter_party'] = CounterParty.objects.order_by('?')[0]
+            fields['counter_party_trader'] = CounterPartyTrader.objects.order_by('?')[0]
+            fields['authorised_by'] = User.objects.order_by('?')[0]
+            fields['desk'] = self.rand_str()
+            fields['book'] = self.rand_str()
+            fields['bank_reference'] = self.rand_str()
+            fields['memorandum_text'] = self.rand_str()
             fields['holding'] = Holding.objects.order_by('?')[0]
             #fields['trade_type'] = TradeType.objects.order_by('?')[0]
             fields['currency'] = Currency.objects.order_by('?')[0]
