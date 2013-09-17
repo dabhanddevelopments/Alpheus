@@ -52,7 +52,7 @@ class WindowResource(StandardBaseResource):
 
 #curl --dump-header - -H "Content-Type: application/json" -X POST --data '{"username" : "me", "password": "l33t"}' http://localhost:8003/api/user/login/
 
-class UserResource(StandardBaseResource):
+class UserResource(MainBaseResource):
     class Meta:
         queryset = User.objects.all()
         fields = ['first_name', 'last_name', 'email']
@@ -78,6 +78,7 @@ class UserResource(StandardBaseResource):
         password = request.POST.get('password', '')
 
         user = authenticate(username=username, password=password)
+
         if user:
             if user.is_active:
                 login(request, user)
@@ -232,7 +233,7 @@ class PageWindowResource(StandardBaseResource):
 
 
 
-class CustodianResource(StandardBaseResource):
+class CustodianResource(MainBaseResource):
 
     class Meta:
         queryset = Custodian.objects.all()
@@ -241,22 +242,22 @@ class CustodianResource(StandardBaseResource):
         }
 
 
-class AuditorResource(StandardBaseResource):
+class AuditorResource(MainBaseResource):
 
     class Meta:
         queryset = Auditor.objects.all()
 
-class AdministratorResource(StandardBaseResource):
+class AdministratorResource(MainBaseResource):
 
     class Meta:
         queryset = Administrator.objects.all()
 
-class ClassificationResource(StandardBaseResource):
+class ClassificationResource(MainBaseResource):
 
     class Meta:
         queryset = Classification.objects.all()
 
-class ManagerResource(StandardBaseResource):
+class ManagerResource(MainBaseResource):
 
     class Meta:
         queryset = User.objects.all()
@@ -462,12 +463,12 @@ class ImportResource(StandardBaseResource):
                     str(random.randrange(month_start, month_end)) + '-' + \
                                                 str(random.randrange(1, 28))
 
-        year_start = 2012
+        year_start = 2005
         year_end = 2014
         month_start = 1
         month_end = 13
         day_start = 1
-        day_end = 32
+        day_end = 31
         no_of_trades = 100
 
 
@@ -482,11 +483,10 @@ class ImportResource(StandardBaseResource):
         alarm = Alarm(name="alarm1").save()
         alarm = Alarm.objects.all() # is this needed?
 
-        fund_type = FundType.objects.all()
         administrator = Administrator.objects.all()
         auditor = Auditor.objects.all()
         classification = Classification.objects.all()
-        manager = User.objects.all()
+        user = User.objects.all()
         custodian = Custodian.objects.all()
 
         # FxRate
@@ -520,7 +520,14 @@ class ImportResource(StandardBaseResource):
             'Alpheus',
         ]
         classifications = [Classification(name=name) for name in classification_names]
-        Classification.objects.bulk_create(classifications, batch_size=100)
+        class_data = []
+        for id, name in enumerate(classification_names):
+            class_data.append(Classification(
+                key = id,
+                name = name,
+                asset_class = Category.objects.order_by('?')[0]
+            ))
+        Classification.objects.bulk_create(class_data, batch_size=100)
         #classifications = Classification.objects.all()
 
         # Fund
@@ -548,14 +555,14 @@ class ImportResource(StandardBaseResource):
             fields['name'] = name
             fields['subscription_frequency'] = 'm'
             fields['redemption_frequency'] = 'm'
-            fields['counter_party'] = cp
+            #fields['counter_party'] = cp
+            fields['currency'] = Currency.objects.order_by('?')[0]
             fields['alarm'] = Alarm.objects.order_by('?')[0]
             fields['custodian'] = Custodian.objects.order_by('?')[0]
             fields['auditor'] = Auditor.objects.order_by('?')[0]
             fields['administrator'] = Administrator.objects.order_by('?')[0]
             fields['classification'] = Classification.objects.get(pk=classification)
-            fields['manager'] = User.objects.order_by('?')[0]
-            fields['fund_type'] = FundType.objects.order_by('?')[0]
+            fields['user'] = User.objects.order_by('?')[0]
             #fields['classification'] = classifications.get(pk=classification)
             fields['value_date'] = '2013-07-10' #whatever current date
             data.append(Fund(**fields))
@@ -569,7 +576,7 @@ class ImportResource(StandardBaseResource):
             for year in range(year_start, year_end):
                 for month in range(month_start, month_end):
 
-                    fields = self.get_field_data(Fund)
+                    fields = self.get_field_data(FundHistory)
                     fields['fund'] = fund
                     fields['date_type'] = 'm'
                     fields['value_date'] = date(year, month, 1)
@@ -583,7 +590,7 @@ class ImportResource(StandardBaseResource):
                         except:
                             continue
 
-                        fields = self.get_field_data(Fund)
+                        fields = self.get_field_data(FundHistory)
                         fields['fund'] = fund
                         fields['date_type'] = 'd'
                         fields['value_date'] = date(year, month, day)
@@ -597,6 +604,7 @@ class ImportResource(StandardBaseResource):
         for name in benchmark_names:
             fields = self.get_field_data(Benchmark)
             fields['name'] = name
+            fields['benchmark_type'] = 'bloomberg'
             fields['value_date'] = '2013-07-10' #whatever current date
             data.append(Benchmark(**fields))
 
@@ -759,8 +767,12 @@ class ImportResource(StandardBaseResource):
                     fields['client'] = client
                     fields['fund'] = fund
                     fields['trade_date'] = rand_date()
-                    fields['input_date'] = rand_date()
-                    fields['sub_red'] = random.randrange(0, 5)
+                    #fields['input_date'] = rand_date()
+                    fields['settlement_date'] = rand_date()
+                    fields['redemption_date'] = rand_date()
+                    fields['full_redemption'] = 1
+                    fields['instruction_type'] = 'new'
+                    fields['sub_red_switch'] = random.randrange(0, 5)
                     fields['percent_released'] = 90
                     data.append(SubscriptionRedemption(**fields))
 
@@ -856,6 +868,10 @@ class ImportResource(StandardBaseResource):
             fields['value_date'] = rand_date()
             fields['dealing_date'] = rand_date()
             fields['soft_lock_date'] = rand_date()
+            fields['maturity'] = rand_date()
+            fields['put_call'] = 1
+            fields['american_euro'] = 1
+            fields['etf_yes_no'] = 1
             data.append(Holding(**fields))
 
         Holding.objects.bulk_create(data, batch_size=100)
@@ -891,6 +907,8 @@ class ImportResource(StandardBaseResource):
 
         HoldingHistory.objects.bulk_create(data, batch_size=100)
 
+        cpt = CounterPartyTrader(name='John Doe')
+        cpt.save()
 
 
         # Trade
@@ -907,11 +925,13 @@ class ImportResource(StandardBaseResource):
             fields['memorandum_text'] = self.rand_str()
             fields['holding'] = Holding.objects.order_by('?')[0]
             #fields['trade_type'] = TradeType.objects.order_by('?')[0]
-            fields['currency'] = Currency.objects.order_by('?')[0]
-            fields['purchase_price_base'] = random.randrange(50,125)
-            fields['nav_purchase'] = random.randrange(50,125)
+            #fields['currency'] = Currency.objects.order_by('?')[0]
+            #fields['purchase_price_base'] = random.randrange(50,125)
+            fields['base_nav'] = random.randrange(50,125)
             fields['settlement_date'] = rand_date()
             fields['trade_date'] = rand_date()
+            fields['buy_sell'] = 1
+            fields['to_open_to_close'] = 1
             data.append(Trade(**fields))
 
         Trade.objects.bulk_create(data, batch_size=100)

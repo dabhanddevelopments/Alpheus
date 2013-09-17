@@ -1,14 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
-from app.models import DATE_TYPE, ModelBase, Currency, Alarm, Fee, \
-                    CounterParty, Custodian, Auditor, Administrator
+from app.models import (
+    DATE_TYPE, BUY_SELL, ModelBase, Currency, Alarm, Fee,
+    Custodian, Auditor, Administrator
+)
+from comparative.models import Benchmark, Peer
 
 
 YES_NO=(
     (1,'Yes'),
     (2,'No'),
 )
-
 
 FREQUENCY=(
     ('m','M'),
@@ -17,31 +19,27 @@ FREQUENCY=(
     ('a','A'),
 )
 
-BUY_SELL=(
-    (1,'Buy'),
-    (2,'Sell'),
-)
 PERCENT_RELEASED=(
     (90,'90%'),
     (100,'100%'),
 )
 
-DATE_TYPE = (
-    ('d', 'Day'),
-    ('w', 'Week'),
-    ('m', 'Month'),
-)
 
+class PerformanceEstimate(models.Model):
+    holding = models.ForeignKey('holding.Holding')
+    fund = models.ForeignKey('Fund')
+    benchmark = models.ForeignKey(Benchmark)
+    peer = models.ForeignKey(Peer)
+    user = models.ForeignKey(User)
+    value_date = models.DateField()
+    estimated_mtd = models.DecimalField(max_digits=20, decimal_places=5)
 
 class CurrencyPosition(models.Model):
     fund = models.ForeignKey('Fund')
     currency = models.ForeignKey(Currency, related_name='currency_position')
-    nav = models.DecimalField(max_digits=20, decimal_places=5,\
-                                             blank=True, null=True, verbose_name="NAV")
     base_nav = models.DecimalField(max_digits=20, decimal_places=5)
     euro_nav = models.DecimalField(max_digits=20, decimal_places=5)
     value_date = models.DateField()
-
 
 class FxRate(models.Model):
     value_date = models.DateField()
@@ -51,33 +49,18 @@ class FxRate(models.Model):
 class Classification(models.Model):
     key = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
+    asset_class = models.ForeignKey('holding.Category', related_name='asset_class_classification')
 
     def __unicode__(self):
         return self.name
 
 
-class FundType(models.Model):
-    name = models.CharField(max_length=50)
-
-    def __unicode__(self):
-        return self.name
 
 from alpheus import utils
 
 class FundBase(ModelBase):
-
-    class Meta:
-        abstract = True
-
-    redemption_frequency = models.CharField(max_length=1, blank=True, null=True, choices=FREQUENCY)
-    subscription_frequency = models.CharField(max_length=1, blank=True, null=True, choices=FREQUENCY)
     aum = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     mtd = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    ytd = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    administrator_fee = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    performance_fee = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    management_fee = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    performance = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     ytd = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     si = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     ann_return1 = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
@@ -114,7 +97,6 @@ class FundBase(ModelBase):
     nav_other_assets = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     nav_securities_total = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     administrator_fee_payable = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    administrator_fee = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     auditor_fee_payable = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     auditor_fee = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     capital_fee_payable = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
@@ -126,9 +108,7 @@ class FundBase(ModelBase):
     financial_statement_prep_payable = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     sub_advisory_fee_payable = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     management_fee_payable = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    management_fee = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     performance_fee_payable = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    performance_fee = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     other_liabilities_payable = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     total_liabilities = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     total_liabilities_payable = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
@@ -158,42 +138,55 @@ class FundBase(ModelBase):
     valuation = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     total_value = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     net_proceed = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    delta_flow = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    cash_flow = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    cash_flow_percent_euro_dollar = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    valuation_base = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     irr = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True, verbose_name='IRR')
-    description = models.TextField(blank=True, null=True)
     value_date = models.DateField()
-
-
     euro_nav = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     pe_total = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     alpheus_cash = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     alpheus_loans = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    custodian_management_fee_payable = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    custodian_performance_fee_payable = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    base_nav = models.DecimalField(max_digits=20, decimal_places=5,verbose_name="Base NAV")
+    weight = models.DecimalField(max_digits=20, decimal_places=5)
+    cash_flow_euro_amount_euro_dollar = models.DecimalField(max_digits=20, decimal_places=5)
+    cash_flow_percent_euro_dollar = models.DecimalField(max_digits=20, decimal_places=5)
+
+    custodian_management_fee_payable = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    invest_advisors_management = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    invest_advisors_performance = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
 
 
     class Meta:
         abstract = True
 
 class Fund(FundBase):
-    fund_type = models.ForeignKey(FundType, related_name="fund_type")
-    classification = models.ForeignKey(Classification)
-    #counter_party = models.ForeignKey(CounterParty, related_name='fund_cp')
-    counter_party = models.ForeignKey(CounterParty)
+    currency = models.ForeignKey(Currency, related_name='currency_fund')
     alarm = models.ForeignKey(Alarm, blank=True, null=True, related_name='fund_alarm')
-    #benchmark = models.ManyToManyField('Benchmark', blank=True, null=True, related_name='fund_benchmark')
-    name = models.CharField(max_length=200, null=True)
-    alarm = models.ForeignKey(Alarm, blank=True, null=True)
+    classification = models.ForeignKey(Classification, blank=True, null=True, related_name="fund_class")
+    administrator =  models.ForeignKey(Administrator, blank=True, null=True)
     custodian = models.ForeignKey(Custodian, blank=True, null=True)
     auditor = models.ForeignKey(Auditor, blank=True, null=True)
-    administrator =  models.ForeignKey(Administrator, blank=True, null=True)
-    classification = models.ForeignKey(Classification, blank=True, null=True, related_name="fund_class")
-    manager = models.ForeignKey(User, blank=True, null=True)
+    user = models.ForeignKey(User, blank=True, null=True)
+    name = models.CharField(max_length=200, null=True)
+    description = models.TextField(blank=True, null=True)
 
+    code = models.CharField(max_length=50)
+    administrator_fee = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    performance_fee = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    management_fee = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    redemption_frequency = models.CharField(max_length=1, blank=True, null=True, choices=FREQUENCY)
+    subscription_frequency = models.CharField(max_length=1, blank=True, null=True, choices=FREQUENCY)
+
+    #counter_party = models.ForeignKey(CounterParty, related_name='fund_cp')
+    benchmark = models.ManyToManyField('comparative.Benchmark', blank=True, null=True)#, related_name='fund_benchmark')
     #one_day_var = models.SmallIntegerField()
     #total_cash = models.SmallIntegerField(blank=True, null=True, verbose_name="Total Cash Held in Fund")
     #usd_hedge = models.SmallIntegerField(blank=True, null=True, verbose_name="USD Positions Current FX Hedge")
     #checks = models.SmallIntegerField()
     #unsettled = models.SmallIntegerField()
+
 
     def __unicode__(self):
         return self.name
@@ -210,11 +203,17 @@ class FundHistory(FundBase):
 
 class FxHedge(models.Model):
     fund = models.ForeignKey(Fund)
+    client = models.ForeignKey('client.Client')
     trade_date = models.DateField()
     settlement_date = models.DateField()
     buy_sell = models.SmallIntegerField(choices=BUY_SELL)
     currency = models.ForeignKey(Currency, related_name='currency_fxhedge')
-    amount = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    amount_base = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    amount_euro = models.DecimalField(max_digits=20, decimal_places=5)
+    fx_fees = models.DecimalField(max_digits=20, decimal_places=5)
+    forward_fx_fees = models.DecimalField(max_digits=20, decimal_places=5)
+    fx_fees_payable = models.DecimalField(max_digits=20, decimal_places=5)
+    forward_fx_fees_payable = models.DecimalField(max_digits=20, decimal_places=5)
 
 
 class Deposit(models.Model):
@@ -226,5 +225,6 @@ class Deposit(models.Model):
     amount_base = models.DecimalField(max_digits=20, decimal_places=5)
     deposit_interest_received_base = models.DecimalField(max_digits=20, decimal_places=5)
     deposit_interest_received_euro = models.DecimalField(max_digits=20, decimal_places=5)
-
+    amount_euro = models.DecimalField(max_digits=20, decimal_places=5)
+    deposit_interest_percent = models.DecimalField(max_digits=20, decimal_places=5)
 

@@ -538,7 +538,7 @@ class HoldingValuationResource(MainBaseResource2):
     class Meta(MainBaseResource2.Meta):
         queryset = HoldPerfMonth.objects.filter(holding_category__isnull=True)
         resource_name = 'holding-valuation'
-        allowed_fields = ['valuation',  'holding__name', 'net_movement', 'value_date', 'delta_valuation', 'delta_flow', ]
+        allowed_fields = ['valuation',  'holding__name', 'net_movement', 'value_date', 'cash_flow_euro_amount_euro_dollar', 'cash_flow_percent_euro_dollar', ]
         filtering = {
             "fund": ALL,
             "value_date": ALL,
@@ -563,13 +563,13 @@ class HoldingValuationResource(MainBaseResource2):
             fields.append(dic)
 
         holdings = set([row.data['holding__name'] for row in data['objects']])
-        extra_fields = ['delta_valuation', 'delta_flow']
+        extra_fields = ['cash_flow_euro_amount_euro_dollar', 'cash_flow_percent_euro_dollar']
 
         for holding in holdings:
             set_fields('valuation', holding, extra_fields)
             set_fields('net_movement', holding)
 
-        columns = ['type'] + self.get_month_list() + ['delta_valuation', 'delta_flow']
+        columns = ['type'] + self.get_month_list() + ['cash_flow_euro_amount_euro_dollar', 'cash_flow_percent_euro_dollar']
         return {
             'columns': self.set_columns(request, columns),
             'rows': fields,
@@ -583,7 +583,7 @@ class FundValuationResource(MainBaseResource2):
         queryset = FundPerfMonth.objects.all()
         resource_name = 'fund-valuation'
         allowed_fields = [
-            'net_movement', 'valuation', 'value_date', 'delta_valuation', 'delta_flow',
+            'net_movement', 'valuation', 'value_date', 'cash_flow_euro_amount_euro_dollar', 'cash_flow_percent_euro_dollar',
             'inflow_euro', 'inflow_dollar', 'outflow_euro', 'outflow_dollar'
         ]
         filtering = {
@@ -598,7 +598,7 @@ class FundValuationResource(MainBaseResource2):
 
         fields = []
         def set_fields(field, name, group):
-            extra_fields = ['delta_valuation', 'delta_flow']
+            extra_fields = ['cash_flow_euro_amount_euro_dollar', 'cash_flow_percent_euro_dollar']
             dic = {'type': name, 'group': group}
             for row in data['objects']:
                 month = row.data['value_date'].month
@@ -615,7 +615,7 @@ class FundValuationResource(MainBaseResource2):
         set_fields('outflow_euro', 'Euro', 'Outflow')
         set_fields('outflow_euro', 'US Dollar', 'Outflow')
 
-        columns = ['type'] + self.get_month_list() + ['delta_valuation', 'delta_flow']
+        columns = ['type'] + self.get_month_list() + ['cash_flow_euro_amount_euro_dollar', 'cash_flow_percent_euro_dollar']
         return {
             'columns': self.set_columns(request, columns),
             'rows': fields,

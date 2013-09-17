@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.utils import simplejson
 from json import encoder
-encoder.FLOAT_REPR = lambda o: format(o, '.2f')
+from django.core.serializers.json import DjangoJSONEncoder
 
 class JsonResponse(HttpResponse):
     def __init__(self, data):
@@ -12,11 +12,12 @@ class JsonResponse(HttpResponse):
             for index, row in enumerate(data['rows']):
                 for key, val in row.items():
                     if isinstance(val, Decimal) or isinstance(val, float):
+                        assert False
                         data['rows'][index][key] = str(Decimal("%.2f" % val))
         except:
             pass
 
-        content = simplejson.dumps(data, indent=2, ensure_ascii=False)
+        content = simplejson.dumps(data, indent=2, ensure_ascii=False, cls=DjangoJSONEncoder)
         super(JsonResponse, self).__init__(content=content,
                             mimetype='application/json; charset=utf8')
 
@@ -54,3 +55,20 @@ def set_columns(request, column_names):
         columns.append(dic)
 
     return columns
+
+
+from django.contrib import admin
+
+def create_modeladmin(modeladmin, model, name = None):
+    class  Meta:
+        proxy = True
+        app_label = model._meta.app_label
+
+    attrs = {'__module__': '', 'Meta': Meta}
+
+    newmodel = type(name, (model,), attrs)
+
+    admin.site.register(newmodel, modeladmin)
+    return modeladmin
+
+

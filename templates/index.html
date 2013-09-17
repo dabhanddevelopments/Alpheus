@@ -1,3 +1,6 @@
+{% load compress %}
+{% load staticfiles %}
+
 <html>
 <head>
 <title>Alpheus</title>
@@ -49,26 +52,29 @@
     </div> 
 </div> 
  
- 
+{% compress css %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery.gridster.css">
-<link id="theme" rel="stylesheet" type="text/css" href="{{ STATIC_URL }}ext-4.2.1/resources/css/ext-all.css" />
-<link rel="stylesheet" href="{{ STATIC_URL }}style.css">   
+<link id="theme" rel="stylesheet" type="text/css" href="{{ STATIC_URL }}extjs/resources/css/ext-all.css" />
+<link rel="stylesheet" href="{{ STATIC_URL }}style.css">
+{% endcompress %}
 
 {% comment %}
 <link rel="stylesheet" type="text/css" href="http://examples.extjs.eu/css/icons.css" />
 {% endcomment %}
 
 <script type="text/javascript">document.getElementById('loading-msg').innerHTML = 'Loading UI Components...';</script> 
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-<script src="http://code.highcharts.com/stock/highstock.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}moment.min.js"></script>
-
-<script src="http://code.highcharts.com/modules/exporting.js"></script>
 {% comment %}
 <script src="http://code.highcharts.com/highcharts.js"></script>
 {% endcomment %}
+<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="{{ STATIC_URL }}jqplot/excanvas.js"></script><![endif]-->
 
+
+<script type="text/javascript">document.getElementById('loading-msg').innerHTML = 'Loading Application...';</script> 
+
+{% compress js %}
+<script src="{% static "jquery.min.js" %}"></script>
+<script src="{% static "highcharts/highstock.js" %}"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}moment.min.js"></script>
 <script src="{{ STATIC_URL }}gridster/jquery.gridster.js" type="text/javascript" charset="utf-8"></script>
 <script src="{{ STATIC_URL }}gridster/jquery.collision.js" type="text/javascript" charset="utf-8"></script>
 <script src="{{ STATIC_URL }}gridster/jquery.coords.js" type="text/javascript" charset="utf-8"></script>
@@ -76,50 +82,10 @@
 <script src="{{ STATIC_URL }}gridster/jquery.gridster.extras.js" type="text/javascript" charset="utf-8"></script>
 <script src="{{ STATIC_URL }}gridster/utils.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}jquery.cookie.js"></script>
-
-<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="{{ STATIC_URL }}jqplot/excanvas.js"></script><![endif]-->
-
-<script type="text/javascript" src="{{ STATIC_URL }}ext-4.2.1/ext-all.js"></script>
-
-<style>
-    p {
-        margin:5px;
-    }
-
-    .x-tree-icon-parent  {
-        width: 0px;
-        background-image: '';
-    }
-
-    .x-tree-icon-leaf {
-        width: 0px;
-        background-image: '';
-    }
-
-    .widget_desc {
-       margin: 20px 20px 20px 20px;
-       font-size: 12px;
-       font-family: tahoma,arial,verdana,sans-serif;
-    }
-
-    .widget_desc h1 {
-        margin-top: 30px;
-        margin-bottom: 10px;
-        font-size: 15px;
-        font-weight: bold;
-    }
-
-    .widget_preview {
-        color: gray; 
-        font-weight: italic; 
-        text-align:center;
-        margin-top:40%;     
-    }
-
-</style>
-
-<script type="text/javascript">document.getElementById('loading-msg').innerHTML = 'Loading Application...';</script> 
+<script src="{% static "highcharts/exporting.js" %}"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}extjs/ext-all.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}app.js"></script>
+{% endcompress %}
 
     <script type="text/javascript">
     // eliminate the loading indicators
@@ -137,7 +103,10 @@
 {% comment %} This is necessary for Firefox and Opera for some reason{% endcomment %}
 {% csrf_token %}
 
+<div id="somediv" title="this is a dialog" style="display:none;">
+    <iframe id="thedialog" width="750" height="530"></iframe>
+</div>
 
-</body>
+
 </html>
 

@@ -1,10 +1,8 @@
 
-Ext.Loader.setPath('Ext.ux', 'static/ext-4.2.1/examples/ux');
+Ext.Loader.setPath('Ext.ux', 'static/extjs');
+Ext.Loader.setConfig({enabled: true});
 Ext.require([
-    'Ext.ux.RowExpander'
-]);
-
-Ext.require([
+    'Ext.ux.RowExpander',
     'Ext.container.Viewport',
     'Ext.layout.container.Border',
     'Ext.tab.Panel',
@@ -13,6 +11,7 @@ Ext.require([
     'Ext.menu.*',
     'Ext.window.MessageBox',
     'Ext.grid.*',
+    'Ext.form.Panel',
 ]);
 
 
@@ -44,7 +43,7 @@ function investmentNAV(div, type) {
             var class_type = 'asset_class';
         }
         ajaxReqs.push($.ajax({
-            url: '/api/holding-history/?column_border_y=ytd&column_width=100,180&data_type=year&date=value_date&extra_fields=ytd&holding__' + class_type + '__key=' + key + '&holding__' + type + '=' + id + '&title=holding__name&total=true&value=performance&value_date__year=' + moment(date).format('YYYY'),
+            url: '/api/holding-history/?column_border_y=ytd&column_width=100,180&data_type=year&date=value_date&extra_fields=ytd&holding__' + class_type + '__key=' + key + '&holding__' + type + '=' + id + '&title=holding__name&total=true&value=mtd&value_date__year=' + moment(date).format('YYYY'),
             ajaxI: key,
             success: function(data) {
                 x = this.ajaxI;
@@ -362,7 +361,7 @@ function lineBarChart(widget) {
 
         widget.url = '/api/trade/';
 
-        qs = '?data_type=graph&date=trade_date&y1=no_of_units&holding=' + widget.holding;
+        qs = '?data_type=graph&date=trade_date&y1=no_of_units&order_by=trade_date&holding=' + widget.holding;
 
         $.getJSON(widget.url + qs, function(data2) {
 
@@ -537,7 +536,7 @@ function refreshHoldPerfBar(widget_key, date, id, monthly, fields, order_by) {
     }
 
     if(typeof fields == 'undefined') {
-        fields = 'performance';
+        fields = 'mtd';
     }
     if(typeof order_by == 'undefined') {
         order_by = 'weight';
@@ -565,11 +564,11 @@ function refreshHoldPerfBar(widget_key, date, id, monthly, fields, order_by) {
 
     widget = {
         'key': "holding-history",
-        'qs': '?value_date=' + date + '&holding__' + type + '=' + id + '&legend=false&y1=' + fields + '&order_by=' + order_by + '&data_type=graph&date_type=m&title=holding__name',
+        'qs': '?value_date=' + date + '&holding__' + type + '=' + id + '&y1=' + fields + '&order_by=' + order_by + '&data_type=graph&date_type=m&title=holding__name',
         'type': "bar_chart",
         'size_x': size_x,
         'size_y': 3,
-        'params': {},
+        'params': {'legend': 'false'},
         'window': {
             'key': widget_key,
         }
@@ -704,7 +703,7 @@ Ext.onReady(function() {
                 // widget is global for some reason, so using another name
                 win_widget2 = {}
                 win_widget2.url = '/api/' + type + '-history/';
-                win_widget2.qs = '?' + type + '=' + id + '&y1=' + key + '&data_type=graph&date=value_date&value_date__month=2,4,6,8,10,12';
+                win_widget2.qs = '?' + type + '=' + id + '&y1=' + key + '&data_type=graph&date=value_date&value_date__month=2,4,6,8,10,12&order_by=value_date';
                 win_widget2.size_y = 1.9;
                 win_widget2.size_x = 3;
                 win_widget2.div = bar_div;
@@ -1070,9 +1069,9 @@ Ext.onReady(function() {
                 var table = createGrid(tabId, data1, 0);
                 tab.add(table);
 
-                var fields = "&fields=client__first_name,client__last_name,sub_red,trade_date,no_of_units,euro_nav,percent_released";
+                var fields = "&fields=client__first_name,client__last_name,sub_red_switch,no_of_units,sub_red_switch,sub_red_euro_nav,percent_released,trade_date,instruction_date";
 
-                $.getJSON('/api/subscription-redemption/?fund=' + obj.fund + '&year=' + date[0] + '&month='  + date[1] + '&column_width=100,100' + fields, function(data2) {
+                $.getJSON('/api/subscription-redemption/?fund=' + obj.fund + '&trade_date__year=' + date[0] + '&trade_date__month='  + date[1] + '&column_width=100,100' + fields, function(data2) {
                     tab = Ext.getCmp(tabId);
                     var table = createGrid('client' + tabId, data2, 1);
                     tab.add(table);
@@ -1235,15 +1234,15 @@ Ext.onReady(function() {
         // at TODO:change benchmark to support mtom
         if(data.window.key == 'w15') {
 
-              var fields = 'name,fund_type__name,manager__first_name,performance_fee,manager__last_name,description,custodian__name,custodian__contact_name,custodian__contact_number,custodian_management_fee,custodian_performance_fee,administrator__contact_name,administrator__contact_number,administrator__name,administrator_fee,auditor_fee,auditor__name,auditor__contact_number,auditor__contact_name,subscription_frequency,redemption_frequency,management_fee';
+              var fields = 'name,user__first_name,performance_fee,user__last_name,description,custodian__name,custodian__contact_name,custodian__contact_number,custodian_management_fee,custodian_performance_fee,administrator__contact_name,administrator__contact_number,administrator__name,administrator_fee,auditor_fee,auditor__name,auditor__contact_number,auditor__contact_name,subscription_frequency,redemption_frequency,management_fee';
               $.getJSON('/api/fund/' + obj.fund + '/?fields=' + fields, function(summary) {
 
              //console.log(summary);
                      widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
                     html = '<div> <table width="100%" class="html_table">' +
                     '<tr><td>Fund Name</td><td>'+ summary.name + '</td></tr>' +
-                    '<tr><td>Fund Type</td><td>'+ summary.fund_type__name + '</td></tr>' +
-                    '<tr><td>Fund Manager</td><td>'+ summary.manager__first_name + summary.manager__last_name + '</td></tr>' +
+                    //'<tr><td>Fund Type</td><td>'+ summary.fund_type__name + '</td></tr>' +
+                    '<tr><td>Fund Manager</td><td>'+ summary.user__first_name + summary.user__last_name + '</td></tr>' +
                     '<tr><td>Description</td><td>'+ summary.description + '<d></tr>' +
                     '<tr><td>Custodian</td><td>'+ summary.custodian__name + '</td><td>'+ summary.custodian__contact_name + '</td><td>' + summary.custodian__contact_number + '</td><td>Managment Fee</td><td>'+ summary.custodian_management_fee + '</td><td>Performance Fee</td><td>'+ summary.custodian_performance_fee + '</td></tr>' +
                     '<tr><td>Administrator</td><td>'+ summary.administrator__name + '</td><td>'+ summary.administrator__contact_name + '</td><td>' + summary.administrator__contact_number + '</td><td>Administrator Fee</td><td>'+ summary.administrator_fee + '</td></tr>' +
@@ -1276,14 +1275,14 @@ Ext.onReady(function() {
 
         } if(data.window.key == 'w47') {
 
-              var fields = 'first_name,last_name,description,custodian__name,custodian__contact_name,manager__first_name,manager__last_name';
+              var fields = 'first_name,last_name,description,custodian__name,custodian__contact_name,user__first_name,user__last_name';
               $.getJSON('/api/client/' + obj.client + '/?fields=' + fields, function(summary) {
 
              //console.log(summary);
                      widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
                     html = '<div> <table width="100%" class="html_table">' +
                     '<tr><td>Client Name</td><td>'+ summary.last_name + ', ' + summary.first_name + '</td></tr>' +
-                    '<tr><td>Client Manager</td><td>'+ summary.manager__first_name + summary.manager__last_name + '</td></tr>' +
+                    '<tr><td>Client Manager</td><td>'+ summary.user__first_name + summary.user__last_name + '</td></tr>' +
                     '<tr><td>Description</td><td>'+ summary.description + '<d></tr>' +
                     '<tr><td>Custodian</td><td>'+ summary.custodian__name + '</td><td>'+ summary.custodian__contact_name + '</td></tr>' +
 
@@ -1360,6 +1359,8 @@ Ext.onReady(function() {
 
             if(data.window.key == 'w80') {
                 var type = 'holding';
+            } else if(data.window.key == 'w38') {
+                var type = 'client';
             } else {
                 var type = 'fund';
             }
@@ -2120,10 +2121,17 @@ Ext.onReady(function() {
 
         var fund = $('#data').data('fund');
 
+
+
+        var title = 'Alpheus / MONTH YEAR / Historical Performance (to be styled)';
+        title = title.replace('YEAR', moment(new Date(year)).format("YYYY"))
+        title = title.replace('MONTH', moment(new Date(year, month)).format("MMMM"))
+
+
         $('<div id="calendar"></div>').appendTo('body');
         mo_widget = {}
         mo_widget.url = '/api/fund-history/';
-        mo_widget.qs = '?fund=' + fund + '&fields=value_date,performance&order_by=value_date&value_date__year=' + year + '&value_date__month=' + month;
+        mo_widget.qs = '?fund=' + fund + '&fields=value_date,mtd&order_by=value_date&value_date__year=' + year + '&value_date__month=' + month;
 
         //console.log(widget.url + widget.qs);
         $.getJSON(mo_widget.url + mo_widget.qs , function(data) {
@@ -2193,6 +2201,7 @@ Ext.onReady(function() {
             var win = new Ext.Window({
                 renderTo: Ext.getBody(),
                 html: html,
+                title: title,
                 //items: items,
                 height: 300,
                 width: 400,
@@ -2305,6 +2314,16 @@ Ext.onReady(function() {
                         } else if(widget.window.key == 'w9') {
                             var group = 'sub';
                             var group_name = 'Sub-Sector';
+                        } else if(widget.window.key == 'w9b') {
+                            var group = 'ass';
+                            var group_name = 'Asset Class';
+                        } else if(widget.window.key == 'w9c') {
+                            var group = 'inv';
+                            var group_name = 'Investment Type'
+                        } else if(widget.window.key == 'w8b') {
+                            var group = 'hol';
+                            var group_name = 'Holding';
+
                         } else if(widget.window.key == 'w10' || widget.window.key == 'w67') {
                             var group = 'loc';
                             var group_name = 'Location';
@@ -2316,12 +2335,12 @@ Ext.onReady(function() {
                         var value_date = "&value_date__year=YEAR&value_date__month=" + month + "&value_date__day=1";
 
                         widget.key = "holding-breakdown";
-                        widget.qs = "?fund=" + fund + "&category__group=" + group + "&y1=nav&data_type=graph&date=value_date&title=category__name" + value_date;
+                        widget.qs = "?fund=" + fund + "&category__group=" + group + "&y1=base_nav&data_type=graph&date=value_date&title=category__name" + value_date;
                         widget.name = 'NAV by ' + group_name + ' MONTH YEAR';
                         widget.params.value_date__year = year;
                         widget.params.holding_category__holding_group = "sec";
                         widget.params.fund = "FUND";
-                        widget.params.fields = "nav";
+                        widget.params.fields = "base_nav";
                         widget.type = "pie_chart";
                        //console.log(widget);
 
@@ -2389,7 +2408,7 @@ Ext.onReady(function() {
             tabPanel.doLayout();
 
             // replace values with percentage
-            var qs = widget.qs.replace('fields=nav', 'fields=weight'); // ???
+            var qs = widget.qs.replace('value=euro_nav', 'value=weight'); // ???
             widget.params.title = '% of Fund';
 
             $.getJSON(widget.url + qs, function(data2) {
@@ -2397,6 +2416,7 @@ Ext.onReady(function() {
                 tabPanel.add(grid);
                 tabPanel.doLayout();
             });
+            tabPanel.setActiveTab(0);
 
         });
     }
@@ -2589,8 +2609,6 @@ Ext.onReady(function() {
                 }
             });
 
-            console.log("fields:");
-            console.log(fields);
             Ext.create('Ext.data.Store', {
                 storeId: widget.key,
                 fields: fields,
@@ -2628,6 +2646,7 @@ Ext.onReady(function() {
             }
             width = width - 23; // ?
 
+
             // link to holding pages from table
             if(widget.window.key == 'w11') {
 
@@ -2642,6 +2661,12 @@ Ext.onReady(function() {
                 }
             }
 
+            console.log('ere');
+            console.log(cls);
+            console.log(widget.key);
+            console.log(widget.window.key);
+            console.log(div);
+            console.log(plugins);
             var panel = Ext.create('Ext.grid.Panel', {
                 id: div,
                 cls: cls,
@@ -2670,7 +2695,6 @@ Ext.onReady(function() {
                     cellclick: function(gridView,htmlElement,columnIndex,dataRecord) {
 
                         year = dataRecord.data.year;
-                       //console.log('CLICKED');
                        //console.log(dataRecord);
                        //console.log(columnIndex);
 
@@ -2682,6 +2706,7 @@ Ext.onReady(function() {
                         obj.year = year // for refreshable pie chart name
                         obj.month = 1;
                         month = columnIndex - 1;
+
 
                         /*
                         Fund Classifications
@@ -2765,14 +2790,28 @@ Ext.onReady(function() {
                                 } else if($('#data').data('classification') == 5)  {
 
                                     refreshWindow('w3', obj, extra_params);
-                                    refreshWindow('w4', obj, extra_params);
-                                    refreshWindow('w5', obj, extra_params);
+                                    refreshWindow('w4b', obj, extra_params);
+                                    refreshWindow('w5b', obj, extra_params);
+
+                                } else if($('#data').data('classification') == 6)  {
+
+                                    refreshWindow('w3', obj, extra_params);
+                                    refreshWindow('w4b', obj, extra_params);
+                                    refreshWindow('w5b', obj, extra_params);
+
+                                } else if($('#data').data('classification') == 7)  {
+
+                                    refreshWindow('w3', obj, extra_params);
+                                    refreshWindow('w4b', obj, extra_params);
+                                    refreshWindow('w5b', obj, extra_params);
                                 }
+
+
 
 
                             // month view
                             } else if(columnIndex < 14) {
-                                refreshHoldPerfBar('w2', year + '-' + month + '-1', obj.fund, true);
+                                //refreshHoldPerfBar('w2', year + '-' + month + '-1', obj.fund, true);
 
                                 monthTable(year, month);
                             }
@@ -2826,7 +2865,7 @@ Ext.onReady(function() {
 
                             // month view
                             } else if(columnIndex < 13) {
-                                refreshHoldPerfBar('w7', year + '-' + month + '-1', obj.fund, true, 'performance', 'weight');
+                                refreshHoldPerfBar('w7', year + '-' + month + '-1', obj.fund, true, 'mtd', 'weight');
                             }
                         }
                         else if(widget.window.key == 'w6b') {
@@ -2936,8 +2975,8 @@ Ext.onReady(function() {
 
                 if(widget.window.key == 'w11') {
 
-                    var fields = 'trade_date,settlement_date,no_of_units,purchase_price_base,fx_euro,purchase_price,nav_purchase';
-                    //var fields = 'trade_date,settlement_date,purchase_sale__name,no_of_units,purchase_price_base,fx_to_euro,purchase_price,nav_purchase';
+                    var fields = 'trade_date,settlement_date,no_of_units,trade_price_euro,fx_euro,purchase_price,base_nav';
+                    //var fields = 'trade_date,settlement_date,buy_sell,no_of_units,trade_price_base_base,fx_to_euro,trade_price_base,base_nav';
                     $.getJSON("/api/trade/?holding=" + id + '&column_width=150,80&fields=' + fields, function(w11) {
 
                         displayInnerGrid(widget, w11,id);
@@ -2950,7 +2989,7 @@ Ext.onReady(function() {
 
                 } else if(widget.window.key == 'w12' || widget.window.key == 'w12b') {
 
-                    var fields = '&fields=first_name,last_name,no_of_units,nav,pending_nav';
+                    var fields = '&fields=first_name,last_name,no_of_units,base_nav,pending_nav';
 
                     $.getJSON("/api/client/?&fund=" + obj.fund + '&client=' + id + '&column_width=100,100' + fields, function(w12) {
 
@@ -3837,6 +3876,22 @@ Ext.onReady(function() {
 
                                         }
                                     }
+
+                                    if(record.raw.page == 24) {
+                                        //
+window.open("http://localhost:8000/admin/app/menu/70/?_popup=1", "", "fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes,directories=yes,location=no,width=900,height=700,left=400,top=200");
+/*
+                                        $("#thedialog").attr('src', "http://localhost:8000/admin/app/menu/70/?_popup=1");
+                                        $("#somediv").dialog({
+                                            width: 800,
+                                            height: 600,
+                                            modal: true,
+                                            close: function () {
+                                                $("#thedialog").attr('src', "about:blank");
+                                            }
+                                        });
+*/
+                                    }
                                   //console.log('INIATING PAGE NUMBER:');
                                   //console.log(record.raw);
                                     initPage(record.raw);
@@ -4007,8 +4062,8 @@ Ext.define('Category', {
     var formPanel = Ext.create('Ext.form.Panel', {
         //renderTo: Ext.getBody(),
         frame: true,
-        title:'XML Form',
-        width: 340,
+        title:'Add Fund',
+        width: 600,
         bodyPadding: 5,
         waitMsgTarget: true,
 
@@ -4020,24 +4075,53 @@ Ext.define('Category', {
 
 
         items: [{
-            xtype: 'fieldset',
-            title: 'Contact Information',
-            defaultType: 'textfield',
-            defaults: {
-                width: 280
-            },
-            items: [{
-                    fieldLabel: 'First Name',
-                    emptyText: 'First Name',
+            xtype: 'fieldcontainer',
+            border:false,
+            items:[{
+                    xtype: 'textfield',
+                    fieldLabel: 'Fund Name',
+                    emptyText: 'Name',
                     name: 'name'
-                }, {
-                    fieldLabel: 'Last Name',
-                    emptyText: 'Last Name',
-                    name: 'last'
+
                 }, {
                     xtype: 'combobox',
-                    fieldLabel: 'Asset Class',
-                    name: 'asset_class',
+                    fieldLabel: 'Classification',
+                    emptyText: 'Select a Classification...',
+                    name: 'classification',
+                    valueField: 'id',
+                    displayField: 'name',
+                    typeAhead: true,
+                    store: {
+                        //autoLoad: true,
+                        fields: ['id', 'name'],
+                            root: 'objects',
+                        proxy: {
+                            type: 'ajax',
+                            url: '/api/fund-classification/?fields=id,name&data_type=list',
+                        }
+                    },
+                }, {
+                    xtype: 'combobox',
+                    fieldLabel: 'Currency',
+                    emptyText: 'Select a Currency...',
+                    name: 'currency',
+                    valueField: 'id',
+                    displayField: 'name',
+                    typeAhead: true,
+                    valueField: 'id',
+                    store: {
+                        //autoLoad: true,
+                        fields: ['id', 'name'],
+                            root: 'objects',
+                        proxy: {
+                            type: 'ajax',
+                            url: '/api/currency/?fields=id,name&data_type=list',
+                        }
+                    },
+                }, {
+                    xtype: 'combobox',
+                    fieldLabel: 'Manager',
+                    name: 'user',
                     //queryMode: 'local',
                     store: {
                         //autoLoad: true,
@@ -4045,16 +4129,154 @@ Ext.define('Category', {
                             root: 'objects',
                         proxy: {
                             type: 'ajax',
-                            url: '/api/holding-category/?group=ass&fields=id,name&data_type=list',
+                            url: '/api/user/?fields=id,name&data_type=list',
                         }
                     },
                     valueField: 'id',
                     displayField: 'name',
                     typeAhead: true,
-                    emptyText: 'Select an Asset Class...',
+                    emptyText: 'Select a Manager...',
                     //triggerAction: 'all',
-                }
-            ]
+                }, {
+                    xtype: 'combobox',
+                    fieldLabel: 'Currency',
+                    name: 'currency',
+                    store: {
+                        //autoLoad: true,
+                        fields: ['id', 'name'],
+                            root: 'objects',
+                        proxy: {
+                            type: 'ajax',
+                            url: '/api/user/?fields=id,name&data_type=list',
+                        }
+                    },
+                    valueField: 'id',
+                    displayField: 'name',
+                    typeAhead: true,
+                    emptyText: 'Select a Currency...',
+                }, {
+                    xtype: 'textareafield',
+                    name: 'description',
+                    fieldLabel: 'Description',
+                    value: '',
+                    width: 600,
+                }, {
+                    xtype: 'combobox',
+                    fieldLabel: 'Benchmarks',
+                    multiSelect: true,
+                    width: 585,
+                    store: {
+                        fields: ['id', 'name'],
+                            root: 'objects',
+                        proxy: {
+                            type: 'ajax',
+                            url: '/api/benchmark/?fields=id,name&data_type=list',
+                        }
+                    },
+                    valueField: 'id',
+                    displayField: 'name',
+                    typeAhead: true,
+                    emptyText: 'Select Benchmarks...',
+                }],
+        },{
+            xtype:'tabpanel',
+            plain:true,
+            activeTab: 0,
+            height:235,
+            defaults:{bodyStyle:'padding:10px'},
+            items:[{
+                title:'Custodian',
+                defaultType: 'textfield',
+
+                items: [{
+                    xtype: 'combobox',
+                    fieldLabel: 'Custodian',
+                    emptyText: 'Select a Custodian...',
+                    name: 'custodian',
+                    valueField: 'id',
+                    displayField: 'name',
+                    typeAhead: true,
+                    valueField: 'id',
+                    store: {
+                        //autoLoad: true,
+                        fields: ['id', 'name'],
+                            root: 'objects',
+                        proxy: {
+                            type: 'ajax',
+                            url: '/api/custodian/?fields=id,name&data_type=list',
+                        }
+                    },
+                }, {
+                    fieldLabel: 'Management Fee',
+                    name: 'management_fee',
+                    allowBlank:false,
+                    value: ''
+                },{
+                    fieldLabel: 'Performance Fee',
+                    name: 'performance_fee',
+                    value: ''
+                }]
+            },{
+                title:'Administrator',
+                defaultType: 'textfield',
+
+                items: [{
+                    xtype: 'combobox',
+                    fieldLabel: 'Administrator',
+                    emptyText: 'Select an Administrator...',
+                    name: 'administrator',
+                    valueField: 'id',
+                    displayField: 'name',
+                    typeAhead: true,
+                    valueField: 'id',
+                    store: {
+                        //autoLoad: true,
+                        fields: ['id', 'name'],
+                            root: 'objects',
+                        proxy: {
+                            type: 'ajax',
+                            url: '/api/administrator/?fields=id,name&data_type=list',
+                        }
+                    },
+                }, {
+                    fieldLabel: 'Administrator Fee',
+                    name: 'administrator_fee',
+                    allowBlank:false,
+                    value: ''
+                }]
+            },{
+                title:'Auditor',
+                defaultType: 'textfield',
+
+                items: [{
+                    xtype: 'combobox',
+                    fieldLabel: 'Auditor',
+                    emptyText: 'Select an Auditor...',
+                    name: 'auditor',
+                    valueField: 'id',
+                    displayField: 'name',
+                    typeAhead: true,
+                    valueField: 'id',
+                    store: {
+                        //autoLoad: true,
+                        fields: ['id', 'name'],
+                            root: 'objects',
+                        proxy: {
+                            type: 'ajax',
+                            url: '/api/auditor/?fields=id,name&data_type=list',
+                        }
+                    },
+                }, {
+                    fieldLabel: 'Auditor Fee',
+                    name: 'auditor_fee',
+                    allowBlank:false,
+                    value: ''
+                }]
+            },{
+                title: 'Benchmarks',
+                id: 'asdf123',
+            }],
+
         }],
 
         buttons: [{
@@ -4106,6 +4328,34 @@ Ext.define('Category', {
         },
     });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Ext.define('TooltipForm', {
     extend: 'Ext.form.Panel',
         frame: true,
@@ -4133,6 +4383,7 @@ Ext.define('TooltipForm', {
 
 
 
+        //renderTo: Ext.getBody(),
 
             items: [{
                 xtype: 'fieldset',

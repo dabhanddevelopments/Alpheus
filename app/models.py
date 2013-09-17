@@ -81,6 +81,9 @@ class Window(models.Model):
     def __unicode__(self):
         return '%s - %s' % (self.key, self.name)
 
+    class Meta:
+        ordering = ['key']
+
 # Widget types are table, chart, graph etc
 class WidgetType(models.Model):
     key = models.CharField(max_length=50)
@@ -92,6 +95,9 @@ class WidgetType(models.Model):
 class WidgetParam(models.Model):
     key = models.CharField(max_length=50)
     value = models.CharField(max_length=200)
+
+    def used_on_window(self):
+        return ', '.join([widget.window.key for widget in self.widget_set.all()])
 
     class Meta:
         ordering = ['key']
@@ -258,8 +264,9 @@ class HistoricalExpense(models.Model):
 # The person taking your trade order
 class CounterParty(models.Model):
     name = models.CharField(max_length=50)
+    counterparty = models.ForeignKey('fund.Fund', null=True)
+
 
 class CounterPartyTrader(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50)
 

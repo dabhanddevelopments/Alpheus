@@ -2,7 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User, Group
 from fund.models import Fund
 from client.models import Client
-from app.models import ModelBase, DATE_TYPE, FREQUENCY, YES_NO, Currency, Country, Fee
+from app.models import (
+    ModelBase, DATE_TYPE, FREQUENCY, YES_NO, BUY_SELL,
+    SUBSCRIPTION_REDEMPTION, Currency, Country, Fee
+)
 
 
 class Category(models.Model):
@@ -34,15 +37,15 @@ class HoldingBase(ModelBase):
     class Meta:
         abstract = True
 
-    performance = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    mtd = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     ytd = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     si = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     weight = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     #weight_of_trades #W76 - liquidity adjusted to confirm
     error_range = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    cash_flow = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    nav = models.DecimalField(max_digits=20, decimal_places=5,blank=True, null=True, verbose_name="NAV")
-    euro_nav = models.DecimalField(max_digits=20, decimal_places=5,blank=True, null=True, verbose_name="NAV")
+    valuation_base = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    base_nav = models.DecimalField(max_digits=20, decimal_places=5,blank=True, null=True, verbose_name="Base NAV")
+    euro_nav = models.DecimalField(max_digits=20, decimal_places=5,blank=True, null=True, verbose_name="Euro NAV")
     no_of_units = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     price_of_unit = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     cumulative_nav = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
@@ -59,11 +62,11 @@ class HoldingBase(ModelBase):
     inflow_dollar = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     outflow_euro = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     outflow_dollar = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    delta_valuation = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    delta_flow = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    cash_flow = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    cash_flow_euro_amount_euro_dollar = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    cash_flow_percent_euro_dollar = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    valuation_base = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     fx_rate = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    net_movement = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    valuation_euro = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     irr = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True, verbose_name='IRR')
     ann_return1 = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     ann_return3 = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
@@ -97,13 +100,29 @@ class HoldingBase(ModelBase):
     redemption_fee24_percent = models.DecimalField(max_digits=20, decimal_places=5,\
                                                 blank=True, null=True, verbose_name="Redemption Fee 24M %")
     redemption_fee36_percent = models.DecimalField(max_digits=20, decimal_places=5,\
-
                                                blank=True, null=True, verbose_name="Redemption Fee 36M %")
+
+    redemption_fee12_euro = models.DecimalField(max_digits=20, decimal_places=5,verbose_name="Redemption Fee 12M")
+    redemption_fee24_euro = models.DecimalField(max_digits=20, decimal_places=5,verbose_name="Redemption Fee 12M")
+    redemption_fee36_euro = models.DecimalField(max_digits=20, decimal_places=5,verbose_name="Redemption Fee 12M")
+
+    base_price = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    euro_price = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    pending_no_of_units = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    pending_euro_nav = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
 
     dealing_date = models.DateField()
     value_date = models.DateField()
 
 class Holding(HoldingBase):
+    AMERICAN_EURO = (
+        (1, 'American'),
+        (2, 'Euro'),
+    )
+    PUT_CALL = (
+        (1, 'Put'),
+        (2, 'Call'),
+    )
     fund = models.ForeignKey(Fund, blank=True, null=True)
     client = models.ForeignKey(Client, blank=True, null=True)
     currency = models.ForeignKey(Currency, related_name='holding_currency', blank=True, null=True)
@@ -129,9 +148,19 @@ class Holding(HoldingBase):
     max_redemption = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     payment_days = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     gate = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    soft_lock_percent = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    soft_lock = models.SmallIntegerField(choices=YES_NO, blank=True, null=True)
+    soft_lock_percent = models.SmallIntegerField(choices=YES_NO, blank=True, null=True)
     soft_lock_date = models.DateField(blank=True, null=True)
+
+    maturity = models.DateField()
+    strike = models.DecimalField(max_digits=20, decimal_places=5)
+    multiplier = models.DecimalField(max_digits=20, decimal_places=5)
+    put_call = models.SmallIntegerField(choices=PUT_CALL)
+    american_euro = models.SmallIntegerField(choices=AMERICAN_EURO)
+    etf_yes_no = models.SmallIntegerField(choices=YES_NO)
+    redemption_cumulative_euro_nav = models.DecimalField(max_digits=20, decimal_places=5)
+    redemption_cumulative_weight = models.DecimalField(max_digits=20, decimal_places=5)
+    redemption_percent = models.DecimalField(max_digits=20, decimal_places=5)
+    redemption_date = models.DateField()
 
     class Meta:
         ordering = ["id"]
@@ -149,8 +178,7 @@ class CountryBreakdown(models.Model):
     category = models.ForeignKey(Category, related_name='cb_category')
     mtd = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
     ytd = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
-    si = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
-    nav = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
+    euro_nav = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
     weight = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
     value_date = models.DateField()
 
@@ -159,12 +187,12 @@ class Breakdown(models.Model):
     category = models.ForeignKey(Category)
     mtd = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
     ytd = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
-    si = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
-    nav = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
+    base_nav = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
+    euro_nav = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
     weight = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
-    cash_flow_value = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
-    cash_flow_percent = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
-    net_movement = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
+    cash_flow_euro_amount_euro_dollar = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
+    cash_flow_percent_euro_dollar = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
+    #net_movement = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
     value_date = models.DateField()
 
 class Trade(models.Model):
@@ -172,19 +200,26 @@ class Trade(models.Model):
     INSTRUCTION_TYPE = (
         ('new', 'New'),
         ('amend', 'Amend'),
-        ('cancel', 'Cancelation'),
+        ('cancel', 'Cancellation'),
+    )
+    FLOW_TYPE = (
+        ('inflow', 'Inflow'),
+        ('outflow', 'Outflow'),
+        ('various', 'Various'),
+        ('expense', 'Expense'),
+        ('valuation', 'Valuation'),
+    )
+    OPEN_CLOSE = (
+        ('open', 'To Open'),
+        ('close', 'To Close'),
     )
     holding = models.ForeignKey(Holding)
     fund = models.ForeignKey(Fund, blank=True, null=True)
     client = models.ForeignKey(Client, blank=True, null=True)
-    currency = models.ForeignKey(Currency, related_name='trade_currency')
     counter_party = models.ForeignKey('app.CounterParty', related_name="counter_party_trade")
     counter_party_trader = models.ForeignKey('app.CounterPartyTrader')
     authorised_by = models.ForeignKey(User, related_name="authorised_by_user")
-
-    #identifier = models.IntegerField()
-    #trade_type = models.ForeignKey(TradeType)
-    #purchase_sale = models.ForeignKey(PurchaseSale)
+    buy_sell =  models.SmallIntegerField(choices=BUY_SELL, null=True)
     trade_no = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     desk = models.CharField(max_length=50, blank=True, null=True)
     book = models.CharField(max_length=50, blank=True, null=True)
@@ -195,32 +230,42 @@ class Trade(models.Model):
     percent_to_redeem = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     transaction_fees = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     delivery_fees = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    contract_node_received = models.SmallIntegerField(choices=YES_NO, blank=True, null=True)
     instruction_type = models.SmallIntegerField(max_length=10, choices=INSTRUCTION_TYPE, blank=True, null=True)
     cash_movement = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     trade_slip_no = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     no_of_units = models.DecimalField(max_digits=20, decimal_places=5,\
                                                 blank=True, null=True, verbose_name="No. of Units")
-    purchase_price = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    purchase_price_base = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    nav_purchase = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    fx_euro = models.DecimalField(max_digits=20, decimal_places=8,\
-                                                blank=True, null=True, verbose_name="FX to Euro")
-
-    drawdown = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    various = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-    distribution = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    trade_price_euro = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    base_nav = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    euro_nav = models.DecimalField(max_digits=20, decimal_places=5,verbose_name="Euro NAV")
+    drawdown_base = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    various_base = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    distribution_base = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     inflow_euro = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     inflow_dollar = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     outflow_euro = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     outflow_dollar = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
-
-    # purchase_price_euro = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    fx_euro = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     print_date = models.DateField(blank=True, null=True)
     trade_date = models.DateField(blank=True, null=True)
+    dealing_date = models.DateField(blank=True, null=True)
+    proceed_date = models.DateField(blank=True, null=True)
     settlement_date = models.DateField(blank=True, null=True)
     instruction_date = models.DateField(blank=True, null=True)
+    to_open_to_close = models.CharField(max_length=10, blank=True, null=True, choices=OPEN_CLOSE)
+    inflow_outflow_various_expense_valuation = models.CharField(max_length=10, blank=True, null=True, choices=FLOW_TYPE)
 
 
-
+    cumulative_euro_nav = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    cumulative_weight = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    weight_trade =  models.DecimalField(max_digits=20, decimal_places=5,verbose_name="Weight of Trade")
+    corp_action_yes_no = models.SmallIntegerField(choices=YES_NO, null=True)
+    transaction_fees = models.DecimalField(max_digits=20, decimal_places=5)
+    valuation_base = models.DecimalField(max_digits=20, decimal_places=5)
+    valuation_euro = models.DecimalField(max_digits=20, decimal_places=5)
+    various_euro = models.DecimalField(max_digits=20, decimal_places=5)
+    distribution_euro = models.DecimalField(max_digits=20, decimal_places=5)
+    sub_red_cash_movement = models.SmallIntegerField(choices=SUBSCRIPTION_REDEMPTION, null=True)
+    percent_to_redeem = models.DecimalField(max_digits=20, decimal_places=5)
+    contract_note_received = models.SmallIntegerField(choices=YES_NO, null=True)
 

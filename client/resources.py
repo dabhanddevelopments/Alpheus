@@ -23,7 +23,7 @@ class ClientHistoryResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = ClientHistory.objects.all()
         resource_name = 'client-history'
-        ordering = ['last_name', 'performance']
+        ordering = ['last_name', 'mtd', 'value_date']
         filtering = {
             'client': ALL_WITH_RELATIONS,
             'fund': ALL_WITH_RELATIONS,
@@ -41,6 +41,8 @@ class SubscriptionRedemptionResource(MainBaseResource):
         filtering = {
             'fund': ALL,
             'client': ALL,
+            'instruction_date': ALL,
+            'trade_date': ALL,
         }
 
 

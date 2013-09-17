@@ -20,7 +20,7 @@ def get_month_list():
 
 
 # W16 - Line Graph & Bar Chart
-# http://localhost:8000/api/fund-performance-benchmark/?fund=2&fields=performance&format=json
+# http://localhost:8000/api/fund-performance-benchmark/?fund=2&fields=mtd&format=json
 @login_required
 def performancebenchmark(request):
 
@@ -35,7 +35,7 @@ def performancebenchmark(request):
     dic = {}
     for row in objects:
         date = int(mktime(row.value_date.timetuple())) * 1000
-        output = [int(date), row.performance]
+        output = [int(date), row.mtd]
         bench_id = int(row.benchmark.id)
 
         try:
@@ -60,7 +60,7 @@ def performancebenchmark(request):
     dic = {}
     for row in funds:
         date = int(mktime(row.value_date.timetuple())) * 1000
-        output = [int(date), getattr(row, fields)]
+        output = [int(date), float(getattr(row, fields))]
         fund_id = int(row.fund.id)
 
         try:
@@ -91,10 +91,10 @@ def returns(request):
     funds = FundHistory.months.select_related('fund') \
                 .filter(value_date__month=12, fund=fund)\
                 .only('ann_return1', 'ann_volatility1', 'sharpe_ratio1', \
-                                    'value_date', 'performance', 'fund__name')
+                                    'value_date', 'mtd', 'fund__name')
     benchmarks = BenchmarkHistory.months.select_related('benchmark') \
                         .filter(value_date__month=12, benchmark__fund=fund) \
-                        .only('performance', 'benchmark__name')
+                        .only('mtd', 'benchmark__name')
     dic = {}
 
     # funds
@@ -106,7 +106,7 @@ def returns(request):
                 dic[year]['ann_return1'] = row.ann_return1
                 dic[year]['ann_volatility1'] = row.ann_volatility1
                 dic[year]['sharpe_ratio1'] = row.sharpe_ratio1
-                dic[year][row.fund.name] = row.performance  # change to: ytd
+                dic[year][row.fund.name] = row.mtd  # change to: ytd
                 if row.fund.name not in fund_column:
                     fund_column.append(row.fund.name)
     # benchmarks
@@ -114,7 +114,7 @@ def returns(request):
     for year in range(1970, date.today().year + 1):
         for row in benchmarks:
             if year == row.value_date.year:
-                dic[year][row.benchmark.name] = row.performance # change to: ytd
+                dic[year][row.benchmark.name] = row.mtd # change to: ytd
                 if row.benchmark.name not in bench_columns:
                     bench_columns.append(row.benchmark.name)
 
@@ -153,8 +153,8 @@ def bestworst(request):
     # Positive Fund Months
     f = FundHistory.months.select_related('fund') \
                     .filter(value_date__month=12, fund=fund) \
-                    .only('fund__name', 'performance')
-    p = f.filter(performance__gt=0)
+                    .only('fund__name', 'mtd')
+    p = f.filter(mtd__gt=0)
     fund_name = f.values('fund__name')[0]['fund__name']
     positive[fund_name] = p.count() / f.count() * 100
     columns.append(fund_name)
@@ -165,7 +165,7 @@ def bestworst(request):
                             .values('benchmark__name', 'benchmark__id') \
                             .annotate(count=Count('value_date')) \
                             .order_by('benchmark__name')
-    b2 = b.filter(performance__gt=0)
+    b2 = b.filter(mtd__gt=0)
 
     for bench in b:
         pos_count = 0
@@ -183,23 +183,23 @@ def bestworst(request):
     drawdown = {'best_worst_months': 'Worst Drawdown'}
     funds = FundHistory.months.filter(value_date__month=12, fund=fund) \
                             .values('fund__name') \
-                            .annotate(Max('performance'), Min('performance'),
+                            .annotate(Max('mtd'), Min('mtd'),
                                 Min('drawdown')) \
                             .order_by('fund__name')
     for row in funds:
-        best[row['fund__name']] = row['performance__max']
-        worst[row['fund__name']] = row['performance__min']
+        best[row['fund__name']] = row['mtd__max']
+        worst[row['fund__name']] = row['mtd__min']
         drawdown[row['fund__name']] = row['drawdown__min']
 
     benchmarks = BenchmarkHistory.months.filter(
                          value_date__month=12, benchmark__fund=fund) \
                                 .values('benchmark__name') \
-                                .annotate(Max('performance'), Min('performance'),
+                                .annotate(Max('mtd'), Min('mtd'),
                                     Min('drawdown')) \
                                 .order_by('benchmark__name')
     for bench in benchmarks:
-        best[bench['benchmark__name']] = bench['performance__max']
-        worst[bench['benchmark__name']] = bench['performance__min']
+        best[bench['benchmark__name']] = bench['mtd__max']
+        worst[bench['benchmark__name']] = bench['mtd__min']
         drawdown[bench['benchmark__name']] = bench['drawdown__min']
     lis.append(best)
     lis.append(worst)
@@ -227,30 +227,30 @@ def returnhistogram(request):
     funds = FundHistory.months.filter(fund=fund_id)
 
     # get 10+
-    count = funds.filter(performance__gte=10).aggregate(Count('performance'))
-    lis.append([columns[0], count['performance__count']])
+    count = funds.filter(mtd__gte=10).aggregate(Count('mtd'))
+    lis.append([columns[0], count['mtd__count']])
 
     # get 5 to 10
-    count = funds.filter(performance__gte=5, performance__lt=10) \
-                                        .aggregate(Count('performance'))
-    lis.append([columns[1], count['performance__count']])
+    count = funds.filter(mtd__gte=5, mtd__lt=10) \
+                                        .aggregate(Count('mtd'))
+    lis.append([columns[1], count['mtd__count']])
 
     # get -5 to +5
     # @TODO: On MSSQL SIGNED is called INT
     sql = """
     SELECT id,
-        Cast(performance as SIGNED) as performance,
-        Count(performance) as count
+        Cast(mtd as SIGNED) as mtd,
+        Count(mtd) as count
     FROM fund_fundhistory
     WHERE fund_id = %s
-        AND performance > -5 AND performance < 5
-    GROUP BY Cast(performance as SIGNED)
-    ORDER BY performance DESC;
+        AND mtd > -5 AND mtd < 5
+    GROUP BY Cast(mtd as SIGNED)
+    ORDER BY mtd DESC;
     """
     raw = FundHistory.months.raw(sql, [fund_id])
     dic = {}
     for fund in raw:
-        dic[str(fund.performance)] = fund.count
+        dic[str(fund.mtd)] = fund.count
     for index in range(4, -5, -1):
         try:
             count = dic[str(index)]
@@ -260,12 +260,12 @@ def returnhistogram(request):
         lis.append([str(index) + '%', count])
 
     # get -5 to -10
-    count = funds.filter(performance__gte=5, performance__lt=10).aggregate(Count('performance'))
-    lis.append([columns[11], count['performance__count']])
+    count = funds.filter(mtd__gte=5, mtd__lt=10).aggregate(Count('mtd'))
+    lis.append([columns[11], count['mtd__count']])
 
     # get -10 and Lower
-    count = funds.filter(performance__gte=10).aggregate(Count('performance'))
-    lis.append([columns[12], count['performance__count']])
+    count = funds.filter(mtd__gte=10).aggregate(Count('mtd'))
+    lis.append([columns[12], count['mtd__count']])
 
     dic = {
         'columns': columns,
@@ -290,18 +290,18 @@ def correlation(request):
 
     # fund correlation
     dic['Correlation Matrix'] = fund.fund.name
-    dic[fund.fund.name] = fund.performance / fund.performance
+    dic[fund.fund.name] = fund.mtd / fund.mtd
     for bench in benchmarks:
-        dic[bench.name] = fund.performance / bench.performance
+        dic[bench.name] = fund.mtd / bench.mtd
     lis.append(dic)
 
     # benchmark correlation
     for col in benchmarks:
         dic = {}
         for row in benchmarks:
-            dic[row.name] = row.performance / col.performance
+            dic[row.name] = row.mtd / col.mtd
         dic['Correlation Matrix'] = col.name
-        dic[fund.fund.name] = fund.performance / col.performance
+        dic[fund.fund.name] = fund.mtd / col.mtd
         lis.append(dic)
         columns.append(col.name)
 
@@ -321,19 +321,19 @@ def negativemonths(request):
 
     funds = FundHistory.months.filter(fund=fund_id) \
                                     .values('fund__name') \
-                                    .annotate(Avg('performance')) \
+                                    .annotate(Avg('mtd')) \
                                     .order_by('fund__name')[0]
     dic = {
-        funds['fund__name']: funds['performance__avg'],
+        funds['fund__name']: funds['mtd__avg'],
     }
 
     benchmarks = BenchmarkHistory.months.filter(benchmark__fund=fund_id,
-                                     performance__gt=0) \
+                                     mtd__gt=0) \
                                     .values('benchmark__name') \
-                                    .annotate(Avg('performance')) \
+                                    .annotate(Avg('mtd')) \
                                     .order_by('benchmark__name')
     for bench in benchmarks:
-        dic[bench['benchmark__name']] = bench['performance__avg']
+        dic[bench['benchmark__name']] = bench['mtd__avg']
 
     columns = [key for key, val in dic.iteritems()]
 
@@ -373,7 +373,7 @@ def currencyhedge(request):
     fund_id = request.GET.get('fund', 0)
 
     sql = """
-        SELECT id, currency_id, amount, settlement_date
+        SELECT id, currency_id, amount_base, settlement_date
         FROM `fund_fxhedge`
         WHERE (`fund_fxhedge`.`fund_id` = %s  AND `fund_fxhedge`.`settlement_date` > %s )
         GROUP BY `fund_fxhedge`.`currency_id`
@@ -388,16 +388,16 @@ def currencyhedge(request):
        fxrate = FxRate.objects.filter(currency=row.currency_id).latest('value_date')
 
        try:
-           euro_eq = (perf.nav - row.amount) / fxrate.fx_rate
+           euro_eq = (perf.base_nav - row.amount_base) / fxrate.fx_rate
        except:
            euro_eq = 0
 
        dic = {
          'currency': perf.currency.name,
-         'total_position': perf.nav,
-         'total_hedge': row.amount,
+         'total_position': perf.base_nav,
+         'total_hedge': row.amount_base,
          'hedge_expires': str(row.settlement_date),
-         'exposure': perf.nav - row.amount,
+         'exposure': perf.base_nav - row.amount_base,
          'euro_equivalent': euro_eq,
        }
        lis.append(dic)
@@ -635,7 +635,7 @@ def grossasset3(request):
         'auditor_fee_payable': 'Liabilities',
         'performance_fee_payable': 'Liabilities',
         'other_liabilities_payable': 'Liabilities',
-        'total_liabilities_payable  ': 'Liabilities',
+        'total_liabilities_payable': 'Liabilities',
         'assets_liabilities': 'Liabilities',
     }
     return grossasset(request, grid)

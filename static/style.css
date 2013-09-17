@@ -574,4 +574,37 @@ table.month_table td a {
    padding: 3px 4px 1px 4px;
 }
 
+    p {
+        margin:5px;
+    }
+
+    .x-tree-icon-parent  {
+        width: 0px;
+        background-image: '';
+    }
+
+    .x-tree-icon-leaf {
+        width: 0px;
+        background-image: '';
+    }
+
+    .widget_desc {
+       margin: 20px 20px 20px 20px;
+       font-size: 12px;
+       font-family: tahoma,arial,verdana,sans-serif;
+    }
+
+    .widget_desc h1 {
+        margin-top: 30px;
+        margin-bottom: 10px;
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    .widget_preview {
+        color: gray; 
+        font-weight: italic; 
+        text-align:center;
+        margin-top:40%;     
+    }
 

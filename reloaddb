@@ -1,6 +1,13 @@
 #!/bin/bash
   
 MYSQL=`which mysql`
+Q1="UPDATE app_menu SET fund_id = null;"
+SQL="${Q1}"
+
+$MYSQL -uroot -pasdf --database alpheus -e "$SQL"
+
+python manage.py dumpdata --indent=4 --natural --exclude=holding.holdinghistory --exclude=fund.fund --exclude=comparative.benchmarkhistory --exclude=comparative.benchmark  --exclude=holding.holding --exclude=holding.holdinghistory --exclude=fund.fundhistory --exclude=fund.currencyposition --exclude=fund.fxrate --exclude=fund.fxhedge --exclude=client.client --exclude=client.clienthistory --exclude=holding.trade --exclude=client.subscriptionredemption --exclude=holding.breakdown --exclude=holding.countrybreakdown --exclude fund.classification --exclude contenttypes --exclude=auth.permission  --exclude=comparative.peer --exclude=comparative.peerhistory  > app/fixtures/initial_data.json
+
   
 Q1="DROP DATABASE alpheus;"
 Q2="CREATE DATABASE alpheus character set utf8;;"

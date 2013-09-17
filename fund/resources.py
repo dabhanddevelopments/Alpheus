@@ -14,25 +14,17 @@ class FundClassificationResource(MainBaseResource):
 
     class Meta:
         queryset = Classification.objects.all()
-        resource_name = 'fund/classification'
-
-
-class FundTypeResource(MainBaseResource):
-
-    class Meta(MainBaseResource.Meta):
-        queryset = FundType.objects.all()
-
+        resource_name = 'fund-classification'
 
 
 class FundResource(MainBaseResource):
     classification = fields.ForeignKey(FundClassificationResource, "classification")
     benchmark = fields.ManyToManyField(BenchmarkResource, "benchmark")
 
-    fund_type = fields.ForeignKey(FundTypeResource,'fund_type')
     custodian = fields.ForeignKey(CustodianResource, 'custodian')
     auditor = fields.ForeignKey(AuditorResource, 'auditor')
     administrator =  fields.ForeignKey(AdministratorResource, 'administrator')
-    manager = fields.ForeignKey(ManagerResource, 'manager')
+    user = fields.ForeignKey(ManagerResource, 'user')
 
     class Meta(MainBaseResource.Meta):
         queryset = Fund.objects.all()
@@ -100,8 +92,8 @@ class FundValuationResource(MainBaseResource):
             'net_movement',
             'valuation',
             'value_date',
-            'delta_valuation',
-            'delta_flow',
+            'cash_flow_euro_amount_euro_dollar',
+            'cash_flow_percent_euro_dollar',
             'inflow_euro',
             'inflow_dollar',
             'outflow_euro',
@@ -119,7 +111,7 @@ class FundValuationResource(MainBaseResource):
 
         fields = []
         def set_fields(field, name, group):
-            extra_fields = ['delta_valuation', 'delta_flow']
+            extra_fields = ['cash_flow_euro_amount_euro_dollar', 'cash_flow_percent_euro_dollar']
             dic = {'type': name, 'group': group}
             for row in data['objects']:
                 month = row.data['value_date'].month
@@ -136,7 +128,7 @@ class FundValuationResource(MainBaseResource):
         set_fields('outflow_euro', 'Euro', 'Outflow')
         set_fields('outflow_euro', 'US Dollar', 'Outflow')
 
-        columns = ['type'] + self.get_month_list() + ['delta_valuation', 'delta_flow']
+        columns = ['type'] + self.get_month_list() + ['cash_flow_euro_amount_euro_dollar', 'cash_flow_percent_euro_dollar']
         return {
             'columns': self.set_columns(request, columns),
             'rows': fields,

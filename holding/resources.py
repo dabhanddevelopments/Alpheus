@@ -53,6 +53,7 @@ class HoldingResource(MainBaseResource):
             "date_type": ALL,
             "id": ALL,
         }
+        ordering = ['redemption_date']
         #authentication = BasicAuthentication()
         authorization = Authorization()
 
@@ -65,7 +66,7 @@ class HoldingHistoryResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = HoldingHistory.objects.all()
         resource_name = 'holding-history'
-        ordering = ['value_date', 'dealing_date', 'weight', 'performance']
+        ordering = ['value_date', 'dealing_date', 'weight', 'mtd']
         filtering = {
             #"fund": ALL,
             "holding": ALL_WITH_RELATIONS,
@@ -81,9 +82,10 @@ class HoldingValuationResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = HoldingHistory.objects.all()
         resource_name = 'holding-valuation'
-        allowed_fields = ['valuation',  'holding__name', 'net_movement', 'value_date', 'delta_valuation', 'delta_flow', ]
+        allowed_fields = ['valuation',  'holding__name', 'net_movement', 'value_date', 'cash_flow_euro_amount_euro_dollar', 'cash_flow_percent_euro_dollar', ]
         filtering = {
             "fund": ALL,
+            "holding": ALL_WITH_RELATIONS,
             "value_date": ALL,
             "category": ALL_WITH_RELATIONS,
             "date_type": ALL,
@@ -107,13 +109,13 @@ class HoldingValuationResource(MainBaseResource):
             fields.append(dic)
 
         holdings = set([row.data['holding__name'] for row in data['objects']])
-        extra_fields = ['delta_valuation', 'delta_flow']
+        extra_fields = ['cash_flow_euro_amount_euro_dollar', 'cash_flow_percent_euro_dollar']
 
         for holding in holdings:
             set_fields('valuation', holding, extra_fields)
             set_fields('net_movement', holding)
 
-        columns = ['type'] + self.get_month_list() + ['delta_valuation', 'delta_flow']
+        columns = ['type'] + self.get_month_list() + ['cash_flow_euro_amount_euro_dollar', 'cash_flow_percent_euro_dollar']
         return {
             'columns': self.set_columns(request, columns),
             'rows': fields,
@@ -166,6 +168,7 @@ class TradeResource(MainBaseResource):
             "trade_date": ALL,
             "holding": ALL_WITH_RELATIONS,
         }
+        ordering = ['trade_date']
 
 
 

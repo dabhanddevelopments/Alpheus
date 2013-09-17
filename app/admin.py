@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.http import HttpResponseRedirect
 from app.models import *
 from mptt.admin import FeinCMSModelAdmin
 
@@ -7,13 +8,17 @@ class WidgetTypeAdmin(admin.ModelAdmin):
     list_display = ('name', 'key')
 
 class WidgetParamAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('key', 'value', 'used_on_window')
+    list_filter = ('key', 'value')
+    search_fields = ('key', 'value')
+    list_editable = ('value', )
 
 class WidgetAdmin(admin.ModelAdmin):
-    list_display = ('name', 'key', 'widget_type', 'window', 'description', 'v2')
+    list_display = ('name', 'key', 'widget_type', 'window', 'description', 'columns')
     filter_horizontal = ['widget_param']
     list_editable = ['key']
-    list_filter = ['widget_type', 'widget_param']
+    list_filter = ['widget_type', 'widget_param', 'key']
+    search_fields = ('name', 'key', 'description', 'columns')
     save_as = True
 
 
@@ -34,6 +39,12 @@ class WindowAdmin(admin.ModelAdmin):
 class MenuAdmin(FeinCMSModelAdmin):
     list_display = ('children', 'page', 'fund')
 
+    def response_change(self, request, obj):
+        #if not '_continue' in request.POST:
+        #    return HttpResponseRedirect("/asdf")
+        #else:
+        return super(MenuAdmin, self).response_change(request, obj)
+
 class PageAdmin(FeinCMSModelAdmin):
     pass
 
@@ -48,6 +59,15 @@ class CurrencyAdmin(admin.ModelAdmin):
 class CountryAdmin(admin.ModelAdmin):
     pass
 
+class CustodianAdmin(admin.ModelAdmin):
+    fields = ('name', 'contact_name', 'contact_number')
+
+class AuditorAdmin(admin.ModelAdmin):
+    fields = ('name', 'contact_name', 'contact_number')
+
+class AdministratorAdmin(admin.ModelAdmin):
+    fields = ('name', 'contact_name', 'contact_number')
+
 
 admin.site.register(WidgetType, WidgetTypeAdmin)
 admin.site.register(WidgetParam, WidgetParamAdmin)
@@ -59,10 +79,11 @@ admin.site.register(Menu, MenuAdmin)
 admin.site.register(Country, CountryAdmin)
 admin.site.register(Currency, CurrencyAdmin)
 admin.site.register(Classification)
-admin.site.register(Administrator)
-admin.site.register(Auditor)
-admin.site.register(Custodian)
+admin.site.register(Administrator, AdministratorAdmin)
+admin.site.register(Auditor, AuditorAdmin)
+admin.site.register(Custodian, CustodianAdmin)
 admin.site.register(CounterParty)
+admin.site.register(CounterPartyTrader)
 admin.site.register(Alarm)
 """
 admin.site.register(Country, CountryAdmin)

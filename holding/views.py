@@ -29,11 +29,11 @@ def correlation(request):
         'rows': lis
     }
     return JsonResponse(dic)
-    
+
 
 
 # W78 (blatant copy and paste from W16) - Line Graph & Bar Chart
-# http://localhost:8000/api/holding-performance-benchmark/?fund=2&fields=performance&format=json
+# http://localhost:8000/api/holding-performance-benchmark/?fund=2&fields=mtd&format=json
 @login_required
 def performancebenchmark(request):
 
@@ -42,7 +42,7 @@ def performancebenchmark(request):
 
     from comparative.models import BenchmarkHistory
     from time import mktime
-    
+
     objects = BenchmarkHistory.months.select_related('benchmark') \
             .filter(benchmark__holding=holding).only('id', 'value_date', 'benchmark__name', fields)
 
@@ -51,7 +51,7 @@ def performancebenchmark(request):
     dic = {}
     for row in objects:
         date = int(mktime(row.value_date.timetuple())) * 1000
-        output = [int(date), row.performance]
+        output = [int(date), row.mtd]
         bench_id = int(row.benchmark.id)
 
         try:
@@ -74,11 +74,11 @@ def performancebenchmark(request):
              .filter(holding=holding).only('id', 'holding__name', 'value_date', fields)
 
     from time import mktime
-    
+
     dic = {}
     for row in holdings:
         date = int(mktime(row.value_date.timetuple())) * 1000
-        output = [int(date), getattr(row, fields)]
+        output = [int(date), float(getattr(row, fields))]
         holding_id = int(row.holding.id)
 
         try:
@@ -96,7 +96,7 @@ def performancebenchmark(request):
         response_list.append(val)
 
     return JsonResponse({'objects': response_list})
-    
+
 
 # W19 Holding Return Table
 # http://localhost:8000/api/holding-returns/?format=json&holding=2
@@ -110,10 +110,10 @@ def returns(request):
     holdings = HoldingHistory.months.select_related('holding') \
                 .filter(value_date__month=12, holding=holding)\
                 .only('ann_return1', 'ann_volatility1', 'sharpe_ratio1', \
-                                    'value_date', 'performance', 'holding__name')
+                                    'value_date', 'mtd', 'holding__name')
     benchmarks = BenchmarkHistory.months.select_related('benchmark') \
                         .filter(value_date__month=12, benchmark__holding=holding) \
-                        .only('performance', 'benchmark__name')
+                        .only('mtd', 'benchmark__name')
     dic = {}
 
     # holdings
@@ -125,7 +125,7 @@ def returns(request):
                 dic[year]['ann_return1'] = row.ann_return1
                 dic[year]['ann_volatility1'] = row.ann_volatility1
                 dic[year]['sharpe_ratio1'] = row.sharpe_ratio1
-                dic[year][row.holding.name] = row.performance  # change to: ytd
+                dic[year][row.holding.name] = row.mtd  # change to: ytd
                 if row.holding.name not in holding_column:
                     holding_column.append(row.holding.name)
     # benchmarks
@@ -133,7 +133,7 @@ def returns(request):
     for year in range(1970, date.today().year + 1):
         for row in benchmarks:
             if year == row.value_date.year:
-                dic[year][row.benchmark.name] = row.performance # change to: ytd
+                dic[year][row.benchmark.name] = row.mtd # change to: ytd
                 if row.benchmark.name not in bench_columns:
                     bench_columns.append(row.benchmark.name)
 
@@ -148,7 +148,7 @@ def returns(request):
             result.append(val)
 
     from operator import itemgetter
-    
+
     dic = {
         'metaData': {'sorting': 'year'},
         'columns': set_columns(request, columns),
@@ -172,8 +172,8 @@ def bestworst(request):
     # Positive Holding Months
     f = HoldingHistory.months.select_related('holding') \
                     .filter(value_date__month=12, holding=holding) \
-                    .only('holding__name', 'performance')
-    p = f.filter(performance__gt=0)
+                    .only('holding__name', 'mtd')
+    p = f.filter(mtd__gt=0)
     holding_name = f.values('holding__name')[0]['holding__name']
     positive[holding_name] = p.count() / f.count() * 100
     columns.append(holding_name)
@@ -184,7 +184,7 @@ def bestworst(request):
                             .values('benchmark__name', 'benchmark__id') \
                             .annotate(count=Count('value_date')) \
                             .order_by('benchmark__name')
-    b2 = b.filter(performance__gt=0)
+    b2 = b.filter(mtd__gt=0)
 
     for bench in b:
         pos_count = 0
@@ -202,23 +202,23 @@ def bestworst(request):
     drawdown = {'best_worst_months': 'Worst Drawdown'}
     holdings = HoldingHistory.months.filter(value_date__month=12, holding=holding) \
                             .values('holding__name') \
-                            .annotate(Max('performance'), Min('performance'),
+                            .annotate(Max('mtd'), Min('mtd'),
                                 Min('drawdown')) \
                             .order_by('holding__name')
     for row in holdings:
-        best[row['holding__name']] = row['performance__max']
-        worst[row['holding__name']] = row['performance__min']
+        best[row['holding__name']] = row['mtd__max']
+        worst[row['holding__name']] = row['mtd__min']
         drawdown[row['holding__name']] = row['drawdown__min']
 
     benchmarks = BenchmarkHistory.months.filter(
                          value_date__month=12, benchmark__holding=holding) \
                                 .values('benchmark__name') \
-                                .annotate(Max('performance'), Min('performance'),
+                                .annotate(Max('mtd'), Min('mtd'),
                                     Min('drawdown')) \
                                 .order_by('benchmark__name')
     for bench in benchmarks:
-        best[bench['benchmark__name']] = bench['performance__max']
-        worst[bench['benchmark__name']] = bench['performance__min']
+        best[bench['benchmark__name']] = bench['mtd__max']
+        worst[bench['benchmark__name']] = bench['mtd__min']
         drawdown[bench['benchmark__name']] = bench['drawdown__min']
     lis.append(best)
     lis.append(worst)
@@ -246,30 +246,30 @@ def returnhistogram(request):
     holdings = HoldingHistory.months.filter(holding=holding_id)
 
     # get 10+
-    count = holdings.filter(performance__gte=10).aggregate(Count('performance'))
-    lis.append([columns[0], count['performance__count']])
+    count = holdings.filter(mtd__gte=10).aggregate(Count('mtd'))
+    lis.append([columns[0], count['mtd__count']])
 
     # get 5 to 10
-    count = holdings.filter(performance__gte=5, performance__lt=10) \
-                                        .aggregate(Count('performance'))
-    lis.append([columns[1], count['performance__count']])
+    count = holdings.filter(mtd__gte=5, mtd__lt=10) \
+                                        .aggregate(Count('mtd'))
+    lis.append([columns[1], count['mtd__count']])
 
     # get -5 to +5
     # @TODO: On MSSQL SIGNED is called INT
     sql = """
     SELECT id,
-        Cast(performance as SIGNED) as performance,
-        Count(performance) as count
+        Cast(mtd as SIGNED) as mtd,
+        Count(mtd) as count
     FROM holding_holdinghistory
     WHERE holding_id = %s
-        AND performance > -5 AND performance < 5
-    GROUP BY Cast(performance as SIGNED)
-    ORDER BY performance DESC;
+        AND mtd > -5 AND mtd < 5
+    GROUP BY Cast(mtd as SIGNED)
+    ORDER BY mtd DESC;
     """
     raw = HoldingHistory.months.raw(sql, [holding_id])
     dic = {}
     for holding in raw:
-        dic[str(holding.performance)] = holding.count
+        dic[str(holding.mtd)] = holding.count
     for index in range(4, -5, -1):
         try:
             count = dic[str(index)]
@@ -279,12 +279,12 @@ def returnhistogram(request):
         lis.append([str(index) + '%', count])
 
     # get -5 to -10
-    count = holdings.filter(performance__gte=5, performance__lt=10).aggregate(Count('performance'))
-    lis.append([columns[11], count['performance__count']])
+    count = holdings.filter(mtd__gte=5, mtd__lt=10).aggregate(Count('mtd'))
+    lis.append([columns[11], count['mtd__count']])
 
     # get -10 and Lower
-    count = holdings.filter(performance__gte=10).aggregate(Count('performance'))
-    lis.append([columns[12], count['performance__count']])
+    count = holdings.filter(mtd__gte=10).aggregate(Count('mtd'))
+    lis.append([columns[12], count['mtd__count']])
 
     dic = {
         'columns': columns,
@@ -309,18 +309,18 @@ def correlation(request):
 
     # holding correlation
     dic['Correlation Matrix'] = holding.holding.name
-    dic[holding.holding.name] = holding.performance / holding.performance
+    dic[holding.holding.name] = holding.mtd / holding.mtd
     for bench in benchmarks:
-        dic[bench.name] = holding.performance / bench.performance
+        dic[bench.name] = holding.mtd / bench.mtd
     lis.append(dic)
 
     # benchmark correlation
     for col in benchmarks:
         dic = {}
         for row in benchmarks:
-            dic[row.name] = row.performance / col.performance
+            dic[row.name] = row.mtd / col.mtd
         dic['Correlation Matrix'] = col.name
-        dic[holding.holding.name] = holding.performance / col.performance
+        dic[holding.holding.name] = holding.mtd / col.mtd
         lis.append(dic)
         columns.append(col.name)
 
@@ -340,19 +340,19 @@ def negativemonths(request):
 
     holdings = HoldingHistory.months.filter(holding=holding_id) \
                                     .values('holding__name') \
-                                    .annotate(Avg('performance')) \
+                                    .annotate(Avg('mtd')) \
                                     .order_by('holding__name')[0]
     dic = {
-        holdings['holding__name']: holdings['performance__avg'],
+        holdings['holding__name']: holdings['mtd__avg'],
     }
 
     benchmarks = BenchmarkHistory.months.filter(benchmark__holding=holding_id,
-                                     performance__gt=0) \
+                                     mtd__gt=0) \
                                     .values('benchmark__name') \
-                                    .annotate(Avg('performance')) \
+                                    .annotate(Avg('mtd')) \
                                     .order_by('benchmark__name')
     for bench in benchmarks:
-        dic[bench['benchmark__name']] = bench['performance__avg']
+        dic[bench['benchmark__name']] = bench['mtd__avg']
 
     columns = [key for key, val in dic.iteritems()]
 

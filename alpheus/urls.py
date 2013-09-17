@@ -49,6 +49,8 @@ api.register(SubscriptionRedemptionResource())
 # app
 api.register(ImportResource())
 api.register(CurrencyResource())
+api.register(CustodianResource())
+api.register(AdministratorResource())
 api.register(InfoResource())
 api.register(UserResource())
 api.register(WidgetsResource())
@@ -66,6 +68,7 @@ api.register(PeerHistoryResource())
 
 urlpatterns = patterns('',
     (r'^robots\.txt$', lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain")),
+    (r'^asdf$', lambda r: HttpResponse("<html><script> window.close(); </script></html>", mimetype="text/html")),
     url(r'^$', views.index, name='index'),
 
     url(r'^api/holding-performance-benchmark/$', holding.performancebenchmark),
@@ -78,6 +81,7 @@ urlpatterns = patterns('',
     url(r'^api/holding-returns/$', holding.returns),
 
     #url(r'^api/client-reconciliation/$', client.reconciliation),
+    url(r'^api/client-performance-benchmark/$', client.performancebenchmark),
     url(r'^api/client-returnhistogram/$', client.returnhistogram),
     url(r'^api/client-correlation/$', client.correlation),
     url(r'^api/client-negativemonths-table/$', client.negativemonthstable),

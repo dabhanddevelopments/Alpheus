@@ -130,7 +130,7 @@ class FundPerfHistCalView(MainBaseResource):
     def dehydrate(self, bundle):
         return {
             'date': bundle.data['value_date'],
-            'value': bundle.data['performance']
+            'value': bundle.data['mtd']
         }
 
     #def build_filters(self, filters=None):
@@ -183,7 +183,7 @@ widget.register(asdf())
 # TODO: Limit this query so it does not return fields that are not passed in the 'fields' qs
 #       get_fields gets called from ModelResource's Meta.
 #       Do we have access to `request` in the Resource's constructor?
-# http://localhost:8000/api/widget/fundperfmonthmin/?format=json&fund=2&fields=performance
+# http://localhost:8000/api/widget/fundperfmonthmin/?format=json&fund=2&fields=mtd
 class FundPerfMonthMin(MainBaseResource):
     fund = fields.ForeignKey(FundResourceOld, 'fund', full=True)
 
@@ -241,7 +241,7 @@ widget.register(FundPerfMonthMin())
 
 
 # W1, W18 Data Table
-# http://localhost:8000/api/widget/fundperfmonth/?format=json&fund=2&fields=performance
+# http://localhost:8000/api/widget/fundperfmonth/?format=json&fund=2&fields=mtd
 class FundPerfMonth(MainBaseResource):
     fund = fields.ForeignKey(FundResourceOld, 'fund')
 
@@ -295,7 +295,7 @@ class FundPerfMonth(MainBaseResource):
         for month in range(1, 13):
             abbr = calendar.month_abbr[month]
             columns.append(abbr.lower())
-        if fields == 'performance':
+        if fields == 'mtd':
             columns.append('ytd')
         columns = self.set_columns(request, columns)
 
@@ -325,7 +325,7 @@ class FundPerfHoldPerfBar(MainBaseResource):
 
     class Meta(MainBaseResource.Meta):
         queryset = HoldPerfMonth.objects.select_related('fund', 'holding', 'holding_category')
-        ordering = ['weight', 'performance']
+        ordering = ['weight', 'mtd']
         #fields = ['current_price', 'holding__name']
 
         filtering = {
@@ -365,7 +365,7 @@ class FundPerfHoldGroupPie(MainBaseResource):
 
     class Meta(MainBaseResource.Meta):
         queryset = HoldPerfMonth.objects.select_related('fund', 'holding')
-        ordering = ['weight', 'performance']
+        ordering = ['weight', 'mtd']
         #fields = ['current_price', 'holding__name']
 
         filtering = {
@@ -399,7 +399,7 @@ widget.register(FundPerfHoldGroupPie())
 
 
 # W3, W4, W5, W8, W9, W10 Data Table
-# http://localhost:8007/api/widget/fundperfgrouptable/?fund=2&value_date__year=2013&holding_category__holding_group=loc&format=json&fields=performance
+# http://localhost:8007/api/widget/fundperfgrouptable/?fund=2&value_date__year=2013&holding_category__holding_group=loc&format=json&fields=mtd
 class FundPerfGroupTable(MainBaseResource):
     fund = fields.ForeignKey(FundResourceOld, 'fund')
     holding_category = fields.ForeignKey(HoldingCategoryResource, 'holding_category', full=True)
@@ -467,7 +467,7 @@ class FundPerfGroupTable(MainBaseResource):
             columns.append(abbr.lower())
 
         # not NAV
-        if fields == 'performance':
+        if fields == 'mtd':
             columns.append('ytd')
             columns.append('si')
 
@@ -502,7 +502,7 @@ class FundPerfGroupBar(MainBaseResource):
 
         return bundle # ????
         bundle.data = {
-            'y': float(bundle.data['performance']), #@TODO: Perm fix for float bug
+            'y': float(bundle.data['mtd']), #@TODO: Perm fix for float bug
             'name': bundle.data['holding'].data['name']
         }
         return bundle
@@ -518,10 +518,10 @@ class FundPerfGroupBar(MainBaseResource):
         categories = {}
         for obj in objects:
             try:
-                categories[obj.holding_category.name][obj.value_date.month] = obj.performance
+                categories[obj.holding_category.name][obj.value_date.month] = obj.mtd
             except:
                 categories[obj.holding_category.name] = {}
-                categories[obj.holding_category.name][obj.value_date.month] = obj.performance
+                categories[obj.holding_category.name][obj.value_date.month] = obj.mtd
 
         for key, val in categories.iteritems():
             dic = {
@@ -563,7 +563,7 @@ class FundPerfGroupPie(MainBaseResource):
         #print dir(bundle.data)
         #return bundle
         bundle.data = {
-            'y': float(bundle.data['performance']), #@TODO: Perm fix for float bug
+            'y': float(bundle.data['mtd']), #@TODO: Perm fix for float bug
             'name': bundle.data['holding_category'].data['name']
         }
         return bundle
@@ -597,7 +597,7 @@ class FundNavPie(MainBaseResource):
 
     def dehydrate(self, bundle):
         data = {
-            'y': float(bundle.data['nav']), #@TODO: Perm fix for float bug
+            'y': float(bundle.data['base_nav']), #@TODO: Perm fix for float bug
             'name': bundle.data['holding_category'].data['name']
         }
         return data
@@ -638,7 +638,7 @@ class FundPerfHoldTable(MainBaseResource):
         fields = [
             'id',
             'name',  'no_of_units',
-            'current_price', 'nav',
+            'current_price', 'base_nav',
             'sector__name',
             'sub_sector__name',
             'location__name',
@@ -711,13 +711,12 @@ widget.register(FundPerfHoldPriceLine())
 # http://localhost:8007/api/widget/fundperfholdtradetable/?format=json&holding__fund=2
 class FundPerfHoldTradeTable(MainBaseResource):
     holding = fields.ForeignKey(HoldingResourceFund, 'holding')
-    purchase_sale = fields.ForeignKey(PurchaseSaleResource, 'purchase_sale', full=True)
 
     class Meta(MainBaseResource.Meta):
-        queryset = Trade.objects.select_related('holding', 'purchase_sale').all()
-        fields = ['trade_date', 'settlement_date', 'purchase_sale__name',
-            'no_of_units', 'purchase_price_base', 'fx_to_euro',
-            'purchase_price', 'nav_purchase',]
+        queryset = Trade.objects.select_related('holding').all()
+        fields = ['trade_date', 'settlement_date', 'buy_sell',
+            'no_of_units', 'trade_price_euro', 'fx_to_euro',
+            'trade_price_base', 'base_nav',]
         filtering = {
             'holding': ALL_WITH_RELATIONS,
         }
@@ -757,7 +756,7 @@ class FundPerfBenchCompLine(MainBaseResource):
         dic = {}
         for row in objects:
             date = int(mktime(row.value_date.timetuple())) * 1000
-            output = [int(str(date)), row.performance]
+            output = [int(str(date)), row.mtd]
             bench_id = int(row.benchmark.id)
 
             try:
@@ -784,7 +783,7 @@ class FundPerfBenchCompLine(MainBaseResource):
         dic = {}
         for row in funds:
             date = int(mktime(row.value_date.timetuple())) * 1000
-            output = [int(date), row.performance] #getattr(row, fields)]
+            output = [int(date), row.mtd] #getattr(row, fields)]
             fund_id = int(row.year.fund.id)
 
             try:
@@ -921,7 +920,7 @@ class HoldTradeResource(ModelResource):
     holding = fields.ForeignKey(HoldingResource, 'holding', full=True)
     class Meta:
         queryset = HoldPerf.objects.select_related('holding').all()#.latest('value_date')
-        #fields = ['nav', 'holding__name']
+        #fields = ['base_nav', 'holding__name']
 
     # fetch only the latest if the id isn't supplied
     def obj_get_list(self, request=None, **kwargs):
@@ -955,7 +954,7 @@ class HoldLiquidity(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = Holding.objects.select_related('fund').all()
         fields = [
-            'nav', 'redemption_frequency',
+            'base_nav', 'redemption_frequency',
             'redemption_notice', 'max_redemption',
             'payment_days', 'dealing_date',
             'gate', 'soft_lock', 'soft_lock2',
@@ -973,7 +972,7 @@ class HoldLiquidity(MainBaseResource):
         # @TODO: move this to set_columns()
         columns = [
             ['name', 'Holding'],
-            'nav',
+            'base_nav',
             ['redemption_frequency', 'Red\'n Freq.'],
             ['redemption_notice', 'Red\'n Notice'],
             ['max_redemption', 'Max Red\'n'],
@@ -1001,7 +1000,7 @@ class RedemptionTracker(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = Trade.objects.select_related('holding', 'holding__fund').all()
         fields = [
-            'nav_purchase', 'holding__weight',
+            'base_nav', 'holding__weight',
             'dealing_date', 'holding__name',
         ]
         filtering = {
@@ -1033,7 +1032,7 @@ class RedemptionTracker(MainBaseResource):
         }
 
     def alter_list_data_to_serialize(self, request, data):
-        columns = ['holding', ['nav', 'Amount'], 'weight', ['redemption_date', 'Red\'n Date']]
+        columns = ['holding', ['base_nav', 'Amount'], 'weight', ['redemption_date', 'Red\'n Date']]
         data = {
             'metaData': {'sorting': 'name'},
             'columns': self.set_columns(request, columns),
@@ -1051,7 +1050,7 @@ class CumulativeWeight(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = Trade.objects.select_related('holding', 'holding__fund').all()
         fields = [
-            'nav_purchase', 'holding__cumulative_weight',
+            'base_nav', 'holding__cumulative_weight',
             'holding__cumulative_nav', 'dealing_date', 'holding__weight',
         ]
         filtering = {
@@ -1123,13 +1122,13 @@ class FundSummary(MainBaseResource):
     auditor = fields.ForeignKey(AuditorResource, 'auditor', full=True)
     administrator =  fields.ForeignKey(AdministratorResource, 'administrator', full=True)
     classification = fields.ForeignKey(ClassificationResource, 'classification', full=True)
-    manager = fields.ForeignKey(UserResource, 'manager', full=True)
+    user = fields.ForeignKey(UserResource, 'user', full=True)
 
 
     class Meta(MainBaseResource.Meta):
         queryset = Fund.objects.select_related('fund_type', 'benchmark',\
          'custodian', 'auditor', 'administrator', 'classification', \
-         'manager')
+         'user')
 
 widget.register(FundSummary())
 
@@ -1150,7 +1149,7 @@ class FundRegister(MainBaseResource):
     def alter_list_data_to_serialize(self, request, data):
 
         columns = [['name', 'Client'], ['no_of_units', 'No of Units'],
-                   ['nav', 'NAV'], ['pending_nav', 'Pending NAV']]
+                   ['base_nav', 'NAV'], ['pending_nav', 'Pending NAV']]
         data = {
             'metaData': {'sorting': 'name'},
             'columns': self.set_columns(request, columns),
@@ -1172,7 +1171,7 @@ class SubscriptionRedemption(MainBaseResource):
             'client': ALL,
         }
     def dehydrate(self, bundle):
-        bundle.data['sub_red'] = bundle.get_sub_red_display()
+        bundle.data['sub_red_switch'] = bundle.get_sub_red_switch_display()
         bundle.data['percent_released'] = bundle.data['percent_released'].get_percent_released_display()
 
     def alter_list_data_to_serialize(self, request, data):

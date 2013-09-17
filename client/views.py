@@ -16,10 +16,10 @@ def returns(request):
     clients = ClientHistory.months.select_related('client') \
                 .filter(value_date__month=12, client=client)\
                 .only('ann_return1', 'ann_volatility1', 'sharpe_ratio1', \
-                                    'value_date', 'performance', 'client__first_name', 'client__last_name')
+                                    'value_date', 'ytd', 'client__first_name', 'client__last_name')
     benchmarks = BenchmarkHistory.months.select_related('benchmark') \
                         .filter(value_date__month=12, benchmark__client=client) \
-                        .only('performance', 'benchmark__name')
+                        .only('ytd', 'benchmark__name')
     dic = {}
 
     # clients
@@ -31,7 +31,7 @@ def returns(request):
                 dic[year]['ann_return1'] = row.ann_return1
                 dic[year]['ann_volatility1'] = row.ann_volatility1
                 dic[year]['sharpe_ratio1'] = row.sharpe_ratio1
-                dic[year][row.client.name()] = row.performance  # change to: ytd
+                dic[year][row.client.name()] = row.ytd  # change to: ytd
                 if row.client.name() not in client_column:
                     client_column.append(row.client.name())
     # benchmarks
@@ -39,7 +39,7 @@ def returns(request):
     for year in range(1970, date.today().year + 1):
         for row in benchmarks:
             if year == row.value_date.year:
-                dic[year][row.benchmark.name] = row.performance # change to: ytd
+                dic[year][row.benchmark.name] = row.ytd # change to: ytd
                 if row.benchmark.name not in bench_columns:
                     bench_columns.append(row.benchmark.name)
 
@@ -78,8 +78,8 @@ def bestworst(request):
     # Positive Client Months
     f = ClientHistory.months.select_related('client') \
                     .filter(value_date__month=12, client=client) \
-                    .only('performance', 'client__first_name', 'client__last_name')
-    p = f.filter(performance__gt=0)
+                    .only('mtd', 'client__first_name', 'client__last_name')
+    p = f.filter(mtd__gt=0)
     client_name = str(f[0].client).replace(', ', '_').lower()
     positive[client_name] = p.count() / f.count() * 100
     columns.append(client_name)
@@ -90,7 +90,7 @@ def bestworst(request):
                             .values('benchmark__name', 'benchmark__id') \
                             .annotate(count=Count('value_date')) \
                             .order_by('benchmark__name')
-    b2 = b.filter(performance__gt=0)
+    b2 = b.filter(mtd__gt=0)
 
     for bench in b:
         pos_count = 0
@@ -108,26 +108,26 @@ def bestworst(request):
     drawdown = {'best_worst_months': 'Worst Drawdown'}
     clients = ClientHistory.months.filter(value_date__month=12, client=client) \
                             .values('client__last_name', 'client__first_name') \
-                            .annotate(Max('performance'), Min('performance'),
+                            .annotate(Max('mtd'), Min('mtd'),
                                 Min('drawdown')) \
                             .order_by('client__last_name', 'client__first_name')
 
 
     for row in clients:
         client_name = ' '.join([row['client__last_name'], row['client__first_name']])
-        best[client_name] = row['performance__max']
-        worst[client_name] = row['performance__min']
+        best[client_name] = row['mtd__max']
+        worst[client_name] = row['mtd__min']
         drawdown[client_name] = row['drawdown__min']
 
     benchmarks = BenchmarkHistory.months.filter(
                          value_date__month=12, benchmark__client=client) \
                                 .values('benchmark__name') \
-                                .annotate(Max('performance'), Min('performance'),
+                                .annotate(Max('mtd'), Min('mtd'),
                                     Min('drawdown')) \
                                 .order_by('benchmark__name')
     for bench in benchmarks:
-        best[bench['benchmark__name']] = bench['performance__max']
-        worst[bench['benchmark__name']] = bench['performance__min']
+        best[bench['benchmark__name']] = bench['mtd__max']
+        worst[bench['benchmark__name']] = bench['mtd__min']
         drawdown[bench['benchmark__name']] = bench['drawdown__min']
     lis.append(best)
     lis.append(worst)
@@ -155,30 +155,30 @@ def returnhistogram(request):
     clients = ClientHistory.months.filter(client=client_id)
 
     # get 10+
-    count = clients.filter(performance__gte=10).aggregate(Count('performance'))
-    lis.append([columns[0], count['performance__count']])
+    count = clients.filter(mtd__gte=10).aggregate(Count('mtd'))
+    lis.append([columns[0], count['mtd__count']])
 
     # get 5 to 10
-    count = clients.filter(performance__gte=5, performance__lt=10) \
-                                        .aggregate(Count('performance'))
-    lis.append([columns[1], count['performance__count']])
+    count = clients.filter(mtd__gte=5, mtd__lt=10) \
+                                        .aggregate(Count('mtd'))
+    lis.append([columns[1], count['mtd__count']])
 
     # get -5 to +5
     # @TODO: On MSSQL SIGNED is called INT
     sql = """
     SELECT id,
-        Cast(performance as SIGNED) as performance,
-        Count(performance) as count
+        Cast(mtd as SIGNED) as mtd,
+        Count(mtd) as count
     FROM client_clienthistory
     WHERE client_id = %s
-        AND performance > -5 AND performance < 5
-    GROUP BY Cast(performance as SIGNED)
-    ORDER BY performance DESC;
+        AND mtd > -5 AND mtd < 5
+    GROUP BY Cast(mtd as SIGNED)
+    ORDER BY mtd DESC;
     """
     raw = ClientHistory.months.raw(sql, [client_id])
     dic = {}
     for client in raw:
-        dic[str(client.performance)] = client.count
+        dic[str(client.mtd)] = client.count
     for index in range(4, -5, -1):
         try:
             count = dic[str(index)]
@@ -188,12 +188,12 @@ def returnhistogram(request):
         lis.append([str(index) + '%', count])
 
     # get -5 to -10
-    count = clients.filter(performance__gte=5, performance__lt=10).aggregate(Count('performance'))
-    lis.append([columns[11], count['performance__count']])
+    count = clients.filter(mtd__gte=5, mtd__lt=10).aggregate(Count('mtd'))
+    lis.append([columns[11], count['mtd__count']])
 
     # get -10 and Lower
-    count = clients.filter(performance__gte=10).aggregate(Count('performance'))
-    lis.append([columns[12], count['performance__count']])
+    count = clients.filter(mtd__gte=10).aggregate(Count('mtd'))
+    lis.append([columns[12], count['mtd__count']])
 
     dic = {
         'columns': columns,
@@ -218,18 +218,18 @@ def correlation(request):
 
     # client correlation
     dic['Correlation Matrix'] = client.client.name()
-    dic[client.client.name()] = client.performance / client.performance
+    dic[client.client.name()] = client.mtd / client.mtd
     for bench in benchmarks:
-        dic[bench.name] = client.performance / bench.performance
+        dic[bench.name] = client.mtd / bench.mtd
     lis.append(dic)
 
     # benchmark correlation
     for col in benchmarks:
         dic = {}
         for row in benchmarks:
-            dic[row.name] = row.performance / col.performance
+            dic[row.name] = row.mtd / col.mtd
         dic['Correlation Matrix'] = col.name
-        dic[client.client.name] = client.performance / col.performance
+        dic[client.client.name] = client.mtd / col.mtd
         lis.append(dic)
         columns.append(col.name)
 
@@ -249,20 +249,20 @@ def negativemonths(request):
 
     clients = ClientHistory.months.filter(client=client_id) \
                                     .values('client__first_name', 'client__last_name') \
-                                    .annotate(Avg('performance')) \
+                                    .annotate(Avg('mtd')) \
                                     .order_by('client__last_name', 'client__first_name')[0]
     client_name = '_'.join([clients['client__last_name'], clients['client__first_name']]).lower()
     dic = {
-        client_name: clients['performance__avg'],
+        client_name: clients['mtd__avg'],
     }
 
     benchmarks = BenchmarkHistory.months.filter(benchmark__client=client_id,
-                                     performance__gt=0) \
+                                     mtd__gt=0) \
                                     .values('benchmark__name') \
-                                    .annotate(Avg('performance')) \
+                                    .annotate(Avg('mtd')) \
                                     .order_by('benchmark__name')
     for bench in benchmarks:
-        dic[bench['benchmark__name']] = bench['performance__avg']
+        dic[bench['benchmark__name']] = bench['mtd__avg']
 
     columns = [key for key, val in dic.iteritems()]
 
@@ -302,7 +302,7 @@ def currencyhedge(request):
     client_id = request.GET.get('client', 0)
 
     sql = """
-        SELECT id, currency_id, amount, settlement_date
+        SELECT id, currency_id, amount_base, settlement_date
         FROM `client_fxhedge`
         WHERE (`client_fxhedge`.`client_id` = %s  AND `client_fxhedge`.`settlement_date` > %s )
         GROUP BY `client_fxhedge`.`currency_id`
@@ -317,16 +317,16 @@ def currencyhedge(request):
        fxrate = FxRate.objects.filter(currency=row.currency_id).latest('value_date')
 
        try:
-           euro_eq = (perf.nav - row.amount) / fxrate.fx_rate
+           euro_eq = (perf.base_nav - row.amount_base) / fxrate.fx_rate
        except:
            euro_eq = 0
 
        dic = {
          'currency': perf.currency.name,
-         'total_position': perf.nav,
-         'total_hedge': row.amount,
+         'total_position': perf.base_nav,
+         'total_hedge': row.amount_base,
          'hedge_expires': str(row.settlement_date),
-         'exposure': perf.nav - row.amount,
+         'exposure': perf.base_nav - row.amount_base,
          'euro_equivalent': euro_eq,
        }
        lis.append(dic)
@@ -424,7 +424,7 @@ def reconciliation(request):
 
 
 # W16 - Line Graph & Bar Chart
-# http://localhost:8000/api/client-performance-benchmark/?client=2&fields=performance&format=json
+# http://localhost:8000/api/client-performance-benchmark/?client=2&fields=mtd&format=json
 @login_required
 def performancebenchmark(request):
 
@@ -439,7 +439,7 @@ def performancebenchmark(request):
     dic = {}
     for row in objects:
         date = int(mktime(row.value_date.timetuple())) * 1000
-        output = [int(date), row.performance]
+        output = [int(date), row.mtd]
         bench_id = int(row.benchmark.id)
 
         try:
@@ -459,12 +459,12 @@ def performancebenchmark(request):
 
     # clients
     clients = ClientHistory.months.select_related('client') \
-             .filter(client=client, fund__isnull=True).only('id', 'client__first_name', 'client__last_name', 'value_date', fields)
+             .filter(client=client).only('id', 'client__first_name', 'client__last_name', 'value_date', fields)
 
     dic = {}
     for row in clients:
         date = int(mktime(row.value_date.timetuple())) * 1000
-        output = [int(date), getattr(row, fields)]
+        output = [int(date), float(getattr(row, fields))]
         client_id = int(row.client.id)
 
         try:
