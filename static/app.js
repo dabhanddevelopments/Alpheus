@@ -27,9 +27,6 @@ function investmentNAV(div, type) {
 
     win = Ext.getCmp(div);
     title = 'asdf';
-    console.log('asdfasdf');
-    console.log(win);
-
 
     var holdings = {'ad-hoc': 'Ad-hoc', 'cash': 'Cash', 'loan': 'Loans', 'pe': 'PE Commitments', 'hsbc': 'HSBC', 'cs': 'Credit Suisse'};
     var ajaxReqs = [];
@@ -60,12 +57,12 @@ function investmentNAV(div, type) {
     });
     $.when.apply($, ajaxReqs).then(function() {
         // all requests are complete
-        console.log('grid_data');
-        console.log(grid_data);
+       //console.log('grid_data');
+       //console.log(grid_data);
 
         columns.push({dataIndex: 'group', collapsible: false});
 
-        console.log(columns);
+       //console.log(columns);
 
         fields = [];
         for(i=0; i < columns.length; i++) {
@@ -258,7 +255,7 @@ function zoomGraph(e, widget) {
     chart.showLoading('Loading data from server...');
 
     $.getJSON(widget.url + qs + date + filter, function(data22) {
-        console.log(data22);
+       //console.log(data22);
         //console.log(data22[0].data);
 	     chart.series[0].setData(data22.objects[0].data);
 		 chart.hideLoading();
@@ -324,8 +321,8 @@ console.log(e);
 
     $.getJSON('/api/holding-history/' + qs + date + filter, function(data) {
 
-        console.log('DATA');
-        console.log(data);
+       //console.log('DATA');
+       //console.log(data);
 
 	     chart.series[0].setData(data.objects[0].data);
 		 chart.hideLoading();
@@ -522,8 +519,8 @@ function destroyInnerGrid(record, widget_id) {
 function refreshHoldPerfBar(widget_key, date, id, monthly, fields, order_by) {
 
 
-    console.log('widget_key');
-    console.log(widget_key);
+   //console.log('widget_key');
+   //console.log(widget_key);
     if(widget_key == 'w45' || widget_key == 'w33') {
         var type = 'client';
         var size_x = 7;
@@ -1854,7 +1851,7 @@ Ext.onReady(function() {
         }
 
 
-        console.log(widget.url + widget.qs);
+       //console.log(widget.url + widget.qs);
         $.getJSON(widget.url + widget.qs, function(data) {
 
             var options = {
@@ -2086,7 +2083,7 @@ Ext.onReady(function() {
                 options.xAxis.labels = labels;
             }
 
-            console.log(widget.window.key);
+           //console.log(widget.window.key);
             // vertical fund performance line over bar graph
             if(widget.window.key == 'w2' || widget.window.key == 'w52') {
 
@@ -2661,12 +2658,12 @@ Ext.onReady(function() {
                 }
             }
 
-            console.log('ere');
-            console.log(cls);
-            console.log(widget.key);
-            console.log(widget.window.key);
-            console.log(div);
-            console.log(plugins);
+           //console.log('ere');
+           //console.log(cls);
+           //console.log(widget.key);
+           //console.log(widget.window.key);
+           //console.log(div);
+           //console.log(plugins);
             var panel = Ext.create('Ext.grid.Panel', {
                 id: div,
                 cls: cls,
@@ -3065,7 +3062,7 @@ Ext.onReady(function() {
                     win.setTitle(title);
                     //return;
                 } else {
-                    console.log(window_id);
+                   //console.log(window_id);
                 }
 
                 if(widget_data[x].type == 'data_table') {
@@ -3142,7 +3139,7 @@ Ext.onReady(function() {
                 var id = record.get('id');
 
 
-                console.log('outcommented');
+               //console.log('outcommented');
 
                 /*
 
@@ -3691,7 +3688,7 @@ Ext.onReady(function() {
             success: function(data) {
                 $('#data').data("fund_name", data.name);
                 $('#data').data("classification", data.classification__id);
-                console.log(data);
+               //console.log(data);
             }
         });
     }
@@ -3717,7 +3714,7 @@ Ext.onReady(function() {
 
                 $.getJSON('/api/client/?fields=first_name,last_name&order_by=last_name', function(clients) {
 
-                    console.log(clients);
+                   //console.log(clients);
                     client_list = [
                         {
                             "expanded": false,
@@ -4284,7 +4281,7 @@ Ext.define('Category', {
             disabled: true,
             formBind: true,
             handler: function(){
-                console.log(this.up('form').getForm().getValues());
+               //console.log(this.up('form').getForm().getValues());
 
                 //grid.window = "/api/pagewindow/1/";
                 grid = this.up('form').getForm().getValues();
@@ -4298,7 +4295,7 @@ Ext.define('Category', {
                     dataType: "json",
                     contentType: "application/json",
                     success: function(pagewindow) {
-                        console.log('holding added');
+                       //console.log('holding added');
                     },
                 });
             }
@@ -4306,13 +4303,13 @@ Ext.define('Category', {
 
         onChange: function(field, value) {
 
-            console.log(field, value);
+           //console.log(field, value);
 
             if(field == 'asset_class') {
 
                 switch(value) {
                     case 27:
-                        console.log('fit view');
+                       //console.log('fit view');
                         // do something else
                         break;
                     case 2:
@@ -4699,7 +4696,7 @@ Ext.define('TooltipForm', {
             disabled: true,
             formBind: true,
             handler: function(){
-                console.log(this.up('form').getForm().getValues());
+               //console.log(this.up('form').getForm().getValues());
 
                 //grid.window = "/api/pagewindow/1/";
                 grid = this.up('form').getForm().getValues();
@@ -4713,7 +4710,7 @@ Ext.define('TooltipForm', {
                     dataType: "json",
                     contentType: "application/json",
                     success: function(pagewindow) {
-                        console.log('holding added');
+                       //console.log('holding added');
                     },
                 });
             }
@@ -4754,7 +4751,7 @@ Ext.define('TooltipForm', {
         }
         switch(value) {
             case 27:
-                console.log('fit view');
+               //console.log('fit view');
                 this.child('#range').hide();
                 // do something else
                 break;
@@ -4772,7 +4769,7 @@ Ext.define('TooltipForm', {
 
 function setElementValue(id, response) {
     var holding_fields = Ext.getCmp(id);
-    console.log(holding_fields);
+   //console.log(holding_fields);
     $.each(holding_fields.items.items, function(index, row) {
         if(row.name !== 'holding') {
             row.setValue(response[row.name]);
@@ -4848,7 +4845,7 @@ $.ajax({
     dataType: "json",
     contentType: "application/json",
     success: function(response) {
-        console.log(response);
+       //console.log(response);
     }
 });
 */
