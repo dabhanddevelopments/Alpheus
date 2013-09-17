@@ -2975,7 +2975,7 @@ Ext.onReady(function() {
 
                 if(widget.window.key == 'w11') {
 
-                    var fields = 'trade_date,settlement_date,no_of_units,trade_price_euro,fx_euro,purchase_price,base_nav';
+                    var fields = 'trade_date,settlement_date,no_of_units,trade_price_euro,fx_euro,trade_price_base,base_nav';
                     //var fields = 'trade_date,settlement_date,buy_sell,no_of_units,trade_price_base_base,fx_to_euro,trade_price_base,base_nav';
                     $.getJSON("/api/trade/?holding=" + id + '&column_width=150,80&fields=' + fields, function(w11) {
 
