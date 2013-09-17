@@ -1,0 +1,39 @@
+{% extends "admin/admin/change_form.html" %}
+
+
+{% block field_sets %}
+
+<script>
+(function($){
+    $(function(){
+        $("#id_holding" ).change(function() {
+          $.getJSON('/api/holding/' + $('#id_holding').val() + '/?fields={% for h in holdings %}{{ h.field }}{% if not forloop.last %},{% endif %}{% endfor %}', function(data) {
+            $.each(data, function(field, value) {
+              $('#' + field).text(value);
+            });
+          });
+        });
+    });
+}(grp.jQuery));
+</script>
+
+<div id="grp-content-container">
+    <fieldset class="grp-module ">
+        <div class="grp-row grp-cells-1 holding ">
+                <table>
+                    <tr>
+                    {% for h in holdings %}
+                         {% if forloop.counter0|divisibleby:"4" %}</tr><tr>{% endif %}
+                         <td><strong>{{ h.name }}</strong></td><td width="100"><div id="{{ h.field }}">{{ h.value }}</div></td>
+                    {% endfor %}
+                    </tr>
+                </table>
+            </div>
+        </div>            
+    </div>            
+</div>
+{% for fieldset in adminform %}
+  {% include "admin/includes/fieldset.html" %}
+{% endfor %}
+{% endblock %}
+

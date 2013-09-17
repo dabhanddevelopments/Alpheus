@@ -1,0 +1,73 @@
+<html>
+<head>
+<title>Highcharts</title>
+
+<script src="jquery.min.js"></script>
+<script src="highstock.js"></script>
+
+<script type="text/javascript">
+
+
+$(function () {
+
+            var categories = ['MSIE', 'Firefox', 'Chrome', 'Safari', 'Opera'];
+            data = [{
+                    y: 55.11,
+                }, {
+                    y: 21.63,
+                }, {
+                    y: 11.94,
+                }, {
+                    y: 7.15,
+                }, {
+                    y: 2.14,
+                }];
+    
+
+    
+        var chart = $('#container').highcharts({
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Browser market share, April, 2011'
+            },
+            subtitle: {
+                text: false
+            },
+            xAxis: {
+                categories: categories
+            },
+            yAxis: {
+                title: {
+                    text: 'Holding Performance for XXXX-XX-XX'
+                }
+            },
+            legend: {
+                enabled: false,
+            },
+            series: [{
+                //name: name,
+                data: data,
+            }],
+            exporting: {
+                enabled: true
+            }
+        })
+        .highcharts(); // return chart
+    
+
+});
+</script> 
+
+<style type="text/css">
+
+</style>
+
+</head>
+<body>
+
+<div id="container" style="min-width: 400px; height: 500px; width: 1000px; margin: 0 auto;"></div>
+
+</body>
+</html>

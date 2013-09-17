@@ -1,0 +1,186 @@
+<html>
+<head>
+<title>Highcharts</title>
+
+<script src="jquery.min.js"></script>
+<script src="http://code.highcharts.com/stock/highstock.js"></script>
+<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
+<script type="text/javascript" src="http://www.highcharts.com/samples/data/usdeur.js"></script>
+
+<script type="text/javascript">
+
+
+// usage: createSeries([0, 3, 4, 6], 1)
+// Creates 4 series and assigns them all to yAxis 1
+// you can extend this to take colors etc too, as per requirement
+
+$(function () {
+// usage: createSeries([0, 3, 4, 6], 1)
+// Creates 4 series and assigns them all to yAxis 1
+// you can extend this to take colors etc too, as per requirement
+
+var options = {
+    chart: {
+        renderTo: 'container',
+    },
+    navigator:{
+        enabled:true
+    },
+    scrollbar: {
+        enabled:true
+    },
+
+    rangeSelector: {
+        enabled: true,
+		        selected: 1
+    },    
+    xAxis: {
+        gridLineWidth: 1,
+        categories: [
+        'Jan 2013',
+        'Feb 2013',
+        'Mar 2013',
+        'Apr 2013',
+        'May 2013',
+        'Jun 2013',
+        'Jul 2013',
+        'Aug 2013',
+        'Sep 2013',
+        'Oct 2013',
+        'Nov 2013',
+        'Dec 2013',
+        'Jan 2011',
+        'Feb 2011',
+        'Mar 2011',
+        'Apr 2011',
+        'May 2011',
+        'Jun 2011',
+        'Jul 2011',
+        'Aug 2011',
+        'Sep 2011',
+        'Oct 2011',
+        'Nov 2011',
+        'Dec 2011',
+        'Jan 2010',
+        'Feb 2010',
+        'Mar 2010',
+        'Apr 2010',
+        'May 2010',
+        'Jun 2010',
+        'Jul 2010',
+        'Aug 2010',
+        'Sep 2010',
+        'Oct 2010',
+        'Nov 2010',
+        'Dec 2010',
+        'Jan 2009',
+        'Feb 2009',
+        'Mar 2009',
+        'Apr 2009',
+        'May 2009',
+        'Jun 2009',
+        'Jul 2009',
+        'Aug 2009',
+        'Sep 2009',
+        'Oct 2009',
+        'Nov 2009',
+        'Dec 2009',
+        ] ,
+        labels: {
+            rotation: -45,
+            align: 'right',
+            style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+            }
+        }
+    },
+    yAxis: [
+    {
+        height: 200,
+        lineWidth: 2,
+        offset: 0,
+        title: {
+            text: 'Price',
+        }
+    },
+    {
+        top: 300,
+        //lineWidth: 0,
+        min: 0,
+        max: 5,
+        gridLineWidth: 0,
+        offset: 0,
+        height: 100,
+        labels: {
+            enabled: true
+        },
+        title: {
+            text: 'Volume',
+        }
+    },
+    ],
+    plotOptions: {
+        series: {
+            borderWidth: 0,
+            //            pointPadding: 0,
+            //            groupPadding: 0,
+            shadow: false
+        },
+        column: {
+            //            stacking: 'normal',
+            //            pointPadding: "5px;",
+            animation: false,
+        },
+        line: {
+            stacking: 'normal'
+        }
+    },    
+    series: [
+    {
+        yAxis: 0,
+        name: 'Price by time',
+        stack: 0,
+				tooltip: {
+					valueDecimals: 2
+				}  ,          
+        data: [[1147651200000,67.79],
+[1147737600000,64.98],
+[1147824000000,65.26],],
+    },
+    {
+        name: 'Volume by time',
+        yAxis: 1,
+        stack: 0,
+        data: [[1147651200000,67.79],
+[1147737600000,64.98],
+[1147824000000,65.26],],
+        lineWidth: 3,
+        marker: {
+            enabled: false
+        },
+				tooltip: {
+					valueDecimals: 2
+				},
+        type: 'column',
+    },
+    ]
+
+};
+
+var chart = new Highcharts.Chart(options);
+
+});
+</script> 
+
+<style type="text/css">
+
+</style>
+
+</head>
+<body>
+
+<div id="container" style="min-width: 400px; height: 500px; width: 1000px; margin: 0 auto;"></div>
+
+</body>
+</html>
