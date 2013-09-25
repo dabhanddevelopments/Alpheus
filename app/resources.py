@@ -285,6 +285,7 @@ class MenuResource(TreeBaseResource, StandardBaseResource):
         allowed_methods = ['get']
         fields = ['id', 'name', 'page']
 
+
     def get_node_data(self, obj):
 
         try:
@@ -318,8 +319,8 @@ class MenuResource(TreeBaseResource, StandardBaseResource):
         obj = super(MenuResource, self).get_object_list(request)
 
         # Limiting menus & tabs by pre-defined user groups
-        #user_groups = [group.pk for group in request.user.groups.all()]
-        #obj = obj.filter(access__in=user_groups)
+        user_groups = [group.pk for group in request.user.groups.all()]
+        obj = obj.filter(access__in=user_groups)
 
         return obj
 
