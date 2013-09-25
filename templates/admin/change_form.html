@@ -1,0 +1,55 @@
+{% extends "admin/admin/change_form.html" %}
+
+<!-- LOADING -->
+{% load url from future %}
+{% load admin_static i18n admin_modify grp_tags %}
+
+<!-- PAGE-TOOLS -->
+{% block page-tools %}{% endblock %}
+
+
+<!-- JAVASCRIPTS -->
+{% block javascripts %}
+    {{ block.super }}
+<script type="text/javascript" charset="utf-8">
+(function($){
+    $(function(){
+    
+    /*
+        function calculatePrice() {
+            if(typeof $('#id_no_of_units').val() != 'undefined' && typeof $('#id_trade_price_base').val() != 'undefined') {
+                var total_value = $('#id_no_of_units').value * $('#id_trade_price_base').value;
+                total_value = total_value.toFixed(2); //2 decimal places
+                $('#id_total_value').val(total_value);
+             
+            }
+        }
+
+            $("#id_no_of_units" ).change(function() {
+                calculatePrice();
+            });
+            $("#id_trade_price_base" ).change(function() {
+                calculatePrice();
+            });
+            
+    */
+    });
+}(grp.jQuery));
+</script>
+{% endblock %}
+
+<!-- BREADCRUMBS -->
+{% block breadcrumbs %}
+    {% if not is_popup %}
+        <ul>
+            <li>{% if has_change_permission %}<a href="../">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %}</li>
+            <li>{% if add %}{% trans "Add" %} {{ opts.verbose_name }}{% else %}{{ original|truncatewords:"18" }}{% endif %}</li>
+        </ul>
+    {% endif %}
+{% endblock %}
+
+
+<!-- OBJECT TOOLS -->
+{% block object-tools %}{% endblock %}
+
+
