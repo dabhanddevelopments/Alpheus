@@ -320,7 +320,7 @@ class MenuResource(TreeBaseResource, StandardBaseResource):
 
         # Limiting menus & tabs by pre-defined user groups
         user_groups = [group.pk for group in request.user.groups.all()]
-        obj = obj.filter(access__in=user_groups)
+        obj = obj.filter(access__in=user_groups).distinct()
 
         return obj
 
