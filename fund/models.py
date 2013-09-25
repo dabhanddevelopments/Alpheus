@@ -25,14 +25,6 @@ PERCENT_RELEASED=(
 )
 
 
-class PerformanceEstimate(models.Model):
-    holding = models.ForeignKey('holding.Holding')
-    fund = models.ForeignKey('Fund')
-    benchmark = models.ForeignKey(Benchmark)
-    peer = models.ForeignKey(Peer)
-    user = models.ForeignKey(User)
-    value_date = models.DateField()
-    estimated_mtd = models.DecimalField(max_digits=20, decimal_places=5)
 
 class CurrencyPosition(models.Model):
     fund = models.ForeignKey('Fund')
@@ -47,7 +39,7 @@ class FxRate(models.Model):
     fx_rate = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
 
 class Classification(models.Model):
-    key = models.CharField(max_length=50)
+    #key = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
     asset_class = models.ForeignKey('holding.Category', related_name='asset_class_classification')
 

@@ -43,6 +43,14 @@ PERCENT_RELEASED=(
     (100,'100%'),
 )
 
+class PerformanceEstimate(models.Model):
+    holding = models.ForeignKey('holding.Holding', null=True)
+    fund = models.ForeignKey('fund.Fund', null=True)
+    benchmark = models.ForeignKey('comparative.Benchmark', null=True)
+    peer = models.ForeignKey('comparative.Peer', null=True)
+    user = models.ForeignKey(User, verbose_name="Manager")
+    value_date = models.DateField()
+    estimated_mtd = models.DecimalField(max_digits=20, decimal_places=5)
 
 
 
@@ -180,7 +188,7 @@ class Custodian(models.Model):
     key = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
     contact_name = models.CharField(max_length=50)
-    contact_number = models.CharField(max_length=50)
+    contact_number = models.CharField(max_length=50, blank=True, null=True)
     performance_fee =  models.DecimalField(max_digits=15, decimal_places=5)
     management_fee =  models.DecimalField(max_digits=15, decimal_places=5)
 
@@ -190,8 +198,8 @@ class Custodian(models.Model):
 class Auditor(models.Model):
     name = models.CharField(max_length=50)
     contact_name = models.CharField(max_length=50)
-    contact_number = models.CharField(max_length=50)
-    fee =  models.DecimalField(max_digits=15, decimal_places=5)
+    contact_number = models.CharField(max_length=50, blank=True, null=True)
+    fee =  models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
 
     def __unicode__(self):
         return self.name
@@ -200,7 +208,7 @@ class Administrator(models.Model):
     name = models.CharField(max_length=50)
     contact_name = models.CharField(max_length=50)
     contact_number = models.CharField(max_length=50)
-    fee =  models.DecimalField(max_digits=15, decimal_places=5)
+    fee =  models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
 
     def __unicode__(self):
         return self.name
@@ -264,9 +272,9 @@ class HistoricalExpense(models.Model):
 # The person taking your trade order
 class CounterParty(models.Model):
     name = models.CharField(max_length=50)
-    counterparty = models.ForeignKey('fund.Fund', null=True)
 
 
 class CounterPartyTrader(models.Model):
     name = models.CharField(max_length=50)
+    counterparty = models.ForeignKey(CounterParty, null=True)
 

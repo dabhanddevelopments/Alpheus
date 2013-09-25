@@ -1,7 +1,10 @@
 from django.contrib import admin
 from fund.models import *
 
-class FundAdmin(admin.ModelAdmin):
+class FundBaseAdmin(admin.ModelAdmin):
+    actions = None
+
+class FundAdmin(FundBaseAdmin):
     fields = (
         'name', 'classification', 'user', 'currency', 'description',
         ('custodian', 'custodian_management_fee', 'custodian_performance_fee'),
@@ -16,11 +19,11 @@ class FundAdmin(admin.ModelAdmin):
     filter_horizontal = ['benchmark']
 
 
-class ClassificationAdmin(admin.ModelAdmin):
+class ClassificationAdmin(FundBaseAdmin):
     fields = ('name', 'asset_class')
 
 
-class FxHedgeAdmin(admin.ModelAdmin):
+class FxHedgeAdmin(FundBaseAdmin):
     fields = (
         'fund', 'client',
         ('trade_date', 'settlement_date'),
@@ -31,14 +34,13 @@ class FxHedgeAdmin(admin.ModelAdmin):
     )
 
 
-class DepositAdmin(admin.ModelAdmin):
+class DepositAdmin(FundBaseAdmin):
     fields = (
         'fund', 'client',
         ('trade_date', 'expiration_date'),
         ('currency', 'amount_base', 'amount_euro'), #, 'fx_euro'),
         ('deposit_interest_percent', 'deposit_interest_received_base')
     )
-
 
 admin.site.register(CurrencyPosition)
 admin.site.register(Deposit, DepositAdmin)

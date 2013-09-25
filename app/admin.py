@@ -1,3 +1,4 @@
+from alpheus.utils import create_modeladmin
 from django.contrib import admin
 from django.http import HttpResponseRedirect
 from app.models import *
@@ -69,6 +70,37 @@ class AdministratorAdmin(admin.ModelAdmin):
     fields = ('name', 'contact_name', 'contact_number')
 
 
+
+class EstimatePerformanceBase(admin.ModelAdmin):
+    actions = None
+
+class FundPerformanceEstimateAdmin(EstimatePerformanceBase):
+    list_display = ['fund', 'value_date', 'user', 'estimated_mtd']
+    list_filter = ['value_date', 'user']
+    search_fields = ['fund']
+    fields = (
+        'value_date', 'fund', 'user', 'estimated_mtd'
+    )
+    def queryset(self, request):
+        qs = super(FundPerformanceEstimateAdmin, self).queryset(request)
+        return qs.filter(fund__isnull=False)
+
+
+
+class HoldingPerformanceEstimateAdmin(EstimatePerformanceBase):
+    list_display = ['holding', 'value_date', 'user', 'estimated_mtd']
+    list_filter = ['value_date', 'user']
+    search_fields = ['holding']
+    fields = (
+        'value_date', 'holding', 'user', 'estimated_mtd'
+    )
+    def queryset(self, request):
+        qs = super(HoldingPerformanceEstimateAdmin, self).queryset(request)
+        return qs.filter(holding__isnull=False)
+
+
+
+
 admin.site.register(WidgetType, WidgetTypeAdmin)
 admin.site.register(WidgetParam, WidgetParamAdmin)
 admin.site.register(Widget, WidgetAdmin)
@@ -85,30 +117,6 @@ admin.site.register(Custodian, CustodianAdmin)
 admin.site.register(CounterParty)
 admin.site.register(CounterPartyTrader)
 admin.site.register(Alarm)
-"""
-admin.site.register(Country, CountryAdmin)
-admin.site.register(Currency, CurrencyAdmin)
-admin.site.register(Holding, HoldingAdmin)
-admin.site.register(HoldingCategory, HoldingCategoryAdmin)
 
-
-admin.site.register(Trade)
-admin.site.register(TradeType)
-admin.site.register(Fund)
-admin.site.register(FundType)
-admin.site.register(FundPerf, FundPerfDailyAdmin)
-admin.site.register(FundPerfMonth, FundPerfMonthlyAdmin)
-admin.site.register(HoldPerf)
-admin.site.register(HoldPerfMonth)
-admin.site.register(Fee)
-admin.site.register(PurchaseSale)
-admin.site.register(FundBench)
-admin.site.register(FundBenchHist)
-admin.site.register(FxHedge)
-
-admin.site.register(Client)
-admin.site.register(ClientPerfMonth)
-admin.site.register(CurrencyPositionMonth)
-admin.site.register(SubscriptionRedemption)
-admin.site.register(CountryBreakdown)
-"""
+create_modeladmin(FundPerformanceEstimateAdmin, name='FundPerformanceEstimate', model=PerformanceEstimate)
+create_modeladmin(HoldingPerformanceEstimateAdmin, name='HoldingPerformanceEstimate', model=PerformanceEstimate)

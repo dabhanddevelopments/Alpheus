@@ -1,6 +1,6 @@
 # myapp/api/resources.py
 from tastypie import fields
-from tastypie.resources import Resource, ALL, ALL_WITH_RELATIONS
+from tastypie.resources import ModelResource, Resource, ALL, ALL_WITH_RELATIONS
 from tastypie.authorization import DjangoAuthorization
 from alpheus.serializers import PrettyJSONSerializer
 from tastypie.api import Api
@@ -52,7 +52,7 @@ class WindowResource(StandardBaseResource):
 
 #curl --dump-header - -H "Content-Type: application/json" -X POST --data '{"username" : "me", "password": "l33t"}' http://localhost:8003/api/user/login/
 
-class UserResource(MainBaseResource):
+class UserResource(ModelResource):
     class Meta:
         queryset = User.objects.all()
         fields = ['first_name', 'last_name', 'email']

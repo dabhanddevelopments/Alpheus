@@ -105,4 +105,8 @@ class SubscriptionRedemption(models.Model):
     fx_euro = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
 
 
+    def __unicode__(self):
+        return u'%s, %s' % (self.fund, self.client)
+
+
 

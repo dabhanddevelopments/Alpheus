@@ -3704,6 +3704,10 @@ Ext.onReady(function() {
         });
     }
 
+    function popup(section, page) {
+        window.open("/admin/" + section + "/" + page + "/", "", "fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes,directories=yes,location=no,width=900,height=700,left=400,top=200");
+    }
+
     function viewPort() {
 
          //$.ajax({
@@ -3875,21 +3879,110 @@ Ext.onReady(function() {
                                         }
                                     }
 
-                                    if(record.raw.page == 24) {
-                                        //
-window.open("http://localhost:8000/admin/app/menu/70/?_popup=1", "", "fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes,directories=yes,location=no,width=900,height=700,left=400,top=200");
-/*
-                                        $("#thedialog").attr('src', "http://localhost:8000/admin/app/menu/70/?_popup=1");
-                                        $("#somediv").dialog({
-                                            width: 800,
-                                            height: 600,
-                                            modal: true,
-                                            close: function () {
-                                                $("#thedialog").attr('src', "about:blank");
-                                            }
-                                        });
-*/
+                                    page_id = record.raw.id;
+
+                                    if(page_id == 96) {
+                                        popup('fund', 'fund');
+                                    } else if(page_id == 97) {
+                                        popup('client', 'subscriptionredemption');
+                                    } else if(page_id == 98) {
+                                        popup('app', 'custodian');
+                                    } else if(page_id == 99) {
+                                        popup('app', 'auditor');
+                                    } else if(page_id == 100) {
+                                        popup('app', 'administrator');
+                                    } else if(page_id == 101) {
+                                        popup('fund', 'classification');
+                                    } else if(page_id == 102) {
+                                        popup('app', 'fundperformanceestimate');
+                                    } else if(page_id == 103) {
+                                        popup('holding', 'holding');
+                                    } else if(page_id == 112) {
+                                        popup('holding', 'fund');
+                                    } else if(page_id == 105) {
+                                        popup('holding', 'fundequity');
+                                    } else if(page_id == 106) {
+                                        popup('holding', 'fundoption');
+                                    } else if(page_id == 107) {
+                                        popup('holding', 'fundfixedincome');
+                                    } else if(page_id == 108) {
+                                        popup('holding', 'fundsidepocket');
+                                    } else if(page_id == 109) {
+                                        popup('holding', 'fundprivateequity');
+                                    } else if(page_id == 114) {
+                                        popup('holding', 'clientfund');
+                                    } else if(page_id == 115) {
+                                        popup('holding', 'clientequity');
+                                    } else if(page_id == 116) {
+                                        popup('holding', 'clientoption');
+                                    } else if(page_id == 117) {
+                                        popup('holding', 'clientfixedincome');
+                                    } else if(page_id == 118) {
+                                        popup('holding', 'clientsidepocket');
+                                    } else if(page_id == 119) {
+                                        popup('holding', 'clientprivateequity');
+
+                                    } else if(page_id == 110) {
+                                        popup('holding', 'category');
+                                    } else if(page_id == 111) {
+                                        popup('app', 'holdingperformanceestimate');
+                                    } else if(page_id == 122) {
+                                        popup('trade', 'fund');
+                                    } else if(page_id == 123) {
+                                        popup('trade', 'fundequity');
+                                    } else if(page_id == 124) {
+                                        popup('trade', 'fundoption');
+                                    } else if(page_id == 125) {
+                                        popup('trade', 'fundfixedincome');
+                                    } else if(page_id == 126) {
+                                        popup('trade', 'fundsidepocket');
+                                    } else if(page_id == 127) {
+                                        popup('trade', 'fundprivateequity');
+                                    } else if(page_id == 128) {
+                                        popup('trade', 'clientfund');
+                                    } else if(page_id == 129) {
+                                        popup('trade', 'clientequity');
+                                    } else if(page_id == 130) {
+                                        popup('trade', 'clientoption');
+                                    } else if(page_id == 131) {
+                                        popup('trade', 'clientfixedincome');
+                                    } else if(page_id == 132) {
+                                        popup('trade', 'clientsidepocket');
+                                    } else if(page_id == 133) {
+                                        popup('trade', 'clientprivateequity');
+                                    } else if(page_id == 134) {
+                                        popup('app', 'counterparty');
+                                    } else if(page_id == 135) {
+                                        popup('app', 'counterpartytrader');
+                                    } else if(page_id == 136) {
+                                        popup('app', 'benchmark');
+                                    } else if(page_id == 137) {
+                                        popup('app', 'benchmarkperformance');
+                                    } else if(page_id == 138) {
+                                        popup('app', 'peer');
+                                    } else if(page_id == 139) {
+                                        popup('app', 'peerperformance');
+                                    } else if(page_id == 140) {
+                                        popup('client', 'client');
+                                    } else if(page_id == 141) {
+                                        popup('app', 'country');
+                                    } else if(page_id == 142) {
+                                        popup('app', 'currency');
+                                    } else if(page_id == 143) {
+                                        popup('fund', 'fxhedge');
+                                    } else if(page_id == 144) {
+                                        popup('fund', 'deposit');
+                                    } else if(page_id == 145) {
+                                        popup('auth', 'user');
+                                    } else if(page_id == 147) {
+                                        popup('auth', 'group');
                                     }
+
+
+
+
+
+
                                   //console.log('INIATING PAGE NUMBER:');
                                   //console.log(record.raw);
                                     initPage(record.raw);

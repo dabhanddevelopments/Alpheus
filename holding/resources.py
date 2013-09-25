@@ -4,6 +4,7 @@ from tastypie import fields
 from tastypie.api import Api
 
 from holding.models import *
+from trade.models import *
 from alpheus.base_resources import MainBaseResource, TreeBaseResource
 from app.resources import CurrencyResource
 from fund.resources import FundResource

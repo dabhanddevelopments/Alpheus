@@ -2,17 +2,21 @@ from django.contrib import admin
 from holding.models import *
 from alpheus.utils import create_modeladmin
 from django.forms import TextInput, Textarea
-
+from alpheus.admin import *
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'key', 'group']
 
 
 class HoldingAdmin(admin.ModelAdmin):
-    pass
+    actions = None
+
+    def __init__(self, model, admin_site):
+        self.fields = self.extra_fields + self.fields
+        super(HoldingAdmin, self).__init__(model, admin_site)
 
 
-class FundHoldingAdmin(HoldingAdmin):
+class FundBaseAdmin(FundMixin, HoldingAdmin):
     fields = (
         ('name', 'no_of_units'),
         ('asset_class', 'price_of_unit'),
@@ -27,8 +31,15 @@ class FundHoldingAdmin(HoldingAdmin):
         'redemption_fee36_percent',
     )
 
+class FundAdmin(FundBaseAdmin):
+    extra_fields = ('fund', )
 
-class EquityHoldingAdmin(HoldingAdmin):
+
+class ClientFundAdmin(FundBaseAdmin):
+    extra_fields = ('client', )
+
+
+class EquityBaseAdmin(EquityMixin, HoldingAdmin):
     fields = (
         ('name', 'no_of_units'),
         ('asset_class', 'price_of_unit'),
@@ -41,8 +52,15 @@ class EquityHoldingAdmin(HoldingAdmin):
         'bloomberg_code',
     )
 
+class FundEquityAdmin(EquityBaseAdmin):
+    extra_fields = ('fund', )
 
-class OptionHoldingAdmin(HoldingAdmin):
+
+class ClientEquityAdmin(EquityBaseAdmin):
+    extra_fields = ('client', )
+
+
+class OptionBaseAdmin(OptionMixin, HoldingAdmin):
     fields = (
         ('name', 'no_of_units'),
         ('asset_class', 'price_of_unit'),
@@ -56,7 +74,15 @@ class OptionHoldingAdmin(HoldingAdmin):
     )
 
 
-class FixedIncomeHoldingAdmin(HoldingAdmin):
+class FundOptionAdmin(OptionBaseAdmin):
+    extra_fields = ('fund', )
+
+
+class ClientOptionAdmin(OptionBaseAdmin):
+    extra_fields = ('client', )
+
+
+class FixedIncomeBaseAdmin(FixedIncomeMixin, HoldingAdmin):
     fields = (
         ('name', 'no_of_units'),
         ('asset_class', 'price_of_unit'),
@@ -69,7 +95,15 @@ class FixedIncomeHoldingAdmin(HoldingAdmin):
     )
 
 
-class SidePocketHoldingAdmin(HoldingAdmin):
+class FundFixedIncomeAdmin(FixedIncomeBaseAdmin):
+    extra_fields = ('fund', )
+
+
+class ClientFixedIncomeAdmin(FixedIncomeBaseAdmin):
+    extra_fields = ('client', )
+
+
+class SidePocketBaseAdmin(SidePocketMixin, HoldingAdmin):
     fields = (
         ('name', 'valuation'),
         'asset_class',
@@ -82,160 +116,54 @@ class SidePocketHoldingAdmin(HoldingAdmin):
     )
 
 
-class TradeAdmin(admin.ModelAdmin):
-
-    def add_view(self, request, form_url='', extra_context=None):
-        extra_context = extra_context or {}
-        fields = []
-
-        for field in self.holding_fields:
-            fields.append({
-                'field': field,
-                'name': field.replace('_', ' ').capitalize(),
-                'value': '',
-            })
-        extra_context['holdings'] = fields
-
-        return super(TradeAdmin, self).add_view(request, form_url,
-                                                        extra_context)
+class FundSidePocketAdmin(SidePocketBaseAdmin):
+    extra_fields = ('fund', )
 
 
-    def change_view(self, request, object_id, form_url='', extra_context=None):
-        extra_context = extra_context or {}
-        fields = []
-
-        if object_id:
-            trade = Trade.objects.get(pk=object_id)
-            holding = Holding.objects.get(pk=trade.holding.id)
-
-        for field in self.holding_fields:
-            fields.append({
-                'field': field,
-                'name': field.replace('_', ' ').capitalize(),
-                'value': getattr(holding, field),
-            })
-        extra_context['holdings'] = fields
-
-        return super(TradeAdmin, self).change_view(request, object_id,
-            form_url, extra_context)
+class ClientSidePocketAdmin(SidePocketBaseAdmin):
+    extra_fields = ('client', )
 
 
-class FundTradeAdmin(TradeAdmin):
+
+class PrivateEquityBaseAdmin(PrivateEquityMixin, HoldingAdmin):
     fields = (
-        'holding',
-        ('instruction_type', 'trade_date', 'settlement_date'),
-        ('sub_red_cash_movement', 'instruction_date', 'dealing_date'),
-        ('trade_no', 'desk', 'book'),
-        ('bank_reference', 'memorandum_text'),
-        ('no_of_units', 'trade_price_euro'), #, 'fxeuro'),
-        ('percent_to_redeem', 'base_nav', 'euro_nav'),
-        ('authorised_by', 'contract_note_received', 'proceed_date'),
-        ('transaction_fees', 'counter_party', 'counter_party_trader'),
-        ('delivery_fees', 'print_date', 'trade_slip_no'),
+        ('name', 'valuation'),
+        'asset_class',
+        'sector',
+        'location',
+        'country',
+        'currency',
+        'sec_id',
+        'bloomberg_code',
     )
 
 
-class EquityTradeAdmin(TradeAdmin):
-    fields = (
-        'holding',
-        ('instruction_type', 'trade_date', 'settlement_date'),
-        'buy_sell',
-        ('trade_no', 'desk', 'book'),
-        ('bank_reference', 'memorandum_text'),
-        ('no_of_units', 'trade_price_base',),# 'fx_euro'),
-        ('percent_to_redeem', 'corp_action_yes_no'),
-        ('euro_nav', 'base_nav', ),
-        ('transaction_fees', 'counter_party', 'counter_party_trader'),
-        ('delivery_fees', 'print_date', 'trade_slip_no'),
-    )
+class FundPrivateEquityAdmin(PrivateEquityBaseAdmin):
+    extra_fields = ('fund', )
 
 
-class OptionTradeAdmin(TradeAdmin):
-    fields = (
-        'holding',
-        ('instruction_type', 'trade_date', 'settlement_date'),
-        'buy_sell',
-        ('trade_no', 'desk', 'book'),
-        ('bank_reference', 'memorandum_text'),
-        ('no_of_units', 'trade_price_base',),# 'fx_euro'),
-        ('transaction_fees', 'counter_party', 'counter_party_trader'),
-        ('delivery_fees', 'print_date', 'trade_slip_no'),
-    )
+class ClientPrivateEquityAdmin(PrivateEquityBaseAdmin):
+    extra_fields = ('client', )
 
 
-class FixedIncomeTradeAdmin(TradeAdmin):
-    fields = (
-        'holding',
-        ('instruction_type', 'trade_date', 'settlement_date'),
-        'buy_sell',
-        ('trade_no', 'desk', 'book'),
-        ('bank_reference', 'memorandum_text'),
-        ('no_of_units', 'trade_price_base',),# 'fx_euro'),
-        ('base_nav', 'euro_nav', ),
-        ('transaction_fees', 'counter_party', 'counter_party_trader'),
-        ('delivery_fees', 'print_date', 'trade_slip_no'),
-    )
+create_modeladmin(FundAdmin, name='Fund', model=Holding)
+create_modeladmin(ClientFundAdmin, name='ClientFund', model=Holding)
+create_modeladmin(FundEquityAdmin, name='FundEquity', model=Holding)
+create_modeladmin(ClientEquityAdmin, name='ClientEquity', model=Holding)
+create_modeladmin(FundOptionAdmin, name='FundOption', model=Holding)
+create_modeladmin(ClientOptionAdmin, name='ClientOption', model=Holding)
+create_modeladmin(FundFixedIncomeAdmin, name='FundFixedIncome', model=Holding)
+create_modeladmin(ClientFixedIncomeAdmin, name='ClientFixedIncome', model=Holding)
+create_modeladmin(FundSidePocketAdmin, name='FundSidePocketHolding', model=Holding)
+create_modeladmin(ClientSidePocketAdmin, name='ClientSidePocketHolding', model=Holding)
+create_modeladmin(FundPrivateEquityAdmin, name='FundPrivateEquity', model=Holding)
+create_modeladmin(ClientPrivateEquityAdmin, name='ClientPrivateEquity', model=Holding)
 
-
-class SidePocketTradeAdmin(TradeAdmin):
-    fields = (
-        'holding',
-        ('instruction_type', 'trade_date', 'settlement_date'),
-        'buy_sell',
-        ('trade_no', 'desk', 'book'),
-        ('bank_reference', 'memorandum_text'),
-        ('valuation_base', 'valuation_euro'),
-        ('various_base', 'various_euro'),
-        ('distribution_base', 'distribution_euro'),
-        ('transaction_fees', 'counter_party', 'counter_party_trader'),
-        ('delivery_fees', 'print_date', 'trade_slip_no'),
-    )
-
-
-class PrivateEquityTradeAdmin(TradeAdmin):
-    fields = (
-        'holding',
-        ('instruction_type', 'trade_date', 'settlement_date'),
-        'inflow_outflow_various_expense_valuation',
-        ('trade_no', 'desk', 'book'),
-        ('bank_reference', 'memorandum_text'),
-        ('valuation_base', 'valuation_euro'),
-        ('various_base', 'various_euro'),
-        ('distribution_base', 'distribution_euro'),
-        ('transaction_fees', 'counter_party', 'counter_party_trader'),
-        ('delivery_fees', 'print_date', 'trade_slip_no'),
-    )
-    holding_fields = [
-        'asset_class', 'sector', 'location', 'country', 'currency', 'sec_id',
-        'bloomberg_code', 'redemption_fee12_percent', 'redemption_fee24_percent',
-        'redemption_fee36_percent', 'no_of_units', 'price_of_unit',
-        'base_nav', 'ave_purchase_price_base', 'redemption_frequency',
-        'redemption_notice', 'max_redemption', 'payment_days', 'gate', 'soft_lock_percent',
-    ]
-    change_form_template = 'admin/trade_change_form.html'
-
-
-
-
-create_modeladmin(FundHoldingAdmin, name='FundHolding', model=Holding)
-create_modeladmin(EquityHoldingAdmin, name='EquityHolding', model=Holding)
-create_modeladmin(OptionHoldingAdmin, name='OptionHolding', model=Holding)
-create_modeladmin(FixedIncomeHoldingAdmin, name='FixedIncomeHolding', model=Holding)
-create_modeladmin(SidePocketHoldingAdmin, name='SidePocketHolding', model=Holding)
-create_modeladmin(SidePocketHoldingAdmin, name='PrivateEquityHolding', model=Holding)
-
-create_modeladmin(FundTradeAdmin, name='FundTrade', model=Trade)
-create_modeladmin(EquityTradeAdmin, name='EquityTrade', model=Trade)
-create_modeladmin(OptionTradeAdmin, name='OptionTrade', model=Trade)
-create_modeladmin(FixedIncomeTradeAdmin, name='FixedIncomeTrade', model=Trade)
-create_modeladmin(SidePocketTradeAdmin, name='SidePocketTrade', model=Trade)
-create_modeladmin(PrivateEquityTradeAdmin, name='PrivateEquityTrade', model=Trade)
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Holding)
 admin.site.register(HoldingHistory)
 admin.site.register(CountryBreakdown)
 admin.site.register(Breakdown)
-admin.site.register(Trade)
 
 
