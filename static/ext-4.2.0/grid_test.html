@@ -1,0 +1,157 @@
+<html>
+<head>
+<title>Highcharts</title>
+<link id="theme" rel="stylesheet" type="text/css" href="resources/css/ext-all.css" />
+<script type="text/javascript" src="ext-all-dev.js"></script>
+<meta charset='utf-8'> 
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="http://code.highcharts.com/stock/highstock.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+
+<style>
+
+</style>
+<script type="text/javascript">
+Ext.require([
+    'Ext.form.*',
+    'Ext.data.*'
+]);
+
+Ext.onReady(function(){
+
+    Ext.define('example.contact', {
+        extend: 'Ext.data.Model',
+        fields: [
+            {name: 'first', mapping: 'name > first'},
+            {name: 'last', mapping: 'name > last'},
+            'company', 'email', 'state',
+            {name: 'dob', type: 'date', dateFormat: 'm/d/Y'}
+        ]
+    });
+
+    Ext.define('example.fielderror', {
+        extend: 'Ext.data.Model',
+        fields: ['id', 'msg']
+    });
+    
+    function asdf() {
+    
+Ext.define('Category', {
+    extend: 'Ext.data.Model',
+    fields: ['id', 'name'],
+
+    proxy: {
+        type: 'rest',
+        url : '/api/holding-category/?format=json&group=ass&fields=name&data_type=compact&callback=?',
+    }
+});
+    
+      var url = "http://localhost:8000/api/holding-category/?group=ass&fields=name&data_type=compact";
+
+        $.ajax({
+          url: url,
+          dataType: 'jsonp'
+       }).done(function( msg ) {
+        console.log(msg);
+          return msg.rows;
+        });
+      
+    }
+
+    var formPanel = Ext.create('Ext.form.Panel', {
+        renderTo: Ext.getBody(),
+        frame: true,
+        title:'XML Form',
+        width: 340,
+        bodyPadding: 5,
+        waitMsgTarget: true,
+
+        fieldDefaults: {
+            labelAlign: 'right',
+            labelWidth: 85,
+            msgTarget: 'side'
+        },
+
+
+        items: [{
+            xtype: 'fieldset',
+            title: 'Contact Information',
+            defaultType: 'textfield',
+            defaults: {
+                width: 280
+            },
+            items: [{
+                    fieldLabel: 'First Name',
+                    emptyText: 'First Name',
+                    name: 'first'
+                }, {
+                    fieldLabel: 'Last Name',
+                    emptyText: 'Last Name',
+                    name: 'last'
+                }, {
+                    fieldLabel: 'Company',
+                    name: 'company'
+                }, {
+                    fieldLabel: 'Email',
+                    name: 'email',
+                    vtype:'email'
+                }, {
+                    xtype: 'combobox',
+                    fieldLabel: 'State',
+                    name: 'state',
+                    store: Ext.create('Ext.data.ArrayStore', {
+                        fields: ['id', 'name'],
+                        //data : Ext.example.states // from states.js
+                        data: asdf(),
+                    }),
+                    valueField: 'abbr',
+                    displayField: 'state',
+                    typeAhead: true,
+                    queryMode: 'local',
+                    emptyText: 'Select a state...'
+                }, {
+                    xtype: 'datefield',
+                    fieldLabel: 'Date of Birth',
+                    name: 'dob',
+                    allowBlank: false
+                }
+            ]
+        }],
+
+        buttons: [{
+            text: 'Load',
+            handler: function(){
+                formPanel.getForm().load({
+                    url: 'xml-form-data.xml',
+                    waitMsg: 'Loading...'
+                });
+            }
+        }, {
+            text: 'Submit',
+            disabled: true,
+            formBind: true,
+            handler: function(){
+                this.up('form').getForm().submit({
+                    url: 'xml-form-errors.xml',
+                    submitEmptyText: false,
+                    waitMsg: 'Saving Data...'
+                });
+            }
+        }]
+    });
+
+});
+
+</script> 
+
+</head>
+<body>
+
+
+
+<div id="asdf1"></div>
+<div id="asdf2" style="display: none;"></div>
+<div id="content-tip"></div>
+</body>
+</html>

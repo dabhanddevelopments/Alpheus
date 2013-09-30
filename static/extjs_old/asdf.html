@@ -1,0 +1,72 @@
+<html>
+    <head>
+    <title>Test</title>
+
+    <script type="text/javascript" src="ext-all.js"></script>
+    <link rel="stylesheet" type="text/css" href="resources/css/ext-all.css" />
+    <script type="text/javascript">
+
+Ext.require([
+    'Ext.tree.*',
+    'Ext.data.*',
+    'Ext.window.MessageBox'
+]);
+
+Ext.onReady(function() {
+
+       var data = 
+[
+    {
+        "id": 1,
+        "text": "Home", 
+        "leaf": true,
+        "asdf": true,
+        "whatever": false
+    },{
+        "id": 2,
+        "text": "Overview",
+        "expanded": true,
+        "children": [{
+            "id": 3,
+            "text": "HSBC",
+            "children": [{
+                "id": 4,
+                "text": "HSBC1",
+            },{
+                "id": 5,
+                "text": "HSBC2",
+            }]
+        }]
+    }
+]
+
+    var store = Ext.create('Ext.data.TreeStore', {
+        proxy: {
+            data : data,
+            type: 'memory',
+            reader: {
+                type: 'json',
+            }
+        },
+
+    });     
+
+    Ext.create('Ext.tree.Panel', {
+        title: 'Simple Tree',
+
+        width: 200,
+        height: 150,
+        store: store,
+        rootVisible: false,        
+        renderTo: Ext.getBody()
+    });
+
+});
+
+
+    </script>
+</head>
+<body><div class="asdf"></div></body>
+</html>
+
+

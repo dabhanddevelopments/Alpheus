@@ -464,12 +464,12 @@ class ImportResource(StandardBaseResource):
                     str(random.randrange(month_start, month_end)) + '-' + \
                                                 str(random.randrange(1, 28))
 
-        year_start = 2005
+        year_start = 2013
         year_end = 2014
         month_start = 1
-        month_end = 13
+        month_end = 2
         day_start = 1
-        day_end = 31
+        day_end = 2
         no_of_trades = 100
 
 
