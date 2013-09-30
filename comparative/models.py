@@ -35,14 +35,14 @@ class ComparativeBase(models.Model):
     correlation1 = models.DecimalField(max_digits=20, decimal_places=5, null=True)
     correlation3 = models.DecimalField(max_digits=20, decimal_places=5, null=True)
     correlation5 = models.DecimalField(max_digits=20, decimal_places=5, null=True)
-    value_date = models.DateField()
+    value_date = models.DateField(null=True)
 
 class Comparative(ComparativeBase):
 
     description= models.CharField(max_length=200, null=True)
-    bloomberg_code = models.CharField(max_length=50)
+    bloomberg_code = models.CharField(null=True,max_length=50)
 
-    name = models.CharField(max_length=50)
+    name = models.CharField(null=True,max_length=50)
     #fund = models.ManyToManyField('fund.Fund', related_name="%(app_label)s_%(class)s_fund", null=True)
     holding = models.ManyToManyField('holding.Holding', related_name='%(app_label)s_%(class)s_holding', null=True)
     client = models.ManyToManyField('client.Client', related_name='%(app_label)s_%(class)s_client', null=True)
@@ -51,7 +51,7 @@ class Comparative(ComparativeBase):
         abstract = True
 
 class Peer(Comparative):
-    peer_type = models.CharField(max_length=10, choices=BENCHMARK_TYPE)
+    peer_type = models.CharField(null=True,max_length=10, choices=BENCHMARK_TYPE)
 
 class PeerHistory(ComparativeBase):
     peer = models.ForeignKey(Peer)
@@ -61,11 +61,11 @@ class PeerHistory(ComparativeBase):
 
 
 class Benchmark(Comparative):
-    benchmark_type = models.CharField(max_length=10, choices=BENCHMARK_TYPE)
+    benchmark_type = models.CharField(null=True,max_length=10, choices=BENCHMARK_TYPE)
 
 class BenchmarkHistory(ComparativeBase, ModelBase):
     benchmark = models.ForeignKey(Benchmark)
-    date_type = models.CharField(max_length=1, choices=DATE_TYPE)
+    date_type = models.CharField(null=True,max_length=1, choices=DATE_TYPE)
 
     class Meta:
         verbose_name = 'Benchmark history'

@@ -24,12 +24,12 @@ class Trade(models.Model):
         ('open', 'To Open'),
         ('close', 'To Close'),
     )
-    holding = models.ForeignKey('holding.Holding')
+    holding = models.ForeignKey('holding.Holding', null=True)
     fund = models.ForeignKey('fund.Fund', blank=True, null=True)
     client = models.ForeignKey('client.Client', blank=True, null=True)
-    counter_party = models.ForeignKey('app.CounterParty', related_name="counter_party_trade")
-    counter_party_trader = models.ForeignKey('app.CounterPartyTrader')
-    authorised_by = models.ForeignKey('auth.User', related_name="authorised_by_user")
+    counter_party = models.ForeignKey('app.CounterParty', related_name="counter_party_trade", null=True)
+    counter_party_trader = models.ForeignKey('app.CounterPartyTrader', null=True)
+    authorised_by = models.ForeignKey('auth.User', related_name="authorised_by_user", null=True)
     buy_sell =  models.SmallIntegerField(choices=BUY_SELL, null=True)
     trade_no = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     desk = models.CharField(max_length=50, blank=True, null=True)

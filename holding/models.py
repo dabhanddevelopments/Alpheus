@@ -26,8 +26,8 @@ class Category(models.Model):
     )
 
     key = models.CharField(max_length=10, null=True, blank=True)
-    name = models.CharField(max_length=50)
-    group = models.CharField(max_length=3, choices=HOLDING_GROUP, \
+    name = models.CharField(null=True, max_length=50)
+    group = models.CharField(null=True, max_length=3, choices=HOLDING_GROUP, \
                                                     default=GROUP_ALL)
     def __unicode__(self):
         return self.name
@@ -93,7 +93,6 @@ class HoldingBase(ModelBase):
     redemption_fee24 = models.DecimalField(max_digits=20, decimal_places=5,\
                                                 null=True, verbose_name="Redemption Fee 24M")
     redemption_fee36 = models.DecimalField(max_digits=20, decimal_places=5,\
-
                                                null=True, verbose_name="Redemption Fee 36M")
     redemption_fee12_percent = models.DecimalField(max_digits=20, decimal_places=5,\
                                                 null=True, verbose_name="Redemption Fee 12M %")
@@ -102,7 +101,7 @@ class HoldingBase(ModelBase):
     redemption_fee36_percent = models.DecimalField(max_digits=20, decimal_places=5,\
                                                null=True, verbose_name="Redemption Fee 36M %")
 
-    redemption_fee12_euro = models.DecimalField(max_digits=20, decimal_places=5,verbose_name="Redemption Fee 12M")
+    redemption_fee12_euro = models.DecimalField(null=True, max_digits=20, decimal_places=5,verbose_name="Redemption Fee 12M")
     redemption_fee24_euro = models.DecimalField(max_digits=20, decimal_places=5,verbose_name="Redemption Fee 12M")
     redemption_fee36_euro = models.DecimalField(max_digits=20, decimal_places=5,verbose_name="Redemption Fee 12M")
 
@@ -111,8 +110,8 @@ class HoldingBase(ModelBase):
     pending_no_of_units = models.DecimalField(max_digits=20, decimal_places=5, null=True)
     pending_euro_nav = models.DecimalField(max_digits=20, decimal_places=5, null=True)
 
-    dealing_date = models.DateField()
-    value_date = models.DateField()
+    dealing_date = models.DateField(null=True)
+    value_date = models.DateField(null=True)
 
 class Holding(HoldingBase):
     AMERICAN_EURO = (
@@ -151,7 +150,7 @@ class Holding(HoldingBase):
     soft_lock_percent = models.SmallIntegerField(choices=YES_NO, null=True)
     soft_lock_date = models.DateField(null=True)
 
-    maturity = models.DateField()
+    maturity = models.DateField(null=True)
     strike = models.DecimalField(max_digits=20, decimal_places=5)
     multiplier = models.DecimalField(max_digits=20, decimal_places=5)
     put_call = models.SmallIntegerField(choices=PUT_CALL)
@@ -160,7 +159,7 @@ class Holding(HoldingBase):
     redemption_cumulative_euro_nav = models.DecimalField(max_digits=20, decimal_places=5)
     redemption_cumulative_weight = models.DecimalField(max_digits=20, decimal_places=5)
     redemption_percent = models.DecimalField(max_digits=20, decimal_places=5)
-    redemption_date = models.DateField()
+    redemption_date = models.DateField(null=True)
 
     class Meta:
         ordering = ["id"]
@@ -173,18 +172,18 @@ class HoldingHistory(HoldingBase):
     date_type = models.CharField(max_length=1, choices=DATE_TYPE)
 
 class CountryBreakdown(models.Model):
-    fund = models.ForeignKey(Fund)
-    country = models.ForeignKey(Country, related_name='cb_country')
-    category = models.ForeignKey(Category, related_name='cb_category')
+    fund = models.ForeignKey(Fund, null=True)
+    country = models.ForeignKey(Country, related_name='cb_country', null=True)
+    category = models.ForeignKey(Category, related_name='cb_category', null=True)
     mtd = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
     ytd = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
     euro_nav = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
     weight = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
-    value_date = models.DateField()
+    value_date = models.DateField(null=True)
 
 class Breakdown(models.Model):
-    fund = models.ForeignKey(Fund)
-    category = models.ForeignKey(Category)
+    fund = models.ForeignKey(Fund, null=True)
+    category = models.ForeignKey(Category, null=True)
     mtd = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
     ytd = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
     base_nav = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
@@ -193,6 +192,6 @@ class Breakdown(models.Model):
     cash_flow_euro_amount_euro_dollar = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
     cash_flow_percent_euro_dollar = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
     #net_movement = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
-    value_date = models.DateField()
+    value_date = models.DateField(null=True)
 
 

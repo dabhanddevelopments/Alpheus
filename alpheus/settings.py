@@ -168,6 +168,7 @@ INSTALLED_APPS = (
     'holding',
     'client',
     'comparative',
+    'trade',
     #'resources',
     #'api_example',
 )

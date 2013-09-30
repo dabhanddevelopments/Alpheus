@@ -9,7 +9,7 @@ class ClientBase(ModelBase):
     class Meta:
         abstract = True
 
-    value_date = models.DateField()
+    value_date = models.DateField(null=True)
     no_of_units = models.DecimalField(max_digits=20, decimal_places=5,null=True, verbose_name="No. of Units")
     euro_nav = models.DecimalField(max_digits=20, decimal_places=5, null=True)
     base_nav = models.DecimalField(max_digits=20, decimal_places=5, null=True)
@@ -51,9 +51,9 @@ class Client(ClientBase):
     alarm = models.ForeignKey(Alarm, null=True, related_name='client_alarm')
     #benchmark = models.ManyToManyField(Benchmark, null=True, related_name='client_benchmark')
     user = models.ForeignKey(User, null=True)
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    objective = models.CharField(max_length=300)
+    first_name = models.CharField(null=True,max_length=50)
+    last_name = models.CharField(null=True,max_length=50)
+    objective = models.CharField(null=True,max_length=300)
     account_number = models.CharField(max_length=200, null=True)
 
     class Meta:
@@ -70,7 +70,7 @@ class Client(ClientBase):
 
 class ClientHistory(ClientBase):
     client = models.ForeignKey(Client)
-    date_type = models.CharField(max_length=1, choices=DATE_TYPE)
+    date_type = models.CharField(null=True,max_length=1, choices=DATE_TYPE)
 
     class Meta:
         verbose_name = 'Client history'

@@ -16,6 +16,7 @@ class HoldingAdmin(admin.ModelAdmin):
         super(HoldingAdmin, self).__init__(model, admin_site)
 
 
+
 class FundBaseAdmin(FundMixin, HoldingAdmin):
     fields = (
         ('name', 'no_of_units'),

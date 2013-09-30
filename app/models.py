@@ -48,9 +48,9 @@ class PerformanceEstimate(models.Model):
     fund = models.ForeignKey('fund.Fund', null=True)
     benchmark = models.ForeignKey('comparative.Benchmark', null=True)
     peer = models.ForeignKey('comparative.Peer', null=True)
-    user = models.ForeignKey(User, verbose_name="Manager")
-    value_date = models.DateField()
-    estimated_mtd = models.DecimalField(max_digits=20, decimal_places=5)
+    user = models.ForeignKey(User, verbose_name="Manager", null=True)
+    value_date = models.DateField(null=True)
+    estimated_mtd = models.DecimalField(null=True,max_digits=20, decimal_places=5)
 
 
 
@@ -185,19 +185,19 @@ class Classification(models.Model):
         return self.name
 
 class Custodian(models.Model):
-    key = models.CharField(max_length=50)
-    name = models.CharField(max_length=50)
-    contact_name = models.CharField(max_length=50)
+    key = models.CharField(null=True,max_length=50)
+    name = models.CharField(null=True,max_length=50)
+    contact_name = models.CharField(null=True,max_length=50)
     contact_number = models.CharField(max_length=50, blank=True, null=True)
-    performance_fee =  models.DecimalField(max_digits=15, decimal_places=5)
-    management_fee =  models.DecimalField(max_digits=15, decimal_places=5)
+    performance_fee =  models.DecimalField(null=True,max_digits=15, decimal_places=5)
+    management_fee =  models.DecimalField(null=True,max_digits=15, decimal_places=5)
 
     def __unicode__(self):
         return self.name
 
 class Auditor(models.Model):
-    name = models.CharField(max_length=50)
-    contact_name = models.CharField(max_length=50)
+    name = models.CharField(null=True,max_length=50)
+    contact_name = models.CharField(null=True,max_length=50)
     contact_number = models.CharField(max_length=50, blank=True, null=True)
     fee =  models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
 
@@ -205,9 +205,9 @@ class Auditor(models.Model):
         return self.name
 
 class Administrator(models.Model):
-    name = models.CharField(max_length=50)
-    contact_name = models.CharField(max_length=50)
-    contact_number = models.CharField(max_length=50)
+    name = models.CharField(null=True,max_length=50)
+    contact_name = models.CharField(null=True,max_length=50)
+    contact_number = models.CharField(null=True,max_length=50)
     fee =  models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
 
     def __unicode__(self):
@@ -230,14 +230,14 @@ class Menu(MPTTModel):
             return self.name
 
 class Currency(models.Model):
-    name = models.CharField(max_length=50)
-    code = models.CharField(max_length=3)
+    name = models.CharField(null=True,max_length=50)
+    code = models.CharField(null=True,max_length=3)
     def __unicode__(self):
         return self.name
 
 class Country(models.Model):
-    name = models.CharField(max_length=50)
-    code = models.CharField(max_length=3)
+    name = models.CharField(null=True,max_length=50)
+    code = models.CharField(null=True,max_length=3)
 
     def __unicode__(self):
         return self.name
@@ -247,13 +247,13 @@ class TradeType(models.Model):
     pass
 
 class PurchaseSale(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(null=True,max_length=50)
 
     def __unicode__(self):
         return self.name
 
 class Alarm(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(null=True,max_length=50)
 
 class Fee(models.Model):
     pass
@@ -271,10 +271,10 @@ class HistoricalExpense(models.Model):
 
 # The person taking your trade order
 class CounterParty(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(null=True,max_length=50)
 
 
 class CounterPartyTrader(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(null=True,max_length=50)
     counterparty = models.ForeignKey(CounterParty, null=True)
 
