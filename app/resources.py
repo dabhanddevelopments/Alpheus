@@ -464,12 +464,12 @@ class ImportResource(StandardBaseResource):
                     str(random.randrange(month_start, month_end)) + '-' + \
                                                 str(random.randrange(1, 28))
 
-        year_start = 2013
+        year_start = 2010
         year_end = 2014
         month_start = 1
-        month_end = 2
+        month_end = 13
         day_start = 1
-        day_end = 2
+        day_end = 32
         no_of_trades = 100
 
 
@@ -524,7 +524,7 @@ class ImportResource(StandardBaseResource):
         class_data = []
         for id, name in enumerate(classification_names):
             class_data.append(Classification(
-                key = id,
+                #key = id,
                 name = name,
                 asset_class = Category.objects.order_by('?')[0]
             ))
@@ -911,6 +911,7 @@ class ImportResource(StandardBaseResource):
         cpt = CounterPartyTrader(name='John Doe')
         cpt.save()
 
+        from trade.models import Trade
 
         # Trade
         data = []

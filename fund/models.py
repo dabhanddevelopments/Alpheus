@@ -164,7 +164,7 @@ class Fund(FundBase):
     name = models.CharField(max_length=200, null=True)
     description = models.TextField(null=True)
 
-    code = models.CharField(null=True,max_length=50)
+    code = models.CharField(null=True, max_length=50)
     administrator_fee = models.DecimalField(max_digits=20, decimal_places=5, null=True)
     performance_fee = models.DecimalField(max_digits=20, decimal_places=5, null=True)
     management_fee = models.DecimalField(max_digits=20, decimal_places=5, null=True)
