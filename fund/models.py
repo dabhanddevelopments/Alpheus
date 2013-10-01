@@ -39,7 +39,7 @@ class FxRate(models.Model):
     fx_rate = models.DecimalField(max_digits=15, decimal_places=5, blank=True, null=True)
 
 class Classification(models.Model):
-    #key = models.CharField(null=True,max_length=50)
+    key = models.CharField(null=True,max_length=50) # not used to be deleted
     name = models.CharField(null=True,max_length=50)
     asset_class = models.ForeignKey('holding.Category', related_name='asset_class_classification', null=True)
 

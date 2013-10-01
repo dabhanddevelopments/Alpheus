@@ -51,7 +51,7 @@ class Comparative(ComparativeBase):
         abstract = True
 
 class Peer(Comparative):
-    peer_type = models.CharField(null=True,max_length=10, choices=BENCHMARK_TYPE)
+    peer_type = models.CharField(null=True,max_length=10, choices=BENCHMARK_TYPE, db_column='benchmark_type')
 
 class PeerHistory(ComparativeBase):
     peer = models.ForeignKey(Peer)

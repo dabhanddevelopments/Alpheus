@@ -52,6 +52,9 @@ class PerformanceEstimate(models.Model):
     value_date = models.DateField(null=True)
     estimated_mtd = models.DecimalField(null=True,max_digits=20, decimal_places=5)
 
+    class Meta:
+        db_table = 'fund_performanceestimate' #delete this
+
 
 
 class MonthlyManager(models.Manager):
