@@ -24,6 +24,8 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+DB_PREFIX = "DAB_"
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -139,6 +141,8 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    # this needs to come first
+    'django-db-prefix',
     # admin theme. needs to come first
     'grappelli',
 
