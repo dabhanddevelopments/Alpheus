@@ -23,6 +23,8 @@ api = Api(api_name="api")
 from app.resources import *
 
 # fund
+api.register(TestWidget())
+api.register(FundReturnMonthlyResource())
 api.register(FundResource())
 api.register(FundHistoryResource())
 api.register(FundValuationResource())

@@ -405,8 +405,9 @@ class MainBaseResource(SpecifiedFields):
                 y1 = []
                 y2 = []
                 for row in data['objects']:
-                    if len(y1) > 10:
-                        continue
+                    # what was this doing here?
+                    #if len(y1) > 10:
+                    #    continue
                     date = int(mktime(row.data[self.date].timetuple())) * 1000
                     y1.append([date, float(row.data[self.y1])])
                     y2.append([date, float(row.data[self.y2])])

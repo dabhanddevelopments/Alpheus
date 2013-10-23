@@ -71,4 +71,31 @@ def create_modeladmin(modeladmin, model, name = None):
     admin.site.register(newmodel, modeladmin)
     return modeladmin
 
+def fund_return_calculation(data_str, date, length):
 
+    import datetime
+    from dateutil.relativedelta import relativedelta
+    from datetime import timedelta as td
+
+    end_date = date + relativedelta(months=int(length))
+
+    delta = relativedelta(months=+1)
+    d = date
+    months = []
+    while d <= end_date:
+        months.append(d)
+        d += delta
+
+    date = date.strftime('%Y/%m/%d')
+
+    from rpy2.robjects import r
+    r.library("PerformanceAnalytics")
+
+    r("x <- c(" + data_str[:-2] + ")")
+    r('MyDates <-  seq(as.Date("' + date + '"), by = "month", length.out = ' + length + ')')
+    r("x <- as.matrix(x)")
+    r("rownames(x) <- as.character(MyDates)")
+    r("myts <- as.xts(x)")
+    output = (r("apply.fromstart(myts/100, FUN = 'Return.cumulative', gap = 1)"))
+
+    return dict(zip(months, output))

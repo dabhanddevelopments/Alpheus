@@ -220,3 +220,18 @@ class Deposit(models.Model):
     amount_euro = models.DecimalField(null=True, max_digits=20, decimal_places=5)
     deposit_interest_percent = models.DecimalField(null=True, max_digits=20, decimal_places=5)
 
+
+class FundReturnMonthly(models.Model):
+    fund = models.ForeignKey(Fund, db_column='FundID', help_text="""The Unique
+        ID assigned to the Internal Fund""")
+    fund_perf = models.DecimalField(max_digits=20, decimal_places=5,
+        db_column='SIFundReturn', help_text="""The monthly performance of the
+        fund since its first valuation""")
+    bench_perf = models.DecimalField(max_digits=20, decimal_places=5,
+        db_column='SIBenchReturn', help_text="""The monthly performance of the
+        fund's benchmark since its first valuation""")
+    value_date = models.DateField(db_column='ValueDate', help_text="""The date
+        of the monthly valuation""")
+
+    class Meta:
+        db_table = 'ALP_FundVals_TS'

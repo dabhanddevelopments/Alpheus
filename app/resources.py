@@ -465,7 +465,7 @@ class ImportResource(StandardBaseResource):
                                                 str(random.randrange(1, 28))
 
         year_start = 2010
-        year_end = 2014
+        year_end = 2012
         month_start = 1
         month_end = 13
         day_start = 1
