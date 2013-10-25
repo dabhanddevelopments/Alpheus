@@ -25,7 +25,10 @@ from app.resources import *
 # fund
 api.register(TestWidget())
 api.register(FundReturnMonthlyResource())
+api.register(FundReturnMonthlyResource2())
+api.register(FundReturnDailyResource())
 api.register(FundResource())
+api.register(FundsResource())
 api.register(FundHistoryResource())
 api.register(FundValuationResource())
 api.register(CurrencyPositionResource())

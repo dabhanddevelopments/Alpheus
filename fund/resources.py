@@ -35,6 +35,14 @@ class FundResource(MainBaseResource):
             'custodian': ALL_WITH_RELATIONS,
         }
 
+
+class FundsResource(MainBaseResource):
+
+    class Meta(MainBaseResource.Meta):
+        queryset = Funds.objects.all()
+        resource_name = 'funds'
+
+
 class FundHistoryResource(MainBaseResource):
     fund = fields.ForeignKey(FundResource, "fund")
 
@@ -47,6 +55,19 @@ class FundHistoryResource(MainBaseResource):
             'date_type': ALL,
             'fund': ALL,
         }
+
+
+class FundReturnDailyResource(MainBaseResource):
+    fund = fields.ForeignKey(FundResource, "fund")
+
+    class Meta:
+        queryset = FundReturnDaily.objects.all()
+        resource_name = 'fund-return-daily'
+        filtering = {
+            'value_date': ALL,
+            'fund': ALL,
+        }
+        ordering = ['value_date']
 
 
 class FundReturnMonthlyResource(MainBaseResource):
@@ -63,29 +84,43 @@ class FundReturnMonthlyResource(MainBaseResource):
 
     def alter_list_data_to_serialize(self, request, data):
 
-        fund = ''
-        bench = ''
-        for row in data['objects']:
-            fund += str(row.data[self.y1]) + ', '
-            bench += str(row.data[self.y2]) + ', '
+        if self.y1 != False:
 
-        length = str(len(data['objects']))
-        date = data['objects'][0].data[self.date]
+            fund = ''
+            bench = ''
+            for row in data['objects']:
+                fund += str(row.data[self.y1]) + ', '
+                bench += str(row.data[self.y2]) + ', '
 
-        fund = fund_return_calculation(fund, date, length)
-        bench = fund_return_calculation(bench, date, length)
+            length = str(len(data['objects']))
+            date = data['objects'][0].data[self.date]
 
-        for row in data['objects']:
-            for key, val in fund.iteritems():
-                if row.data[self.date].year == key.year and row.data[self.date].month == key.month:
-                    row.data[self.y1] = val
-            for key, val in bench.iteritems():
-                if row.data[self.date].year == key.year and row.data[self.date].month == key.month:
-                    row.data[self.y2] = val
+            fund = fund_return_calculation(fund, date, length)
+            bench = fund_return_calculation(bench, date, length)
+
+            for row in data['objects']:
+                for key, val in fund.iteritems():
+                    if row.data[self.date].year == key.year and row.data[self.date].month == key.month:
+                        row.data[self.y1] = val
+                for key, val in bench.iteritems():
+                    if row.data[self.date].year == key.year and row.data[self.date].month == key.month:
+                        row.data[self.y2] = val
 
         return super(FundReturnMonthlyResource, self) \
                 .alter_list_data_to_serialize(request, data)
 
+
+class FundReturnMonthlyResource2(MainBaseResource):
+    fund = fields.ForeignKey(FundResource, "fund")
+
+    class Meta:
+        queryset = FundReturnMonthly.objects.all()
+        resource_name = 'fund-return-monthly2'
+        filtering = {
+            'value_date': ALL,
+            'fund': ALL,
+        }
+        ordering = ['value_date']
 
 
 class TestWidget(MainBaseResource):

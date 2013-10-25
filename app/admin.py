@@ -51,7 +51,7 @@ class PageAdmin(FeinCMSModelAdmin):
 
 class PageWindowAdmin(admin.ModelAdmin):
     list_display = ('page', 'window', 'user', 'col', 'row')
-    list_filter = ['page__title']
+    list_filter = ['page']
 
 
 class CurrencyAdmin(admin.ModelAdmin):

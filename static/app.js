@@ -2128,11 +2128,13 @@ Ext.onReady(function() {
 
         $('<div id="calendar"></div>').appendTo('body');
         mo_widget = {}
-        mo_widget.url = '/api/fund-history/';
-        mo_widget.qs = '?fund=' + fund + '&fields=value_date,mtd&order_by=value_date&value_date__year=' + year + '&value_date__month=' + month;
+        mo_widget.url = '/api/fund-return-daily/';
+        mo_widget.qs = '?fund=' + fund + '&fields=value_date,fund_perf&order_by=value_date&value_date__year=' + year + '&value_date__month=' + month;
 
         //console.log(widget.url + widget.qs);
         $.getJSON(mo_widget.url + mo_widget.qs , function(data) {
+
+            data = data.rows;
 
             // first day in first week of month
             var d = new Date(year, month - 1, 1);
@@ -2154,9 +2156,10 @@ Ext.onReady(function() {
             // converting the data object
             days = {};
             for(i=0; i < data.length; i++) {
-                var day = data[i].date.substr(8,2);
+                var day = data[i].value_date.substr(8,2);
                 day = parseInt(day, 10);
-                days[day] = data[i].value;
+                days[day] = data[i].fund_perf;
+                console.log(data[i].fund_perf);
             }
 
             for(i=1; i<=last_day_of_month; i++) {
@@ -3685,10 +3688,10 @@ Ext.onReady(function() {
     function setFundName(id) {
          $.ajax({
             type: "GET",
-            url: '/api/fund/' + id + '?fields=name,classification__id',
+            url: '/api/funds/' + id + '?fields=name',//,classification__id',
             success: function(data) {
                 $('#data').data("fund_name", data.name);
-                $('#data').data("classification", data.classification__id);
+                //$('#data').data("classification", data.classification__id);
                //console.log(data);
             }
         });

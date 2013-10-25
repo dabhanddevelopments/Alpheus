@@ -221,17 +221,49 @@ class Deposit(models.Model):
     deposit_interest_percent = models.DecimalField(null=True, max_digits=20, decimal_places=5)
 
 
-class FundReturnMonthly(models.Model):
-    fund = models.ForeignKey(Fund, db_column='FundID', help_text="""The Unique
-        ID assigned to the Internal Fund""")
-    fund_perf = models.DecimalField(max_digits=20, decimal_places=5,
-        db_column='SIFundReturn', help_text="""The monthly performance of the
-        fund since its first valuation""")
-    bench_perf = models.DecimalField(max_digits=20, decimal_places=5,
-        db_column='SIBenchReturn', help_text="""The monthly performance of the
-        fund's benchmark since its first valuation""")
-    value_date = models.DateField(db_column='ValueDate', help_text="""The date
-        of the monthly valuation""")
+class Funds(models.Model):
+    id = models.AutoField(primary_key=True, db_column='FundID')
+    name = models.CharField(max_length=50, db_column='Name', null=True)
+    description = models.CharField(max_length=200, db_column='Description', null=True)
 
     class Meta:
-        db_table = 'ALP_FundVals_TS'
+        db_table = 'ALP_Funds'
+
+    def __unicode__(self):
+        return self.name
+
+
+
+class FundReturnMonthly(models.Model):
+    fund = models.ForeignKey(Funds, db_column='FundID', help_text="""The Unique
+        ID assigned to the Internal Fund""")
+    fund_perf = models.DecimalField(max_digits=18, decimal_places=6,
+        db_column='SIFundReturn', help_text="""The monthly performance of the
+        fund since its first valuation""", null=True)
+    bench_perf = models.DecimalField(max_digits=18, decimal_places=6,
+        db_column='SIBenchReturn', help_text="""The monthly performance of the
+        fund's benchmark since its first valuation""", null=True)
+    value_date = models.DateField(db_column='ValueDate', help_text="""The date
+        of the monthly valuation""")
+    fund_ytd = models.DecimalField(max_digits=18, decimal_places=6, db_column='YTDFundReturn', null=True)
+
+    class Meta:
+        db_table = 'ALP_FundMonthlyVals_TS'
+
+
+class FundReturnDaily(models.Model):
+    fund = models.ForeignKey(Funds, db_column='FundID', help_text="""The Unique
+        ID assigned to the Internal Fund""")
+    fund_perf = models.DecimalField(max_digits=18, decimal_places=6,
+        db_column='SIFundReturn', help_text="""The monthly performance of the
+        fund since its first valuation""", null=True)
+    bench_perf = models.DecimalField(max_digits=18, decimal_places=6,
+        db_column='SIBenchReturn', help_text="""The monthly performance of the
+        fund's benchmark since its first valuation""", null=True)
+    value_date = models.DateField(db_column='ValueDate', help_text="""The date
+        of the monthly valuation""")
+    fund_ytd = models.DecimalField(max_digits=18, decimal_places=6, db_column='YTDFundReturn', null=True)
+
+    class Meta:
+        db_table = 'ALP_FundDailyVals_TS'
+

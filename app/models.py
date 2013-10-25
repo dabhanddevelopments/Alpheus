@@ -221,7 +221,7 @@ class Administrator(models.Model):
 class Menu(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
     page = models.ForeignKey(Page, blank=True, null=True)
-    fund = models.ForeignKey('fund.Fund', blank=True, null=True)
+    fund = models.ForeignKey('fund.Funds', blank=True, null=True)
     name = models.CharField(max_length=50)
     access = models.ManyToManyField(Group)
 
