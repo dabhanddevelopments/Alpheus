@@ -8,10 +8,10 @@ from django.contrib.auth.models import User
 
 from alpheus.base_resources import MainBaseResource, TreeBaseResource, StandardBaseResource
 from app.models import *
-from holding.models import *
+#from holding.models import *
 from fund.models import *
-from client.models import *
-from comparative.models import *
+#from client.models import *
+#from comparative.models import *
 
 import random
 from datetime import datetime, date
@@ -233,6 +233,7 @@ class PageWindowResource(StandardBaseResource):
 
 
 
+"""
 class CustodianResource(MainBaseResource):
 
     class Meta:
@@ -262,6 +263,12 @@ class ManagerResource(MainBaseResource):
     class Meta:
         queryset = User.objects.all()
 
+class CurrencyResource(StandardBaseResource):
+
+    class Meta:
+        queryset = Currency.objects.all()
+
+"""
 """
 class FundClassificationResource(MainBaseResource):
     classification = fields.ForeignKey(ClassificationResource, "classification")
@@ -333,11 +340,6 @@ class MenuParentItemsResource(StandardBaseResource):
         queryset = Menu.objects.all().select_related('parent')#, 'page')
 
 
-
-class CurrencyResource(StandardBaseResource):
-
-    class Meta:
-        queryset = Currency.objects.all()
 
 # not used atm
 class WidgetBaseResource(StandardBaseResource):
@@ -433,6 +435,8 @@ class DuplicateResource(StandardBaseResource):
         for obj in objects:
             obj.name
 
+
+"""
 class ImportResource(StandardBaseResource):
 
     class Meta:
@@ -1013,3 +1017,4 @@ class ImportResource(StandardBaseResource):
         CountryBreakdown.objects.bulk_create(data_cb, batch_size=100)
         return {'done'}
 
+"""

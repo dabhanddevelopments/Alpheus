@@ -43,6 +43,7 @@ PERCENT_RELEASED=(
     (100,'100%'),
 )
 
+"""
 class PerformanceEstimate(models.Model):
     holding = models.ForeignKey('holding.Holding', null=True)
     fund = models.ForeignKey('fund.Fund', null=True)
@@ -55,6 +56,7 @@ class PerformanceEstimate(models.Model):
     class Meta:
         db_table = 'fund_performanceestimate' #delete this
 
+"""
 
 
 class MonthlyManager(models.Manager):
@@ -180,6 +182,23 @@ class PageWindow(models.Model):
 
 
 
+class Menu(MPTTModel):
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+    page = models.ForeignKey(Page, blank=True, null=True)
+    fund = models.ForeignKey('fund.Funds', blank=True, null=True)
+    name = models.CharField(max_length=50)
+    access = models.ManyToManyField(Group)
+
+    def __unicode__(self):
+        try:
+            self.parent.name
+            return u'%s / %s' % (self.parent.name, self.name)
+        except:
+            return self.name
+
+
+"""
+
 class Classification(models.Model):
     key = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
@@ -217,20 +236,6 @@ class Administrator(models.Model):
         return self.name
 
 
-
-class Menu(MPTTModel):
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
-    page = models.ForeignKey(Page, blank=True, null=True)
-    fund = models.ForeignKey('fund.Funds', blank=True, null=True)
-    name = models.CharField(max_length=50)
-    access = models.ManyToManyField(Group)
-
-    def __unicode__(self):
-        try:
-            self.parent.name
-            return u'%s / %s' % (self.parent.name, self.name)
-        except:
-            return self.name
 
 class Currency(models.Model):
     name = models.CharField(null=True,max_length=50)
@@ -281,3 +286,4 @@ class CounterPartyTrader(models.Model):
     name = models.CharField(null=True,max_length=50)
     counterparty = models.ForeignKey(CounterParty, null=True)
 
+"""

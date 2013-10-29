@@ -1,10 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
+"""
 from app.models import (
     DATE_TYPE, BUY_SELL, ModelBase, Currency, Alarm, Fee,
     Custodian, Auditor, Administrator
 )
-from comparative.models import Benchmark, Peer
+"""
+#from comparative.models import Benchmark, Peer
+from alpheus import utils
 
 
 YES_NO=(
@@ -25,7 +28,7 @@ PERCENT_RELEASED=(
 )
 
 
-
+"""
 class CurrencyPosition(models.Model):
     fund = models.ForeignKey('Fund', null=True)
     currency = models.ForeignKey(Currency, related_name='currency_position', null=True)
@@ -48,7 +51,6 @@ class Classification(models.Model):
 
 
 
-from alpheus import utils
 
 class FundBase(ModelBase):
     aum = models.DecimalField(max_digits=20, decimal_places=5, null=True)
@@ -220,6 +222,7 @@ class Deposit(models.Model):
     amount_euro = models.DecimalField(null=True, max_digits=20, decimal_places=5)
     deposit_interest_percent = models.DecimalField(null=True, max_digits=20, decimal_places=5)
 
+"""
 
 class Funds(models.Model):
     id = models.AutoField(primary_key=True, db_column='FundID')

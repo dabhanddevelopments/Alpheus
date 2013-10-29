@@ -53,7 +53,7 @@ class PageWindowAdmin(admin.ModelAdmin):
     list_display = ('page', 'window', 'user', 'col', 'row')
     list_filter = ['page']
 
-
+"""
 class CurrencyAdmin(admin.ModelAdmin):
     pass
 
@@ -100,6 +100,7 @@ class HoldingPerformanceEstimateAdmin(EstimatePerformanceBase):
 
 
 
+"""
 
 admin.site.register(WidgetType, WidgetTypeAdmin)
 admin.site.register(WidgetParam, WidgetParamAdmin)
@@ -108,6 +109,7 @@ admin.site.register(Window, WindowAdmin)
 admin.site.register(Page, PageAdmin)
 admin.site.register(PageWindow, PageWindowAdmin)
 admin.site.register(Menu, MenuAdmin)
+"""
 admin.site.register(Country, CountryAdmin)
 admin.site.register(Currency, CurrencyAdmin)
 admin.site.register(Classification)
@@ -120,3 +122,4 @@ admin.site.register(Alarm)
 
 create_modeladmin(FundPerformanceEstimateAdmin, name='FundPerformanceEstimate', model=PerformanceEstimate)
 create_modeladmin(HoldingPerformanceEstimateAdmin, name='HoldingPerformanceEstimate', model=PerformanceEstimate)
+"""

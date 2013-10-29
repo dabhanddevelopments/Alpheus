@@ -3720,6 +3720,7 @@ Ext.onReady(function() {
 
             $.getJSON('/api/menu/', function(data) {
 
+                /*
                 $.getJSON('/api/client/?fields=first_name,last_name&order_by=last_name', function(clients) {
 
                    //console.log(clients);
@@ -3799,6 +3800,8 @@ Ext.onReady(function() {
                             data[key].children = client_list;
                         }
                     });
+
+                   */
 
                     var tree_model = Ext.define('tree', {
                         extend: 'Ext.data.Model',
@@ -4019,7 +4022,7 @@ Ext.onReady(function() {
 
                     Ext.EventManager.onWindowResize(viewport.doLayout, viewport);
 
-            });
+            //});
         });
     }
 

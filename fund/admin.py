@@ -42,12 +42,14 @@ class DepositAdmin(FundBaseAdmin):
         ('deposit_interest_percent', 'deposit_interest_received_base')
     )
 
+admin.site.register(Funds)
+"""
 admin.site.register(CurrencyPosition)
 admin.site.register(Deposit, DepositAdmin)
 admin.site.register(FxHedge, FxHedgeAdmin)
 admin.site.register(FxRate)
 admin.site.register(Fund, FundAdmin)
-admin.site.register(Funds)
 #admin.site.register(FundType)
 admin.site.register(FundHistory)
 admin.site.register(Classification, ClassificationAdmin)
+"""

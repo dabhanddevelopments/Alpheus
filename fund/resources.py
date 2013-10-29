@@ -4,11 +4,12 @@ from tastypie.api import Api
 
 from fund.models import *
 from app.resources import *
-from comparative.resources import BenchmarkResource
+#from comparative.resources import BenchmarkResource
 from alpheus.base_resources import MainBaseResource, TreeBaseResource
 
 from alpheus.utils import fund_return_calculation
 
+"""
 class FundClassificationResource(MainBaseResource):
 
     class Meta:
@@ -35,14 +36,6 @@ class FundResource(MainBaseResource):
             'custodian': ALL_WITH_RELATIONS,
         }
 
-
-class FundsResource(MainBaseResource):
-
-    class Meta(MainBaseResource.Meta):
-        queryset = Funds.objects.all()
-        resource_name = 'funds'
-
-
 class FundHistoryResource(MainBaseResource):
     fund = fields.ForeignKey(FundResource, "fund")
 
@@ -57,8 +50,17 @@ class FundHistoryResource(MainBaseResource):
         }
 
 
+"""
+
+class FundsResource(MainBaseResource):
+
+    class Meta(MainBaseResource.Meta):
+        queryset = Funds.objects.all()
+        resource_name = 'funds'
+
+
 class FundReturnDailyResource(MainBaseResource):
-    fund = fields.ForeignKey(FundResource, "fund")
+    fund = fields.ForeignKey(FundsResource, "fund")
 
     class Meta:
         queryset = FundReturnDaily.objects.all()
@@ -71,7 +73,7 @@ class FundReturnDailyResource(MainBaseResource):
 
 
 class FundReturnMonthlyResource(MainBaseResource):
-    fund = fields.ForeignKey(FundResource, "fund")
+    fund = fields.ForeignKey(FundsResource, "fund")
 
     class Meta:
         queryset = FundReturnMonthly.objects.all()
@@ -111,7 +113,7 @@ class FundReturnMonthlyResource(MainBaseResource):
 
 
 class FundReturnMonthlyResource2(MainBaseResource):
-    fund = fields.ForeignKey(FundResource, "fund")
+    fund = fields.ForeignKey(FundsResource, "fund")
 
     class Meta:
         queryset = FundReturnMonthly.objects.all()
@@ -123,113 +125,8 @@ class FundReturnMonthlyResource2(MainBaseResource):
         ordering = ['value_date']
 
 
-class TestWidget(MainBaseResource):
-    fund = fields.ForeignKey(FundResource, "fund")
 
-    class Meta:
-        queryset = FundHistory.objects.all()
-        filtering = {
-            'value_date': ALL,
-            'date_type': ALL,
-            'fund': ALL,
-        }
-        ordering = ['value_date']
-
-    def alter_list_data_to_serialize(self, request, data):
-
-
-        mtd = ''
-        for row in data['objects']:
-            mtd += str(row.data['mtd']) + ', '
-
-        from rpy2.robjects import r
-        r.library("PerformanceAnalytics")
-
-        #print mtd
-
-        #r("x <- c(10.4, 5.6, 3.1, 6.4, 21.7, 12.4, 54, 64, 234, 56, 234, 64, 233)")
-        #r("myts <- ts(x, start=c(2009, 1), end=c(2010, 12), frequency=1)")
-        r("x <- c(" + mtd[:-2] + ")")
-        r("myts <- ts(x, start=c(2010, 1), end=c(2011, 12), frequency=1)")
-        #print r("apply.rolling(myts, FUN='mean', width=2, by = 1)")
-        #print tuple(r("apply.rolling(myts, FUN='mean', width=2, by = 1)"))
-        data = tuple(r("apply.rolling(myts, FUN='mean', width=2, by = 1)"))
-
-        return {
-            "columns": [
-                {
-                "dataIndex": "year",
-                "text": "Year",
-                },
-                {
-                "dataIndex": "jan",
-                "text": "Jan",
-                },
-                {
-                "dataIndex": "feb",
-                "text": "Feb",
-                },
-                {
-                "dataIndex": "mar",
-                "text": "Mar",
-                },
-                {
-                "dataIndex": "apr",
-                "text": "Apr",
-                },
-                {
-                "dataIndex": "may",
-                "text": "May",
-                },
-                {
-                "dataIndex": "jun",
-                "text": "Jun",
-                },
-                {
-                "dataIndex": "jul",
-                "text": "Jul",
-                },
-                {
-                "dataIndex": "aug",
-                "text": "Aug",
-                },
-                {
-                "dataIndex": "sep",
-                "text": "Sep",
-                },
-                {
-                "dataIndex": "oct",
-                "text": "Oct",
-                },
-                {
-                "dataIndex": "nov",
-                "text": "Nov",
-                },
-                {
-                "dataIndex": "dec",
-                "text": "Dec",
-                },
-            ],
-            "rows": [
-                {
-                "year": 2010,
-                "jan": data[1],
-                "feb": data[2],
-                "mar": data[3],
-                "apr": data[4],
-                "may": data[5],
-                "jun": data[6],
-                "jul": data[7],
-                "aug": data[8],
-                "sep": data[9],
-                "oct": data[10],
-                "nov": data[11],
-                "dec": data[12],
-                },
-            ]
-        }
-
-
+"""
 class CurrencyPositionResource(MainBaseResource):
     currency = fields.ForeignKey(CurrencyResource, "currency")
     fund = fields.ForeignKey(FundResource, 'fund')
@@ -316,6 +213,7 @@ class FundValuationResource(MainBaseResource):
 
 
 
+"""
 
 
 
