@@ -251,7 +251,7 @@ class FundReturnMonthly(models.Model):
     fund_ytd = models.DecimalField(max_digits=18, decimal_places=6, db_column='YTDFundReturn', null=True)
 
     class Meta:
-        db_table = 'ALP_FundMonthlyVals_TS'
+        db_table = 'ALP_FundsMonthlyVals_TS'
 
 
 class FundReturnDaily(models.Model):
@@ -268,5 +268,5 @@ class FundReturnDaily(models.Model):
     fund_ytd = models.DecimalField(max_digits=18, decimal_places=6, db_column='YTDFundReturn', null=True)
 
     class Meta:
-        db_table = 'ALP_FundDailyVals_TS'
+        db_table = 'ALP_FundsDailyVals_TS'
 
