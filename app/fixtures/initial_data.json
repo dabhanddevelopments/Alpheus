@@ -1,299 +1,168 @@
 [
 {
     "pk": 1, 
-    "model": "contenttypes.contenttype", 
+    "model": "auth.group", 
     "fields": {
-        "model": "permission", 
-        "name": "permission", 
-        "app_label": "auth"
+        "name": "Manager", 
+        "permissions": [
+            142, 
+            143, 
+            124, 
+            125, 
+            157, 
+            158
+        ]
     }
 },
 {
     "pk": 2, 
-    "model": "contenttypes.contenttype", 
+    "model": "auth.group", 
     "fields": {
-        "model": "group", 
-        "name": "group", 
-        "app_label": "auth"
+        "name": "Fund Manager", 
+        "permissions": [
+            124, 
+            125, 
+            157, 
+            158
+        ]
     }
 },
 {
     "pk": 3, 
-    "model": "contenttypes.contenttype", 
+    "model": "auth.group", 
     "fields": {
-        "model": "user", 
-        "name": "user", 
-        "app_label": "auth"
+        "name": "Back Office", 
+        "permissions": [
+            142, 
+            143, 
+            124, 
+            125
+        ]
     }
 },
 {
     "pk": 4, 
-    "model": "contenttypes.contenttype", 
+    "model": "auth.group", 
     "fields": {
-        "model": "contenttype", 
-        "name": "content type", 
-        "app_label": "contenttypes"
+        "name": "Admin", 
+        "permissions": [
+            4, 
+            5, 
+            6, 
+            7, 
+            8, 
+            9, 
+            142, 
+            143, 
+            121, 
+            122, 
+            124, 
+            125, 
+            157, 
+            158
+        ]
+    }
+},
+{
+    "pk": 1, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "andy", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": true, 
+        "is_staff": true, 
+        "last_login": "2013-10-29T13:26:19Z", 
+        "groups": [
+            1, 
+            2, 
+            3
+        ], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$10000$l8bXV0IQO3vt$5K40ZfpJsZ415w++TboOA0H9Qs83V+8rO6Dm1kURo5w=", 
+        "email": "asdf@asdf.cm", 
+        "date_joined": "2013-05-28T15:18:21Z"
+    }
+},
+{
+    "pk": 2, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "manager", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": true, 
+        "last_login": "2013-09-29T22:32:37Z", 
+        "groups": [
+            1
+        ], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$10000$uK4xvFnc9lI7$Yhn+PRFkcuciwS1ccEHnK3c8+tquki5/cBrM6d0BQkg=", 
+        "email": "", 
+        "date_joined": "2013-09-29T22:29:27Z"
+    }
+},
+{
+    "pk": 3, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "fundmanager", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": true, 
+        "last_login": "2013-09-29T22:30:16Z", 
+        "groups": [
+            2
+        ], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$10000$wDo28A2Jwgcv$kXda7PhrCtrZWxgV6s1sQoB8V0H/PzmPzeYn5wDyFjg=", 
+        "email": "", 
+        "date_joined": "2013-09-29T22:30:16Z"
+    }
+},
+{
+    "pk": 4, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "backoffice", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": true, 
+        "last_login": "2013-09-29T22:30:44Z", 
+        "groups": [
+            3
+        ], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$10000$wCjr6hQsmcnr$HpA1u173OBkQpChwTl4ekE0XOcQP2CBggWXA4/CcIwM=", 
+        "email": "", 
+        "date_joined": "2013-09-29T22:30:44Z"
     }
 },
 {
     "pk": 5, 
-    "model": "contenttypes.contenttype", 
+    "model": "auth.user", 
     "fields": {
-        "model": "session", 
-        "name": "session", 
-        "app_label": "sessions"
-    }
-},
-{
-    "pk": 6, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "site", 
-        "name": "site", 
-        "app_label": "sites"
-    }
-},
-{
-    "pk": 7, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "logentry", 
-        "name": "log entry", 
-        "app_label": "admin"
-    }
-},
-{
-    "pk": 8, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "performanceestimate", 
-        "name": "performance estimate", 
-        "app_label": "app"
-    }
-},
-{
-    "pk": 9, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "window", 
-        "name": "window", 
-        "app_label": "app"
-    }
-},
-{
-    "pk": 10, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "widgettype", 
-        "name": "widget type", 
-        "app_label": "app"
-    }
-},
-{
-    "pk": 11, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "widgetparam", 
-        "name": "widget param", 
-        "app_label": "app"
-    }
-},
-{
-    "pk": 12, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "widget", 
-        "name": "widget", 
-        "app_label": "app"
-    }
-},
-{
-    "pk": 13, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "page", 
-        "name": "page", 
-        "app_label": "app"
-    }
-},
-{
-    "pk": 14, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "pagewindow", 
-        "name": "Window on page", 
-        "app_label": "app"
-    }
-},
-{
-    "pk": 19, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "menu", 
-        "name": "menu", 
-        "app_label": "app"
-    }
-},
-{
-    "pk": 38, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "funds", 
-        "name": "funds", 
-        "app_label": "fund"
-    }
-},
-{
-    "pk": 39, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "fundreturnmonthly", 
-        "name": "fund return monthly", 
-        "app_label": "fund"
-    }
-},
-{
-    "pk": 40, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "fundreturndaily", 
-        "name": "fund return daily", 
-        "app_label": "fund"
-    }
-},
-{
-    "pk": 41, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "category", 
-        "name": "category", 
-        "app_label": "holding"
-    }
-},
-{
-    "pk": 42, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "holding", 
-        "name": "holding", 
-        "app_label": "holding"
-    }
-},
-{
-    "pk": 43, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "holdinghistory", 
-        "name": "holding history", 
-        "app_label": "holding"
-    }
-},
-{
-    "pk": 44, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "countrybreakdown", 
-        "name": "country breakdown", 
-        "app_label": "holding"
-    }
-},
-{
-    "pk": 45, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "breakdown", 
-        "name": "breakdown", 
-        "app_label": "holding"
-    }
-},
-{
-    "pk": 46, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "client", 
-        "name": "client", 
-        "app_label": "client"
-    }
-},
-{
-    "pk": 47, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "clienthistory", 
-        "name": "Client history", 
-        "app_label": "client"
-    }
-},
-{
-    "pk": 48, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "subscriptionredemption", 
-        "name": "subscription redemption", 
-        "app_label": "client"
-    }
-},
-{
-    "pk": 49, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "peer", 
-        "name": "peer", 
-        "app_label": "comparative"
-    }
-},
-{
-    "pk": 50, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "peerhistory", 
-        "name": "Peer history", 
-        "app_label": "comparative"
-    }
-},
-{
-    "pk": 51, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "benchmark", 
-        "name": "benchmark", 
-        "app_label": "comparative"
-    }
-},
-{
-    "pk": 52, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "benchmarkhistory", 
-        "name": "Benchmark history", 
-        "app_label": "comparative"
-    }
-},
-{
-    "pk": 53, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "trade", 
-        "name": "trade", 
-        "app_label": "trade"
-    }
-},
-{
-    "pk": 54, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "apiaccess", 
-        "name": "api access", 
-        "app_label": "tastypie"
-    }
-},
-{
-    "pk": 55, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "apikey", 
-        "name": "api key", 
-        "app_label": "tastypie"
+        "username": "admin", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": true, 
+        "last_login": "2013-09-29T22:31:03Z", 
+        "groups": [
+            4
+        ], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$10000$WqsDaNM14wUI$FyIBh0iuxT6RVTv1/NSloekFK8xVxCAJHt90hIc7Nlc=", 
+        "email": "", 
+        "date_joined": "2013-09-29T22:31:03Z"
     }
 },
 {
@@ -326,6 +195,1222 @@
     "fields": {
         "domain": "example.com", 
         "name": "example.com"
+    }
+},
+{
+    "pk": 1, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-11-04T18:34:30Z", 
+        "object_repr": "extra_fields=ytd", 
+        "object_id": "123", 
+        "change_message": "Changed value.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 2, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-11-04T21:05:48Z", 
+        "object_repr": "W.16 - MTD Performance Line Graph", 
+        "object_id": "3", 
+        "change_message": "Changed widget_param.", 
+        "user": 1, 
+        "content_type": 12
+    }
+},
+{
+    "pk": 1, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Holdings Trade Tables and Graphs", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 6, 
+        "key": "w11"
+    }
+},
+{
+    "pk": 2, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / MTD Performance Line Graph", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w16"
+    }
+},
+{
+    "pk": 3, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Historical Performance", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w1"
+    }
+},
+{
+    "pk": 4, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / MONTH YEAR /  Holding Performance", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w2"
+    }
+},
+{
+    "pk": 5, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / YEAR / Performance by Sector", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w3"
+    }
+},
+{
+    "pk": 6, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / YEAR / Performance by Sub-Sector", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w4"
+    }
+},
+{
+    "pk": 7, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / YEAR / Performance by Location", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w5"
+    }
+},
+{
+    "pk": 8, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Historical NAV Table", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w6"
+    }
+},
+{
+    "pk": 9, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / YEAR / Fund Holding NAV Bar", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w7"
+    }
+},
+{
+    "pk": 10, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "h", 
+        "name": "FUND_NAME / YEAR / NAV Weight by Sector", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 2, 
+        "key": "w8"
+    }
+},
+{
+    "pk": 11, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "h", 
+        "name": "FUND_NAME / YEAR / NAV by Sub Sector", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 2, 
+        "key": "w9"
+    }
+},
+{
+    "pk": 12, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "h", 
+        "name": "FUND_NAME / YEAR / NAV by Location", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 2, 
+        "key": "w10"
+    }
+},
+{
+    "pk": 13, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus / Historical Statistics", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 6, 
+        "key": "w58"
+    }
+},
+{
+    "pk": 14, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Returns", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w19"
+    }
+},
+{
+    "pk": 15, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Best Worst Months", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w20"
+    }
+},
+{
+    "pk": 16, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Return Histogram", 
+        "access": [
+            1
+        ], 
+        "size_x": 2, 
+        "size_y": 2, 
+        "key": "w22"
+    }
+},
+{
+    "pk": 17, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Correlation Matrix", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w21"
+    }
+},
+{
+    "pk": 19, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Performance in Negative Months", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w24"
+    }
+},
+{
+    "pk": 20, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Holding Liquity", 
+        "access": [
+            1
+        ], 
+        "size_x": 8, 
+        "size_y": 6, 
+        "key": "w73"
+    }
+},
+{
+    "pk": 21, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Redemption Tracker", 
+        "access": [
+            1
+        ], 
+        "size_x": 3, 
+        "size_y": 6, 
+        "key": "w74"
+    }
+},
+{
+    "pk": 22, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "h", 
+        "name": "FUND_NAME /  Cumulative Weight", 
+        "access": [
+            1
+        ], 
+        "size_x": 8, 
+        "size_y": 6, 
+        "key": "w75"
+    }
+},
+{
+    "pk": 23, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Summary", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 5, 
+        "key": "w15"
+    }
+},
+{
+    "pk": 24, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Foreign Currency Positions and Hedges", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w70"
+    }
+},
+{
+    "pk": 25, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Share Holder Register", 
+        "access": [
+            1
+        ], 
+        "size_x": 5, 
+        "size_y": 6, 
+        "key": "w12"
+    }
+},
+{
+    "pk": 26, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Subscription and Redemptions", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 4, 
+        "key": "w23"
+    }
+},
+{
+    "pk": 27, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / NAV Reconciliation", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 2, 
+        "key": "w25"
+    }
+},
+{
+    "pk": 28, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus / Gross Assets Calculation", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 6, 
+        "key": "w71"
+    }
+},
+{
+    "pk": 29, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Performance by Asset Class", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w4b"
+    }
+},
+{
+    "pk": 30, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "h", 
+        "name": "FUND_NAME / NAV by Asset Class", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 2, 
+        "key": "w9b"
+    }
+},
+{
+    "pk": 31, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / YEAR / Performance by Location", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w5b"
+    }
+},
+{
+    "pk": 32, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Gross Assets Calculation", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 6, 
+        "key": "w13b"
+    }
+},
+{
+    "pk": 33, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Gross Assets Calculation", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 6, 
+        "key": "w13c"
+    }
+},
+{
+    "pk": 34, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "h", 
+        "name": "FUND_NAME / YEAR / NAV by Holding", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 2, 
+        "key": "w8b"
+    }
+},
+{
+    "pk": 35, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Summary of Commitments ", 
+        "access": [
+            1
+        ], 
+        "size_x": 8, 
+        "size_y": 6, 
+        "key": "w31"
+    }
+},
+{
+    "pk": 36, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Valuation & Cash Flows", 
+        "access": [
+            1
+        ], 
+        "size_x": 8, 
+        "size_y": 6, 
+        "key": "w28"
+    }
+},
+{
+    "pk": 37, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Share Holder Register", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 6, 
+        "key": "w12b"
+    }
+},
+{
+    "pk": 38, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Historical Performance", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w1b"
+    }
+},
+{
+    "pk": 39, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Performance by Investment Type", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w4c"
+    }
+},
+{
+    "pk": 40, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "h", 
+        "name": "FUND_NAME / YEAR / NAV by Investment type", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 2, 
+        "key": "w9c"
+    }
+},
+{
+    "pk": 41, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Net movement % by Investment type", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w26"
+    }
+},
+{
+    "pk": 42, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Net movement Euro by Investment type", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w27"
+    }
+},
+{
+    "pk": 43, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / YEAR / Performance by Holding", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w3b"
+    }
+},
+{
+    "pk": 44, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Historical Performance", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w77"
+    }
+},
+{
+    "pk": 45, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / MTD Performance Line graph", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w78"
+    }
+},
+{
+    "pk": 46, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Holdings Trade Tables and Graphs", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 6, 
+        "key": "w79"
+    }
+},
+{
+    "pk": 47, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Returns", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w81"
+    }
+},
+{
+    "pk": 48, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Best Worst Months", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w82"
+    }
+},
+{
+    "pk": 49, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Correlation Matrix", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w83"
+    }
+},
+{
+    "pk": 50, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Performance in Negative Months", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w84"
+    }
+},
+{
+    "pk": 51, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Historical Statistics ", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 6, 
+        "key": "w80"
+    }
+},
+{
+    "pk": 52, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Return Histogram", 
+        "access": [
+            1
+        ], 
+        "size_x": 2, 
+        "size_y": 2, 
+        "key": "w85"
+    }
+},
+{
+    "pk": 53, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Historical NAV Table", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w86"
+    }
+},
+{
+    "pk": 54, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Historical weight in fund", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w87"
+    }
+},
+{
+    "pk": 55, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Historical Performance", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w32"
+    }
+},
+{
+    "pk": 56, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / YEAR / Holding Performance", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w33"
+    }
+},
+{
+    "pk": 57, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Investment Performance", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 6, 
+        "key": "w34"
+    }
+},
+{
+    "pk": 58, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Returns", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w39"
+    }
+},
+{
+    "pk": 60, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Best Worst", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w40"
+    }
+},
+{
+    "pk": 61, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Correlation Matrix", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w41"
+    }
+},
+{
+    "pk": 62, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Performance in Negative Months", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w42"
+    }
+},
+{
+    "pk": 63, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Return Histogram", 
+        "access": [
+            1
+        ], 
+        "size_x": 2, 
+        "size_y": 2, 
+        "key": "w43"
+    }
+},
+{
+    "pk": 64, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Historical NAV Table", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w44"
+    }
+},
+{
+    "pk": 65, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / MONTH YEAR / Allocation NAV Bar", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w45"
+    }
+},
+{
+    "pk": 66, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Investment NAV", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 6, 
+        "key": "w46"
+    }
+},
+{
+    "pk": 67, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus / Historical Performance", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w51"
+    }
+},
+{
+    "pk": 68, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / YEAR /  Holding Performance", 
+        "access": [
+            1
+        ], 
+        "size_x": 8, 
+        "size_y": 3, 
+        "key": "w52"
+    }
+},
+{
+    "pk": 69, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Returns", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w59"
+    }
+},
+{
+    "pk": 70, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Best Worst Months", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w60"
+    }
+},
+{
+    "pk": 71, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Correlation Matrix", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w61"
+    }
+},
+{
+    "pk": 72, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Performance in Negative Months", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w62"
+    }
+},
+{
+    "pk": 73, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Return Histogram", 
+        "access": [
+            1
+        ], 
+        "size_x": 2, 
+        "size_y": 2, 
+        "key": "w63"
+    }
+},
+{
+    "pk": 74, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus Historical NAV Table", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w64"
+    }
+},
+{
+    "pk": 75, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus / YEAR / Allocation NAV Bar", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w65"
+    }
+},
+{
+    "pk": 76, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "h", 
+        "name": "Alpheus / YEAR / NAV by Sector", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 2, 
+        "key": "w66"
+    }
+},
+{
+    "pk": 77, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "h", 
+        "name": "Alpheus / YEAR / NAV by Location", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 2, 
+        "key": "w67"
+    }
+},
+{
+    "pk": 78, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Historical Statistics ", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 6, 
+        "key": "w38"
+    }
+},
+{
+    "pk": 79, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus / YEAR / Performance by Sector", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w53"
+    }
+},
+{
+    "pk": 80, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus / YEAR / Performance by Location", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w54"
+    }
+},
+{
+    "pk": 82, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus / YEAR / Alpheus Performance by Fund", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 6, 
+        "key": "w55"
+    }
+},
+{
+    "pk": 83, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Foreign Currency Positions and Hedges", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 3, 
+        "key": "w56"
+    }
+},
+{
+    "pk": 84, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Cash Positions and Hedges", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 3, 
+        "key": "w57"
+    }
+},
+{
+    "pk": 85, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus / YEAR / NAV by Fund", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 6, 
+        "key": "w68"
+    }
+},
+{
+    "pk": 86, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus Share Holder Register", 
+        "access": [
+            1
+        ], 
+        "size_x": 14, 
+        "size_y": 6, 
+        "key": "w69"
+    }
+},
+{
+    "pk": 87, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Gross Assets Calculation", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 6, 
+        "key": "w13"
+    }
+},
+{
+    "pk": 88, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus / Summary", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 5, 
+        "key": "w72"
     }
 },
 {
@@ -5425,1694 +6510,6 @@
     }
 },
 {
-    "pk": 1, 
-    "model": "auth.group", 
-    "fields": {
-        "name": "Manager", 
-        "permissions": [
-            [
-                "add_subscriptionredemption", 
-                "client", 
-                "subscriptionredemption"
-            ], 
-            [
-                "change_subscriptionredemption", 
-                "client", 
-                "subscriptionredemption"
-            ], 
-            [
-                "add_holding", 
-                "holding", 
-                "holding"
-            ], 
-            [
-                "change_holding", 
-                "holding", 
-                "holding"
-            ], 
-            [
-                "add_trade", 
-                "trade", 
-                "trade"
-            ], 
-            [
-                "change_trade", 
-                "trade", 
-                "trade"
-            ]
-        ]
-    }
-},
-{
-    "pk": 2, 
-    "model": "auth.group", 
-    "fields": {
-        "name": "Fund Manager", 
-        "permissions": [
-            [
-                "add_holding", 
-                "holding", 
-                "holding"
-            ], 
-            [
-                "change_holding", 
-                "holding", 
-                "holding"
-            ], 
-            [
-                "add_trade", 
-                "trade", 
-                "trade"
-            ], 
-            [
-                "change_trade", 
-                "trade", 
-                "trade"
-            ]
-        ]
-    }
-},
-{
-    "pk": 3, 
-    "model": "auth.group", 
-    "fields": {
-        "name": "Back Office", 
-        "permissions": [
-            [
-                "add_subscriptionredemption", 
-                "client", 
-                "subscriptionredemption"
-            ], 
-            [
-                "change_subscriptionredemption", 
-                "client", 
-                "subscriptionredemption"
-            ], 
-            [
-                "add_holding", 
-                "holding", 
-                "holding"
-            ], 
-            [
-                "change_holding", 
-                "holding", 
-                "holding"
-            ]
-        ]
-    }
-},
-{
-    "pk": 4, 
-    "model": "auth.group", 
-    "fields": {
-        "name": "Admin", 
-        "permissions": [
-            [
-                "add_group", 
-                "auth", 
-                "group"
-            ], 
-            [
-                "change_group", 
-                "auth", 
-                "group"
-            ], 
-            [
-                "delete_group", 
-                "auth", 
-                "group"
-            ], 
-            [
-                "add_user", 
-                "auth", 
-                "user"
-            ], 
-            [
-                "change_user", 
-                "auth", 
-                "user"
-            ], 
-            [
-                "delete_user", 
-                "auth", 
-                "user"
-            ], 
-            [
-                "add_subscriptionredemption", 
-                "client", 
-                "subscriptionredemption"
-            ], 
-            [
-                "change_subscriptionredemption", 
-                "client", 
-                "subscriptionredemption"
-            ], 
-            [
-                "add_category", 
-                "holding", 
-                "category"
-            ], 
-            [
-                "change_category", 
-                "holding", 
-                "category"
-            ], 
-            [
-                "add_holding", 
-                "holding", 
-                "holding"
-            ], 
-            [
-                "change_holding", 
-                "holding", 
-                "holding"
-            ], 
-            [
-                "add_trade", 
-                "trade", 
-                "trade"
-            ], 
-            [
-                "change_trade", 
-                "trade", 
-                "trade"
-            ]
-        ]
-    }
-},
-{
-    "pk": 1, 
-    "model": "auth.user", 
-    "fields": {
-        "username": "andy", 
-        "first_name": "", 
-        "last_name": "", 
-        "is_active": true, 
-        "is_superuser": true, 
-        "is_staff": true, 
-        "last_login": "2013-10-29T13:26:19Z", 
-        "groups": [
-            [
-                "Manager"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Back Office"
-            ]
-        ], 
-        "user_permissions": [], 
-        "password": "pbkdf2_sha256$10000$l8bXV0IQO3vt$5K40ZfpJsZ415w++TboOA0H9Qs83V+8rO6Dm1kURo5w=", 
-        "email": "asdf@asdf.cm", 
-        "date_joined": "2013-05-28T15:18:21Z"
-    }
-},
-{
-    "pk": 2, 
-    "model": "auth.user", 
-    "fields": {
-        "username": "manager", 
-        "first_name": "", 
-        "last_name": "", 
-        "is_active": true, 
-        "is_superuser": false, 
-        "is_staff": true, 
-        "last_login": "2013-09-29T22:32:37Z", 
-        "groups": [
-            [
-                "Manager"
-            ]
-        ], 
-        "user_permissions": [], 
-        "password": "pbkdf2_sha256$10000$uK4xvFnc9lI7$Yhn+PRFkcuciwS1ccEHnK3c8+tquki5/cBrM6d0BQkg=", 
-        "email": "", 
-        "date_joined": "2013-09-29T22:29:27Z"
-    }
-},
-{
-    "pk": 3, 
-    "model": "auth.user", 
-    "fields": {
-        "username": "fundmanager", 
-        "first_name": "", 
-        "last_name": "", 
-        "is_active": true, 
-        "is_superuser": false, 
-        "is_staff": true, 
-        "last_login": "2013-09-29T22:30:16Z", 
-        "groups": [
-            [
-                "Fund Manager"
-            ]
-        ], 
-        "user_permissions": [], 
-        "password": "pbkdf2_sha256$10000$wDo28A2Jwgcv$kXda7PhrCtrZWxgV6s1sQoB8V0H/PzmPzeYn5wDyFjg=", 
-        "email": "", 
-        "date_joined": "2013-09-29T22:30:16Z"
-    }
-},
-{
-    "pk": 4, 
-    "model": "auth.user", 
-    "fields": {
-        "username": "backoffice", 
-        "first_name": "", 
-        "last_name": "", 
-        "is_active": true, 
-        "is_superuser": false, 
-        "is_staff": true, 
-        "last_login": "2013-09-29T22:30:44Z", 
-        "groups": [
-            [
-                "Back Office"
-            ]
-        ], 
-        "user_permissions": [], 
-        "password": "pbkdf2_sha256$10000$wCjr6hQsmcnr$HpA1u173OBkQpChwTl4ekE0XOcQP2CBggWXA4/CcIwM=", 
-        "email": "", 
-        "date_joined": "2013-09-29T22:30:44Z"
-    }
-},
-{
-    "pk": 5, 
-    "model": "auth.user", 
-    "fields": {
-        "username": "admin", 
-        "first_name": "", 
-        "last_name": "", 
-        "is_active": true, 
-        "is_superuser": false, 
-        "is_staff": true, 
-        "last_login": "2013-09-29T22:31:03Z", 
-        "groups": [
-            [
-                "Admin"
-            ]
-        ], 
-        "user_permissions": [], 
-        "password": "pbkdf2_sha256$10000$WqsDaNM14wUI$FyIBh0iuxT6RVTv1/NSloekFK8xVxCAJHt90hIc7Nlc=", 
-        "email": "", 
-        "date_joined": "2013-09-29T22:31:03Z"
-    }
-},
-{
-    "pk": 1, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2013-11-04T18:34:30Z", 
-        "object_repr": "extra_fields=ytd", 
-        "object_id": "123", 
-        "change_message": "Changed value.", 
-        "user": [
-            "andy"
-        ], 
-        "content_type": [
-            "app", 
-            "widgetparam"
-        ]
-    }
-},
-{
-    "pk": 2, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2013-11-04T21:05:48Z", 
-        "object_repr": "W.16 - MTD Performance Line Graph", 
-        "object_id": "3", 
-        "change_message": "Changed widget_param.", 
-        "user": [
-            "andy"
-        ], 
-        "content_type": [
-            "app", 
-            "widget"
-        ]
-    }
-},
-{
-    "pk": 1, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Holdings Trade Tables and Graphs", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 6, 
-        "key": "w11"
-    }
-},
-{
-    "pk": 2, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / MTD Performance Line Graph", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w16"
-    }
-},
-{
-    "pk": 3, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Historical Performance", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w1"
-    }
-},
-{
-    "pk": 4, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / MONTH YEAR /  Holding Performance", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w2"
-    }
-},
-{
-    "pk": 5, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / YEAR / Performance by Sector", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w3"
-    }
-},
-{
-    "pk": 6, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / YEAR / Performance by Sub-Sector", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w4"
-    }
-},
-{
-    "pk": 7, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / YEAR / Performance by Location", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w5"
-    }
-},
-{
-    "pk": 8, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Historical NAV Table", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w6"
-    }
-},
-{
-    "pk": 9, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / YEAR / Fund Holding NAV Bar", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w7"
-    }
-},
-{
-    "pk": 10, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "h", 
-        "name": "FUND_NAME / YEAR / NAV Weight by Sector", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 9, 
-        "size_y": 2, 
-        "key": "w8"
-    }
-},
-{
-    "pk": 11, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "h", 
-        "name": "FUND_NAME / YEAR / NAV by Sub Sector", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 9, 
-        "size_y": 2, 
-        "key": "w9"
-    }
-},
-{
-    "pk": 12, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "h", 
-        "name": "FUND_NAME / YEAR / NAV by Location", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 9, 
-        "size_y": 2, 
-        "key": "w10"
-    }
-},
-{
-    "pk": 13, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus / Historical Statistics", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 6, 
-        "size_y": 6, 
-        "key": "w58"
-    }
-},
-{
-    "pk": 14, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Returns", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w19"
-    }
-},
-{
-    "pk": 15, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Best Worst Months", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w20"
-    }
-},
-{
-    "pk": 16, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Return Histogram", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 2, 
-        "size_y": 2, 
-        "key": "w22"
-    }
-},
-{
-    "pk": 17, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Correlation Matrix", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w21"
-    }
-},
-{
-    "pk": 19, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Performance in Negative Months", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w24"
-    }
-},
-{
-    "pk": 20, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Holding Liquity", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 8, 
-        "size_y": 6, 
-        "key": "w73"
-    }
-},
-{
-    "pk": 21, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Redemption Tracker", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 3, 
-        "size_y": 6, 
-        "key": "w74"
-    }
-},
-{
-    "pk": 22, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "h", 
-        "name": "FUND_NAME /  Cumulative Weight", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 8, 
-        "size_y": 6, 
-        "key": "w75"
-    }
-},
-{
-    "pk": 23, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Summary", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 6, 
-        "size_y": 5, 
-        "key": "w15"
-    }
-},
-{
-    "pk": 24, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Foreign Currency Positions and Hedges", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w70"
-    }
-},
-{
-    "pk": 25, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Share Holder Register", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 5, 
-        "size_y": 6, 
-        "key": "w12"
-    }
-},
-{
-    "pk": 26, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Subscription and Redemptions", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 6, 
-        "size_y": 4, 
-        "key": "w23"
-    }
-},
-{
-    "pk": 27, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / NAV Reconciliation", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 6, 
-        "size_y": 2, 
-        "key": "w25"
-    }
-},
-{
-    "pk": 28, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus / Gross Assets Calculation", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 9, 
-        "size_y": 6, 
-        "key": "w71"
-    }
-},
-{
-    "pk": 29, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Performance by Asset Class", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w4b"
-    }
-},
-{
-    "pk": 30, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "h", 
-        "name": "FUND_NAME / NAV by Asset Class", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 9, 
-        "size_y": 2, 
-        "key": "w9b"
-    }
-},
-{
-    "pk": 31, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / YEAR / Performance by Location", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w5b"
-    }
-},
-{
-    "pk": 32, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Gross Assets Calculation", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 9, 
-        "size_y": 6, 
-        "key": "w13b"
-    }
-},
-{
-    "pk": 33, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Gross Assets Calculation", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 9, 
-        "size_y": 6, 
-        "key": "w13c"
-    }
-},
-{
-    "pk": 34, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "h", 
-        "name": "FUND_NAME / YEAR / NAV by Holding", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 9, 
-        "size_y": 2, 
-        "key": "w8b"
-    }
-},
-{
-    "pk": 35, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Summary of Commitments ", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 8, 
-        "size_y": 6, 
-        "key": "w31"
-    }
-},
-{
-    "pk": 36, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Valuation & Cash Flows", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 8, 
-        "size_y": 6, 
-        "key": "w28"
-    }
-},
-{
-    "pk": 37, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Share Holder Register", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 6, 
-        "key": "w12b"
-    }
-},
-{
-    "pk": 38, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Historical Performance", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w1b"
-    }
-},
-{
-    "pk": 39, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Performance by Investment Type", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w4c"
-    }
-},
-{
-    "pk": 40, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "h", 
-        "name": "FUND_NAME / YEAR / NAV by Investment type", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 9, 
-        "size_y": 2, 
-        "key": "w9c"
-    }
-},
-{
-    "pk": 41, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Net movement % by Investment type", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w26"
-    }
-},
-{
-    "pk": 42, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Net movement Euro by Investment type", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w27"
-    }
-},
-{
-    "pk": 43, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / YEAR / Performance by Holding", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w3b"
-    }
-},
-{
-    "pk": 44, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Historical Performance", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w77"
-    }
-},
-{
-    "pk": 45, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / MTD Performance Line graph", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w78"
-    }
-},
-{
-    "pk": 46, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Holdings Trade Tables and Graphs", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 6, 
-        "key": "w79"
-    }
-},
-{
-    "pk": 47, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Returns", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w81"
-    }
-},
-{
-    "pk": 48, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Best Worst Months", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w82"
-    }
-},
-{
-    "pk": 49, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Correlation Matrix", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w83"
-    }
-},
-{
-    "pk": 50, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Performance in Negative Months", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w84"
-    }
-},
-{
-    "pk": 51, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Historical Statistics ", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 6, 
-        "size_y": 6, 
-        "key": "w80"
-    }
-},
-{
-    "pk": 52, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Return Histogram", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 2, 
-        "size_y": 2, 
-        "key": "w85"
-    }
-},
-{
-    "pk": 53, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Historical NAV Table", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w86"
-    }
-},
-{
-    "pk": 54, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Historical weight in fund", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w87"
-    }
-},
-{
-    "pk": 55, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Historical Performance", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w32"
-    }
-},
-{
-    "pk": 56, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / YEAR / Holding Performance", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w33"
-    }
-},
-{
-    "pk": 57, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Investment Performance", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 6, 
-        "key": "w34"
-    }
-},
-{
-    "pk": 58, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Returns", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w39"
-    }
-},
-{
-    "pk": 60, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Best Worst", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w40"
-    }
-},
-{
-    "pk": 61, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Correlation Matrix", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w41"
-    }
-},
-{
-    "pk": 62, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Performance in Negative Months", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w42"
-    }
-},
-{
-    "pk": 63, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Return Histogram", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 2, 
-        "size_y": 2, 
-        "key": "w43"
-    }
-},
-{
-    "pk": 64, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Historical NAV Table", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w44"
-    }
-},
-{
-    "pk": 65, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / MONTH YEAR / Allocation NAV Bar", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w45"
-    }
-},
-{
-    "pk": 66, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Investment NAV", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 6, 
-        "key": "w46"
-    }
-},
-{
-    "pk": 67, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus / Historical Performance", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w51"
-    }
-},
-{
-    "pk": 68, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / YEAR /  Holding Performance", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 8, 
-        "size_y": 3, 
-        "key": "w52"
-    }
-},
-{
-    "pk": 69, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Returns", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w59"
-    }
-},
-{
-    "pk": 70, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Best Worst Months", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w60"
-    }
-},
-{
-    "pk": 71, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Correlation Matrix", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w61"
-    }
-},
-{
-    "pk": 72, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Performance in Negative Months", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w62"
-    }
-},
-{
-    "pk": 73, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Return Histogram", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 2, 
-        "size_y": 2, 
-        "key": "w63"
-    }
-},
-{
-    "pk": 74, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus Historical NAV Table", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w64"
-    }
-},
-{
-    "pk": 75, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus / YEAR / Allocation NAV Bar", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w65"
-    }
-},
-{
-    "pk": 76, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "h", 
-        "name": "Alpheus / YEAR / NAV by Sector", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 9, 
-        "size_y": 2, 
-        "key": "w66"
-    }
-},
-{
-    "pk": 77, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "h", 
-        "name": "Alpheus / YEAR / NAV by Location", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 9, 
-        "size_y": 2, 
-        "key": "w67"
-    }
-},
-{
-    "pk": 78, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Historical Statistics ", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 6, 
-        "size_y": 6, 
-        "key": "w38"
-    }
-},
-{
-    "pk": 79, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus / YEAR / Performance by Sector", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w53"
-    }
-},
-{
-    "pk": 80, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus / YEAR / Performance by Location", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w54"
-    }
-},
-{
-    "pk": 82, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus / YEAR / Alpheus Performance by Fund", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 6, 
-        "size_y": 6, 
-        "key": "w55"
-    }
-},
-{
-    "pk": 83, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Foreign Currency Positions and Hedges", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 4, 
-        "size_y": 3, 
-        "key": "w56"
-    }
-},
-{
-    "pk": 84, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Cash Positions and Hedges", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 4, 
-        "size_y": 3, 
-        "key": "w57"
-    }
-},
-{
-    "pk": 85, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus / YEAR / NAV by Fund", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 6, 
-        "size_y": 6, 
-        "key": "w68"
-    }
-},
-{
-    "pk": 86, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus Share Holder Register", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 14, 
-        "size_y": 6, 
-        "key": "w69"
-    }
-},
-{
-    "pk": 87, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Gross Assets Calculation", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 9, 
-        "size_y": 6, 
-        "key": "w13"
-    }
-},
-{
-    "pk": 88, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus / Summary", 
-        "access": [
-            [
-                "Manager"
-            ]
-        ], 
-        "size_x": 6, 
-        "size_y": 5, 
-        "key": "w72"
-    }
-},
-{
     "pk": 3, 
     "model": "app.pagewindow", 
     "fields": {
@@ -7122,9 +6519,7 @@
         "size_y": 3, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7137,9 +6532,7 @@
         "size_y": 3, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7152,9 +6545,7 @@
         "size_y": 2, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7167,9 +6558,7 @@
         "size_y": 6, 
         "row": 1, 
         "col": 17, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7182,9 +6571,7 @@
         "size_y": 2, 
         "row": 5, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7197,9 +6584,7 @@
         "size_y": 2, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7212,9 +6597,7 @@
         "size_y": 2, 
         "row": 3, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7227,9 +6610,7 @@
         "size_y": 6, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7242,9 +6623,7 @@
         "size_y": 3, 
         "row": 1, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7257,9 +6636,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7272,9 +6649,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7287,9 +6662,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7302,9 +6675,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7317,9 +6688,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7332,9 +6701,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 9, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7347,9 +6714,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 12, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7362,9 +6727,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7377,9 +6740,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7392,9 +6753,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7407,9 +6766,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7422,9 +6779,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7437,9 +6792,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7452,9 +6805,7 @@
         "size_y": 3, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7467,9 +6818,7 @@
         "size_y": 3, 
         "row": 4, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7482,9 +6831,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 14, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7497,9 +6844,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 14, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7512,9 +6857,7 @@
         "size_y": 3, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7527,9 +6870,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 20, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7542,9 +6883,7 @@
         "size_y": 6, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7557,9 +6896,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7572,9 +6909,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7587,9 +6922,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7602,9 +6935,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7617,9 +6948,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7632,9 +6961,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7647,9 +6974,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7662,9 +6987,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7677,9 +7000,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7692,9 +7013,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 17, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7707,9 +7026,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7722,9 +7039,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7737,9 +7052,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7752,9 +7065,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7767,9 +7078,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7782,9 +7091,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7797,9 +7104,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7812,9 +7117,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7827,9 +7130,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 20, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7842,9 +7143,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 14, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7857,9 +7156,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7872,9 +7169,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7887,9 +7182,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7902,9 +7195,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7917,9 +7208,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7932,9 +7221,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7947,9 +7234,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7962,9 +7247,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7977,9 +7260,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -7992,9 +7273,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8007,9 +7286,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8022,9 +7299,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 17, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8037,9 +7312,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8052,9 +7325,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8067,9 +7338,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8082,9 +7351,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8097,9 +7364,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8112,9 +7377,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8127,9 +7390,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8142,9 +7403,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 14, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8157,9 +7416,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 20, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8172,9 +7429,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8187,9 +7442,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8202,9 +7455,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8217,9 +7468,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8232,9 +7481,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8247,9 +7494,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8262,9 +7507,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8277,9 +7520,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 17, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8292,9 +7533,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8307,9 +7546,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8322,9 +7559,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8337,9 +7572,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8352,9 +7585,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8367,9 +7598,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8382,9 +7611,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8397,9 +7624,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8412,9 +7637,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8427,9 +7650,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8442,9 +7663,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8457,9 +7676,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8472,9 +7689,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8487,9 +7702,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8502,9 +7715,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8517,9 +7728,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8532,9 +7741,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8547,9 +7754,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8562,9 +7767,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8577,9 +7780,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8592,9 +7793,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8607,9 +7806,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8622,9 +7819,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8637,9 +7832,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8652,9 +7845,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8667,9 +7858,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8682,9 +7871,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8697,9 +7884,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8712,9 +7897,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8727,9 +7910,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8742,9 +7923,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8757,9 +7936,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8772,9 +7949,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 14, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8787,9 +7962,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8802,9 +7975,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8817,9 +7988,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 20, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8832,9 +8001,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 14, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8847,9 +8014,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 20, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8862,9 +8027,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8877,9 +8040,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8892,9 +8053,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 15, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8907,9 +8066,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8922,9 +8079,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8937,9 +8092,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 14, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8952,9 +8105,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8967,9 +8118,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8982,9 +8131,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -8997,9 +8144,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 14, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9012,9 +8157,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9027,9 +8170,7 @@
         "size_y": 1, 
         "row": 7, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9042,9 +8183,7 @@
         "size_y": 1, 
         "row": 7, 
         "col": 10, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9057,9 +8196,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9072,9 +8209,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9087,9 +8222,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9102,9 +8235,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 16, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9117,9 +8248,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 16, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9132,9 +8261,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9147,9 +8274,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 14, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9162,9 +8287,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 20, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9177,9 +8300,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9192,9 +8313,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 14, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9207,9 +8326,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9222,9 +8339,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9237,9 +8352,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9252,9 +8365,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9267,9 +8378,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9282,9 +8391,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9297,9 +8404,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9312,9 +8417,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9327,9 +8430,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9342,9 +8443,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 17, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9357,9 +8456,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9372,9 +8469,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9387,9 +8482,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9402,9 +8495,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9417,9 +8508,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9432,9 +8521,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9447,9 +8534,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9462,9 +8547,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9477,9 +8560,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9492,9 +8573,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9507,9 +8586,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9522,9 +8599,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9537,9 +8612,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9552,9 +8625,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9567,9 +8638,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9582,9 +8651,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9597,9 +8664,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9612,9 +8677,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9627,9 +8690,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 17, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9642,9 +8703,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9657,9 +8716,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9672,9 +8729,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9687,9 +8742,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9702,9 +8755,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9717,9 +8768,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9732,9 +8781,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9747,9 +8794,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9762,9 +8807,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9777,9 +8820,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 14, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9792,9 +8833,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 14, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9807,9 +8846,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9822,9 +8859,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9837,9 +8872,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 20, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9852,9 +8885,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9867,9 +8898,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9882,9 +8911,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9897,9 +8924,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9912,9 +8937,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9927,9 +8950,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9942,9 +8963,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9957,9 +8976,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9972,9 +8989,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -9987,9 +9002,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 17, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10002,9 +9015,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10017,9 +9028,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10032,9 +9041,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10047,9 +9054,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10062,9 +9067,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10077,9 +9080,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10092,9 +9093,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10107,9 +9106,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10122,9 +9119,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10137,9 +9132,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 14, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10152,9 +9145,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 14, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10167,9 +9158,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10182,9 +9171,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10197,9 +9184,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 20, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10212,9 +9197,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10227,9 +9210,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10242,9 +9223,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10257,9 +9236,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10272,9 +9249,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10287,9 +9262,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10302,9 +9275,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10317,9 +9288,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10332,9 +9301,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10347,9 +9314,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 17, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10362,9 +9327,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10377,9 +9340,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10392,9 +9353,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10407,9 +9366,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10422,9 +9379,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10437,9 +9392,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10452,9 +9405,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10467,9 +9418,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10482,9 +9431,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10497,9 +9444,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10512,9 +9457,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10527,9 +9470,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10542,9 +9483,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10557,9 +9496,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 16, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10572,9 +9509,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10587,9 +9522,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10602,9 +9535,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10617,9 +9548,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10632,9 +9561,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10647,9 +9574,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10662,9 +9587,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10677,9 +9600,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10692,9 +9613,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10707,9 +9626,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10722,9 +9639,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10737,9 +9652,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10752,9 +9665,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10767,9 +9678,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10782,9 +9691,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10797,9 +9704,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10812,9 +9717,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10827,9 +9730,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10842,9 +9743,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10857,9 +9756,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10872,9 +9769,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10887,9 +9782,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 12, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10902,9 +9795,7 @@
         "size_y": 2, 
         "row": 3, 
         "col": 12, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10917,9 +9808,7 @@
         "size_y": 3, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10932,9 +9821,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10947,9 +9834,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10962,9 +9847,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10977,9 +9860,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -10992,9 +9873,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11007,9 +9886,7 @@
         "size_y": 1, 
         "row": 5, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11022,9 +9899,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11037,9 +9912,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 7, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11052,9 +9925,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 11, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11067,9 +9938,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11082,9 +9951,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11097,9 +9964,7 @@
         "size_y": 1, 
         "row": 3, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11112,9 +9977,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11127,9 +9990,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11142,9 +10003,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11157,9 +10016,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 22, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11172,9 +10029,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 22, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11187,9 +10042,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 16, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11202,9 +10055,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11217,9 +10068,7 @@
         "size_y": 1, 
         "row": 4, 
         "col": 12, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11232,9 +10081,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11247,9 +10094,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 17, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11262,9 +10107,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11277,9 +10120,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11292,9 +10133,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 1, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11307,9 +10146,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11322,9 +10159,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 9, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11337,9 +10172,7 @@
         "size_y": 1, 
         "row": 1, 
         "col": 8, 
-        "user": [
-            "andy"
-        ]
+        "user": 1
     }
 },
 {
@@ -11352,9 +10185,7 @@
         "fund": null, 
         "level": 0, 
         "access": [
-            [
-                "Manager"
-            ]
+            1
         ], 
         "lft": 1, 
         "tree_id": 7, 
@@ -11371,9 +10202,7 @@
         "fund": null, 
         "level": 0, 
         "access": [
-            [
-                "Manager"
-            ]
+            1
         ], 
         "lft": 1, 
         "tree_id": 4, 
@@ -11390,9 +10219,7 @@
         "fund": null, 
         "level": 0, 
         "access": [
-            [
-                "Manager"
-            ]
+            1
         ], 
         "lft": 1, 
         "tree_id": 8, 
@@ -11409,9 +10236,7 @@
         "fund": null, 
         "level": 0, 
         "access": [
-            [
-                "Manager"
-            ]
+            1
         ], 
         "lft": 1, 
         "tree_id": 16, 
@@ -11428,9 +10253,7 @@
         "fund": null, 
         "level": 0, 
         "access": [
-            [
-                "Manager"
-            ]
+            1
         ], 
         "lft": 1, 
         "tree_id": 15, 
@@ -11447,18 +10270,10 @@
         "fund": null, 
         "level": 0, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 1, 
         "tree_id": 10, 
@@ -11475,9 +10290,7 @@
         "fund": null, 
         "level": 1, 
         "access": [
-            [
-                "Manager"
-            ]
+            1
         ], 
         "lft": 2, 
         "tree_id": 8, 
@@ -11494,9 +10307,7 @@
         "fund": null, 
         "level": 2, 
         "access": [
-            [
-                "Manager"
-            ]
+            1
         ], 
         "lft": 3, 
         "tree_id": 8, 
@@ -11513,9 +10324,7 @@
         "fund": 1, 
         "level": 1, 
         "access": [
-            [
-                "Manager"
-            ]
+            1
         ], 
         "lft": 2, 
         "tree_id": 7, 
@@ -11532,9 +10341,7 @@
         "fund": null, 
         "level": 0, 
         "access": [
-            [
-                "Manager"
-            ]
+            1
         ], 
         "lft": 1, 
         "tree_id": 17, 
@@ -11551,18 +10358,10 @@
         "fund": null, 
         "level": 1, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 14, 
         "tree_id": 10, 
@@ -11579,15 +10378,9 @@
         "fund": null, 
         "level": 2, 
         "access": [
-            [
-                "Manager"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Admin"
-            ]
+            1, 
+            3, 
+            4
         ], 
         "lft": 15, 
         "tree_id": 10, 
@@ -11604,15 +10397,9 @@
         "fund": null, 
         "level": 2, 
         "access": [
-            [
-                "Manager"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Admin"
-            ]
+            1, 
+            3, 
+            4
         ], 
         "lft": 17, 
         "tree_id": 10, 
@@ -11629,15 +10416,9 @@
         "fund": null, 
         "level": 2, 
         "access": [
-            [
-                "Manager"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Admin"
-            ]
+            1, 
+            3, 
+            4
         ], 
         "lft": 19, 
         "tree_id": 10, 
@@ -11654,15 +10435,9 @@
         "fund": null, 
         "level": 2, 
         "access": [
-            [
-                "Manager"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Admin"
-            ]
+            1, 
+            3, 
+            4
         ], 
         "lft": 21, 
         "tree_id": 10, 
@@ -11679,15 +10454,9 @@
         "fund": null, 
         "level": 2, 
         "access": [
-            [
-                "Manager"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Admin"
-            ]
+            1, 
+            3, 
+            4
         ], 
         "lft": 23, 
         "tree_id": 10, 
@@ -11704,18 +10473,10 @@
         "fund": null, 
         "level": 2, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 25, 
         "tree_id": 10, 
@@ -11732,18 +10493,10 @@
         "fund": null, 
         "level": 1, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 28, 
         "tree_id": 10, 
@@ -11760,18 +10513,10 @@
         "fund": null, 
         "level": 2, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 29, 
         "tree_id": 10, 
@@ -11788,18 +10533,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 32, 
         "tree_id": 10, 
@@ -11816,18 +10553,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 34, 
         "tree_id": 10, 
@@ -11844,18 +10573,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 36, 
         "tree_id": 10, 
@@ -11872,18 +10593,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 40, 
         "tree_id": 10, 
@@ -11900,18 +10613,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 38, 
         "tree_id": 10, 
@@ -11928,9 +10633,7 @@
         "fund": null, 
         "level": 2, 
         "access": [
-            [
-                "Admin"
-            ]
+            4
         ], 
         "lft": 57, 
         "tree_id": 10, 
@@ -11947,9 +10650,7 @@
         "fund": null, 
         "level": 2, 
         "access": [
-            [
-                "Admin"
-            ]
+            4
         ], 
         "lft": 59, 
         "tree_id": 10, 
@@ -11966,18 +10667,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 30, 
         "tree_id": 10, 
@@ -11994,18 +10687,10 @@
         "fund": null, 
         "level": 2, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 43, 
         "tree_id": 10, 
@@ -12022,18 +10707,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 44, 
         "tree_id": 10, 
@@ -12050,18 +10727,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 46, 
         "tree_id": 10, 
@@ -12078,18 +10747,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 48, 
         "tree_id": 10, 
@@ -12106,18 +10767,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 50, 
         "tree_id": 10, 
@@ -12134,18 +10787,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 52, 
         "tree_id": 10, 
@@ -12162,18 +10807,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 54, 
         "tree_id": 10, 
@@ -12190,18 +10827,10 @@
         "fund": null, 
         "level": 1, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 62, 
         "tree_id": 10, 
@@ -12218,18 +10847,10 @@
         "fund": null, 
         "level": 2, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 63, 
         "tree_id": 10, 
@@ -12246,18 +10867,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 64, 
         "tree_id": 10, 
@@ -12274,18 +10887,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 66, 
         "tree_id": 10, 
@@ -12302,18 +10907,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 68, 
         "tree_id": 10, 
@@ -12330,18 +10927,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 70, 
         "tree_id": 10, 
@@ -12358,18 +10947,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 72, 
         "tree_id": 10, 
@@ -12386,18 +10967,10 @@
         "fund": null, 
         "level": 2, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 75, 
         "tree_id": 10, 
@@ -12414,18 +10987,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 76, 
         "tree_id": 10, 
@@ -12442,18 +11007,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 78, 
         "tree_id": 10, 
@@ -12470,18 +11027,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 80, 
         "tree_id": 10, 
@@ -12498,18 +11047,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 82, 
         "tree_id": 10, 
@@ -12526,15 +11067,9 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Manager"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Admin"
-            ]
+            1, 
+            3, 
+            4
         ], 
         "lft": 84, 
         "tree_id": 10, 
@@ -12551,18 +11086,10 @@
         "fund": null, 
         "level": 3, 
         "access": [
-            [
-                "Admin"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Fund Manager"
-            ], 
-            [
-                "Manager"
-            ]
+            4, 
+            3, 
+            2, 
+            1
         ], 
         "lft": 86, 
         "tree_id": 10, 
@@ -12579,9 +11106,7 @@
         "fund": null, 
         "level": 2, 
         "access": [
-            [
-                "Admin"
-            ]
+            4
         ], 
         "lft": 89, 
         "tree_id": 10, 
@@ -12598,9 +11123,7 @@
         "fund": null, 
         "level": 2, 
         "access": [
-            [
-                "Admin"
-            ]
+            4
         ], 
         "lft": 91, 
         "tree_id": 10, 
@@ -12617,15 +11140,9 @@
         "fund": null, 
         "level": 1, 
         "access": [
-            [
-                "Manager"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Admin"
-            ]
+            1, 
+            3, 
+            4
         ], 
         "lft": 94, 
         "tree_id": 10, 
@@ -12642,15 +11159,9 @@
         "fund": null, 
         "level": 1, 
         "access": [
-            [
-                "Manager"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Admin"
-            ]
+            1, 
+            3, 
+            4
         ], 
         "lft": 96, 
         "tree_id": 10, 
@@ -12667,15 +11178,9 @@
         "fund": null, 
         "level": 1, 
         "access": [
-            [
-                "Manager"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Admin"
-            ]
+            1, 
+            3, 
+            4
         ], 
         "lft": 98, 
         "tree_id": 10, 
@@ -12692,15 +11197,9 @@
         "fund": null, 
         "level": 1, 
         "access": [
-            [
-                "Manager"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Admin"
-            ]
+            1, 
+            3, 
+            4
         ], 
         "lft": 100, 
         "tree_id": 10, 
@@ -12717,15 +11216,9 @@
         "fund": null, 
         "level": 1, 
         "access": [
-            [
-                "Manager"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Admin"
-            ]
+            1, 
+            3, 
+            4
         ], 
         "lft": 102, 
         "tree_id": 10, 
@@ -12742,15 +11235,9 @@
         "fund": null, 
         "level": 1, 
         "access": [
-            [
-                "Manager"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Admin"
-            ]
+            1, 
+            3, 
+            4
         ], 
         "lft": 104, 
         "tree_id": 10, 
@@ -12767,15 +11254,9 @@
         "fund": null, 
         "level": 1, 
         "access": [
-            [
-                "Manager"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Admin"
-            ]
+            1, 
+            3, 
+            4
         ], 
         "lft": 106, 
         "tree_id": 10, 
@@ -12792,15 +11273,9 @@
         "fund": null, 
         "level": 1, 
         "access": [
-            [
-                "Manager"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Admin"
-            ]
+            1, 
+            3, 
+            4
         ], 
         "lft": 108, 
         "tree_id": 10, 
@@ -12817,15 +11292,9 @@
         "fund": null, 
         "level": 1, 
         "access": [
-            [
-                "Manager"
-            ], 
-            [
-                "Back Office"
-            ], 
-            [
-                "Admin"
-            ]
+            1, 
+            3, 
+            4
         ], 
         "lft": 110, 
         "tree_id": 10, 
@@ -12842,9 +11311,7 @@
         "fund": null, 
         "level": 1, 
         "access": [
-            [
-                "Admin"
-            ]
+            4
         ], 
         "lft": 112, 
         "tree_id": 10, 
@@ -12861,9 +11328,7 @@
         "fund": null, 
         "level": 1, 
         "access": [
-            [
-                "Admin"
-            ]
+            4
         ], 
         "lft": 114, 
         "tree_id": 10, 
@@ -12880,9 +11345,7 @@
         "fund": 2, 
         "level": 1, 
         "access": [
-            [
-                "Manager"
-            ]
+            1
         ], 
         "lft": 8, 
         "tree_id": 7, 
