@@ -75,9 +75,9 @@
         "is_staff": true, 
         "last_login": "2013-10-29T13:26:19Z", 
         "groups": [
-            1, 
+            3, 
             2, 
-            3
+            1
         ], 
         "user_permissions": [], 
         "password": "pbkdf2_sha256$10000$l8bXV0IQO3vt$5K40ZfpJsZ415w++TboOA0H9Qs83V+8rO6Dm1kURo5w=", 
@@ -3884,8 +3884,8 @@
     "fields": {
         "disabled": false, 
         "widget_param": [
-            44, 
             89, 
+            44, 
             27, 
             12, 
             43, 
