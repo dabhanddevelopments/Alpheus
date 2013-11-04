@@ -248,7 +248,8 @@ class FundReturnMonthly(models.Model):
         fund's benchmark since its first valuation""", null=True)
     value_date = models.DateField(db_column='ValueDate', help_text="""The date
         of the monthly valuation""")
-    fund_ytd = models.DecimalField(max_digits=18, decimal_places=6, db_column='YTDFundReturn', null=True)
+    ytd = models.DecimalField(max_digits=18, decimal_places=6,
+        db_column='YTDFundReturn', null=True)
 
     class Meta:
         db_table = 'ALP_FundsMonthlyVals_TS'
@@ -265,7 +266,8 @@ class FundReturnDaily(models.Model):
         fund's benchmark since its first valuation""", null=True)
     value_date = models.DateField(db_column='ValueDate', help_text="""The date
         of the monthly valuation""")
-    fund_ytd = models.DecimalField(max_digits=18, decimal_places=6, db_column='YTDFundReturn', null=True)
+    ytd = models.DecimalField(max_digits=18, decimal_places=6,
+        db_column='YTDFundReturn', null=True)
 
     class Meta:
         db_table = 'ALP_FundsDailyVals_TS'

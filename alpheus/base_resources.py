@@ -7,6 +7,7 @@ from alpheus.serializers import PrettyJSONSerializer
 from alpheus.specifiedfields import SpecifiedFields
 from tastypie.exceptions import BadRequest
 
+import collections
 
 class StandardBaseResource(ModelResource):
     class Meta:
@@ -323,7 +324,6 @@ class MainBaseResource(SpecifiedFields):
 
             if self.y1 and len(self.title):
 
-                import collections
 
                 newlist = []
                 categories = {}
@@ -335,7 +335,7 @@ class MainBaseResource(SpecifiedFields):
                             categories[row.data[self.title[0]]] = {}
                             categories[row.data[self.title[0]]][row.data[self.date].month] = float(row.data[self.y1])
 
-                #od = collections.OrderedDict(sorted(categories.items()))
+                #categories = collections.OrderedDict(sorted(categories.items()))
 
                 for key, val in categories.iteritems():
                     dic = {
@@ -374,7 +374,12 @@ class MainBaseResource(SpecifiedFields):
                 columns = [self.title[0]] + self.get_month_list() + self.extra_fields
 
             else:
+
                 categories = set([row.data[self.date].year for row in data['objects']])
+                categories = sorted(categories, reverse=True)
+                print categories
+                #categories = [row.data[self.date].year for row in data['objects']]
+                #categories = collections.OrderedDict(sorted(categories.fromkeys()))
 
                 months = []
                 for category in categories:
@@ -391,6 +396,7 @@ class MainBaseResource(SpecifiedFields):
                 columns = ['Year'] + self.get_month_list() + self.extra_fields
 
 
+            print 'asdf2'
             return {
                 'columns': self.set_columns(request, columns),
                 'rows': months,
@@ -405,18 +411,15 @@ class MainBaseResource(SpecifiedFields):
                 y1 = []
                 y2 = []
                 for row in data['objects']:
-                    # what was this doing here?
-                    #if len(y1) > 10:
-                    #    continue
                     date = int(mktime(row.data[self.date].timetuple())) * 1000
                     y1.append([date, float(row.data[self.y1])])
                     y2.append([date, float(row.data[self.y2])])
                 return [{
                     'data': y1,
-                    'yAxis': 0,
+                    #'yAxis': 0,
                 },{
                     'data': y2,
-                    'yAxis': 1,
+                    #'yAxis': 1,
                 }]
 
             elif self.y1 and len(self.title):
