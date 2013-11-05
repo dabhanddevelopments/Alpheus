@@ -241,15 +241,15 @@ class FundReturnMonthly(models.Model):
     fund = models.ForeignKey(Funds, db_column='FundID', help_text="""The Unique
         ID assigned to the Internal Fund""")
     fund_perf = models.DecimalField(max_digits=18, decimal_places=6,
-        db_column='SIFundReturn', help_text="""The monthly performance of the
+        db_column='FundMonthlyReturn', help_text="""The monthly performance of the
         fund since its first valuation""", null=True)
     bench_perf = models.DecimalField(max_digits=18, decimal_places=6,
-        db_column='SIBenchReturn', help_text="""The monthly performance of the
+        db_column='BenchMonthlyReturn', help_text="""The monthly performance of the
         fund's benchmark since its first valuation""", null=True)
     value_date = models.DateField(db_column='ValueDate', help_text="""The date
         of the monthly valuation""")
     ytd = models.DecimalField(max_digits=18, decimal_places=6,
-        db_column='YTDFundReturn', null=True)
+        db_column='FundYTDReturn', null=True)
 
     class Meta:
         db_table = 'ALP_FundsMonthlyVals_TS'
@@ -259,15 +259,15 @@ class FundReturnDaily(models.Model):
     fund = models.ForeignKey(Funds, db_column='FundID', help_text="""The Unique
         ID assigned to the Internal Fund""")
     fund_perf = models.DecimalField(max_digits=18, decimal_places=6,
-        db_column='SIFundReturn', help_text="""The monthly performance of the
+        db_column='FundDailyReturn', help_text="""The monthly performance of the
         fund since its first valuation""", null=True)
     bench_perf = models.DecimalField(max_digits=18, decimal_places=6,
-        db_column='SIBenchReturn', help_text="""The monthly performance of the
+        db_column='BenchDailyReturn', help_text="""The monthly performance of the
         fund's benchmark since its first valuation""", null=True)
     value_date = models.DateField(db_column='ValueDate', help_text="""The date
         of the monthly valuation""")
     ytd = models.DecimalField(max_digits=18, decimal_places=6,
-        db_column='YTDFundReturn', null=True)
+        db_column='FundYTDReturn', null=True)
 
     class Meta:
         db_table = 'ALP_FundsDailyVals_TS'
