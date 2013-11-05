@@ -10321,7 +10321,7 @@
         "rght": 3, 
         "name": "Gale L", 
         "parent": 3, 
-        "fund": 1, 
+        "fund": null, 
         "level": 1, 
         "access": [
             1
@@ -11342,7 +11342,7 @@
         "rght": 9, 
         "name": "CS Equity", 
         "parent": 3, 
-        "fund": 2, 
+        "fund": null, 
         "level": 1, 
         "access": [
             1
