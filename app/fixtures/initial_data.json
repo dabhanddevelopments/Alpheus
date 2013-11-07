@@ -1,1032 +1,290 @@
 [
 {
     "pk": 1, 
-    "model": "auth.permission", 
+    "model": "contenttypes.contenttype", 
     "fields": {
-        "codename": "add_permission", 
-        "name": "Can add permission", 
-        "content_type": 1
+        "model": "permission", 
+        "name": "permission", 
+        "app_label": "auth"
     }
 },
 {
     "pk": 2, 
-    "model": "auth.permission", 
+    "model": "contenttypes.contenttype", 
     "fields": {
-        "codename": "change_permission", 
-        "name": "Can change permission", 
-        "content_type": 1
+        "model": "group", 
+        "name": "group", 
+        "app_label": "auth"
     }
 },
 {
     "pk": 3, 
-    "model": "auth.permission", 
+    "model": "contenttypes.contenttype", 
     "fields": {
-        "codename": "delete_permission", 
-        "name": "Can delete permission", 
-        "content_type": 1
+        "model": "user", 
+        "name": "user", 
+        "app_label": "auth"
     }
 },
 {
     "pk": 4, 
-    "model": "auth.permission", 
+    "model": "contenttypes.contenttype", 
     "fields": {
-        "codename": "add_group", 
-        "name": "Can add group", 
-        "content_type": 2
+        "model": "contenttype", 
+        "name": "content type", 
+        "app_label": "contenttypes"
     }
 },
 {
     "pk": 5, 
-    "model": "auth.permission", 
+    "model": "contenttypes.contenttype", 
     "fields": {
-        "codename": "change_group", 
-        "name": "Can change group", 
-        "content_type": 2
+        "model": "session", 
+        "name": "session", 
+        "app_label": "sessions"
     }
 },
 {
     "pk": 6, 
-    "model": "auth.permission", 
+    "model": "contenttypes.contenttype", 
     "fields": {
-        "codename": "delete_group", 
-        "name": "Can delete group", 
-        "content_type": 2
+        "model": "site", 
+        "name": "site", 
+        "app_label": "sites"
     }
 },
 {
     "pk": 7, 
-    "model": "auth.permission", 
+    "model": "contenttypes.contenttype", 
     "fields": {
-        "codename": "add_user", 
-        "name": "Can add user", 
-        "content_type": 3
-    }
-},
-{
-    "pk": 8, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_user", 
-        "name": "Can change user", 
-        "content_type": 3
+        "model": "logentry", 
+        "name": "log entry", 
+        "app_label": "admin"
     }
 },
 {
     "pk": 9, 
-    "model": "auth.permission", 
+    "model": "contenttypes.contenttype", 
     "fields": {
-        "codename": "delete_user", 
-        "name": "Can delete user", 
-        "content_type": 3
+        "model": "window", 
+        "name": "window", 
+        "app_label": "app"
     }
 },
 {
     "pk": 10, 
-    "model": "auth.permission", 
+    "model": "contenttypes.contenttype", 
     "fields": {
-        "codename": "add_contenttype", 
-        "name": "Can add content type", 
-        "content_type": 4
+        "model": "widgettype", 
+        "name": "widget type", 
+        "app_label": "app"
     }
 },
 {
     "pk": 11, 
-    "model": "auth.permission", 
+    "model": "contenttypes.contenttype", 
     "fields": {
-        "codename": "change_contenttype", 
-        "name": "Can change content type", 
-        "content_type": 4
+        "model": "widgetparam", 
+        "name": "widget param", 
+        "app_label": "app"
     }
 },
 {
     "pk": 12, 
-    "model": "auth.permission", 
+    "model": "contenttypes.contenttype", 
     "fields": {
-        "codename": "delete_contenttype", 
-        "name": "Can delete content type", 
-        "content_type": 4
+        "model": "widget", 
+        "name": "widget", 
+        "app_label": "app"
     }
 },
 {
     "pk": 13, 
-    "model": "auth.permission", 
+    "model": "contenttypes.contenttype", 
     "fields": {
-        "codename": "add_session", 
-        "name": "Can add session", 
-        "content_type": 5
+        "model": "page", 
+        "name": "page", 
+        "app_label": "app"
     }
 },
 {
     "pk": 14, 
-    "model": "auth.permission", 
+    "model": "contenttypes.contenttype", 
     "fields": {
-        "codename": "change_session", 
-        "name": "Can change session", 
-        "content_type": 5
-    }
-},
-{
-    "pk": 15, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_session", 
-        "name": "Can delete session", 
-        "content_type": 5
-    }
-},
-{
-    "pk": 16, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_site", 
-        "name": "Can add site", 
-        "content_type": 6
-    }
-},
-{
-    "pk": 17, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_site", 
-        "name": "Can change site", 
-        "content_type": 6
-    }
-},
-{
-    "pk": 18, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_site", 
-        "name": "Can delete site", 
-        "content_type": 6
+        "model": "pagewindow", 
+        "name": "Window on page", 
+        "app_label": "app"
     }
 },
 {
     "pk": 19, 
-    "model": "auth.permission", 
+    "model": "contenttypes.contenttype", 
     "fields": {
-        "codename": "add_logentry", 
-        "name": "Can add log entry", 
-        "content_type": 7
-    }
-},
-{
-    "pk": 20, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_logentry", 
-        "name": "Can change log entry", 
-        "content_type": 7
-    }
-},
-{
-    "pk": 21, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_logentry", 
-        "name": "Can delete log entry", 
-        "content_type": 7
-    }
-},
-{
-    "pk": 25, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_window", 
-        "name": "Can add window", 
-        "content_type": 9
-    }
-},
-{
-    "pk": 26, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_window", 
-        "name": "Can change window", 
-        "content_type": 9
-    }
-},
-{
-    "pk": 27, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_window", 
-        "name": "Can delete window", 
-        "content_type": 9
-    }
-},
-{
-    "pk": 28, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_widgettype", 
-        "name": "Can add widget type", 
-        "content_type": 10
-    }
-},
-{
-    "pk": 29, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_widgettype", 
-        "name": "Can change widget type", 
-        "content_type": 10
-    }
-},
-{
-    "pk": 30, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_widgettype", 
-        "name": "Can delete widget type", 
-        "content_type": 10
-    }
-},
-{
-    "pk": 31, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_widgetparam", 
-        "name": "Can add widget param", 
-        "content_type": 11
-    }
-},
-{
-    "pk": 32, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_widgetparam", 
-        "name": "Can change widget param", 
-        "content_type": 11
-    }
-},
-{
-    "pk": 33, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_widgetparam", 
-        "name": "Can delete widget param", 
-        "content_type": 11
-    }
-},
-{
-    "pk": 34, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_widget", 
-        "name": "Can add widget", 
-        "content_type": 12
-    }
-},
-{
-    "pk": 35, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_widget", 
-        "name": "Can change widget", 
-        "content_type": 12
-    }
-},
-{
-    "pk": 36, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_widget", 
-        "name": "Can delete widget", 
-        "content_type": 12
-    }
-},
-{
-    "pk": 37, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_page", 
-        "name": "Can add page", 
-        "content_type": 13
+        "model": "menu", 
+        "name": "menu", 
+        "app_label": "app"
     }
 },
 {
     "pk": 38, 
-    "model": "auth.permission", 
+    "model": "contenttypes.contenttype", 
     "fields": {
-        "codename": "change_page", 
-        "name": "Can change page", 
-        "content_type": 13
+        "model": "funds", 
+        "name": "funds", 
+        "app_label": "fund"
     }
 },
 {
     "pk": 39, 
-    "model": "auth.permission", 
+    "model": "contenttypes.contenttype", 
     "fields": {
-        "codename": "delete_page", 
-        "name": "Can delete page", 
-        "content_type": 13
+        "model": "fundreturnmonthly", 
+        "name": "fund return monthly", 
+        "app_label": "fund"
     }
 },
 {
     "pk": 40, 
-    "model": "auth.permission", 
+    "model": "contenttypes.contenttype", 
     "fields": {
-        "codename": "add_pagewindow", 
-        "name": "Can add Window on page", 
-        "content_type": 14
+        "model": "fundreturndaily", 
+        "name": "fund return daily", 
+        "app_label": "fund"
     }
 },
 {
     "pk": 41, 
-    "model": "auth.permission", 
+    "model": "contenttypes.contenttype", 
     "fields": {
-        "codename": "change_pagewindow", 
-        "name": "Can change Window on page", 
-        "content_type": 14
+        "model": "category", 
+        "name": "category", 
+        "app_label": "holding"
     }
 },
 {
     "pk": 42, 
-    "model": "auth.permission", 
+    "model": "contenttypes.contenttype", 
     "fields": {
-        "codename": "delete_pagewindow", 
-        "name": "Can delete Window on page", 
-        "content_type": 14
+        "model": "holding", 
+        "name": "holding", 
+        "app_label": "holding"
+    }
+},
+{
+    "pk": 43, 
+    "model": "contenttypes.contenttype", 
+    "fields": {
+        "model": "holdinghistory", 
+        "name": "holding history", 
+        "app_label": "holding"
+    }
+},
+{
+    "pk": 44, 
+    "model": "contenttypes.contenttype", 
+    "fields": {
+        "model": "countrybreakdown", 
+        "name": "country breakdown", 
+        "app_label": "holding"
+    }
+},
+{
+    "pk": 45, 
+    "model": "contenttypes.contenttype", 
+    "fields": {
+        "model": "breakdown", 
+        "name": "breakdown", 
+        "app_label": "holding"
+    }
+},
+{
+    "pk": 46, 
+    "model": "contenttypes.contenttype", 
+    "fields": {
+        "model": "client", 
+        "name": "client", 
+        "app_label": "client"
+    }
+},
+{
+    "pk": 47, 
+    "model": "contenttypes.contenttype", 
+    "fields": {
+        "model": "clienthistory", 
+        "name": "Client history", 
+        "app_label": "client"
+    }
+},
+{
+    "pk": 48, 
+    "model": "contenttypes.contenttype", 
+    "fields": {
+        "model": "subscriptionredemption", 
+        "name": "subscription redemption", 
+        "app_label": "client"
+    }
+},
+{
+    "pk": 49, 
+    "model": "contenttypes.contenttype", 
+    "fields": {
+        "model": "peer", 
+        "name": "peer", 
+        "app_label": "comparative"
+    }
+},
+{
+    "pk": 50, 
+    "model": "contenttypes.contenttype", 
+    "fields": {
+        "model": "peerhistory", 
+        "name": "Peer history", 
+        "app_label": "comparative"
+    }
+},
+{
+    "pk": 51, 
+    "model": "contenttypes.contenttype", 
+    "fields": {
+        "model": "benchmark", 
+        "name": "benchmark", 
+        "app_label": "comparative"
+    }
+},
+{
+    "pk": 52, 
+    "model": "contenttypes.contenttype", 
+    "fields": {
+        "model": "benchmarkhistory", 
+        "name": "Benchmark history", 
+        "app_label": "comparative"
+    }
+},
+{
+    "pk": 53, 
+    "model": "contenttypes.contenttype", 
+    "fields": {
+        "model": "trade", 
+        "name": "trade", 
+        "app_label": "trade"
+    }
+},
+{
+    "pk": 54, 
+    "model": "contenttypes.contenttype", 
+    "fields": {
+        "model": "apiaccess", 
+        "name": "api access", 
+        "app_label": "tastypie"
     }
 },
 {
     "pk": 55, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_menu", 
-        "name": "Can add menu", 
-        "content_type": 19
-    }
-},
-{
-    "pk": 56, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_menu", 
-        "name": "Can change menu", 
-        "content_type": 19
-    }
-},
-{
-    "pk": 57, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_menu", 
-        "name": "Can delete menu", 
-        "content_type": 19
-    }
-},
-{
-    "pk": 112, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_funds", 
-        "name": "Can add funds", 
-        "content_type": 38
-    }
-},
-{
-    "pk": 113, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_funds", 
-        "name": "Can change funds", 
-        "content_type": 38
-    }
-},
-{
-    "pk": 114, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_funds", 
-        "name": "Can delete funds", 
-        "content_type": 38
-    }
-},
-{
-    "pk": 115, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_fundreturnmonthly", 
-        "name": "Can add fund return monthly", 
-        "content_type": 39
-    }
-},
-{
-    "pk": 116, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_fundreturnmonthly", 
-        "name": "Can change fund return monthly", 
-        "content_type": 39
-    }
-},
-{
-    "pk": 117, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_fundreturnmonthly", 
-        "name": "Can delete fund return monthly", 
-        "content_type": 39
-    }
-},
-{
-    "pk": 118, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_fundreturndaily", 
-        "name": "Can add fund return daily", 
-        "content_type": 40
-    }
-},
-{
-    "pk": 119, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_fundreturndaily", 
-        "name": "Can change fund return daily", 
-        "content_type": 40
-    }
-},
-{
-    "pk": 120, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_fundreturndaily", 
-        "name": "Can delete fund return daily", 
-        "content_type": 40
-    }
-},
-{
-    "pk": 121, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_category", 
-        "name": "Can add category", 
-        "content_type": 41
-    }
-},
-{
-    "pk": 122, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_category", 
-        "name": "Can change category", 
-        "content_type": 41
-    }
-},
-{
-    "pk": 123, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_category", 
-        "name": "Can delete category", 
-        "content_type": 41
-    }
-},
-{
-    "pk": 124, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_holding", 
-        "name": "Can add holding", 
-        "content_type": 42
-    }
-},
-{
-    "pk": 125, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_holding", 
-        "name": "Can change holding", 
-        "content_type": 42
-    }
-},
-{
-    "pk": 126, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_holding", 
-        "name": "Can delete holding", 
-        "content_type": 42
-    }
-},
-{
-    "pk": 127, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_holdinghistory", 
-        "name": "Can add holding history", 
-        "content_type": 43
-    }
-},
-{
-    "pk": 128, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_holdinghistory", 
-        "name": "Can change holding history", 
-        "content_type": 43
-    }
-},
-{
-    "pk": 129, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_holdinghistory", 
-        "name": "Can delete holding history", 
-        "content_type": 43
-    }
-},
-{
-    "pk": 130, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_countrybreakdown", 
-        "name": "Can add country breakdown", 
-        "content_type": 44
-    }
-},
-{
-    "pk": 131, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_countrybreakdown", 
-        "name": "Can change country breakdown", 
-        "content_type": 44
-    }
-},
-{
-    "pk": 132, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_countrybreakdown", 
-        "name": "Can delete country breakdown", 
-        "content_type": 44
-    }
-},
-{
-    "pk": 133, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_breakdown", 
-        "name": "Can add breakdown", 
-        "content_type": 45
-    }
-},
-{
-    "pk": 134, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_breakdown", 
-        "name": "Can change breakdown", 
-        "content_type": 45
-    }
-},
-{
-    "pk": 135, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_breakdown", 
-        "name": "Can delete breakdown", 
-        "content_type": 45
-    }
-},
-{
-    "pk": 136, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_client", 
-        "name": "Can add client", 
-        "content_type": 46
-    }
-},
-{
-    "pk": 137, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_client", 
-        "name": "Can change client", 
-        "content_type": 46
-    }
-},
-{
-    "pk": 138, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_client", 
-        "name": "Can delete client", 
-        "content_type": 46
-    }
-},
-{
-    "pk": 139, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_clienthistory", 
-        "name": "Can add Client history", 
-        "content_type": 47
-    }
-},
-{
-    "pk": 140, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_clienthistory", 
-        "name": "Can change Client history", 
-        "content_type": 47
-    }
-},
-{
-    "pk": 141, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_clienthistory", 
-        "name": "Can delete Client history", 
-        "content_type": 47
-    }
-},
-{
-    "pk": 142, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_subscriptionredemption", 
-        "name": "Can add subscription redemption", 
-        "content_type": 48
-    }
-},
-{
-    "pk": 143, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_subscriptionredemption", 
-        "name": "Can change subscription redemption", 
-        "content_type": 48
-    }
-},
-{
-    "pk": 144, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_subscriptionredemption", 
-        "name": "Can delete subscription redemption", 
-        "content_type": 48
-    }
-},
-{
-    "pk": 145, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_peer", 
-        "name": "Can add peer", 
-        "content_type": 49
-    }
-},
-{
-    "pk": 146, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_peer", 
-        "name": "Can change peer", 
-        "content_type": 49
-    }
-},
-{
-    "pk": 147, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_peer", 
-        "name": "Can delete peer", 
-        "content_type": 49
-    }
-},
-{
-    "pk": 148, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_peerhistory", 
-        "name": "Can add Peer history", 
-        "content_type": 50
-    }
-},
-{
-    "pk": 149, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_peerhistory", 
-        "name": "Can change Peer history", 
-        "content_type": 50
-    }
-},
-{
-    "pk": 150, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_peerhistory", 
-        "name": "Can delete Peer history", 
-        "content_type": 50
-    }
-},
-{
-    "pk": 151, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_benchmark", 
-        "name": "Can add benchmark", 
-        "content_type": 51
-    }
-},
-{
-    "pk": 152, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_benchmark", 
-        "name": "Can change benchmark", 
-        "content_type": 51
-    }
-},
-{
-    "pk": 153, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_benchmark", 
-        "name": "Can delete benchmark", 
-        "content_type": 51
-    }
-},
-{
-    "pk": 154, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_benchmarkhistory", 
-        "name": "Can add Benchmark history", 
-        "content_type": 52
-    }
-},
-{
-    "pk": 155, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_benchmarkhistory", 
-        "name": "Can change Benchmark history", 
-        "content_type": 52
-    }
-},
-{
-    "pk": 156, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_benchmarkhistory", 
-        "name": "Can delete Benchmark history", 
-        "content_type": 52
-    }
-},
-{
-    "pk": 157, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_trade", 
-        "name": "Can add trade", 
-        "content_type": 53
-    }
-},
-{
-    "pk": 158, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_trade", 
-        "name": "Can change trade", 
-        "content_type": 53
-    }
-},
-{
-    "pk": 159, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_trade", 
-        "name": "Can delete trade", 
-        "content_type": 53
-    }
-},
-{
-    "pk": 160, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_apiaccess", 
-        "name": "Can add api access", 
-        "content_type": 54
-    }
-},
-{
-    "pk": 161, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_apiaccess", 
-        "name": "Can change api access", 
-        "content_type": 54
-    }
-},
-{
-    "pk": 162, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_apiaccess", 
-        "name": "Can delete api access", 
-        "content_type": 54
-    }
-},
-{
-    "pk": 163, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_apikey", 
-        "name": "Can add api key", 
-        "content_type": 55
-    }
-},
-{
-    "pk": 164, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_apikey", 
-        "name": "Can change api key", 
-        "content_type": 55
-    }
-},
-{
-    "pk": 165, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_apikey", 
-        "name": "Can delete api key", 
-        "content_type": 55
-    }
-},
-{
-    "pk": 1, 
-    "model": "auth.group", 
-    "fields": {
-        "name": "Manager", 
-        "permissions": [
-            142, 
-            143, 
-            124, 
-            125, 
-            157, 
-            158
-        ]
-    }
-},
-{
-    "pk": 2, 
-    "model": "auth.group", 
-    "fields": {
-        "name": "Fund Manager", 
-        "permissions": [
-            124, 
-            125, 
-            157, 
-            158
-        ]
-    }
-},
-{
-    "pk": 3, 
-    "model": "auth.group", 
-    "fields": {
-        "name": "Back Office", 
-        "permissions": [
-            142, 
-            143, 
-            124, 
-            125
-        ]
-    }
-},
-{
-    "pk": 4, 
-    "model": "auth.group", 
-    "fields": {
-        "name": "Admin", 
-        "permissions": [
-            4, 
-            5, 
-            6, 
-            7, 
-            8, 
-            9, 
-            142, 
-            143, 
-            121, 
-            122, 
-            124, 
-            125, 
-            157, 
-            158
-        ]
-    }
-},
-{
-    "pk": 1, 
-    "model": "auth.user", 
-    "fields": {
-        "username": "andy", 
-        "first_name": "", 
-        "last_name": "", 
-        "is_active": true, 
-        "is_superuser": true, 
-        "is_staff": true, 
-        "last_login": "2013-10-29T13:26:19Z", 
-        "groups": [
-            1, 
-            2, 
-            3
-        ], 
-        "user_permissions": [], 
-        "password": "pbkdf2_sha256$10000$l8bXV0IQO3vt$5K40ZfpJsZ415w++TboOA0H9Qs83V+8rO6Dm1kURo5w=", 
-        "email": "asdf@asdf.cm", 
-        "date_joined": "2013-05-28T15:18:21Z"
-    }
-},
-{
-    "pk": 2, 
-    "model": "auth.user", 
-    "fields": {
-        "username": "manager", 
-        "first_name": "", 
-        "last_name": "", 
-        "is_active": true, 
-        "is_superuser": false, 
-        "is_staff": true, 
-        "last_login": "2013-09-29T22:32:37Z", 
-        "groups": [
-            1
-        ], 
-        "user_permissions": [], 
-        "password": "pbkdf2_sha256$10000$uK4xvFnc9lI7$Yhn+PRFkcuciwS1ccEHnK3c8+tquki5/cBrM6d0BQkg=", 
-        "email": "", 
-        "date_joined": "2013-09-29T22:29:27Z"
-    }
-},
-{
-    "pk": 3, 
-    "model": "auth.user", 
-    "fields": {
-        "username": "fundmanager", 
-        "first_name": "", 
-        "last_name": "", 
-        "is_active": true, 
-        "is_superuser": false, 
-        "is_staff": true, 
-        "last_login": "2013-09-29T22:30:16Z", 
-        "groups": [
-            2
-        ], 
-        "user_permissions": [], 
-        "password": "pbkdf2_sha256$10000$wDo28A2Jwgcv$kXda7PhrCtrZWxgV6s1sQoB8V0H/PzmPzeYn5wDyFjg=", 
-        "email": "", 
-        "date_joined": "2013-09-29T22:30:16Z"
-    }
-},
-{
-    "pk": 4, 
-    "model": "auth.user", 
-    "fields": {
-        "username": "backoffice", 
-        "first_name": "", 
-        "last_name": "", 
-        "is_active": true, 
-        "is_superuser": false, 
-        "is_staff": true, 
-        "last_login": "2013-09-29T22:30:44Z", 
-        "groups": [
-            3
-        ], 
-        "user_permissions": [], 
-        "password": "pbkdf2_sha256$10000$wCjr6hQsmcnr$HpA1u173OBkQpChwTl4ekE0XOcQP2CBggWXA4/CcIwM=", 
-        "email": "", 
-        "date_joined": "2013-09-29T22:30:44Z"
-    }
-},
-{
-    "pk": 5, 
-    "model": "auth.user", 
-    "fields": {
-        "username": "admin", 
-        "first_name": "", 
-        "last_name": "", 
-        "is_active": true, 
-        "is_superuser": false, 
-        "is_staff": true, 
-        "last_login": "2013-09-29T22:31:03Z", 
-        "groups": [
-            4
-        ], 
-        "user_permissions": [], 
-        "password": "pbkdf2_sha256$10000$WqsDaNM14wUI$FyIBh0iuxT6RVTv1/NSloekFK8xVxCAJHt90hIc7Nlc=", 
-        "email": "", 
-        "date_joined": "2013-09-29T22:31:03Z"
+    "model": "contenttypes.contenttype", 
+    "fields": {
+        "model": "apikey", 
+        "name": "api key", 
+        "app_label": "tastypie"
     }
 },
 {
@@ -1059,1222 +317,6 @@
     "fields": {
         "domain": "example.com", 
         "name": "example.com"
-    }
-},
-{
-    "pk": 1, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2013-11-04T18:34:30Z", 
-        "object_repr": "extra_fields=ytd", 
-        "object_id": "123", 
-        "change_message": "Changed value.", 
-        "user": 1, 
-        "content_type": 11
-    }
-},
-{
-    "pk": 2, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2013-11-04T21:05:48Z", 
-        "object_repr": "W.16 - MTD Performance Line Graph", 
-        "object_id": "3", 
-        "change_message": "Changed widget_param.", 
-        "user": 1, 
-        "content_type": 12
-    }
-},
-{
-    "pk": 1, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Holdings Trade Tables and Graphs", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 6, 
-        "key": "w11"
-    }
-},
-{
-    "pk": 2, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / MTD Performance Line Graph", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w16"
-    }
-},
-{
-    "pk": 3, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Historical Performance", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w1"
-    }
-},
-{
-    "pk": 4, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / MONTH YEAR /  Holding Performance", 
-        "access": [
-            1
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w2"
-    }
-},
-{
-    "pk": 5, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / YEAR / Performance by Sector", 
-        "access": [
-            1
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w3"
-    }
-},
-{
-    "pk": 6, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / YEAR / Performance by Sub-Sector", 
-        "access": [
-            1
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w4"
-    }
-},
-{
-    "pk": 7, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / YEAR / Performance by Location", 
-        "access": [
-            1
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w5"
-    }
-},
-{
-    "pk": 8, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Historical NAV Table", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w6"
-    }
-},
-{
-    "pk": 9, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / YEAR / Fund Holding NAV Bar", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w7"
-    }
-},
-{
-    "pk": 10, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "h", 
-        "name": "FUND_NAME / YEAR / NAV Weight by Sector", 
-        "access": [
-            1
-        ], 
-        "size_x": 9, 
-        "size_y": 2, 
-        "key": "w8"
-    }
-},
-{
-    "pk": 11, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "h", 
-        "name": "FUND_NAME / YEAR / NAV by Sub Sector", 
-        "access": [
-            1
-        ], 
-        "size_x": 9, 
-        "size_y": 2, 
-        "key": "w9"
-    }
-},
-{
-    "pk": 12, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "h", 
-        "name": "FUND_NAME / YEAR / NAV by Location", 
-        "access": [
-            1
-        ], 
-        "size_x": 9, 
-        "size_y": 2, 
-        "key": "w10"
-    }
-},
-{
-    "pk": 13, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus / Historical Statistics", 
-        "access": [
-            1
-        ], 
-        "size_x": 6, 
-        "size_y": 6, 
-        "key": "w58"
-    }
-},
-{
-    "pk": 14, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Returns", 
-        "access": [
-            1
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w19"
-    }
-},
-{
-    "pk": 15, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Best Worst Months", 
-        "access": [
-            1
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w20"
-    }
-},
-{
-    "pk": 16, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Return Histogram", 
-        "access": [
-            1
-        ], 
-        "size_x": 2, 
-        "size_y": 2, 
-        "key": "w22"
-    }
-},
-{
-    "pk": 17, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Correlation Matrix", 
-        "access": [
-            1
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w21"
-    }
-},
-{
-    "pk": 19, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Performance in Negative Months", 
-        "access": [
-            1
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w24"
-    }
-},
-{
-    "pk": 20, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Holding Liquity", 
-        "access": [
-            1
-        ], 
-        "size_x": 8, 
-        "size_y": 6, 
-        "key": "w73"
-    }
-},
-{
-    "pk": 21, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Redemption Tracker", 
-        "access": [
-            1
-        ], 
-        "size_x": 3, 
-        "size_y": 6, 
-        "key": "w74"
-    }
-},
-{
-    "pk": 22, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "h", 
-        "name": "FUND_NAME /  Cumulative Weight", 
-        "access": [
-            1
-        ], 
-        "size_x": 8, 
-        "size_y": 6, 
-        "key": "w75"
-    }
-},
-{
-    "pk": 23, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Summary", 
-        "access": [
-            1
-        ], 
-        "size_x": 6, 
-        "size_y": 5, 
-        "key": "w15"
-    }
-},
-{
-    "pk": 24, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Foreign Currency Positions and Hedges", 
-        "access": [
-            1
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w70"
-    }
-},
-{
-    "pk": 25, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Share Holder Register", 
-        "access": [
-            1
-        ], 
-        "size_x": 5, 
-        "size_y": 6, 
-        "key": "w12"
-    }
-},
-{
-    "pk": 26, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Subscription and Redemptions", 
-        "access": [
-            1
-        ], 
-        "size_x": 6, 
-        "size_y": 4, 
-        "key": "w23"
-    }
-},
-{
-    "pk": 27, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / NAV Reconciliation", 
-        "access": [
-            1
-        ], 
-        "size_x": 6, 
-        "size_y": 2, 
-        "key": "w25"
-    }
-},
-{
-    "pk": 28, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus / Gross Assets Calculation", 
-        "access": [
-            1
-        ], 
-        "size_x": 9, 
-        "size_y": 6, 
-        "key": "w71"
-    }
-},
-{
-    "pk": 29, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Performance by Asset Class", 
-        "access": [
-            1
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w4b"
-    }
-},
-{
-    "pk": 30, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "h", 
-        "name": "FUND_NAME / NAV by Asset Class", 
-        "access": [
-            1
-        ], 
-        "size_x": 9, 
-        "size_y": 2, 
-        "key": "w9b"
-    }
-},
-{
-    "pk": 31, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / YEAR / Performance by Location", 
-        "access": [
-            1
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w5b"
-    }
-},
-{
-    "pk": 32, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Gross Assets Calculation", 
-        "access": [
-            1
-        ], 
-        "size_x": 9, 
-        "size_y": 6, 
-        "key": "w13b"
-    }
-},
-{
-    "pk": 33, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Gross Assets Calculation", 
-        "access": [
-            1
-        ], 
-        "size_x": 9, 
-        "size_y": 6, 
-        "key": "w13c"
-    }
-},
-{
-    "pk": 34, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "h", 
-        "name": "FUND_NAME / YEAR / NAV by Holding", 
-        "access": [
-            1
-        ], 
-        "size_x": 9, 
-        "size_y": 2, 
-        "key": "w8b"
-    }
-},
-{
-    "pk": 35, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Summary of Commitments ", 
-        "access": [
-            1
-        ], 
-        "size_x": 8, 
-        "size_y": 6, 
-        "key": "w31"
-    }
-},
-{
-    "pk": 36, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Valuation & Cash Flows", 
-        "access": [
-            1
-        ], 
-        "size_x": 8, 
-        "size_y": 6, 
-        "key": "w28"
-    }
-},
-{
-    "pk": 37, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Share Holder Register", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 6, 
-        "key": "w12b"
-    }
-},
-{
-    "pk": 38, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Historical Performance", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w1b"
-    }
-},
-{
-    "pk": 39, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Performance by Investment Type", 
-        "access": [
-            1
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w4c"
-    }
-},
-{
-    "pk": 40, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "h", 
-        "name": "FUND_NAME / YEAR / NAV by Investment type", 
-        "access": [
-            1
-        ], 
-        "size_x": 9, 
-        "size_y": 2, 
-        "key": "w9c"
-    }
-},
-{
-    "pk": 41, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Net movement % by Investment type", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w26"
-    }
-},
-{
-    "pk": 42, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Net movement Euro by Investment type", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w27"
-    }
-},
-{
-    "pk": 43, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / YEAR / Performance by Holding", 
-        "access": [
-            1
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w3b"
-    }
-},
-{
-    "pk": 44, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Historical Performance", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w77"
-    }
-},
-{
-    "pk": 45, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / MTD Performance Line graph", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w78"
-    }
-},
-{
-    "pk": 46, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Holdings Trade Tables and Graphs", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 6, 
-        "key": "w79"
-    }
-},
-{
-    "pk": 47, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Returns", 
-        "access": [
-            1
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w81"
-    }
-},
-{
-    "pk": 48, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Best Worst Months", 
-        "access": [
-            1
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w82"
-    }
-},
-{
-    "pk": 49, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Correlation Matrix", 
-        "access": [
-            1
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w83"
-    }
-},
-{
-    "pk": 50, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Performance in Negative Months", 
-        "access": [
-            1
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w84"
-    }
-},
-{
-    "pk": 51, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Historical Statistics ", 
-        "access": [
-            1
-        ], 
-        "size_x": 6, 
-        "size_y": 6, 
-        "key": "w80"
-    }
-},
-{
-    "pk": 52, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Return Histogram", 
-        "access": [
-            1
-        ], 
-        "size_x": 2, 
-        "size_y": 2, 
-        "key": "w85"
-    }
-},
-{
-    "pk": 53, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Historical NAV Table", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w86"
-    }
-},
-{
-    "pk": 54, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "HOLDING_NAME / Historical weight in fund", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w87"
-    }
-},
-{
-    "pk": 55, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Historical Performance", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w32"
-    }
-},
-{
-    "pk": 56, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / YEAR / Holding Performance", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w33"
-    }
-},
-{
-    "pk": 57, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Investment Performance", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 6, 
-        "key": "w34"
-    }
-},
-{
-    "pk": 58, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Returns", 
-        "access": [
-            1
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w39"
-    }
-},
-{
-    "pk": 60, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Best Worst", 
-        "access": [
-            1
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w40"
-    }
-},
-{
-    "pk": 61, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Correlation Matrix", 
-        "access": [
-            1
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w41"
-    }
-},
-{
-    "pk": 62, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Performance in Negative Months", 
-        "access": [
-            1
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w42"
-    }
-},
-{
-    "pk": 63, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Return Histogram", 
-        "access": [
-            1
-        ], 
-        "size_x": 2, 
-        "size_y": 2, 
-        "key": "w43"
-    }
-},
-{
-    "pk": 64, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Historical NAV Table", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w44"
-    }
-},
-{
-    "pk": 65, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / MONTH YEAR / Allocation NAV Bar", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w45"
-    }
-},
-{
-    "pk": 66, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Investment NAV", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 6, 
-        "key": "w46"
-    }
-},
-{
-    "pk": 67, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus / Historical Performance", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w51"
-    }
-},
-{
-    "pk": 68, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / YEAR /  Holding Performance", 
-        "access": [
-            1
-        ], 
-        "size_x": 8, 
-        "size_y": 3, 
-        "key": "w52"
-    }
-},
-{
-    "pk": 69, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Returns", 
-        "access": [
-            1
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w59"
-    }
-},
-{
-    "pk": 70, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Best Worst Months", 
-        "access": [
-            1
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w60"
-    }
-},
-{
-    "pk": 71, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Correlation Matrix", 
-        "access": [
-            1
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w61"
-    }
-},
-{
-    "pk": 72, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Performance in Negative Months", 
-        "access": [
-            1
-        ], 
-        "size_x": 4, 
-        "size_y": 2, 
-        "key": "w62"
-    }
-},
-{
-    "pk": 73, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Return Histogram", 
-        "access": [
-            1
-        ], 
-        "size_x": 2, 
-        "size_y": 2, 
-        "key": "w63"
-    }
-},
-{
-    "pk": 74, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus Historical NAV Table", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w64"
-    }
-},
-{
-    "pk": 75, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus / YEAR / Allocation NAV Bar", 
-        "access": [
-            1
-        ], 
-        "size_x": 7, 
-        "size_y": 3, 
-        "key": "w65"
-    }
-},
-{
-    "pk": 76, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "h", 
-        "name": "Alpheus / YEAR / NAV by Sector", 
-        "access": [
-            1
-        ], 
-        "size_x": 9, 
-        "size_y": 2, 
-        "key": "w66"
-    }
-},
-{
-    "pk": 77, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "h", 
-        "name": "Alpheus / YEAR / NAV by Location", 
-        "access": [
-            1
-        ], 
-        "size_x": 9, 
-        "size_y": 2, 
-        "key": "w67"
-    }
-},
-{
-    "pk": 78, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "CLIENT_NAME / Historical Statistics ", 
-        "access": [
-            1
-        ], 
-        "size_x": 6, 
-        "size_y": 6, 
-        "key": "w38"
-    }
-},
-{
-    "pk": 79, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus / YEAR / Performance by Sector", 
-        "access": [
-            1
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w53"
-    }
-},
-{
-    "pk": 80, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus / YEAR / Performance by Location", 
-        "access": [
-            1
-        ], 
-        "size_x": 6, 
-        "size_y": 3, 
-        "key": "w54"
-    }
-},
-{
-    "pk": 82, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus / YEAR / Alpheus Performance by Fund", 
-        "access": [
-            1
-        ], 
-        "size_x": 6, 
-        "size_y": 6, 
-        "key": "w55"
-    }
-},
-{
-    "pk": 83, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Foreign Currency Positions and Hedges", 
-        "access": [
-            1
-        ], 
-        "size_x": 4, 
-        "size_y": 3, 
-        "key": "w56"
-    }
-},
-{
-    "pk": 84, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME / Cash Positions and Hedges", 
-        "access": [
-            1
-        ], 
-        "size_x": 4, 
-        "size_y": 3, 
-        "key": "w57"
-    }
-},
-{
-    "pk": 85, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus / YEAR / NAV by Fund", 
-        "access": [
-            1
-        ], 
-        "size_x": 6, 
-        "size_y": 6, 
-        "key": "w68"
-    }
-},
-{
-    "pk": 86, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus Share Holder Register", 
-        "access": [
-            1
-        ], 
-        "size_x": 14, 
-        "size_y": 6, 
-        "key": "w69"
-    }
-},
-{
-    "pk": 87, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "FUND_NAME /  Gross Assets Calculation", 
-        "access": [
-            1
-        ], 
-        "size_x": 9, 
-        "size_y": 6, 
-        "key": "w13"
-    }
-},
-{
-    "pk": 88, 
-    "model": "app.window", 
-    "fields": {
-        "layout": "v", 
-        "name": "Alpheus / Summary", 
-        "access": [
-            1
-        ], 
-        "size_x": 6, 
-        "size_y": 5, 
-        "key": "w72"
     }
 },
 {
@@ -7371,6 +5413,2252 @@
         "title": "Summary", 
         "lft": 8, 
         "tree_id": 12
+    }
+},
+{
+    "pk": 1, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_permission", 
+        "name": "Can add permission", 
+        "content_type": 1
+    }
+},
+{
+    "pk": 2, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_permission", 
+        "name": "Can change permission", 
+        "content_type": 1
+    }
+},
+{
+    "pk": 3, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_permission", 
+        "name": "Can delete permission", 
+        "content_type": 1
+    }
+},
+{
+    "pk": 4, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_group", 
+        "name": "Can add group", 
+        "content_type": 2
+    }
+},
+{
+    "pk": 5, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_group", 
+        "name": "Can change group", 
+        "content_type": 2
+    }
+},
+{
+    "pk": 6, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_group", 
+        "name": "Can delete group", 
+        "content_type": 2
+    }
+},
+{
+    "pk": 7, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_user", 
+        "name": "Can add user", 
+        "content_type": 3
+    }
+},
+{
+    "pk": 8, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_user", 
+        "name": "Can change user", 
+        "content_type": 3
+    }
+},
+{
+    "pk": 9, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_user", 
+        "name": "Can delete user", 
+        "content_type": 3
+    }
+},
+{
+    "pk": 10, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_contenttype", 
+        "name": "Can add content type", 
+        "content_type": 4
+    }
+},
+{
+    "pk": 11, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_contenttype", 
+        "name": "Can change content type", 
+        "content_type": 4
+    }
+},
+{
+    "pk": 12, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_contenttype", 
+        "name": "Can delete content type", 
+        "content_type": 4
+    }
+},
+{
+    "pk": 13, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_session", 
+        "name": "Can add session", 
+        "content_type": 5
+    }
+},
+{
+    "pk": 14, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_session", 
+        "name": "Can change session", 
+        "content_type": 5
+    }
+},
+{
+    "pk": 15, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_session", 
+        "name": "Can delete session", 
+        "content_type": 5
+    }
+},
+{
+    "pk": 16, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_site", 
+        "name": "Can add site", 
+        "content_type": 6
+    }
+},
+{
+    "pk": 17, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_site", 
+        "name": "Can change site", 
+        "content_type": 6
+    }
+},
+{
+    "pk": 18, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_site", 
+        "name": "Can delete site", 
+        "content_type": 6
+    }
+},
+{
+    "pk": 19, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_logentry", 
+        "name": "Can add log entry", 
+        "content_type": 7
+    }
+},
+{
+    "pk": 20, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_logentry", 
+        "name": "Can change log entry", 
+        "content_type": 7
+    }
+},
+{
+    "pk": 21, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_logentry", 
+        "name": "Can delete log entry", 
+        "content_type": 7
+    }
+},
+{
+    "pk": 25, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_window", 
+        "name": "Can add window", 
+        "content_type": 9
+    }
+},
+{
+    "pk": 26, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_window", 
+        "name": "Can change window", 
+        "content_type": 9
+    }
+},
+{
+    "pk": 27, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_window", 
+        "name": "Can delete window", 
+        "content_type": 9
+    }
+},
+{
+    "pk": 28, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_widgettype", 
+        "name": "Can add widget type", 
+        "content_type": 10
+    }
+},
+{
+    "pk": 29, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_widgettype", 
+        "name": "Can change widget type", 
+        "content_type": 10
+    }
+},
+{
+    "pk": 30, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_widgettype", 
+        "name": "Can delete widget type", 
+        "content_type": 10
+    }
+},
+{
+    "pk": 31, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_widgetparam", 
+        "name": "Can add widget param", 
+        "content_type": 11
+    }
+},
+{
+    "pk": 32, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_widgetparam", 
+        "name": "Can change widget param", 
+        "content_type": 11
+    }
+},
+{
+    "pk": 33, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_widgetparam", 
+        "name": "Can delete widget param", 
+        "content_type": 11
+    }
+},
+{
+    "pk": 34, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_widget", 
+        "name": "Can add widget", 
+        "content_type": 12
+    }
+},
+{
+    "pk": 35, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_widget", 
+        "name": "Can change widget", 
+        "content_type": 12
+    }
+},
+{
+    "pk": 36, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_widget", 
+        "name": "Can delete widget", 
+        "content_type": 12
+    }
+},
+{
+    "pk": 37, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_page", 
+        "name": "Can add page", 
+        "content_type": 13
+    }
+},
+{
+    "pk": 38, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_page", 
+        "name": "Can change page", 
+        "content_type": 13
+    }
+},
+{
+    "pk": 39, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_page", 
+        "name": "Can delete page", 
+        "content_type": 13
+    }
+},
+{
+    "pk": 40, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_pagewindow", 
+        "name": "Can add Window on page", 
+        "content_type": 14
+    }
+},
+{
+    "pk": 41, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_pagewindow", 
+        "name": "Can change Window on page", 
+        "content_type": 14
+    }
+},
+{
+    "pk": 42, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_pagewindow", 
+        "name": "Can delete Window on page", 
+        "content_type": 14
+    }
+},
+{
+    "pk": 55, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_menu", 
+        "name": "Can add menu", 
+        "content_type": 19
+    }
+},
+{
+    "pk": 56, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_menu", 
+        "name": "Can change menu", 
+        "content_type": 19
+    }
+},
+{
+    "pk": 57, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_menu", 
+        "name": "Can delete menu", 
+        "content_type": 19
+    }
+},
+{
+    "pk": 112, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_funds", 
+        "name": "Can add funds", 
+        "content_type": 38
+    }
+},
+{
+    "pk": 113, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_funds", 
+        "name": "Can change funds", 
+        "content_type": 38
+    }
+},
+{
+    "pk": 114, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_funds", 
+        "name": "Can delete funds", 
+        "content_type": 38
+    }
+},
+{
+    "pk": 115, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_fundreturnmonthly", 
+        "name": "Can add fund return monthly", 
+        "content_type": 39
+    }
+},
+{
+    "pk": 116, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_fundreturnmonthly", 
+        "name": "Can change fund return monthly", 
+        "content_type": 39
+    }
+},
+{
+    "pk": 117, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_fundreturnmonthly", 
+        "name": "Can delete fund return monthly", 
+        "content_type": 39
+    }
+},
+{
+    "pk": 118, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_fundreturndaily", 
+        "name": "Can add fund return daily", 
+        "content_type": 40
+    }
+},
+{
+    "pk": 119, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_fundreturndaily", 
+        "name": "Can change fund return daily", 
+        "content_type": 40
+    }
+},
+{
+    "pk": 120, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_fundreturndaily", 
+        "name": "Can delete fund return daily", 
+        "content_type": 40
+    }
+},
+{
+    "pk": 121, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_category", 
+        "name": "Can add category", 
+        "content_type": 41
+    }
+},
+{
+    "pk": 122, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_category", 
+        "name": "Can change category", 
+        "content_type": 41
+    }
+},
+{
+    "pk": 123, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_category", 
+        "name": "Can delete category", 
+        "content_type": 41
+    }
+},
+{
+    "pk": 124, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_holding", 
+        "name": "Can add holding", 
+        "content_type": 42
+    }
+},
+{
+    "pk": 125, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_holding", 
+        "name": "Can change holding", 
+        "content_type": 42
+    }
+},
+{
+    "pk": 126, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_holding", 
+        "name": "Can delete holding", 
+        "content_type": 42
+    }
+},
+{
+    "pk": 127, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_holdinghistory", 
+        "name": "Can add holding history", 
+        "content_type": 43
+    }
+},
+{
+    "pk": 128, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_holdinghistory", 
+        "name": "Can change holding history", 
+        "content_type": 43
+    }
+},
+{
+    "pk": 129, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_holdinghistory", 
+        "name": "Can delete holding history", 
+        "content_type": 43
+    }
+},
+{
+    "pk": 130, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_countrybreakdown", 
+        "name": "Can add country breakdown", 
+        "content_type": 44
+    }
+},
+{
+    "pk": 131, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_countrybreakdown", 
+        "name": "Can change country breakdown", 
+        "content_type": 44
+    }
+},
+{
+    "pk": 132, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_countrybreakdown", 
+        "name": "Can delete country breakdown", 
+        "content_type": 44
+    }
+},
+{
+    "pk": 133, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_breakdown", 
+        "name": "Can add breakdown", 
+        "content_type": 45
+    }
+},
+{
+    "pk": 134, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_breakdown", 
+        "name": "Can change breakdown", 
+        "content_type": 45
+    }
+},
+{
+    "pk": 135, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_breakdown", 
+        "name": "Can delete breakdown", 
+        "content_type": 45
+    }
+},
+{
+    "pk": 136, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_client", 
+        "name": "Can add client", 
+        "content_type": 46
+    }
+},
+{
+    "pk": 137, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_client", 
+        "name": "Can change client", 
+        "content_type": 46
+    }
+},
+{
+    "pk": 138, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_client", 
+        "name": "Can delete client", 
+        "content_type": 46
+    }
+},
+{
+    "pk": 139, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_clienthistory", 
+        "name": "Can add Client history", 
+        "content_type": 47
+    }
+},
+{
+    "pk": 140, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_clienthistory", 
+        "name": "Can change Client history", 
+        "content_type": 47
+    }
+},
+{
+    "pk": 141, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_clienthistory", 
+        "name": "Can delete Client history", 
+        "content_type": 47
+    }
+},
+{
+    "pk": 142, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_subscriptionredemption", 
+        "name": "Can add subscription redemption", 
+        "content_type": 48
+    }
+},
+{
+    "pk": 143, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_subscriptionredemption", 
+        "name": "Can change subscription redemption", 
+        "content_type": 48
+    }
+},
+{
+    "pk": 144, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_subscriptionredemption", 
+        "name": "Can delete subscription redemption", 
+        "content_type": 48
+    }
+},
+{
+    "pk": 145, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_peer", 
+        "name": "Can add peer", 
+        "content_type": 49
+    }
+},
+{
+    "pk": 146, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_peer", 
+        "name": "Can change peer", 
+        "content_type": 49
+    }
+},
+{
+    "pk": 147, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_peer", 
+        "name": "Can delete peer", 
+        "content_type": 49
+    }
+},
+{
+    "pk": 148, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_peerhistory", 
+        "name": "Can add Peer history", 
+        "content_type": 50
+    }
+},
+{
+    "pk": 149, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_peerhistory", 
+        "name": "Can change Peer history", 
+        "content_type": 50
+    }
+},
+{
+    "pk": 150, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_peerhistory", 
+        "name": "Can delete Peer history", 
+        "content_type": 50
+    }
+},
+{
+    "pk": 151, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_benchmark", 
+        "name": "Can add benchmark", 
+        "content_type": 51
+    }
+},
+{
+    "pk": 152, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_benchmark", 
+        "name": "Can change benchmark", 
+        "content_type": 51
+    }
+},
+{
+    "pk": 153, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_benchmark", 
+        "name": "Can delete benchmark", 
+        "content_type": 51
+    }
+},
+{
+    "pk": 154, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_benchmarkhistory", 
+        "name": "Can add Benchmark history", 
+        "content_type": 52
+    }
+},
+{
+    "pk": 155, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_benchmarkhistory", 
+        "name": "Can change Benchmark history", 
+        "content_type": 52
+    }
+},
+{
+    "pk": 156, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_benchmarkhistory", 
+        "name": "Can delete Benchmark history", 
+        "content_type": 52
+    }
+},
+{
+    "pk": 157, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_trade", 
+        "name": "Can add trade", 
+        "content_type": 53
+    }
+},
+{
+    "pk": 158, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_trade", 
+        "name": "Can change trade", 
+        "content_type": 53
+    }
+},
+{
+    "pk": 159, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_trade", 
+        "name": "Can delete trade", 
+        "content_type": 53
+    }
+},
+{
+    "pk": 160, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_apiaccess", 
+        "name": "Can add api access", 
+        "content_type": 54
+    }
+},
+{
+    "pk": 161, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_apiaccess", 
+        "name": "Can change api access", 
+        "content_type": 54
+    }
+},
+{
+    "pk": 162, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_apiaccess", 
+        "name": "Can delete api access", 
+        "content_type": 54
+    }
+},
+{
+    "pk": 163, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_apikey", 
+        "name": "Can add api key", 
+        "content_type": 55
+    }
+},
+{
+    "pk": 164, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_apikey", 
+        "name": "Can change api key", 
+        "content_type": 55
+    }
+},
+{
+    "pk": 165, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_apikey", 
+        "name": "Can delete api key", 
+        "content_type": 55
+    }
+},
+{
+    "pk": 1, 
+    "model": "auth.group", 
+    "fields": {
+        "name": "Manager", 
+        "permissions": [
+            142, 
+            143, 
+            124, 
+            125, 
+            157, 
+            158
+        ]
+    }
+},
+{
+    "pk": 2, 
+    "model": "auth.group", 
+    "fields": {
+        "name": "Fund Manager", 
+        "permissions": [
+            124, 
+            125, 
+            157, 
+            158
+        ]
+    }
+},
+{
+    "pk": 3, 
+    "model": "auth.group", 
+    "fields": {
+        "name": "Back Office", 
+        "permissions": [
+            142, 
+            143, 
+            124, 
+            125
+        ]
+    }
+},
+{
+    "pk": 4, 
+    "model": "auth.group", 
+    "fields": {
+        "name": "Admin", 
+        "permissions": [
+            4, 
+            5, 
+            6, 
+            7, 
+            8, 
+            9, 
+            142, 
+            143, 
+            121, 
+            122, 
+            124, 
+            125, 
+            157, 
+            158
+        ]
+    }
+},
+{
+    "pk": 1, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "andy", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": true, 
+        "is_staff": true, 
+        "last_login": "2013-10-29T13:26:19Z", 
+        "groups": [
+            1, 
+            2, 
+            3
+        ], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$10000$l8bXV0IQO3vt$5K40ZfpJsZ415w++TboOA0H9Qs83V+8rO6Dm1kURo5w=", 
+        "email": "asdf@asdf.cm", 
+        "date_joined": "2013-05-28T15:18:21Z"
+    }
+},
+{
+    "pk": 2, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "manager", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": true, 
+        "last_login": "2013-09-29T22:32:37Z", 
+        "groups": [
+            1
+        ], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$10000$uK4xvFnc9lI7$Yhn+PRFkcuciwS1ccEHnK3c8+tquki5/cBrM6d0BQkg=", 
+        "email": "", 
+        "date_joined": "2013-09-29T22:29:27Z"
+    }
+},
+{
+    "pk": 3, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "fundmanager", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": true, 
+        "last_login": "2013-09-29T22:30:16Z", 
+        "groups": [
+            2
+        ], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$10000$wDo28A2Jwgcv$kXda7PhrCtrZWxgV6s1sQoB8V0H/PzmPzeYn5wDyFjg=", 
+        "email": "", 
+        "date_joined": "2013-09-29T22:30:16Z"
+    }
+},
+{
+    "pk": 4, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "backoffice", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": true, 
+        "last_login": "2013-09-29T22:30:44Z", 
+        "groups": [
+            3
+        ], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$10000$wCjr6hQsmcnr$HpA1u173OBkQpChwTl4ekE0XOcQP2CBggWXA4/CcIwM=", 
+        "email": "", 
+        "date_joined": "2013-09-29T22:30:44Z"
+    }
+},
+{
+    "pk": 5, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "admin", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": true, 
+        "last_login": "2013-09-29T22:31:03Z", 
+        "groups": [
+            4
+        ], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$10000$WqsDaNM14wUI$FyIBh0iuxT6RVTv1/NSloekFK8xVxCAJHt90hIc7Nlc=", 
+        "email": "", 
+        "date_joined": "2013-09-29T22:31:03Z"
+    }
+},
+{
+    "pk": 1, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-11-04T18:34:30Z", 
+        "object_repr": "extra_fields=ytd", 
+        "object_id": "123", 
+        "change_message": "Changed value.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 2, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-11-04T21:05:48Z", 
+        "object_repr": "W.16 - MTD Performance Line Graph", 
+        "object_id": "3", 
+        "change_message": "Changed widget_param.", 
+        "user": 1, 
+        "content_type": 12
+    }
+},
+{
+    "pk": 1, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Holdings Trade Tables and Graphs", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 6, 
+        "key": "w11"
+    }
+},
+{
+    "pk": 2, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / MTD Performance Line Graph", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w16"
+    }
+},
+{
+    "pk": 3, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Historical Performance", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w1"
+    }
+},
+{
+    "pk": 4, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / MONTH YEAR /  Holding Performance", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w2"
+    }
+},
+{
+    "pk": 5, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / YEAR / Performance by Sector", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w3"
+    }
+},
+{
+    "pk": 6, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / YEAR / Performance by Sub-Sector", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w4"
+    }
+},
+{
+    "pk": 7, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / YEAR / Performance by Location", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w5"
+    }
+},
+{
+    "pk": 8, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Historical NAV Table", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w6"
+    }
+},
+{
+    "pk": 9, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / YEAR / Fund Holding NAV Bar", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w7"
+    }
+},
+{
+    "pk": 10, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "h", 
+        "name": "FUND_NAME / YEAR / NAV Weight by Sector", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 2, 
+        "key": "w8"
+    }
+},
+{
+    "pk": 11, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "h", 
+        "name": "FUND_NAME / YEAR / NAV by Sub Sector", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 2, 
+        "key": "w9"
+    }
+},
+{
+    "pk": 12, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "h", 
+        "name": "FUND_NAME / YEAR / NAV by Location", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 2, 
+        "key": "w10"
+    }
+},
+{
+    "pk": 13, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus / Historical Statistics", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 6, 
+        "key": "w58"
+    }
+},
+{
+    "pk": 14, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Returns", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w19"
+    }
+},
+{
+    "pk": 15, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Best Worst Months", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w20"
+    }
+},
+{
+    "pk": 16, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Return Histogram", 
+        "access": [
+            1
+        ], 
+        "size_x": 2, 
+        "size_y": 2, 
+        "key": "w22"
+    }
+},
+{
+    "pk": 17, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Correlation Matrix", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w21"
+    }
+},
+{
+    "pk": 19, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Performance in Negative Months", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w24"
+    }
+},
+{
+    "pk": 20, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Holding Liquity", 
+        "access": [
+            1
+        ], 
+        "size_x": 8, 
+        "size_y": 6, 
+        "key": "w73"
+    }
+},
+{
+    "pk": 21, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Redemption Tracker", 
+        "access": [
+            1
+        ], 
+        "size_x": 3, 
+        "size_y": 6, 
+        "key": "w74"
+    }
+},
+{
+    "pk": 22, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "h", 
+        "name": "FUND_NAME /  Cumulative Weight", 
+        "access": [
+            1
+        ], 
+        "size_x": 8, 
+        "size_y": 6, 
+        "key": "w75"
+    }
+},
+{
+    "pk": 23, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Summary", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 5, 
+        "key": "w15"
+    }
+},
+{
+    "pk": 24, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Foreign Currency Positions and Hedges", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w70"
+    }
+},
+{
+    "pk": 25, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Share Holder Register", 
+        "access": [
+            1
+        ], 
+        "size_x": 5, 
+        "size_y": 6, 
+        "key": "w12"
+    }
+},
+{
+    "pk": 26, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Subscription and Redemptions", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 4, 
+        "key": "w23"
+    }
+},
+{
+    "pk": 27, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / NAV Reconciliation", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 2, 
+        "key": "w25"
+    }
+},
+{
+    "pk": 28, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus / Gross Assets Calculation", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 6, 
+        "key": "w71"
+    }
+},
+{
+    "pk": 29, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Performance by Asset Class", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w4b"
+    }
+},
+{
+    "pk": 30, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "h", 
+        "name": "FUND_NAME / NAV by Asset Class", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 2, 
+        "key": "w9b"
+    }
+},
+{
+    "pk": 31, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / YEAR / Performance by Location", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w5b"
+    }
+},
+{
+    "pk": 32, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Gross Assets Calculation", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 6, 
+        "key": "w13b"
+    }
+},
+{
+    "pk": 33, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Gross Assets Calculation", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 6, 
+        "key": "w13c"
+    }
+},
+{
+    "pk": 34, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "h", 
+        "name": "FUND_NAME / YEAR / NAV by Holding", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 2, 
+        "key": "w8b"
+    }
+},
+{
+    "pk": 35, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Summary of Commitments ", 
+        "access": [
+            1
+        ], 
+        "size_x": 8, 
+        "size_y": 6, 
+        "key": "w31"
+    }
+},
+{
+    "pk": 36, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Valuation & Cash Flows", 
+        "access": [
+            1
+        ], 
+        "size_x": 8, 
+        "size_y": 6, 
+        "key": "w28"
+    }
+},
+{
+    "pk": 37, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Share Holder Register", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 6, 
+        "key": "w12b"
+    }
+},
+{
+    "pk": 38, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Historical Performance", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w1b"
+    }
+},
+{
+    "pk": 39, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Performance by Investment Type", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w4c"
+    }
+},
+{
+    "pk": 40, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "h", 
+        "name": "FUND_NAME / YEAR / NAV by Investment type", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 2, 
+        "key": "w9c"
+    }
+},
+{
+    "pk": 41, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Net movement % by Investment type", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w26"
+    }
+},
+{
+    "pk": 42, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Net movement Euro by Investment type", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w27"
+    }
+},
+{
+    "pk": 43, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / YEAR / Performance by Holding", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w3b"
+    }
+},
+{
+    "pk": 44, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Historical Performance", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w77"
+    }
+},
+{
+    "pk": 45, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / MTD Performance Line graph", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w78"
+    }
+},
+{
+    "pk": 46, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Holdings Trade Tables and Graphs", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 6, 
+        "key": "w79"
+    }
+},
+{
+    "pk": 47, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Returns", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w81"
+    }
+},
+{
+    "pk": 48, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Best Worst Months", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w82"
+    }
+},
+{
+    "pk": 49, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Correlation Matrix", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w83"
+    }
+},
+{
+    "pk": 50, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Performance in Negative Months", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w84"
+    }
+},
+{
+    "pk": 51, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Historical Statistics ", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 6, 
+        "key": "w80"
+    }
+},
+{
+    "pk": 52, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Return Histogram", 
+        "access": [
+            1
+        ], 
+        "size_x": 2, 
+        "size_y": 2, 
+        "key": "w85"
+    }
+},
+{
+    "pk": 53, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Historical NAV Table", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w86"
+    }
+},
+{
+    "pk": 54, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "HOLDING_NAME / Historical weight in fund", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w87"
+    }
+},
+{
+    "pk": 55, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Historical Performance", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w32"
+    }
+},
+{
+    "pk": 56, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / YEAR / Holding Performance", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w33"
+    }
+},
+{
+    "pk": 57, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Investment Performance", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 6, 
+        "key": "w34"
+    }
+},
+{
+    "pk": 58, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Returns", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w39"
+    }
+},
+{
+    "pk": 60, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Best Worst", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w40"
+    }
+},
+{
+    "pk": 61, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Correlation Matrix", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w41"
+    }
+},
+{
+    "pk": 62, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Performance in Negative Months", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w42"
+    }
+},
+{
+    "pk": 63, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Return Histogram", 
+        "access": [
+            1
+        ], 
+        "size_x": 2, 
+        "size_y": 2, 
+        "key": "w43"
+    }
+},
+{
+    "pk": 64, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Historical NAV Table", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w44"
+    }
+},
+{
+    "pk": 65, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / MONTH YEAR / Allocation NAV Bar", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w45"
+    }
+},
+{
+    "pk": 66, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Investment NAV", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 6, 
+        "key": "w46"
+    }
+},
+{
+    "pk": 67, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus / Historical Performance", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w51"
+    }
+},
+{
+    "pk": 68, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / YEAR /  Holding Performance", 
+        "access": [
+            1
+        ], 
+        "size_x": 8, 
+        "size_y": 3, 
+        "key": "w52"
+    }
+},
+{
+    "pk": 69, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Returns", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w59"
+    }
+},
+{
+    "pk": 70, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Best Worst Months", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w60"
+    }
+},
+{
+    "pk": 71, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Correlation Matrix", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w61"
+    }
+},
+{
+    "pk": 72, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Performance in Negative Months", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 2, 
+        "key": "w62"
+    }
+},
+{
+    "pk": 73, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Return Histogram", 
+        "access": [
+            1
+        ], 
+        "size_x": 2, 
+        "size_y": 2, 
+        "key": "w63"
+    }
+},
+{
+    "pk": 74, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus Historical NAV Table", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w64"
+    }
+},
+{
+    "pk": 75, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus / YEAR / Allocation NAV Bar", 
+        "access": [
+            1
+        ], 
+        "size_x": 7, 
+        "size_y": 3, 
+        "key": "w65"
+    }
+},
+{
+    "pk": 76, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "h", 
+        "name": "Alpheus / YEAR / NAV by Sector", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 2, 
+        "key": "w66"
+    }
+},
+{
+    "pk": 77, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "h", 
+        "name": "Alpheus / YEAR / NAV by Location", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 2, 
+        "key": "w67"
+    }
+},
+{
+    "pk": 78, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "CLIENT_NAME / Historical Statistics ", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 6, 
+        "key": "w38"
+    }
+},
+{
+    "pk": 79, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus / YEAR / Performance by Sector", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w53"
+    }
+},
+{
+    "pk": 80, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus / YEAR / Performance by Location", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 3, 
+        "key": "w54"
+    }
+},
+{
+    "pk": 82, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus / YEAR / Alpheus Performance by Fund", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 6, 
+        "key": "w55"
+    }
+},
+{
+    "pk": 83, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Foreign Currency Positions and Hedges", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 3, 
+        "key": "w56"
+    }
+},
+{
+    "pk": 84, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME / Cash Positions and Hedges", 
+        "access": [
+            1
+        ], 
+        "size_x": 4, 
+        "size_y": 3, 
+        "key": "w57"
+    }
+},
+{
+    "pk": 85, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus / YEAR / NAV by Fund", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 6, 
+        "key": "w68"
+    }
+},
+{
+    "pk": 86, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus Share Holder Register", 
+        "access": [
+            1
+        ], 
+        "size_x": 14, 
+        "size_y": 6, 
+        "key": "w69"
+    }
+},
+{
+    "pk": 87, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "FUND_NAME /  Gross Assets Calculation", 
+        "access": [
+            1
+        ], 
+        "size_x": 9, 
+        "size_y": 6, 
+        "key": "w13"
+    }
+},
+{
+    "pk": 88, 
+    "model": "app.window", 
+    "fields": {
+        "layout": "v", 
+        "name": "Alpheus / Summary", 
+        "access": [
+            1
+        ], 
+        "size_x": 6, 
+        "size_y": 5, 
+        "key": "w72"
     }
 },
 {
