@@ -377,9 +377,6 @@ class MainBaseResource(SpecifiedFields):
 
                 categories = set([row.data[self.date].year for row in data['objects']])
                 categories = sorted(categories, reverse=True)
-                print categories
-                #categories = [row.data[self.date].year for row in data['objects']]
-                #categories = collections.OrderedDict(sorted(categories.fromkeys()))
 
                 months = []
                 for category in categories:
@@ -395,8 +392,6 @@ class MainBaseResource(SpecifiedFields):
 
                 columns = ['Year'] + self.get_month_list() + self.extra_fields
 
-
-            print 'asdf2'
             return {
                 'columns': self.set_columns(request, columns),
                 'rows': months,
