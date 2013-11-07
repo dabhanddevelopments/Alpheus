@@ -1,68 +1,5 @@
 [
 {
-    "pk": 1, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "permission", 
-        "name": "permission", 
-        "app_label": "auth"
-    }
-},
-{
-    "pk": 2, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "group", 
-        "name": "group", 
-        "app_label": "auth"
-    }
-},
-{
-    "pk": 3, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "user", 
-        "name": "user", 
-        "app_label": "auth"
-    }
-},
-{
-    "pk": 4, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "contenttype", 
-        "name": "content type", 
-        "app_label": "contenttypes"
-    }
-},
-{
-    "pk": 5, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "session", 
-        "name": "session", 
-        "app_label": "sessions"
-    }
-},
-{
-    "pk": 6, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "site", 
-        "name": "site", 
-        "app_label": "sites"
-    }
-},
-{
-    "pk": 7, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "logentry", 
-        "name": "log entry", 
-        "app_label": "admin"
-    }
-},
-{
     "pk": "7laem3z7t18gc3mqelvoxjg6tw0lu5y8", 
     "model": "sessions.session", 
     "fields": {
@@ -5269,33 +5206,6 @@
         "codename": "delete_user", 
         "name": "Can delete user", 
         "content_type": 3
-    }
-},
-{
-    "pk": 10, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_contenttype", 
-        "name": "Can add content type", 
-        "content_type": 4
-    }
-},
-{
-    "pk": 11, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_contenttype", 
-        "name": "Can change content type", 
-        "content_type": 4
-    }
-},
-{
-    "pk": 12, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_contenttype", 
-        "name": "Can delete content type", 
-        "content_type": 4
     }
 },
 {
