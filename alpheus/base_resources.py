@@ -37,6 +37,17 @@ class MainBaseResource(SpecifiedFields):
         include_resource_uri = False
         columns = []
 
+    """
+    Allow all 'order_by' by default
+    """
+    def apply_sorting(self, obj_list, options=None):
+        return obj_list.order_by()
+
+    """
+    Allow all filters by default
+    """
+    def check_filtering(self, field_name, filter_type='exact', filter_bits=None):
+        return [self.fields[field_name].attribute]
 
     def get_list(self, request, **kwargs):
 

@@ -99,3 +99,7 @@ def fund_return_calculation(data_str, date, length):
     output = (r("apply.fromstart(myts/100, FUN = 'Return.cumulative', gap = 1)"))
 
     return dict(zip(months, output))
+
+
+
+

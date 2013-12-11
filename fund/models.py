@@ -229,9 +229,6 @@ class Funds(models.Model):
     name = models.CharField(max_length=50, db_column='Name', null=True)
     description = models.CharField(max_length=200, db_column='Description', null=True)
 
-    class Meta:
-        db_table = 'ALP_Funds'
-
     def __unicode__(self):
         return self.name
 
@@ -271,4 +268,6 @@ class FundReturnDaily(models.Model):
 
     class Meta:
         db_table = 'ALP_FundsDailyVals_TS'
+
+
 

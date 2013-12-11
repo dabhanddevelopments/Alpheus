@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from alpheus.base_resources import MainBaseResource, TreeBaseResource, StandardBaseResource
 from app.models import *
 #from holding.models import *
-from fund.models import *
+from v2.resources import *
 #from client.models import *
 #from comparative.models import *
 
@@ -285,6 +285,7 @@ api.register(FundClassificationResource())
 
 class MenuResource(TreeBaseResource, StandardBaseResource):
     page = fields.ForeignKey(PageResource, "page", null=True, full=True)
+    fund = fields.ForeignKey(FundResource, 'fund', null=True)
     parent = fields.ForeignKey('self', 'parent', null=True)
 
     class Meta(MainBaseResource.Meta):

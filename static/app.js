@@ -2120,15 +2120,17 @@ Ext.onReady(function() {
         var fund = $('#data').data('fund');
 
 
+        console.log(month);
+
 
         var title = 'Alpheus / MONTH YEAR / Historical Performance (to be styled)';
         title = title.replace('YEAR', moment(new Date(year)).format("YYYY"))
-        title = title.replace('MONTH', moment(new Date(year, month)).format("MMMM"))
+        title = title.replace('MONTH', moment(new Date(year, month - 1)).format("MMMM"))
 
 
         $('<div id="calendar"></div>').appendTo('body');
         mo_widget = {}
-        mo_widget.url = '/api/fund-return-daily/';
+        mo_widget.url = '/api/fundreturndaily/';
         mo_widget.qs = '?fund=' + fund + '&fields=value_date,fund_perf&order_by=value_date&value_date__year=' + year + '&value_date__month=' + month;
 
         //console.log(widget.url + widget.qs);
@@ -2145,6 +2147,7 @@ Ext.onReady(function() {
             var last_day_of_month = d2.getDate();
 
             var html = '<table class="month_table"><tr>';
+            html += '<th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><tr>';
 
             // empty cells for months that do not start on a monday
             if(first_weekday < 6) {
@@ -2159,7 +2162,6 @@ Ext.onReady(function() {
                 var day = data[i].value_date.substr(8,2);
                 day = parseInt(day, 10);
                 days[day] = data[i].fund_perf;
-                console.log(data[i].fund_perf);
             }
 
             for(i=1; i<=last_day_of_month; i++) {
@@ -2171,6 +2173,8 @@ Ext.onReady(function() {
                 }
 
                 date = year.toString() + '-' + month.toString() + '-' + i;
+
+                week = moment(date).format("w");
 
                 // exclude weekends
                 var d = new Date(date);
@@ -2191,11 +2195,15 @@ Ext.onReady(function() {
                     }
 
                 }
-                html += '<td>' + i + '<a href="#" onclick="refreshHoldPerfBar(\'w2\', \'' + date + '\', ' + fund + ');">' + val + '</a></td>';
+                if(val < 0) {
+                    style = ' style="color:red;"';
+                } else {
+                    style = ' style="color:green;"';
+                }
+                html += '<td>' + i + '<a href="#"' + style + ' onclick="refreshHoldPerfBar(\'w2\', \'' + date + '\', ' + fund + ');">' + val + '</a></td>';
             }
 
             html += "</tr></table>";
-
 
 
 
@@ -2974,7 +2982,17 @@ Ext.onReady(function() {
 
                 var id = record.get('id');
 
-                if(widget.window.key == 'w11') {
+                if(widget.window.key == 'w1' || widget.window.key == 'w1b') {
+
+
+                    $.getJSON("api/fundreturnmonthly/?align=center&data_type=year&date=value_date&extra_fields=ytd&fund=' + obj.fund + '&value=fund_perf", function(w1) {
+
+                        displayInnerGrid(widget, w1, id);
+                    });
+                }
+
+
+                else if(widget.window.key == 'w11') {
 
                     var fields = 'trade_date,settlement_date,no_of_units,trade_price_euro,fx_euro,trade_price_base,base_nav';
                     //var fields = 'trade_date,settlement_date,buy_sell,no_of_units,trade_price_base_base,fx_to_euro,trade_price_base,base_nav';
@@ -3688,7 +3706,7 @@ Ext.onReady(function() {
     function setFundName(id) {
          $.ajax({
             type: "GET",
-            url: '/api/funds/' + id + '?fields=name',//,classification__id',
+            url: '/api/fund/' + id + '?fields=name',//,classification__id',
             success: function(data) {
                 $('#data').data("fund_name", data.name);
                 //$('#data').data("classification", data.classification__id);
@@ -3856,7 +3874,7 @@ Ext.onReady(function() {
                                         record.expand();
                                     }
 
-                                    //console.log(record.raw);
+                                    console.log(record.raw);
                                     if(typeof record.raw.fund != 'undefined' && record.raw.fund != 0) {
                                         $('#data').data('fund', record.raw.fund);
                                         setFundName(record.raw.fund);

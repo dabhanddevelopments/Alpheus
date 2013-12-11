@@ -18,11 +18,68 @@ admin.autodiscover()
 
 from django.conf.urls.defaults import *
 from tastypie.api import Api
+from v2.resources import *
 
 api = Api(api_name="api")
+
 from app.resources import *
 
+
+api.register(AdministratorResource())
+api.register(GroupResource())
+api.register(AssetClassResource())
+api.register(AuditorResource())
+api.register(BenchComponentResource())
+api.register(BrokerResource())
+api.register(CounterPartyResource())
+api.register(CountryResource())
+api.register(CurrencyResource())
+api.register(CurrencyRateResource())
+api.register(CustodianResource())
+api.register(FeeResource())
+api.register(BenchPeerResource())
+api.register(AlarmResource())
+api.register(FundStyleResource())
+api.register(GicsCategoryResource())
+api.register(HfSectorResource())
+api.register(IcbCategoryResource())
+api.register(IndustryGroupResource())
+api.register(IndustrySectorResource())
+api.register(IndustrySubGroupResource())
+api.register(IssuerIndustryResource())
+api.register(ManagerResource())
+api.register(RegionResource())
+api.register(ClientFilenameResource())
+api.register(ClientValAuditResource())
+api.register(FundFeeResource())
+api.register(FundFeeAuditResource())
+api.register(FundPeerResource())
+api.register(FundPositionAuditResource())
+api.register(FundResource())
+api.register(FundCharAuditResource())
+api.register(FundReturnDailyResource())
+api.register(FundEstimateResource())
+api.register(FundReturnMonthlyResource())
+api.register(HoldingResource())
+api.register(HoldingDailyResource())
+api.register(HoldingMonthlyResource())
+api.register(HoldingDepositResource())
+api.register(HoldingEtfResource())
+api.register(HoldingEquityResource())
+api.register(HoldingFixedIncomeResource())
+api.register(HoldingForwardResource())
+api.register(HoldingFutureResource())
+api.register(HoldingHedgeFundsResource())
+api.register(HoldingMutualFundResource())
+api.register(HoldingOptionResource())
+api.register(HoldingWarrantResource())
+api.register(PositionDailyResource())
+api.register(PositionMonthlyResource())
+api.register(TradeResource())
+
+
 # fund
+"""
 #api.register(TestWidget())
 api.register(FundReturnMonthlyResource())
 api.register(FundReturnMonthlyResource2())
@@ -35,6 +92,7 @@ api.register(FundsResource())
 #api.register(FxHedgeResource())
 #api.register(FxRateResource())
 #api.register(FundClassificationResource())
+"""
 
 """
 # holding

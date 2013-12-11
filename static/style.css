@@ -480,7 +480,7 @@ article:not(:last-child),
 
 table.month_table{
     margin:30px;   
-    background-color:white;
+    background-color: #DFE8F6;
 }
 
 table.month_table{
@@ -488,11 +488,16 @@ table.month_table{
     border-spacing: 2px;
 }
 
+table.month_table th {
+    color: #23468C;
+    font-size: 12px;
+    padding: 4px;
+}
+
 table.month_table td {
     background-color:gray;
     border: 1px solid gray;
     padding: 6px;
-
 }
 
 table.month_table td a {
@@ -574,7 +579,7 @@ table.month_table td a {
    padding: 3px 4px 1px 4px;
 }
 
-    p {
+   p {
         margin:5px;
     }
 
