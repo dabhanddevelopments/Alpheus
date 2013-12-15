@@ -393,6 +393,8 @@ class MainBaseResource(SpecifiedFields):
                 for category in categories:
                     dic = {'year': category}
                     for row in data['objects']:
+
+                        #dic['id'] = row.data['id']
                         if row.data[self.date].year == category:
                             month = row.data[self.date].month
                             month_name = calendar.month_abbr[month].lower()

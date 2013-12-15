@@ -23,6 +23,7 @@ class SpecifiedFields(ModelResource):
                 except:
                     self.specified_fields = []
 
+        # @TODO: check if this is necessary
         if not fields and not len(self.specified_fields):
             return objects
 

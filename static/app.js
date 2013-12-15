@@ -2173,6 +2173,7 @@ Ext.onReady(function() {
                 }
 
                 date = year.toString() + '-' + month.toString() + '-' + i;
+                //day = moment(date).format("Do");
 
                 week = moment(date).format("w");
 
@@ -2819,8 +2820,9 @@ Ext.onReady(function() {
 
 
                             // month view
-                            } else if(columnIndex < 14) {
+                            } else if(columnIndex > 0 && columnIndex < 14) {
                                 //refreshHoldPerfBar('w2', year + '-' + month + '-1', obj.fund, true);
+                                console.log("columnIndex", columnIndex);
 
                                 monthTable(year, month);
                             }
@@ -2985,8 +2987,10 @@ Ext.onReady(function() {
                 if(widget.window.key == 'w1' || widget.window.key == 'w1b') {
 
 
-                    $.getJSON("api/fundreturnmonthly/?align=center&data_type=year&date=value_date&extra_fields=ytd&fund=' + obj.fund + '&value=fund_perf", function(w1) {
+                    $.getJSON("api/fundreturnmonthly/?align=center&data_type=year&date=value_date&extra_fields=ytd&fund=" + obj.fund + "&value=fund_perf", function(w1) {
 
+                        console.log(w1);
+                        console.log(id);
                         displayInnerGrid(widget, w1, id);
                     });
                 }

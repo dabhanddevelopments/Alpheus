@@ -1,7 +1,7 @@
 from tastypie import fields
 from alpheus.base_resources import MainBaseResource
 from v2.models import *
-
+from alpheus.utils import fund_return_calculation
 
 class AdministratorResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
@@ -138,6 +138,33 @@ class FundPositionAuditResource(MainBaseResource):
 class FundResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = Fund.objects.all()
+        
+    def alter_list_data_to_serialize(self, request, data):
+
+        if self.y1 != False:
+
+            fund = ''
+            bench = ''
+            for row in data['objects']:
+                fund += str(row.data[self.y1]) + ', '
+                bench += str(row.data[self.y2]) + ', '
+
+            length = str(len(data['objects']))
+            date = data['objects'][0].data[self.date]
+
+            fund = fund_return_calculation(fund, date, length)
+            bench = fund_return_calculation(bench, date, length)
+
+            for row in data['objects']:
+                for key, val in fund.iteritems():
+                    if row.data[self.date].year == key.year and row.data[self.date].month == key.month:
+                        row.data[self.y1] = val
+                for key, val in bench.iteritems():
+                    if row.data[self.date].year == key.year and row.data[self.date].month == key.month:
+                        row.data[self.y2] = val
+
+        return super(FundReturnMonthlyResource, self) \
+                .alter_list_data_to_serialize(request, data)
 
 class FundCharAuditResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
