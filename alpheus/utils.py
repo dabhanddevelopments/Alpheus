@@ -87,7 +87,6 @@ def fund_return_calculation(data_str, date, length):
         d += delta
 
     date = date.strftime('%Y/%m/%d')
-    print date
 
     from rpy2.robjects import r
     r.library("PerformanceAnalytics")

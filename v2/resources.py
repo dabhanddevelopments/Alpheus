@@ -180,7 +180,6 @@ class FundReturnMonthlyResource2(MainBaseResource):
                 date = datetime.strptime(date, '%Y-%m-%d')
             else:
                 date = data['objects'][0].data[self.date]
-            print date
 
             fund = fund_return_calculation(fund, date, length)
             bench = fund_return_calculation(bench, date, length)

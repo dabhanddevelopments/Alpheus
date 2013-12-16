@@ -2007,6 +2007,7 @@ Ext.onReady(function() {
                 },
                 navigator:{
                     enabled:true,
+                    adaptToUpdatedData: false,
                 },
                 scrollbar: {
                     enabled:false
@@ -2039,10 +2040,10 @@ Ext.onReady(function() {
                     type: 'datetime',
                     events: {
                         afterSetExtremes: function(e){
-                            if(eventFlag==true) {
+                            //if(eventFlag==true) {
                                 //console.log('refresshing graph');
                                 refreshGraph(e, widget);
-                            }
+                            //}
                             eventFlag = !eventFlag;
                         }
                     },
