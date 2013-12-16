@@ -14,6 +14,7 @@ class SpecifiedFields(ModelResource):
         if fields:
             fields = 'id,' + fields
 
+
         if fields:
             try:
                 self.specified_fields += fields.split(',')
@@ -39,7 +40,6 @@ class SpecifiedFields(ModelResource):
 
         only_fields = []
         select_related = []
-
 
         for specified_field in self.specified_fields:
 

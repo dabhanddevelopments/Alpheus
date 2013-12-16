@@ -297,7 +297,8 @@ class MainBaseResource(SpecifiedFields):
                     'text': column.title().replace('_', ' '),
                     'dataIndex': value.lower(),
                     'align': 'center',
-                'menuDisabled': True,
+                    'flex': True,
+                    'menuDisabled': True,
                 }
             except:
                 try:
@@ -392,9 +393,9 @@ class MainBaseResource(SpecifiedFields):
                 months = []
                 for category in categories:
                     dic = {'year': category}
+                    dic['id'] = category
                     for row in data['objects']:
 
-                        #dic['id'] = row.data['id']
                         if row.data[self.date].year == category:
                             month = row.data[self.date].month
                             month_name = calendar.month_abbr[month].lower()

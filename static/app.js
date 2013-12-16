@@ -131,6 +131,13 @@ function investmentNAV(div, type) {
 
 function displayInnerGrid(widget, data, renderId, hideHeaders, height) {
 
+        //@TODO: Make dynamic
+        console.log(renderId);
+        console.log(data.columns);
+        if(renderId == data.rows[0].year) {
+            data.columns[0].dataIndex = 'bench';
+            data.columns[0].text = '';
+        }
         fields = [];
         for(i=0; i < data.columns.length; i++) {
             fields[i] = data.columns[i].dataIndex;
@@ -202,6 +209,27 @@ function displayInnerGrid(widget, data, renderId, hideHeaders, height) {
 
 }
 
+function refreshGraph(e, widget) {
+    var start = new Date(e.min);
+    var end = new Date(e.max);
+
+    var start_date = start.getFullYear() + '-' + (start.getMonth() + 1) + '-' + start.getDate();
+    var end_date = end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate();
+    var date = '&value_date__gte=' + start_date + '&value_date__lte=' + end_date;
+    //console.log('start date', start_date);
+
+    var chart = $('#' + widget.div).highcharts();
+    chart.showLoading('Loading data from server...');
+
+    $.getJSON(widget.url + widget.qs + date, function(data) {
+        //console.log(date);
+	     chart.series[0].setData(data[0].data);
+	     chart.series[1].setData(data[1].data);
+		 chart.hideLoading();
+	});
+
+
+}
 function zoomGraph(e, widget) {
 
     //this is ugly
@@ -1932,7 +1960,7 @@ Ext.onReady(function() {
 				        type: 'all',
 				        text: 'All'
 			        }],
-			        inputEnabled: false, // no space for it
+			        inputEnabled: true,
 			        selected : 1
                 }
             }
@@ -1948,6 +1976,8 @@ Ext.onReady(function() {
                     minRange: 3600 * 1000 // one hour
                 };
                //console.log(options);
+            } else {
+
             }
             var chart = new Highcharts.StockChart(options);
 
@@ -1962,6 +1992,7 @@ Ext.onReady(function() {
             var type = widget.params.type;
         }
 
+        var eventFlag=true;
         $.getJSON(widget.url + widget.qs, function(data) {
 
             var chart = new Highcharts.StockChart({
@@ -1981,14 +2012,40 @@ Ext.onReady(function() {
                     enabled:false
                 },
 			    rangeSelector : {
-				    //selected : 1
-				    //enabled: false,
+                    enabled: true,
+			        buttons: [{
+				        type: 'year',
+				        count: 1,
+				        text: '1y'
+			        }, {
+				        type: 'year',
+				        count: 5,
+				        text: '5y'
+			        }, {
+				        type: 'year',
+				        count: 10,
+				        text: '10y'
+			        }, {
+				        type: 'all',
+				        text: 'All'
+			        }],
+			        inputEnabled: true,
+			        selected : 1
 			    },
 			    title : {
 				    text : false
 			    },
                 xAxis: {
-                    type: 'datetime'
+                    type: 'datetime',
+                    events: {
+                        afterSetExtremes: function(e){
+                            if(eventFlag==true) {
+                                //console.log('refresshing graph');
+                                refreshGraph(e, widget);
+                            }
+                            eventFlag = !eventFlag;
+                        }
+                    },
                 },
                 yAxis: [{
 			        //title : {
@@ -2201,7 +2258,7 @@ Ext.onReady(function() {
                 } else {
                     style = ' style="color:green;"';
                 }
-                html += '<td>' + i + '<a href="#"' + style + ' onclick="refreshHoldPerfBar(\'w2\', \'' + date + '\', ' + fund + ');">' + val + '</a></td>';
+                html += '<td>' + i + '<a href="#"' + style + ' onclick="refreshHoldPerfBar(\'w2\', \'' + date + '\', ' + fund + ');">' + val + '%</a></td>';
             }
 
             html += "</tr></table>";
@@ -2214,7 +2271,7 @@ Ext.onReady(function() {
                 title: title,
                 //items: items,
                 height: 300,
-                width: 400,
+                width: 450,
                 /*
                 listeners: {
                     'close': function(tabPanel, tab){
@@ -2582,7 +2639,18 @@ Ext.onReady(function() {
                     }
                 } else {
                     row = data.columns[i].dataIndex;
-
+                    if(row != 'year') {
+                        data.columns[i]['renderer'] = function(val) {
+                                if (val > 0) {
+                                    return '<span style="color:green;">' + val + ' %</span>';
+                                } else if (val < 0) {
+                                    return '<span style="color:red;">' + val + ' %</span>';
+                                }
+                                if(val != '') {
+                                    return val+"%";
+                                }
+                            };
+                    }
                     if(typeof row != 'undefined') {
                         arr = {};
                         if($.isNumeric(row)) {
@@ -2595,6 +2663,7 @@ Ext.onReady(function() {
                     }
                 }
             }
+            console.log(data.columns);
 
             if(typeof data.columns[1]['summaryType'] != 'undefined') {
                 data.columns[0]['summaryRenderer'] = function(v, params, data){ return 'Total'};
@@ -2986,12 +3055,9 @@ Ext.onReady(function() {
 
                 if(widget.window.key == 'w1' || widget.window.key == 'w1b') {
 
+                    $.getJSON("api/fundreturnmonthly/?align=center&data_type=year&date=value_date&extra_fields=ytd&fund=" + obj.fund + "&value=bench_perf&value_date__year=" + id, function(w1) {
 
-                    $.getJSON("api/fundreturnmonthly/?align=center&data_type=year&date=value_date&extra_fields=ytd&fund=" + obj.fund + "&value=fund_perf", function(w1) {
-
-                        console.log(w1);
-                        console.log(id);
-                        displayInnerGrid(widget, w1, id);
+                        displayInnerGrid(widget, w1, id, true);
                     });
                 }
 
@@ -3710,9 +3776,10 @@ Ext.onReady(function() {
     function setFundName(id) {
          $.ajax({
             type: "GET",
-            url: '/api/fund/' + id + '?fields=name',//,classification__id',
+            url: '/api/fund/' + id + '?fields=name',//,benchpeer__name',//,classification__id',
             success: function(data) {
                 $('#data').data("fund_name", data.name);
+               // $('#data').data("benchpeer_name", data.fund__benchpeer__name);
                 //$('#data').data("classification", data.classification__id);
                //console.log(data);
             }
