@@ -482,7 +482,7 @@ class FundReturnDaily(models.Model):
     bench_perf = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='BenchDailyReturn', blank=True)
     bench_mtd = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='BenchMTDReturn', blank=True)
     bench_ytd = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='BenchYTDReturn', blank=True)
-    flag = models.CharField(max_length=1, db_column='Flag', blank=True)
+    flag = models.CharField(max_length=1, db_column='Flag', blank=True, null=True)
     class Meta:
         db_table = 'ALP_FundsDailyVals_TS'
 
@@ -506,7 +506,7 @@ class FundReturnMonthly(models.Model):
     ytd = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='FundYTDReturn', blank=True)
     bench_perf = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='BenchMonthlyReturn', blank=True)
     bench_ytd = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='BenchYTDReturn', blank=True)
-    flag = models.CharField(max_length=1, db_column='Flag', blank=True)
+    flag = models.CharField(max_length=1, db_column='Flag', blank=True, null=True)
     sec_bench = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='SecBenchMonthlyReturn', blank=True)
     sec_bench_ytd = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='SecBenchYTDReturn', blank=True)
 
