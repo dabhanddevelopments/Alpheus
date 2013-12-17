@@ -78,6 +78,7 @@ def fund_return_calculation(data_str, date, length):
     from datetime import timedelta as td
 
     end_date = date + relativedelta(months=133) #int(length))
+    print date, length
 
     delta = relativedelta(months=+1)
     d = date

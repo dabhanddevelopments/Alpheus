@@ -243,7 +243,7 @@ class MainBaseResource(SpecifiedFields):
     def get_columns(self, request, column_names):
 
         column_width = request.GET.get('column_width', '50,50').split(',')
-        column_border_y = request.GET.get('column_border_y', 'ytd')
+        #column_border_y = request.GET.get('column_border_y', 'ytd')
         align = request.GET.get('align', 'left')
 
         columns = []
@@ -255,8 +255,11 @@ class MainBaseResource(SpecifiedFields):
                 'text': value,
                 'menuDisabled': True,
             }
-            if key == column_border_y:
-                dic['tdCls'] = 'horizonal-border-column'
+            #if key == column_border_y:
+            #    dic['tdCls'] = 'horizonal-border-column'
+
+            if 'ytd' in value.lower():
+                dic['tdCls'] = 'ytd-column'
 
             if counter == 0:
                 dic['width'] = column_width[0]
@@ -274,7 +277,7 @@ class MainBaseResource(SpecifiedFields):
     def set_columns(self, request, column_names):
 
         column_width = request.GET.get('column_width', '50,50').split(',')
-        column_border_y = request.GET.get('column_border_y', 'ytd')
+        #column_border_y = request.GET.get('column_border_y', 'ytd')
         align = request.GET.get('align', 'left')
         total = request.GET.get('total', False) == 'true'
 
@@ -311,8 +314,11 @@ class MainBaseResource(SpecifiedFields):
                     }
                 except:
                     raise
-            if column == column_border_y:
-                dic['tdCls'] = 'horizonal-border-column'
+            #if column == column_border_y:
+            #    dic['tdCls'] = 'horizonal-border-column'
+
+            if 'ytd' in value.lower():
+                dic['tdCls'] = 'ytd-column'
 
             if total and key != 0:
                 dic['summaryType'] = 'sum'

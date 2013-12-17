@@ -122,7 +122,7 @@ function investmentNAV(div, type) {
             }],
             columns: columns,
         });
-        return widgetWindow(data.window.id, page, data.window.name + 'asdf', data.window.size_x, data.window.size_y, data.id, window_id);
+        return widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
     });
 }
 
@@ -132,16 +132,30 @@ function investmentNAV(div, type) {
 function displayInnerGrid(widget, data, renderId, hideHeaders, height) {
 
         //@TODO: Make dynamic
-        console.log(renderId);
-        console.log(data.columns);
-        if(renderId == data.rows[0].year) {
-            data.columns[0].dataIndex = 'bench';
-            data.columns[0].text = '';
-        }
+        data.rows[0].year = 'Benchmark';
+        data.rows[0].ytd = '';
         fields = [];
         for(i=0; i < data.columns.length; i++) {
             fields[i] = data.columns[i].dataIndex;
+
+            row = data.columns[i].dataIndex;
+            data.columns[i]['renderer'] = function(val) {
+                if(val == 'Benchmark') {
+                    return '<span style="font-size:8;">' + val + '</span>';
+                };
+                if (val > 0) {
+                    return '<span style="color:blue;">' + val + ' %</span>';
+                } else if (val < 0) {
+                    return '<span style="color:red;">' + val + ' %</span>';
+                }
+                if(val != '') {
+                    return "0%";
+                }
+            }
+
         }
+
+
 
         if(typeof hideHeaders == 'undefined') {
             hideHeaders: false;
@@ -172,7 +186,6 @@ function displayInnerGrid(widget, data, renderId, hideHeaders, height) {
             columns: data.columns,
             header: false,
             autoFit: true,
-            width: 1000,
             height: height,
             iconCls: 'icon-grid',
             hideHeaders: hideHeaders,
@@ -1992,7 +2005,6 @@ Ext.onReady(function() {
             var type = widget.params.type;
         }
 
-        var eventFlag=true;
         $.getJSON(widget.url + widget.qs, function(data) {
 
             var chart = new Highcharts.StockChart({
@@ -2040,11 +2052,7 @@ Ext.onReady(function() {
                     type: 'datetime',
                     events: {
                         afterSetExtremes: function(e){
-                            //if(eventFlag==true) {
-                                //console.log('refresshing graph');
-                                refreshGraph(e, widget);
-                            //}
-                            eventFlag = !eventFlag;
+                            refreshGraph(e, widget);
                         }
                     },
                 },
@@ -2181,7 +2189,7 @@ Ext.onReady(function() {
         console.log(month);
 
 
-        var title = 'Alpheus / MONTH YEAR / Historical Performance (to be styled)';
+        var title = 'Alpheus / MONTH YEAR / Historical Performance';
         title = title.replace('YEAR', moment(new Date(year)).format("YYYY"))
         title = title.replace('MONTH', moment(new Date(year, month - 1)).format("MMMM"))
 
@@ -2189,7 +2197,7 @@ Ext.onReady(function() {
         $('<div id="calendar"></div>').appendTo('body');
         mo_widget = {}
         mo_widget.url = '/api/fundreturndaily/';
-        mo_widget.qs = '?fund=' + fund + '&fields=value_date,fund_perf&order_by=value_date&value_date__year=' + year + '&value_date__month=' + month;
+        mo_widget.qs = '?fund=' + fund + '&fields=value_date,fund_mtd&order_by=value_date&value_date__year=' + year + '&value_date__month=' + month;
 
         //console.log(widget.url + widget.qs);
         $.getJSON(mo_widget.url + mo_widget.qs , function(data) {
@@ -2199,13 +2207,16 @@ Ext.onReady(function() {
             // first day in first week of month
             var d = new Date(year, month - 1, 1);
             var first_weekday = d.getDay();
+            var first_date = year.toString() + '-' + month.toString() + '-' + 1;
+            var first_week_of_month = moment(first_date).format("w");
+            console.log(first_date, first_week_of_month);
 
             // last day of the month
             var d2 = new Date(year, month, 0);
             var last_day_of_month = d2.getDate();
 
             var html = '<table class="month_table"><tr>';
-            html += '<th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><tr>';
+            html += '<th></th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><tr><th>' + first_week_of_month + '</th>';
 
             // empty cells for months that do not start on a monday
             if(first_weekday < 6) {
@@ -2219,7 +2230,7 @@ Ext.onReady(function() {
             for(i=0; i < data.length; i++) {
                 var day = data[i].value_date.substr(8,2);
                 day = parseInt(day, 10);
-                days[day] = data[i].fund_perf;
+                days[day] = data[i].fund_mtd;
             }
 
             for(i=1; i<=last_day_of_month; i++) {
@@ -2233,7 +2244,7 @@ Ext.onReady(function() {
                 date = year.toString() + '-' + month.toString() + '-' + i;
                 //day = moment(date).format("Do");
 
-                week = moment(date).format("w");
+                week = parseInt(moment(date).format("w")) + 1;
 
                 // exclude weekends
                 var d = new Date(date);
@@ -2250,6 +2261,9 @@ Ext.onReady(function() {
                     } else {
                         html += "</tr><tr>";
                         i++;
+                        if(i != last_day_of_month){
+                            html += '<th>' + week + '</th>';
+                        }
                         continue;
                     }
 
@@ -2642,15 +2656,15 @@ Ext.onReady(function() {
                     row = data.columns[i].dataIndex;
                     if(row != 'year') {
                         data.columns[i]['renderer'] = function(val) {
-                                if (val > 0) {
-                                    return '<span style="color:green;">' + val + ' %</span>';
-                                } else if (val < 0) {
-                                    return '<span style="color:red;">' + val + ' %</span>';
-                                }
-                                if(val != '') {
-                                    return val+"%";
-                                }
-                            };
+                            if (val > 0) {
+                                return '<span style="color:blue;">' + val + ' %</span>';
+                            } else if (val < 0) {
+                                return '<span style="color:red;">' + val + ' %</span>';
+                            }
+                            if(val != '') {
+                                return val+"%";
+                            }
+                        };
                     }
                     if(typeof row != 'undefined') {
                         arr = {};
@@ -2769,7 +2783,6 @@ Ext.onReady(function() {
                 features: [{
                     ftype: 'summary'
                 }],
-
 
                 listeners: {
                     cellclick: function(gridView,htmlElement,columnIndex,dataRecord) {
@@ -3056,7 +3069,7 @@ Ext.onReady(function() {
 
                 if(widget.window.key == 'w1' || widget.window.key == 'w1b') {
 
-                    $.getJSON("api/fundreturnmonthly/?align=center&data_type=year&date=value_date&extra_fields=ytd&fund=" + obj.fund + "&value=bench_perf&value_date__year=" + id, function(w1) {
+                    $.getJSON("api/fundreturnmonthly/?align=center&data_type=year&date=value_date&extra_fields=ytd,bench_ytd&fund=" + obj.fund + "&value=bench_perf&value_date__year=" + id, function(w1) {
 
                         displayInnerGrid(widget, w1, id, true);
                     });

@@ -103,6 +103,7 @@ class BenchPeer(models.Model):
     holding = models.ForeignKey('v2.Holding')
     name = models.CharField(max_length=200, db_column='Name', blank=True)
     currency = models.ForeignKey('Currency', related_name='benchpeer_currency', null=True, db_column='CurrencyID', blank=True)
+    type = models.CharField(max_length=1, db_column='Type')
     description = models.CharField(max_length=200, db_column='Description', blank=True, null=True)
     formula = models.CharField(max_length=200, db_column='Formula', blank=True)
 
@@ -468,11 +469,20 @@ class FundCharAudit(models.Model):
         db_table = 'ALP_FundsChars_TS'
 
 class FundReturnDaily(models.Model):
-    fund = models.ForeignKey(Fund, db_column='FundID')
+    fund = models.IntegerField(db_column='FundID')
+    value_date = models.DateTimeField(db_column='ValueDate')
+    nav = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='NAV', blank=True)
+    shares = models.DecimalField(decimal_places=4, null=True, max_digits=18, db_column='Shares', blank=True)
+    nav_per_share = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='NAVPerShare', blank=True)
+    inflows = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='Inflows', blank=True)
+    outflows = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='Outflows', blank=True)
     fund_perf = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='FundDailyReturn', blank=True)
-    bench_perf = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='BenchDailyReturn', blank=True)
-    value_date = models.DateTimeField(db_column='value_date')
+    fund_mtd = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='FundMTDReturn', blank=True)
     ytd = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='FundYTDReturn', blank=True)
+    bench_perf = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='BenchDailyReturn', blank=True)
+    bench_mtd = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='BenchMTDReturn', blank=True)
+    bench_ytd = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='BenchYTDReturn', blank=True)
+    flag = models.CharField(max_length=1, db_column='Flag', blank=True)
     class Meta:
         db_table = 'ALP_FundsDailyVals_TS'
 
@@ -486,10 +496,19 @@ class FundEstimate(models.Model):
 
 class FundReturnMonthly(models.Model):
     fund = models.ForeignKey(Fund, db_column='FundID')
-    fund_perf = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='FundMonthlyReturn', blank=True)
-    bench_perf = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='BenchMonthlyReturn', blank=True)
     value_date = models.DateTimeField(db_column='value_date')
+    nav = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='NAV', blank=True)
+    shares = models.DecimalField(decimal_places=4, null=True, max_digits=18, db_column='Shares', blank=True)
+    nav_per_share = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='NAVPerShare', blank=True)
+    inflows = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='Inflows', blank=True)
+    outflows = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='Outflows', blank=True)
+    fund_perf = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='FundMonthlyReturn', blank=True)
     ytd = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='FundYTDReturn', blank=True)
+    bench_perf = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='BenchMonthlyReturn', blank=True)
+    bench_ytd = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='BenchYTDReturn', blank=True)
+    flag = models.CharField(max_length=1, db_column='Flag', blank=True)
+    sec_bench = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='SecBenchMonthlyReturn', blank=True)
+    sec_bench_ytd = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='SecBenchYTDReturn', blank=True)
 
     class Meta:
         db_table = 'ALP_FundsMonthlyVals_TS'

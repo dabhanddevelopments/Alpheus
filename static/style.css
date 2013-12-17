@@ -495,14 +495,15 @@ table.month_table th {
 }
 
 table.month_table td {
-    background-color:gray;
+    background-color: #DEDCDA;
     border: 1px solid gray;
     padding: 6px;
 }
 
 table.month_table td a {
     font-size: 10px;
-    padding: 5px;    
+    padding: 5px;
+    text-decoration: none;
 }
 
 /* tooltip */
@@ -579,6 +580,25 @@ table.month_table td a {
    padding: 3px 4px 1px 4px;
 }
 
+/* Make YTD cells blue */
+.custom-grid .x-grid-row .ytd-column {
+    background-color: #A7BEDD;
+}
+
+/* Make all text in grid bold */
+.custom-grid .x-grid-cell-inner {
+   font-weight:bold;
+}
+
+/* Make all grid headers dark blue */
+.custom-grid .x-column-header-inner {
+   background-color: #7E90CC;
+}
+
+/* Remove left/right padding on inner grid */
+.custom-grid .x-grid-rowbody {
+    padding: 5px 0px 5px 0px;
+}
    p {
         margin:5px;
     }
