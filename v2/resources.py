@@ -1,7 +1,8 @@
 from tastypie import fields
 from alpheus.base_resources import MainBaseResource
 from v2.models import *
-from alpheus.utils import fund_return_calculation
+from alpheus.utils import fund_return_calculation, bench_return_calculation
+from datetime import datetime
 
 class AdministratorResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
@@ -144,7 +145,52 @@ class FundCharAuditResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = FundCharAudit.objects.all()
 
+class FundReturnResource(MainBaseResource):
+
+    def alter_list_data_to_serialize(self, request, data):
+
+        if self.y1 != False:
+
+            fund = ''
+            bench = ''
+            for row in data['objects']:
+                fund += str(row.data[self.y1]) + ', '
+                bench += str(row.data[self.y2]) + ', '
+
+            if request.GET.get("graph_type", False):
+                self.y2 = False
+
+            length = str(len(data['objects']))
+            date = request.GET.get("value_date__gte", False)
+            if date:
+                date = datetime.strptime(date, '%Y-%m-%d')
+            else:
+                date = data['objects'][0].data[self.date]
+
+            if self.y2 != False:
+                fund = fund_return_calculation(fund, date, length)
+                bench = fund_return_calculation(bench, date, length)
+            else:
+                fund = bench_return_calculation(fund, bench, date, length)
+
+            for row in data['objects']:
+                for key, val in fund.iteritems():
+                    if row.data[self.date].year == key.year and row.data[self.date].month == key.month:
+                        row.data[self.y1] = val
+
+                if self.y2 != False:
+                    for key, val in bench.iteritems():
+                        if row.data[self.date].year == key.year and row.data[self.date].month == key.month:
+                            row.data[self.y2] = val
+
+        return super(FundReturnResource, self) \
+                .alter_list_data_to_serialize(request, data)
+
 class FundReturnDailyResource(MainBaseResource):
+    class Meta(MainBaseResource.Meta):
+        queryset = FundReturnDaily.objects.all()
+
+class FundReturnDailyResource2(FundReturnResource):
     class Meta(MainBaseResource.Meta):
         queryset = FundReturnDaily.objects.all()
 
@@ -158,42 +204,16 @@ class FundReturnMonthlyResource(MainBaseResource):
         queryset = FundReturnMonthly.objects.all()
 
 
-class FundReturnMonthlyResource2(MainBaseResource):
+class FundReturnMonthlyResource2(FundReturnResource):
     fund = fields.ForeignKey(FundResource, 'fund')
     class Meta(MainBaseResource.Meta):
         queryset = FundReturnMonthly.objects.all()
 
-    def alter_list_data_to_serialize(self, request, data):
 
-        if self.y1 != False:
-
-            fund = ''
-            bench = ''
-            for row in data['objects']:
-                fund += str(row.data[self.y1]) + ', '
-                bench += str(row.data[self.y2]) + ', '
-
-            length = str(len(data['objects']))
-            date = request.GET.get("value_date__gte", False)
-            if date:
-                from datetime import datetime
-                date = datetime.strptime(date, '%Y-%m-%d')
-            else:
-                date = data['objects'][0].data[self.date]
-
-            fund = fund_return_calculation(fund, date, length)
-            bench = fund_return_calculation(bench, date, length)
-
-            for row in data['objects']:
-                for key, val in fund.iteritems():
-                    if row.data[self.date].year == key.year and row.data[self.date].month == key.month:
-                        row.data[self.y1] = val
-                for key, val in bench.iteritems():
-                    if row.data[self.date].year == key.year and row.data[self.date].month == key.month:
-                        row.data[self.y2] = val
-
-        return super(FundReturnMonthlyResource2, self) \
-                .alter_list_data_to_serialize(request, data)
+class FundReturnMonthlyResource3(FundReturnResource):
+    fund = fields.ForeignKey(FundResource, 'fund')
+    class Meta(MainBaseResource.Meta):
+        queryset = FundReturnMonthly.objects.all()
 
 class HoldingResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):

@@ -278,6 +278,435 @@
     }
 },
 {
+    "pk": 9, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-17T23:53:53Z", 
+        "object_repr": "extra_fields=ytd", 
+        "object_id": "123", 
+        "change_message": "Changed value.", 
+        "user": 1, 
+        "content_type": 10
+    }
+},
+{
+    "pk": 10, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T01:14:08Z", 
+        "object_repr": "W.16 - MTD Performance Line Graph", 
+        "object_id": "3", 
+        "change_message": "Changed key.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 11, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T02:14:04Z", 
+        "object_repr": "W.16 - MTD Performance Line Graph", 
+        "object_id": "3", 
+        "change_message": "Changed widget_param.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 12, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T02:17:15Z", 
+        "object_repr": "W.16 - MTD Performance Line Graph", 
+        "object_id": "3", 
+        "change_message": "Changed size_y.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 13, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T02:17:47Z", 
+        "object_repr": "W.16 - MTD Performance Line Graph", 
+        "object_id": "3", 
+        "change_message": "Changed size_y.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 14, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T02:18:02Z", 
+        "object_repr": "W.16 - MTD Performance Line Graph", 
+        "object_id": "3", 
+        "change_message": "Changed size_y.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 15, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T06:36:31Z", 
+        "object_repr": "w16 - FUND_NAME / MTD Performance Line Graph", 
+        "object_id": "2", 
+        "change_message": "Added widget \"W.16 - MTD Performance Line Graph\".", 
+        "user": 1, 
+        "content_type": 8
+    }
+},
+{
+    "pk": 16, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T06:37:43Z", 
+        "object_repr": "w16 - FUND_NAME / MTD Performance Line Graph", 
+        "object_id": "2", 
+        "change_message": "Changed name for widget \"W.16b - MTD Performance Line Graph\".", 
+        "user": 1, 
+        "content_type": 8
+    }
+},
+{
+    "pk": 17, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 1, 
+        "action_time": "2013-12-19T06:52:21Z", 
+        "object_repr": "fields=bench_perf", 
+        "object_id": "128", 
+        "change_message": "", 
+        "user": 1, 
+        "content_type": 10
+    }
+},
+{
+    "pk": 18, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T06:52:25Z", 
+        "object_repr": "W.16b - MTD Performance Line Graph", 
+        "object_id": "133", 
+        "change_message": "Changed widget_type and widget_param.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 19, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 1, 
+        "action_time": "2013-12-19T06:54:10Z", 
+        "object_repr": "y1=bench_perf", 
+        "object_id": "129", 
+        "change_message": "", 
+        "user": 1, 
+        "content_type": 10
+    }
+},
+{
+    "pk": 20, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T06:54:20Z", 
+        "object_repr": "W.16b - MTD Performance Line Graph", 
+        "object_id": "133", 
+        "change_message": "No fields changed.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 21, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T06:54:27Z", 
+        "object_repr": "W.16b - MTD Performance Line Graph", 
+        "object_id": "133", 
+        "change_message": "Changed widget_param.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 22, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T07:08:59Z", 
+        "object_repr": "w16 - FUND_NAME / MTD Performance Line Graph", 
+        "object_id": "2", 
+        "change_message": "Changed size_y for widget \"W.16 - MTD Performance Line Graph\". Changed size_y for widget \"W.16b - MTD Performance Line Graph\".", 
+        "user": 1, 
+        "content_type": 8
+    }
+},
+{
+    "pk": 23, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T07:09:34Z", 
+        "object_repr": "w16 - FUND_NAME / MTD Performance Line Graph", 
+        "object_id": "2", 
+        "change_message": "Changed size_y for widget \"W.16 - MTD Performance Line Graph\". Changed size_y for widget \"W.16b - MTD Performance Line Graph\".", 
+        "user": 1, 
+        "content_type": 8
+    }
+},
+{
+    "pk": 24, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 1, 
+        "action_time": "2013-12-19T07:11:16Z", 
+        "object_repr": "rangeSelector=false", 
+        "object_id": "130", 
+        "change_message": "", 
+        "user": 1, 
+        "content_type": 10
+    }
+},
+{
+    "pk": 25, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T07:11:19Z", 
+        "object_repr": "W.16b - MTD Performance Line Graph", 
+        "object_id": "133", 
+        "change_message": "No fields changed.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 26, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T07:11:24Z", 
+        "object_repr": "W.16b - MTD Performance Line Graph", 
+        "object_id": "133", 
+        "change_message": "Changed widget_param.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 27, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 1, 
+        "action_time": "2013-12-19T07:12:44Z", 
+        "object_repr": "yAxisTitle=false", 
+        "object_id": "131", 
+        "change_message": "", 
+        "user": 1, 
+        "content_type": 10
+    }
+},
+{
+    "pk": 28, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T07:12:50Z", 
+        "object_repr": "W.16b - MTD Performance Line Graph", 
+        "object_id": "133", 
+        "change_message": "No fields changed.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 29, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T07:12:55Z", 
+        "object_repr": "W.16b - MTD Performance Line Graph", 
+        "object_id": "133", 
+        "change_message": "Changed widget_param.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 30, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T07:34:42Z", 
+        "object_repr": "w16 - FUND_NAME / MTD Performance Line Graph", 
+        "object_id": "2", 
+        "change_message": "Changed size_y for widget \"W.16 - MTD Performance Line Graph\". Changed size_y for widget \"W.16b - MTD Performance Line Graph\".", 
+        "user": 1, 
+        "content_type": 8
+    }
+},
+{
+    "pk": 31, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 1, 
+        "action_time": "2013-12-19T08:26:29Z", 
+        "object_repr": "graph_type=bench", 
+        "object_id": "132", 
+        "change_message": "", 
+        "user": 1, 
+        "content_type": 10
+    }
+},
+{
+    "pk": 32, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T08:26:40Z", 
+        "object_repr": "W.16b - MTD Performance Line Graph", 
+        "object_id": "133", 
+        "change_message": "Changed size_y.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 33, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T08:26:46Z", 
+        "object_repr": "W.16b - MTD Performance Line Graph", 
+        "object_id": "133", 
+        "change_message": "Changed widget_param.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 34, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T08:27:19Z", 
+        "object_repr": "W.16b - MTD Performance Line Graph", 
+        "object_id": "133", 
+        "change_message": "Changed widget_param.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 35, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 1, 
+        "action_time": "2013-12-19T08:56:32Z", 
+        "object_repr": "bench_graph=bench_perf", 
+        "object_id": "133", 
+        "change_message": "", 
+        "user": 1, 
+        "content_type": 10
+    }
+},
+{
+    "pk": 36, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T08:56:37Z", 
+        "object_repr": "W.16b - MTD Performance Line Graph", 
+        "object_id": "133", 
+        "change_message": "No fields changed.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 37, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T08:56:45Z", 
+        "object_repr": "W.16b - MTD Performance Line Graph", 
+        "object_id": "133", 
+        "change_message": "Changed widget_param.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 38, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T09:00:30Z", 
+        "object_repr": "W.16b - MTD Performance Line Graph", 
+        "object_id": "133", 
+        "change_message": "Changed widget_param.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 39, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T09:01:07Z", 
+        "object_repr": "W.16b - MTD Performance Line Graph", 
+        "object_id": "133", 
+        "change_message": "Changed key.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 40, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T09:03:10Z", 
+        "object_repr": "W.16b - MTD Performance Line Graph", 
+        "object_id": "133", 
+        "change_message": "Changed widget_param.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 41, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-19T09:04:22Z", 
+        "object_repr": "W.16b - MTD Performance Line Graph", 
+        "object_id": "133", 
+        "change_message": "Changed size_y.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
     "pk": 1, 
     "model": "app.window", 
     "fields": {
@@ -2183,7 +2612,7 @@
     "pk": 123, 
     "model": "app.widgetparam", 
     "fields": {
-        "value": "ytd,bench_ytd", 
+        "value": "ytd", 
         "key": "extra_fields"
     }
 },
@@ -2220,6 +2649,54 @@
     }
 },
 {
+    "pk": 128, 
+    "model": "app.widgetparam", 
+    "fields": {
+        "value": "bench_perf", 
+        "key": "fields"
+    }
+},
+{
+    "pk": 129, 
+    "model": "app.widgetparam", 
+    "fields": {
+        "value": "bench_perf", 
+        "key": "y1"
+    }
+},
+{
+    "pk": 130, 
+    "model": "app.widgetparam", 
+    "fields": {
+        "value": "false", 
+        "key": "rangeSelector"
+    }
+},
+{
+    "pk": 131, 
+    "model": "app.widgetparam", 
+    "fields": {
+        "value": "false", 
+        "key": "yAxisTitle"
+    }
+},
+{
+    "pk": 132, 
+    "model": "app.widgetparam", 
+    "fields": {
+        "value": "bench", 
+        "key": "graph_type"
+    }
+},
+{
+    "pk": 133, 
+    "model": "app.widgetparam", 
+    "fields": {
+        "value": "bench_perf", 
+        "key": "bench_graph"
+    }
+},
+{
     "pk": 1, 
     "model": "app.widget", 
     "fields": {
@@ -2251,6 +2728,7 @@
             72, 
             1, 
             18, 
+            43, 
             127, 
             125, 
             126
@@ -2260,8 +2738,8 @@
         "widget_type": 10, 
         "window": 2, 
         "size_x": "6.9", 
-        "size_y": "2.8", 
-        "key": "fundreturnmonthly", 
+        "size_y": "1.4", 
+        "key": "fundreturnmonthly2", 
         "column_width": "", 
         "position": 0, 
         "columns": "", 
@@ -5204,6 +5682,38 @@
         "column_width": "", 
         "position": 1, 
         "columns": "euro_nav,no_of_units,name,client__id,client__first_name,client__last_name", 
+        "description": ""
+    }
+},
+{
+    "pk": 133, 
+    "model": "app.widget", 
+    "fields": {
+        "disabled": false, 
+        "widget_param": [
+            133, 
+            82, 
+            72, 
+            1, 
+            132, 
+            18, 
+            43, 
+            127, 
+            130, 
+            125, 
+            126, 
+            131
+        ], 
+        "name": "W.16b - MTD Performance Line Graph", 
+        "v2": true, 
+        "widget_type": 8, 
+        "window": 2, 
+        "size_x": "6.9", 
+        "size_y": "1.4", 
+        "key": "fundreturnmonthly3", 
+        "column_width": "", 
+        "position": 1, 
+        "columns": "", 
         "description": ""
     }
 },
