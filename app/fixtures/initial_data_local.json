@@ -11963,26 +11963,6 @@
     }
 },
 {
-    "pk": 1, 
-    "model": "v2.fundreturndaily", 
-    "fields": {
-        "value_date": null, 
-        "nav_per_share": "0.000000", 
-        "bench_ytd": "0.000000", 
-        "outflows": "0.00", 
-        "fund_perf": "0.000000", 
-        "shares": "0.0000", 
-        "fund": 0, 
-        "flag": "F", 
-        "nav": "0.00", 
-        "fund_mtd": "0.000000", 
-        "bench_mtd": "0.000000", 
-        "ytd": "0.000000", 
-        "bench_perf": "0.000000", 
-        "inflows": "0.00"
-    }
-},
-{
     "pk": 2, 
     "model": "v2.fundreturndaily", 
     "fields": {
