@@ -242,7 +242,9 @@ function refreshGraph(e, widget) {
         chart.series[1].setData(data[1].data);
         chart.hideLoading();
     });
-    $.getJSON(widget.url + widget.qs + date + '&graph_type=graph', function(data) {
+
+    var qs = widget.qs.replace('fundreturnmonthly2', 'fundreturnmonthly3');
+    $.getJSON(widget.url + qs + date + '&graph_type=graph', function(data) {
         console.log(data.objects);
          chart2.series[0].setData(data.objects[0].data);
          chart2.hideLoading();
