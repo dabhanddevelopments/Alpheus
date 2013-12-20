@@ -707,6 +707,32 @@
     }
 },
 {
+    "pk": 42, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-20T06:54:18Z", 
+        "object_repr": "W.16b - MTD Performance Line Graph", 
+        "object_id": "133", 
+        "change_message": "Changed disabled.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 43, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2013-12-20T07:03:57Z", 
+        "object_repr": "W.16 - MTD Performance Line Graph", 
+        "object_id": "3", 
+        "change_message": "Changed key.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
     "pk": 1, 
     "model": "app.window", 
     "fields": {
@@ -2739,7 +2765,7 @@
         "window": 2, 
         "size_x": "6.9", 
         "size_y": "1.4", 
-        "key": "fundreturnmonthly2", 
+        "key": "fundreturnmonthly", 
         "column_width": "", 
         "position": 0, 
         "columns": "", 
@@ -5689,7 +5715,7 @@
     "pk": 133, 
     "model": "app.widget", 
     "fields": {
-        "disabled": false, 
+        "disabled": true, 
         "widget_param": [
             133, 
             82, 

@@ -74,8 +74,8 @@ def create_modeladmin(modeladmin, model, name = None):
 import datetime
 from dateutil.relativedelta import relativedelta
 from datetime import timedelta as td
-from rpy2.robjects import r
-r.library("PerformanceAnalytics")
+#from rpy2.robjects import r
+#r.library("PerformanceAnalytics")
 
 
 def fund_return_calculation(data_str, date, length):
@@ -106,7 +106,6 @@ def fund_return_calculation(data_str, date, length):
 def bench_return_calculation(fund_str, bench_str, date, length):
 
     end_date = date + relativedelta(months=int(length))
-    print date, length
 
     delta = relativedelta(months=+1)
     d = date
@@ -127,6 +126,7 @@ def bench_return_calculation(fund_str, bench_str, date, length):
     r("rownames(y) <- as.character(MyDates)")
     r("mytsBench <- as.xts(y)")
     output = (r("Return.relative(myts/100, mytsBench/100)"))
+    print output
 
     return dict(zip(months, output))
 

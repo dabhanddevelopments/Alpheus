@@ -147,7 +147,7 @@ class FundCharAuditResource(MainBaseResource):
 
 class FundReturnResource(MainBaseResource):
 
-    def alter_list_data_to_serialize(self, request, data):
+    def alter_list_data_to_serialize2(self, request, data):
 
         if self.y1 != False:
 
