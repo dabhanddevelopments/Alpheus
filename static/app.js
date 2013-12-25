@@ -232,9 +232,9 @@ function refreshGraph(e, widget) {
     console.log('start date', start_date, date);
 
     var chart = $('#' + widget.div).highcharts();
-    var chart2 = $('#page_3_win_2_widget_133').highcharts();
+    //var chart2 = $('#page_3_win_2_widget_133').highcharts();
     chart.showLoading('Loading data from server...');
-    chart2.showLoading('Loading data from server...');
+    //chart2.showLoading('Loading data from server...');
 
     $.getJSON(widget.url + widget.qs + date, function(data) {
         console.log(widget.url + widget.qs + date);
@@ -249,7 +249,6 @@ function refreshGraph(e, widget) {
         chart.hideLoading();
     });
 
-    var qs = widget.qs.replace('fundreturnmonthly2', 'fundreturnmonthly3');
     var qs = widget.qs;
     $.getJSON(widget.url + qs + date + '&graph_type=graph', function(data) {
         console.log('data2', data.objects);
@@ -1589,7 +1588,7 @@ Ext.onReady(function() {
         // get the widgets for this window
         $.ajax({
             type: "GET",
-            url: '/api/widgets/?window=' + data.window.id + '&enabled=1',
+            url: '/api/widgets/?window=' + data.window.id + '&disabled=0',
             ajaxI: i,
             success: function(widgets) {
 

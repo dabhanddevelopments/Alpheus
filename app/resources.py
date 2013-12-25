@@ -123,7 +123,7 @@ class WidgetsResource(StandardBaseResource):
 
         filtering = {
             "window": ALL_WITH_RELATIONS,
-            "enabled": ALL,
+            "disabled": ALL,
         }
 
 
