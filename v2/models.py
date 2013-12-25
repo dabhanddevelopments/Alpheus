@@ -143,7 +143,7 @@ class Country(models.Model):
         db_table = 'ALP_App_Countries'
         verbose_name_plural = "Countries"
 
-# @TODO: did this change name to ALP_Holding_CurrencyRates ??
+# @TODO: did this change name to ALP_Holding_CurrencyRates ?? yes, but in Alpheus New changed again now ALP_App_CurrencyRates
 class CurrencyRate(models.Model):
     holding = models.ForeignKey('Holding', db_column='HoldingID')
     currency_from = models.IntegerField(null=True, db_column='CurrencyFrom', blank=True)

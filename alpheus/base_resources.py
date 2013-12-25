@@ -336,8 +336,10 @@ class MainBaseResource(SpecifiedFields):
 
 
     def alter_list_data_to_serialize(self, request, data):
+    
+        print 'ALTER LIST DATA', self.data_type, request.GET.get('data_type', False)
 
-        if self.data_type == DATA_TYPE_YEAR:
+        if request.GET.get('data_type', False) == DATA_TYPE_YEAR:
             import calendar
 
             if self.y1 and len(self.title):
@@ -392,6 +394,8 @@ class MainBaseResource(SpecifiedFields):
                 columns = [self.title[0]] + self.get_month_list() + self.extra_fields
 
             else:
+            
+                value = request.GET.get('value', False)
 
                 categories = set([row.data[self.date].year for row in data['objects']])
                 categories = sorted(categories, reverse=True)
@@ -405,7 +409,7 @@ class MainBaseResource(SpecifiedFields):
                         if row.data[self.date].year == category:
                             month = row.data[self.date].month
                             month_name = calendar.month_abbr[month].lower()
-                            dic[month_name] = row.data[self.value]
+                            dic[month_name] = row.data[value]
                             for extra_field in self.extra_fields:
                                 dic[extra_field] = row.data[extra_field]
                     months.append(dic)
@@ -421,7 +425,7 @@ class MainBaseResource(SpecifiedFields):
 
             from time import mktime
 
-            if self.y1 and self.y2 and self.date:
+            if self.y1 and self.y2 and request.GET.get("graph_type", False) == False and self.date:
 
                 y1 = []
                 y2 = []

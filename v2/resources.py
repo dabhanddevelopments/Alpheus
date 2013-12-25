@@ -148,17 +148,25 @@ class FundCharAuditResource(MainBaseResource):
 class FundReturnResource(MainBaseResource):
 
     def alter_list_data_to_serialize(self, request, data):
+    
+        print 'alter list data FUND RETURN '
+        
+        y1 = request.GET.get('y1', False)
+        y2 = request.GET.get('y2', False)
+        asdf = y2
 
-        if self.y1 != False:
+        if y1 != False:
+        
+            print 'Y1 true'
 
             fund = ''
             bench = ''
             for row in data['objects']:
-                fund += str(row.data[self.y1]) + ', '
-                bench += str(row.data[self.y2]) + ', '
+                fund += str(row.data[y1]) + ', '
+                bench += str(row.data[y2]) + ', '
 
             if request.GET.get("graph_type", False):
-                self.y2 = False
+                y2 = False
 
             length = str(len(data['objects']))
             date = request.GET.get("value_date__gte", False)
@@ -167,21 +175,24 @@ class FundReturnResource(MainBaseResource):
             else:
                 date = data['objects'][0].data[self.date]
 
-            if self.y2 != False:
+            if y2 != False:
                 fund = fund_return_calculation(fund, date, length)
                 bench = fund_return_calculation(bench, date, length)
+                print asdf, 'fund_return_calc'
             else:
                 fund = bench_return_calculation(fund, bench, date, length)
+                print  asdf, 'bench_return_calc'
 
             for row in data['objects']:
                 for key, val in fund.iteritems():
                     if row.data[self.date].year == key.year and row.data[self.date].month == key.month:
-                        row.data[self.y1] = val
+                        row.data[y1] = val
 
-                if self.y2 != False:
+                if request.GET.get("graph_type", False) == False:
+                    
                     for key, val in bench.iteritems():
                         if row.data[self.date].year == key.year and row.data[self.date].month == key.month:
-                            row.data[self.y2] = val
+                            row.data[y2] = val
 
         return super(FundReturnResource, self) \
                 .alter_list_data_to_serialize(request, data)
@@ -198,7 +209,7 @@ class FundEstimateResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = FundEstimate.objects.all()
 
-class FundReturnMonthlyResource(MainBaseResource):
+class FundReturnMonthlyResource(FundReturnResource):
     fund = fields.ForeignKey(FundResource, 'fund')
     class Meta(MainBaseResource.Meta):
         queryset = FundReturnMonthly.objects.all()

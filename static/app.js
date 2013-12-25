@@ -237,15 +237,22 @@ function refreshGraph(e, widget) {
     chart2.showLoading('Loading data from server...');
 
     $.getJSON(widget.url + widget.qs + date, function(data) {
-        //console.log(date);
-        chart.series[0].setData(data[0].data);
-        chart.series[1].setData(data[1].data);
+        console.log(widget.url + widget.qs + date);
+        console.log('data', data);
+        if(typeof data[0] === 'undefined') {
+            chart.series[0].setData(data.objects[0].data);
+            chart.series[1].setData(data.objects[1].data);
+        } else {
+            chart.series[0].setData(data[0].data);
+            chart.series[1].setData(data[1].data);
+        }
         chart.hideLoading();
     });
 
     var qs = widget.qs.replace('fundreturnmonthly2', 'fundreturnmonthly3');
+    var qs = widget.qs;
     $.getJSON(widget.url + qs + date + '&graph_type=graph', function(data) {
-        console.log(data.objects);
+        console.log('data2', data.objects);
          chart2.series[0].setData(data.objects[0].data);
          chart2.hideLoading();
     });

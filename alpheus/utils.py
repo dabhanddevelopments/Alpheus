@@ -98,7 +98,7 @@ def fund_return_calculation(data_str, date, length):
     r("x <- as.matrix(x)")
     r("rownames(x) <- as.character(MyDates)")
     r("myts <- as.xts(x)")
-    output = (r("apply.fromstart(myts/100, FUN = 'Return.cumulative', gap = 1)"))
+    output = (r("apply.fromstart(myts/100, FUN = 'Return.cumulative', gap = 1)*100"))
 
     return dict(zip(months, output))
 
@@ -126,7 +126,7 @@ def bench_return_calculation(fund_str, bench_str, date, length):
     r("y <-  as.matrix(y)")
     r("rownames(y) <- as.character(MyDates)")
     r("mytsBench <- as.xts(y)")
-    output = (r("Return.relative(myts/100, mytsBench/100)"))
+    output = (r("apply.fromstart(x/100, FUN = 'Return.cumulative', gap = 1)*100 - apply.fromstart(y/100, FUN = 'Return.cumulative', gap = 1)*100"))
 
     return dict(zip(months, output))
 
