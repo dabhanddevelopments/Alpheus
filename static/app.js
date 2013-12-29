@@ -232,9 +232,7 @@ function refreshGraph(e, widget) {
     console.log('start date', start_date, date);
 
     var chart = $('#' + widget.div).highcharts();
-    //var chart2 = $('#page_3_win_2_widget_133').highcharts();
     chart.showLoading('Loading data from server...');
-    //chart2.showLoading('Loading data from server...');
 
     $.getJSON(widget.url + widget.qs + date, function(data) {
         console.log(widget.url + widget.qs + date);
@@ -252,8 +250,8 @@ function refreshGraph(e, widget) {
     var qs = widget.qs;
     $.getJSON(widget.url + qs + date + '&graph_type=graph', function(data) {
         console.log('data2', data.objects);
-         chart2.series[0].setData(data.objects[0].data);
-         chart2.hideLoading();
+         chart.series[2].setData(data.data);
+         chart.hideLoading();
     });
 
 
@@ -1846,12 +1844,104 @@ Ext.onReady(function() {
 
             return euroPercentTabTable(obj, widget, div);
 
+
         }
+    }
+    
+    
+    function lineChart(obj, widget, div) {
+    
+        $.getJSON("/api/fundreturnmonthly/?data_type=graph&date=value_date&fund=" + obj.fund + "&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name", function(series) {
+            $.getJSON("/api/fundreturnmonthly/?bench_graph=bench_perf&data_type=graph&date=value_date&fund=" + obj.fund + "&graph_type=bench&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name", function(series2) {
+    
+                series[2] = series2;
+                
+                
+                //console.log('series', series);
+                //console.(
+                
+                var options = {
+		        //$('#' + div).highcharts('StockChart', {
+		            chart: {
+		                spacingBottom: -50, // hide the navigator
+		                renderTo: div,
+                        width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 10,
+                        height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
+		            },
+                    colors: [
+                       '#2f7ed8', 
+                       '#0d233a', 
+                        'orange',
+                    ],
+                    navigator:{
+                        enabled: true,
+                        adaptToUpdatedData: false,
+                        height: 0,
+                        margin: 60,
+                    }, 
+                    scrollbar: {
+                        enabled: false,
+                    },   
+		            rangeSelector: {
+                        enabled: true,
+                        buttons: [{
+                            type: 'year',
+                            count: 1,
+                            text: '1y'
+                        }, {
+                            type: 'year',
+                            count: 5,
+                            text: '5y'
+                        }, {
+                            type: 'year',
+                            count: 10,
+                            text: '10y'
+                        }, {
+                            type: 'all',
+                            text: 'All'
+                        }],
+                        inputEnabled: true,
+                        selected : 1
+                    },
+
+		            title: {
+		                text: false
+		            },
+                    legend: {
+                        enabled: true,
+                        y: -60,
+                    },
+		            yAxis: [{
+		                height: 130,
+		                lineWidth: 2,       
+		            }, {
+		                top: 200,
+		                height: 120,
+		                lineWidth: 2,
+		            }],
+                    xAxis: {
+                        type: 'datetime',
+                        events: {
+                            afterSetExtremes: function(e){
+                                refreshGraph(e, widget);
+                            }
+                        },
+                        offset: -75,
+                    },
+		            
+		            series: series,
+		        };
+		        var chart = new Highcharts.StockChart(options);
+		    });
+		});
+    
     }
 
 
 
-    function lineChart(obj, widget, div) {
+    function lineChart2(obj, widget, div) {
+    
+    console.log('line chart', div);
 
         if(typeof $('#' + div).highcharts() != 'undefined') {
            //console.log('chart already created');

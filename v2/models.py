@@ -38,7 +38,7 @@ class Alarm(models.Model):
     def __unicode__(self):
         return self.name
 
-class Group(models.Model):
+class AlpheusGroup(models.Model):
     id = models.AutoField(primary_key=True, db_column='AlpheusGroupID')
     name = models.CharField(max_length=50, db_column='Name', blank=True)
     short_name = models.CharField(max_length=50, db_column='ShortName', blank=True)
@@ -313,8 +313,8 @@ class GicsCategory(models.Model):
     def __unicode__(self):
         return self.name
 
-class AlpAppHf(models.Model):
-    id = models.AutoField(db_column='HFID')
+class Hf(models.Model):
+    id = models.AutoField(primary_key=True, db_column='HFID')
     hf_sector = models.ForeignKey('HfSector', null=True, db_column='HFSectorID', blank=True)
     hf_strategy = models.ForeignKey('HfStrategy', null=True, db_column='HFStrategyID', blank=True)
     hf_risk = models.ForeignKey('HfRisk', null=True, db_column='HFRiskID', blank=True)
@@ -323,8 +323,8 @@ class AlpAppHf(models.Model):
         db_table = 'ALP_App_HF'
 
 
-class AlpAppHfrisk(models.Model):
-    id = models.AutoField(db_column='HFRiskID')
+class HfRisk(models.Model):
+    id = models.AutoField(primary_key=True, db_column='HFRiskID')
     description = models.CharField(max_length=200, db_column='Description', blank=True)
     
     class Meta:
@@ -344,7 +344,7 @@ class HfSector(models.Model):
         
         
 class HfStrategy(models.Model):
-    id = models.AutoField(db_column='HFStrategyID')
+    id = models.AutoField(primary_key=True, db_column='HFStrategyID')
     description = models.CharField(max_length=200, db_column='Description', blank=True)
     
     class Meta:
@@ -588,7 +588,7 @@ class Fund(models.Model):
     id = models.AutoField(primary_key=True, db_column='FundID')
     name = models.CharField(max_length=50, db_column='Name', blank=True)
     description = models.CharField(max_length=200, db_column='Description', blank=True)
-    alpheusgroupid0 = models.ForeignKey(Group, null=True, db_column='AlpheusGroupID0', blank=True)
+    alpheusgroupid0 = models.ForeignKey(AlpheusGroup, null=True, db_column='AlpheusGroupID0', blank=True)
     currency = models.ForeignKey(Currency, related_name='fund_currency', null=True, db_column='CurrencyID', blank=True)
     assetclass = models.ForeignKey(AssetClass, null=True, db_column='AssetClassID', blank=True)
     countryi = models.ForeignKey(Country, related_name='country_i', null=True, db_column='CountryIID', blank=True)

@@ -337,13 +337,10 @@ class MainBaseResource(SpecifiedFields):
 
     def alter_list_data_to_serialize(self, request, data):
     
-        print 'ALTER LIST DATA', self.data_type, request.GET.get('data_type', False)
-
         if request.GET.get('data_type', False) == DATA_TYPE_YEAR:
             import calendar
 
             if self.y1 and len(self.title):
-
 
                 newlist = []
                 categories = {}
@@ -434,10 +431,12 @@ class MainBaseResource(SpecifiedFields):
                     y1.append([date, float(row.data[self.y1])])
                     y2.append([date, float(row.data[self.y2])])
                 return [{
+                    'name': data['objects'][0].data['fund__name'],
                     'data': y1,
                     #'yAxis': 0,
                 },{
                     'data': y2,
+                    'name': 'Benchmark',
                     #'yAxis': 1,
                 }]
 
@@ -457,7 +456,12 @@ class MainBaseResource(SpecifiedFields):
                 for row in data['objects']:
                     date = int(mktime(row.data[self.date].timetuple())) * 1000
                     extracted.append([int(date), float(row.data[self.y1])])
-                data['objects'] = extracted
+                return {
+                    'name': 'Benchmark / Sec Benchmark - Sec Benchmark / Peer(s)',
+                    'data': extracted,
+                    'yAxis': 1,
+                }                    
+                
             else:
                 raise Exception("Mandatory parameter(s) not passed")
 

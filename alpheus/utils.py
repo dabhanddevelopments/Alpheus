@@ -74,8 +74,9 @@ def create_modeladmin(modeladmin, model, name = None):
 import datetime
 from dateutil.relativedelta import relativedelta
 from datetime import timedelta as td
-#from rpy2.robjects import r
-#r.library("PerformanceAnalytics")
+from rpy2.robjects import r
+r.library("PerformanceAnalytics")
+r("source(file='/home/dan/alpheus/alpheus/MyFunctions.r')")
 
 
 def fund_return_calculation(data_str, date, length):

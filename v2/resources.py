@@ -14,7 +14,7 @@ class AlarmResource(MainBaseResource):
 
 class GroupResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
-        queryset = Group.objects.all()
+        queryset = AlpheusGroup.objects.all()
 
 class AssetClassResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
@@ -149,16 +149,11 @@ class FundReturnResource(MainBaseResource):
 
     def alter_list_data_to_serialize(self, request, data):
     
-        print 'alter list data FUND RETURN '
-        
         y1 = request.GET.get('y1', False)
         y2 = request.GET.get('y2', False)
-        asdf = y2
 
         if y1 != False:
         
-            print 'Y1 true'
-
             fund = ''
             bench = ''
             for row in data['objects']:
@@ -178,10 +173,8 @@ class FundReturnResource(MainBaseResource):
             if y2 != False:
                 fund = fund_return_calculation(fund, date, length)
                 bench = fund_return_calculation(bench, date, length)
-                print asdf, 'fund_return_calc'
             else:
                 fund = bench_return_calculation(fund, bench, date, length)
-                print  asdf, 'bench_return_calc'
 
             for row in data['objects']:
                 for key, val in fund.iteritems():
@@ -194,6 +187,7 @@ class FundReturnResource(MainBaseResource):
                         if row.data[self.date].year == key.year and row.data[self.date].month == key.month:
                             row.data[y2] = val
 
+        
         return super(FundReturnResource, self) \
                 .alter_list_data_to_serialize(request, data)
 
