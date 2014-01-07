@@ -225,7 +225,7 @@ function displayInnerGrid(widget, data, renderId, hideHeaders, height) {
 function refreshGraph(e, widget) {
     var start = new Date(e.min);
     var end = new Date(e.max);
-
+    
     var start_date = start.getFullYear() + '-' + (start.getMonth() + 1) + '-' + start.getDate();
     var end_date = end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate();
     var date = '&value_date__gte=' + start_date + '&value_date__lte=' + end_date;
@@ -235,7 +235,7 @@ function refreshGraph(e, widget) {
     chart.showLoading('Loading data from server...');
 
     $.getJSON(widget.url + widget.qs + date, function(data) {
-        console.log(widget.url + widget.qs + date);
+        //console.log(widget.url + widget.qs + date);
         console.log('data', data);
         if(typeof data[0] === 'undefined') {
             chart.series[0].setData(data.objects[0].data);
@@ -249,7 +249,7 @@ function refreshGraph(e, widget) {
 
     var qs = widget.qs;
     $.getJSON(widget.url + qs + date + '&graph_type=graph', function(data) {
-        console.log('data2', data.objects);
+        console.log('data2', data);
          chart.series[2].setData(data.data);
          chart.hideLoading();
     });
@@ -1851,6 +1851,11 @@ Ext.onReady(function() {
     
     function lineChart(obj, widget, div) {
     
+        var visible = new Array();
+        visible[0] = true;
+        visible[1] = true;
+        visible[2] = true;
+    
         $.getJSON("/api/fundreturnmonthly/?data_type=graph&date=value_date&fund=" + obj.fund + "&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name", function(series) {
             $.getJSON("/api/fundreturnmonthly/?bench_graph=bench_perf&data_type=graph&date=value_date&fund=" + obj.fund + "&graph_type=bench&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name", function(series2) {
     
@@ -1882,6 +1887,72 @@ Ext.onReady(function() {
                     scrollbar: {
                         enabled: false,
                     },   
+                    plotOptions: {
+                      series: {
+                        events: {
+                          legendItemClick: function(event) {
+                              var series = this.yAxis.series,
+                                  seriesLen = series.length,
+                                  visible = this.visible ? 1 : -1; 
+                                  // +1 when visible series, because it will be changed after that callback
+
+                              for(var i = 0; i < seriesLen; i++) {
+                                if(!series[i].visible) {
+                                  visible++;
+                                }
+                              }
+                              if(visible >= 2 && this.index < 2) { // disable fund/bench
+                                    chart.yAxis[0].update({
+                                         height:5
+                                    });
+                                    chart.yAxis[1].update({
+                                         height:200,
+                                         top: 50,
+                                    });
+                                    chart.xAxis[0].update({
+                                         offset: -10,
+                                    });
+                                    chart.xAxis[1].update({
+                                         offset: 0,
+                                    });
+                              } else if(visible >= 1 && this.index >= 2) { // disable delta
+                                    chart.yAxis[0].update({
+                                         height:250,
+                                         top: 50,
+                                    });
+                                    chart.yAxis[1].update({
+                                         height:5,
+                                         top: 50,
+                                    });
+                                    chart.xAxis[0].update({
+                                         offset: -290,
+                                    });
+                                    chart.xAxis[1].update({
+                                         offset: 0,
+                                    });
+                              } else {  //  default
+                                    chart.yAxis[0].update({
+                                         height: 150
+                                    });
+                                    chart.yAxis[1].update({
+                                         height: 90,
+                                         top: 220,
+                                    });
+                                    chart.xAxis[0].update({
+                                         offset: -295,
+                                    });
+                                    chart.xAxis[1].update({
+                                         offset: -50,
+                                    });
+                                    console.log('default');
+                              }
+                          }
+                        },
+                        show: function(event) {
+                            console.log ('The series was just shown');
+                        }
+                      }
+                    },
 		            rangeSelector: {
                         enabled: true,
                         buttons: [{
@@ -1901,9 +1972,11 @@ Ext.onReady(function() {
                             text: 'All'
                         }],
                         inputEnabled: true,
-                        selected : 1
+                        selected : 3
                     },
-
+                    credits: {
+                        enabled: false
+                    },
 		            title: {
 		                text: false
 		            },
@@ -1912,28 +1985,51 @@ Ext.onReady(function() {
                         y: -60,
                     },
 		            yAxis: [{
-		                height: 130,
-		                lineWidth: 2,       
-		            }, {
-		                top: 200,
-		                height: 120,
+		                height: 150,
 		                lineWidth: 2,
+                        labels: {
+                            formatter: function() {
+                                return this.value + '%';
+                            }
+                        }
+		            }, {
+		                top: 220,
+		                height: 90,
+		                lineWidth: 2,
+                        labels: {
+                            formatter: function() {
+                                return this.value + '%';
+                            }
+                        }
+		                //showEmpty: false,
 		            }],
-                    xAxis: {
+                    xAxis: [{
                         type: 'datetime',
                         events: {
                             afterSetExtremes: function(e){
                                 refreshGraph(e, widget);
                             }
                         },
-                        offset: -75,
-                    },
+                        opposite: true,
+                        offset: -295,
+                        //offset: -45,
+                    },{
+                        type: 'datetime',
+                        
+                        offset: -50,
+                    }],
 		            
 		            series: series,
 		        };
 		        var chart = new Highcharts.StockChart(options);
+		        
+$($('.highcharts-legend-item')[2]).click(function() {
+   //console.log('delta');
+});
 		    });
 		});
+		
+
     
     }
 
