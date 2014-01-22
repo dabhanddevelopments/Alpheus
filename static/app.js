@@ -1,5 +1,5 @@
 
-Ext.Loader.setPath('Ext.ux', 'static/extjs');
+Ext.Loader.setPath('Ext.ux', staticUrl + 'extjs');
 Ext.Loader.setConfig({enabled: true});
 Ext.require([
     'Ext.ux.RowExpander',
@@ -14,6 +14,45 @@ Ext.require([
     'Ext.form.Panel',
     'Ext.form.*',
 ]);
+
+// Make the first column 2 px wide
+Ext.define('Rx.grid.MyRowExpander', function() {
+    var spec = {
+        extend: 'Ext.ux.RowExpander',
+        alias: 'plugin.myrowexpander',
+
+        getHeaderConfig : function() { 
+            var me = this;
+        
+            return {
+                width: 2,
+                lockable: false,
+                sortable: false,
+                resizable: false,
+                draggable: false,
+                hideable: false,
+                menuDisabled: true,
+                tdCls: Ext.baseCSSPrefix + 'grid-cell-special',
+                innerCls: Ext.baseCSSPrefix + 'grid-cell-inner-row-expander',
+                renderer: function(value, metadata) {
+                    // Only has to span 2 rows if it is not in a lockable grid.
+                    if (!me.grid.ownerLockable) {
+                        metadata.tdAttr += ' rowspan="2"';
+                    }
+                    return '<div class="' + Ext.baseCSSPrefix + 'grid-row-expander"></div>';
+                },
+                processEvent: function(type, view, cell, rowIndex, cellIndex, e, record) {
+                    if (type == "mousedown" && e.getTarget('.x-grid-row-expander')) {
+                        me.toggleRow(rowIndex, record);
+                        return me.selectRowOnExpand;
+                    }
+                }
+            };
+        }
+    };
+
+    return spec;
+});
 
 
 function investmentNAV(div, type) {
@@ -185,7 +224,7 @@ function displayInnerGrid(widget, data, renderId, hideHeaders, height) {
             },
             columns: data.columns,
             header: false,
-            autoFit: true,
+            //autoFit: true,
             height: height,
             iconCls: 'icon-grid',
             hideHeaders: hideHeaders,
@@ -237,13 +276,8 @@ function refreshGraph(e, widget) {
     $.getJSON(widget.url + widget.qs + date, function(data) {
         //console.log(widget.url + widget.qs + date);
         console.log('data', data);
-        if(typeof data[0] === 'undefined') {
-            chart.series[0].setData(data.objects[0].data);
-            chart.series[1].setData(data.objects[1].data);
-        } else {
-            chart.series[0].setData(data[0].data);
-            chart.series[1].setData(data[1].data);
-        }
+        chart.series[0].setData(data[0].data);
+        chart.series[1].setData(data[1].data);
         chart.hideLoading();
     });
 
@@ -573,7 +607,6 @@ function destroyInnerGrid(record, widget_id) {
 //call W2 chart on click from monthly calendar view W1
 
 function refreshHoldPerfBar(widget_key, date, id, monthly, fields, order_by) {
-
 
    //console.log('widget_key');
    //console.log(widget_key);
@@ -1059,8 +1092,10 @@ Ext.onReady(function() {
                     createWindows(data[i], i, obj);
 
                 }
+
             }
         });
+        
     }
 
 
@@ -1851,22 +1886,23 @@ Ext.onReady(function() {
     
     function lineChart(obj, widget, div) {
     
-        var visible = new Array();
-        visible[0] = true;
-        visible[1] = true;
-        visible[2] = true;
-    
+
         $.getJSON("/api/fundreturnmonthly/?data_type=graph&date=value_date&fund=" + obj.fund + "&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name", function(series) {
             $.getJSON("/api/fundreturnmonthly/?bench_graph=bench_perf&data_type=graph&date=value_date&fund=" + obj.fund + "&graph_type=bench&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name", function(series2) {
     
                 series[2] = series2;
                 
                 
-                //console.log('series', series);
-                //console.(
+                console.log(series[0].data.length);
+                var lastPoint = Array();
+                lastPoint[0] = series[0].data[series[0].data.length - 1][1];
+                lastPoint[1] = series[1].data[series[1].data.length - 1][1];
+                lastPoint[2] = series[2].data[series[2].data.length - 1][1];
+                console.log(lastPoint);
+                
+                //alert(lastPoint[0]);
                 
                 var options = {
-		        //$('#' + div).highcharts('StockChart', {
 		            chart: {
 		                spacingBottom: -50, // hide the navigator
 		                renderTo: div,
@@ -1874,9 +1910,9 @@ Ext.onReady(function() {
                         height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
 		            },
                     colors: [
-                       '#2f7ed8', 
-                       '#0d233a', 
-                        'orange',
+                       '#01017D', 
+                       '#01810E', 
+                        '#9A5D01',
                     ],
                     navigator:{
                         enabled: true,
@@ -1906,18 +1942,18 @@ Ext.onReady(function() {
                                          height:5
                                     });
                                     chart.yAxis[1].update({
-                                         height:200,
+                                         height: 600,
                                          top: 50,
                                     });
                                     chart.xAxis[0].update({
-                                         offset: -10,
+                                         offset: -700,
                                     });
                                     chart.xAxis[1].update({
                                          offset: 0,
                                     });
                               } else if(visible >= 1 && this.index >= 2) { // disable delta
                                     chart.yAxis[0].update({
-                                         height:250,
+                                         height: 600,
                                          top: 50,
                                     });
                                     chart.yAxis[1].update({
@@ -1925,32 +1961,29 @@ Ext.onReady(function() {
                                          top: 50,
                                     });
                                     chart.xAxis[0].update({
-                                         offset: -290,
+                                         offset: -700,
                                     });
                                     chart.xAxis[1].update({
                                          offset: 0,
                                     });
                               } else {  //  default
                                     chart.yAxis[0].update({
-                                         height: 150
+                                         height: 420
                                     });
                                     chart.yAxis[1].update({
-                                         height: 90,
-                                         top: 220,
+                                         height: 210,
+                                         top: 500,
                                     });
                                     chart.xAxis[0].update({
-                                         offset: -295,
+                                         offset: -700,
                                     });
                                     chart.xAxis[1].update({
-                                         offset: -50,
+                                         offset: -200,
                                     });
                                     console.log('default');
                               }
                           }
                         },
-                        show: function(event) {
-                            console.log ('The series was just shown');
-                        }
                       }
                     },
 		            rangeSelector: {
@@ -1982,55 +2015,78 @@ Ext.onReady(function() {
 		            },
                     legend: {
                         enabled: true,
-                        y: -60,
+                        y: -75,
                     },
 		            yAxis: [{
-		                height: 150,
+		                height: 420,
 		                lineWidth: 2,
                         labels: {
                             formatter: function() {
                                 return this.value + '%';
-                            }
-                        }
-		            }, {
-		                top: 220,
-		                height: 90,
-		                lineWidth: 2,
-                        labels: {
-                            formatter: function() {
-                                return this.value + '%';
-                            }
-                        }
-		                //showEmpty: false,
-		            }],
-                    xAxis: [{
-                        type: 'datetime',
-                        events: {
-                            afterSetExtremes: function(e){
-                                refreshGraph(e, widget);
                             }
                         },
+                        //tickPositions:[11],
+		            }, {
+		                top: 500,
+		                height: 210,
+		                lineWidth: 2,
+                        labels: {
+                            formatter: function() {
+                                return this.value + '%';
+                            }
+                        },
+                    },{
+                        opposite:true,
+                        linkedTo:0,
+                        tickPositions:[lastPoint[0]] ,
+                        gridLineWidth:1
+                    },{
+                        opposite:true,
+                        linkedTo:0,
+                        tickPositions:[lastPoint[1]] ,
+                        gridLineWidth:1
+                    },{
+                        opposite:true,
+                        linkedTo:1,
+                        tickPositions:[lastPoint[2]],
+                        gridLineWidth:1
+                    }],
+                    xAxis: [{
+                        type: 'datetime',
+                        //events: {
+                        //    afterSetExtremes: function(e){
+                        //        refreshGraph(e, widget);
+                        //    }
+                        //},
+                        
                         opposite: true,
-                        offset: -295,
+                        offset: -700,
                         //offset: -45,
+                        events:{
+                            afterSetExtremes:function(e){
+                                console.log(this);
+                                var min = this.min,
+                                    max = this.max,
+                                    chart = this.chart;
+                                
+                                chart.xAxis[1].setExtremes(min,max);
+                                refreshGraph(e, widget);
+                                
+
+                            }
+                        },
                     },{
                         type: 'datetime',
                         
-                        offset: -50,
+                        offset: -200,
                     }],
 		            
 		            series: series,
 		        };
 		        var chart = new Highcharts.StockChart(options);
-		        
-$($('.highcharts-legend-item')[2]).click(function() {
-   //console.log('delta');
-});
+
 		    });
 		});
-		
-
-    
     }
 
 
@@ -2399,9 +2455,6 @@ $($('.highcharts-legend-item')[2]).click(function() {
         var fund = $('#data').data('fund');
 
 
-        console.log(month);
-
-
         var title = 'Alpheus / MONTH YEAR / Historical Performance';
         title = title.replace('YEAR', moment(new Date(year)).format("YYYY"))
         title = title.replace('MONTH', moment(new Date(year, month - 1)).format("MMMM"))
@@ -2429,7 +2482,8 @@ $($('.highcharts-legend-item')[2]).click(function() {
             var last_day_of_month = d2.getDate();
 
             var html = '<table class="month_table"><tr>';
-            html += '<th></th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><tr><th>' + first_week_of_month + '</th>';
+            //html += '<th></th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><tr><th>' + first_week_of_month + '</th>';
+            html += '<th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><tr>';
 
             // empty cells for months that do not start on a monday
             if(first_weekday < 6) {
@@ -2445,6 +2499,8 @@ $($('.highcharts-legend-item')[2]).click(function() {
                 day = parseInt(day, 10);
                 days[day] = data[i].fund_mtd;
             }
+            
+            var week_count = 0;
 
             for(i=1; i<=last_day_of_month; i++) {
 
@@ -2474,8 +2530,9 @@ $($('.highcharts-legend-item')[2]).click(function() {
                     } else {
                         html += "</tr><tr>";
                         i++;
-                        if(i != last_day_of_month){
-                            html += '<th>' + week + '</th>';
+                        if(i != last_day_of_month && week_count < 4){
+                            //html += '<th>' + week + '</th>';
+                            week_count++;
                         }
                         continue;
                     }
@@ -2486,34 +2543,27 @@ $($('.highcharts-legend-item')[2]).click(function() {
                 } else {
                     style = ' style="color:green;"';
                 }
-                html += '<td><div><span class="month_table_day">' + i + '</span><span class="month_table_val"><a href="#"' + style + ' onclick="refreshHoldPerfBar(\'w2\', \'' + date + '\', ' + fund + ');">' + val + '%</a></div></span></td>';
+                html += '<td><div><span class="month_table_day">' + i + '</span><span class="month_table_val"><a href="#"' + style + ' onclick="refreshHoldPerfBar(\'w2\', \'' + date + '\', ' + fund + ');">' + val + ' <span style="font-weight: normal;">%</span></a></div></span></td>';
             }
 
             html += "</tr></table>";
 
-
+            var win2 = Ext.getCmp('open_win');
+            if (win2) {
+                win2.close();
+            }
 
             var win = new Ext.Window({
+                id: 'open_win',
                 renderTo: Ext.getBody(),
                 html: html,
                 title: title,
                 //items: items,
-                height: 400,
-                width: 500,
-                /*
-                listeners: {
-                    'close': function(tabPanel, tab){
-                        $.each(graphs, function(x, row) {
-                            $.each(row, function(key, field) {
-                                 key = Object.keys(field)[0];
-                                 destroyGrid('summary2-bar-' + key);
-                                 destroyGrid('summary2-line-' + key);
-                            });
-                        });
-                    }
-                }
-                */
+                height: 340,
+                //width: 475,
+                width: 400,
             });
+
             win.show();
 
         });
@@ -2858,13 +2908,25 @@ $($('.highcharts-legend-item')[2]).click(function() {
                     if(row != 'year') {
                         data.columns[i]['renderer'] = function(val) {
                             if (val > 0) {
-                                return '<span style="color: #1803A1;">' + val + ' %</span>';
+                                return '<span style="color: #1803A1;">' + val + '  <span style="font-weight: normal;">%</span></span>';
                             } else if (val < 0) {
-                                return '<span style="color:red;">' + val + ' %</span>';
+                                return '<span style="color:red;">' + val + '  <span style="font-weight: normal;">%</span></span>';
                             }
                             if(val != '') {
-                                return val+"%";
+                                return val+' <span style="font-weight: normal;">%</span>';
                             }
+                            /*
+                            if(row == 'ytd') {
+                                    color = 'white;';
+                                } else {
+                                    color = '#1803A1;';
+                                }
+                                return '<span style="color: ' + color + '">' + val + ' <span style="font-weight: normal;">%</span></span>';
+                            } else if (val < 0) {
+                                return '<span style="color:red;">' + val + ' <span style="font-weight: normal;">%</span></span>';
+                            }
+                            return '0.00 <span style="font-weight: normal;">%</span>';
+                            */
                         };
                     }
                     if(typeof row != 'undefined') {
@@ -2930,7 +2992,7 @@ $($('.highcharts-legend-item')[2]).click(function() {
             var width = (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1));
             var height = (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1));
             plugins = [{
-                ptype: 'rowexpander',
+                ptype: 'myrowexpander',
                 rowBodyTpl: [
                     '<div id="innergrid-' + widget.id + '-{id}">',
                     '</div>'
@@ -2970,7 +3032,7 @@ $($('.highcharts-legend-item')[2]).click(function() {
                 store: Ext.data.StoreManager.lookup(widget.key),
                 columns: data.columns,
                 width: width,
-                height: height,
+                height: height - 50,
                 header: false,
                 border: false,
                 //enableLocking: true,
@@ -3337,8 +3399,10 @@ $($('.highcharts-legend-item')[2]).click(function() {
                //console.log(record);
                 destroyInnerGrid(record, widget.id);
             });
+            //Ext.getCmp('some_id').hide();
             return panel;
         });
+        
     }
 
     function refreshWindow(window_key, obj, extra_params) {
@@ -4307,8 +4371,11 @@ $($('.highcharts-legend-item')[2]).click(function() {
                         id: 'west',
                         region: 'west',
                         collapsible: true,
+                        //draggable: true,
                         title: 'Navigation',
                         width: 150,
+                        border: 0,
+                        split: true, // draggable
                         items: [tree],
                         tools: [{
                            type: 'gear',

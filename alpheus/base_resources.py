@@ -37,6 +37,7 @@ class MainBaseResource(SpecifiedFields):
         include_resource_uri = False
         columns = []
 
+
     """
     Allow all 'order_by' by default
     """
@@ -249,17 +250,23 @@ class MainBaseResource(SpecifiedFields):
         columns = []
         counter = 0
         for key, value in self.column_names.iteritems():
+        
+            if key == 0:
+                sortable = True
+            else:
+                sortable = False
 
             dic = {
                 'dataIndex': key,
                 'text': value,
                 'menuDisabled': True,
+                'sortable': sortable,
             }
             #if key == column_border_y:
             #    dic['tdCls'] = 'horizonal-border-column'
 
-            if 'ytd' in value.lower():
-                dic['tdCls'] = 'ytd-column'
+            if 'ytd' in value.lower() or 'year' in value.lower():
+                dic['tdCls'] = 'blue-column'
 
             if counter == 0:
                 dic['width'] = column_width[0]
@@ -286,6 +293,12 @@ class MainBaseResource(SpecifiedFields):
 
             if value == 'id':
                 continue
+                
+            if key == 0:
+                sortable = True
+            else:
+                sortable = False
+
 
             try:
                 split = value.split('__')
@@ -317,9 +330,15 @@ class MainBaseResource(SpecifiedFields):
             #if column == column_border_y:
             #    dic['tdCls'] = 'horizonal-border-column'
 
-            if 'ytd' in value.lower():
-                dic['tdCls'] = 'ytd-column'
+            dic['sortable'] = sortable
+            
 
+            #if 'ytd' in value.lower() or 'year' in value.lower():
+            #    dic['tdCls'] = 'blue-column'
+
+            if 'ytd' in value.lower():
+                dic['tdCls'] = 'ytd-column' 
+                
             if total and key != 0:
                 dic['summaryType'] = 'sum'
 
@@ -336,7 +355,7 @@ class MainBaseResource(SpecifiedFields):
 
 
     def alter_list_data_to_serialize(self, request, data):
-    
+
         if request.GET.get('data_type', False) == DATA_TYPE_YEAR:
             import calendar
 
@@ -391,7 +410,7 @@ class MainBaseResource(SpecifiedFields):
                 columns = [self.title[0]] + self.get_month_list() + self.extra_fields
 
             else:
-            
+
                 value = request.GET.get('value', False)
 
                 categories = set([row.data[self.date].year for row in data['objects']])
@@ -424,6 +443,11 @@ class MainBaseResource(SpecifiedFields):
 
             if self.y1 and self.y2 and request.GET.get("graph_type", False) == False and self.date:
 
+                try:
+                    name = data['objects'][0].data['fund__name']
+                except:
+                    name = 'n/a'
+
                 y1 = []
                 y2 = []
                 for row in data['objects']:
@@ -431,13 +455,15 @@ class MainBaseResource(SpecifiedFields):
                     y1.append([date, float(row.data[self.y1])])
                     y2.append([date, float(row.data[self.y2])])
                 return [{
-                    'name': data['objects'][0].data['fund__name'],
+                    'name': name,
                     'data': y1,
-                    #'yAxis': 0,
+                    'xAxis': 0,
+                    'yAxis': 0,
                 },{
                     'data': y2,
                     'name': 'Benchmark',
-                    #'yAxis': 1,
+                    'xAxis': 0,
+                    'yAxis': 0,
                 }]
 
             elif self.y1 and len(self.title):
@@ -457,11 +483,12 @@ class MainBaseResource(SpecifiedFields):
                     date = int(mktime(row.data[self.date].timetuple())) * 1000
                     extracted.append([int(date), float(row.data[self.y1])])
                 return {
-                    'name': 'Benchmark / Sec Benchmark - Sec Benchmark / Peer(s)',
+                    'name': 'Delta Cumulative Return',
                     'data': extracted,
+                    'xAxis': 1,
                     'yAxis': 1,
-                }                    
-                
+                }
+
             else:
                 raise Exception("Mandatory parameter(s) not passed")
 

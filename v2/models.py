@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 from django.db import models
+from django_pandas.managers import DataFrameManager
 
 class Administrator(models.Model):
     id = models.AutoField(primary_key=True, db_column='AdminID')
@@ -54,9 +55,9 @@ class AssetClass(models.Model):
         ('CASH', 'Cash'),
     )
     id = models.AutoField(primary_key=True, db_column='AssetClassID')
-    investment_category = models.ForeignKey(InvestmentCategory, db_column='InvestmentCategoryID', blank=True, null=True)
-    asset_type = models.ForeignKey(AssetType, db_column='AssetTypeID', blank=True, null=True)
-    asset_class_risk = models.ForeignKey(AssetClassRisk, db_column='AssetClassRiskID', blank=True, null=True)
+    investment_category = models.ForeignKey('InvestmentCategory', db_column='InvestmentCategoryID', blank=True, null=True)
+    asset_type = models.ForeignKey('AssetType', db_column='AssetTypeID', blank=True, null=True)
+    asset_class_risk = models.ForeignKey('AssetClassRisk', db_column='AssetClassRiskID', blank=True, null=True)
     holding_type = models.CharField(max_length=5, choices=HOLDING_TYPES, db_column='HoldingType', blank=True, null=True)
 
     class Meta:
@@ -110,12 +111,12 @@ class Auditor(models.Model):
 
 
 class BenchComponent(models.Model):
-    id = models.AutoField(primary_key=True, db_column='BenchComponentID')
-    bench_peer = models.ForeignKey(BenchPeer, db_column='CompositeID', blank=True, null=True)
+    id = models.AutoField(primary_key=True, db_column='id')
+    bench_peer = models.ForeignKey('BenchPeer', db_column='CompositeID', blank=True, null=True)
     holding = models.ForeignKey('Holding', db_column='HoldingID', blank=True, null=True)
     start_date = models.DateTimeField(db_column='StartingDate', blank=True, null=True)
     end_date = models.DateTimeField(db_column='EndDate', blank=True, null=True)
-    currency_rate = models.ForeignKey(Currency, db_column='CurrencyRateID', blank=True, null=True)
+    currency_rate = models.ForeignKey('CurrencyRate', db_column='CurrencyRateID', blank=True, null=True)
     weight = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='Weight', blank=True)
 
 
@@ -284,7 +285,7 @@ class FundStyle(models.Model):
 
 class GicsCategory(models.Model):
     id = models.AutoField(primary_key=True, db_column='GICSCategoryID')
-    #name = models.CharField(max_length=500, db_column='Name', blank=True)
+    description = models.CharField(max_length=500, db_column='Name', blank=True)
     gics_subindustry_code = models.CharField(max_length=20, db_column='GICSSubIndustryCode', blank=True, null=True)
     sub_industry_name = models.CharField(max_length=100, db_column='SubIndustryName', blank=True, null=True)
     gics_industry_code = models.CharField(max_length=20, db_column='GICSIndustryCode', blank=True, null=True)
@@ -340,8 +341,7 @@ class HfStrategy(models.Model):
 
 class IcbCategory(models.Model):
     id = models.AutoField(primary_key=True, db_column='ICBCategoryID')
-    description = models.CharField(max_length=200, db_column='Description', blank=True, null=True)
-    #name = models.CharField(max_length=500, db_column='Name', blank=True, null=True)
+    description = models.CharField(max_length=500, db_column='Description', blank=True, null=True)
     icb_subsector_code = models.CharField(max_length=20, db_column='ICBSubSectorCode', blank=True, null=True)
     subsector_name = models.CharField(max_length=100, db_column='SubSectorName', blank=True, null=True)
     icb_sector_code = models.CharField(max_length=20, db_column='ICBSectorCode', blank=True, null=True)
@@ -445,25 +445,26 @@ class Region(models.Model):
         return self.name
 
 
-class ClientFilename(models.Model):
-    id = models.AutoField(primary_key=True, db_column='ClientFilenameID')
-    client = models.ForeignKey('Client', db_column='ClientID')
-    fund = models.ForeignKey('Fund', db_column='FundID')
-    filename = models.CharField(max_length=50, db_column='FileName', blank=True, null=True)
-    #file_identifier = models.CharField(max_length=50, db_column='FileIdentifier', blank=True, null=True)
-
-    class Meta:
-        db_table = 'ALP_ClientFileNames'
-
-    def __unicode__(self):
-        return self.filename
+# Alpheus internal table, not in use
+#class ClientFilename(models.Model):
+#    id = models.AutoField(primary_key=True, db_column='ClientFilenameID')
+#    client = models.ForeignKey('Client', db_column='ClientID')
+#    fund = models.ForeignKey('Fund', db_column='FundID')
+#    filename = models.CharField(max_length=50, db_column='FileName', blank=True, null=True)
+#    #file_identifier = models.CharField(max_length=50, db_column='FileIdentifier', blank=True, null=True)
+#
+#    class Meta:
+#        db_table = 'ALP_ClientFileNames'
+#
+#    def __unicode__(self):
+#        return self.filename
 
 
 class ClientPositionAudit(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     #custodian = models.ForeignKey(Custodian, blank=True, null=True)
     client = models.ForeignKey('Client', db_column='ClientID')
-    value_date = models.DateTimeField(db_column='value_date')
+    value_date = models.DateTimeField(db_column='ValueDate')
     fund = models.ForeignKey('Fund', db_column='FundID', blank=True, null=True)
     holding = models.ForeignKey('Holding', db_column='HoldingID', blank=True, null=True)
     size = models.DecimalField(decimal_places=4, max_digits=18, db_column='Size', blank=True, null=True)
@@ -518,7 +519,7 @@ class ClientTransaction(models.Model):
 class ClientValAudit(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     client = models.ForeignKey(Client, db_column='ClientID')
-    value_date = models.DateTimeField(db_column='value_date')
+    value_date = models.DateTimeField(db_column='ValueDate')
     #fund = models.ForeignKey('Fund', db_column='FundID')
     #holding = models.IntegerField(db_column='HoldingID')
     nav = models.DecimalField(decimal_places=2, max_digits=18, db_column='NAV', blank=True, null=True)
@@ -545,7 +546,7 @@ class FundFeeAudit(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     fund = models.ForeignKey('Fund', db_column='FundID')
     fee = models.ForeignKey(Fee, db_column='FeeID')
-    value_date = models.DateTimeField(db_column='value_date')
+    value_date = models.DateTimeField(db_column='ValueDate')
     amount = models.DecimalField(decimal_places=2, max_digits=18, db_column='Amount', blank=True, null=True)
 
     class Meta:
@@ -567,7 +568,7 @@ class FundPositionAudit(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     fund = models.ForeignKey('Fund', db_column='FundID')
     holding = models.ForeignKey('Holding', db_column='HoldingID')
-    value_date = models.DateTimeField(db_column='value_date')
+    value_date = models.DateTimeField(db_column='ValueDate')
     size = models.DecimalField(decimal_places=4, max_digits=18, db_column='Size', blank=True, null=True)
     marketprice_lcl = models.DecimalField(decimal_places=6, max_digits=18, db_column='MarketPriceLcl', blank=True, null=True)
     marketprice_fundcur = models.DecimalField(decimal_places=6, max_digits=18, db_column='MarketPriceFundCur', blank=True, null=True)
@@ -587,7 +588,7 @@ class Fund(models.Model):
     name = models.CharField(max_length=50, db_column='Name', blank=True, null=True)
     description = models.CharField(max_length=200, db_column='Description', blank=True, null=True)
     alpheusgroupid0 = models.ForeignKey(AlpheusGroup, db_column='AlpheusGroupID0', blank=True, null=True)
-    currency = models.ForeignKey(Currency, related_name='fund_currency', null=True, db_column='CurrencyID', blank=True, null=True)
+    currency = models.ForeignKey(Currency, related_name='fund_currency', db_column='CurrencyID', blank=True, null=True)
     assetclass = models.ForeignKey(AssetClass, db_column='AssetClassID', blank=True, null=True)
     countryi = models.ForeignKey(Country, related_name='country_i', db_column='CountryIID', blank=True, null=True)
     countryr = models.IntegerField(db_column='CountryRID', blank=True, null=True)
@@ -602,7 +603,7 @@ class Fund(models.Model):
     alarm = models.ForeignKey(Alarm, db_column='AlarmID', blank=True, null=True)
     active = models.CharField(max_length=1, db_column='Active', blank=True, null=True)
     flash_flag = models.CharField(max_length=1, db_column='FlashFlag', blank=True, null=True)
-    sec_bench = models.ForeignKey(Holding, db_column='SecBenchID')
+    sec_bench = models.ForeignKey('Holding', db_column='SecBenchID', blank=True, null=True)
 
     class Meta:
         db_table = 'ALP_Funds'
@@ -631,7 +632,7 @@ class FundCharAudit(models.Model):
     alarm = models.ForeignKey(Alarm, db_column='AlarmID', blank=True, null=True)
     active = models.CharField(max_length=1, db_column='Active', blank=True, null=True)
     flash_flag = models.CharField(max_length=1, db_column='FlashFlag', blank=True, null=True)
-    sec_bench = models.ForeignKey(Holding, db_column='SecBenchID')
+    sec_bench = models.ForeignKey('Holding', db_column='SecBenchID', blank=True, null=True)
 
     class Meta:
         db_table = 'ALP_FundsChars_TS'
@@ -663,7 +664,7 @@ class FundReturnDaily(models.Model):
 #class FundEstimate(models.Model):
 #    id = models.AutoField(primary_key=True, db_column='FundEstimatesID')
 #    fund = models.ForeignKey(Fund, db_column='FundID')
-#    value_date = models.DateTimeField(db_column='value_date')
+#    value_date = models.DateTimeField(db_column='ValueDate')
 #    manager = models.ForeignKey(Manager, null=True, db_column='ManagerID', blank=True)
 #    estimate = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='Estimate', blank=True)
 #
@@ -672,21 +673,23 @@ class FundReturnDaily(models.Model):
 
 
 class FundReturnMonthly(models.Model):
-    id = models.AutoField(primary_key=True, db_column='FundMonthlyVals_TSID')
+    id = models.AutoField(primary_key=True, db_column='id')
     fund = models.ForeignKey(Fund, db_column='FundID')
-    value_date = models.DateTimeField(db_column='value_date')
-    nav = models.DecimalField(decimal_places=2, max_digits=18, db_column='NAV', blank=True)
-    shares = models.DecimalField(decimal_places=4, max_digits=18, db_column='Shares', blank=True)
-    nav_per_share = models.DecimalField(decimal_places=6, max_digits=18, db_column='NAVPerShare', blank=True)
-    inflows = models.DecimalField(decimal_places=2, max_digits=18, db_column='Inflows', blank=True)
-    outflows = models.DecimalField(decimal_places=2, max_digits=18, db_column='Outflows', blank=True)
-    fund_perf = models.DecimalField(decimal_places=6, max_digits=18, db_column='FundMonthlyReturn', blank=True)
-    ytd = models.DecimalField(decimal_places=6, max_digits=18, db_column='FundYTDReturn', blank=True)
-    bench_perf = models.DecimalField(decimal_places=6, max_digits=18, db_column='BenchMonthlyReturn', blank=True)
-    bench_ytd = models.DecimalField(decimal_places=6, max_digits=18, db_column='BenchYTDReturn', blank=True)
+    value_date = models.DateTimeField(db_column='ValueDate')
+    nav = models.DecimalField(decimal_places=2, max_digits=18, db_column='NAV', blank=True, null=True)
+    shares = models.DecimalField(decimal_places=4, max_digits=18, db_column='Shares', blank=True, null=True)
+    nav_per_share = models.DecimalField(decimal_places=6, max_digits=18, db_column='NAVPerShare', blank=True, null=True)
+    inflows = models.DecimalField(decimal_places=2, max_digits=18, db_column='Inflows', blank=True, null=True)
+    outflows = models.DecimalField(decimal_places=2, max_digits=18, db_column='Outflows', blank=True, null=True)
+    fund_perf = models.DecimalField(decimal_places=6, max_digits=18, db_column='FundMonthlyReturn', blank=True, null=True)
+    ytd = models.DecimalField(decimal_places=6, max_digits=18, db_column='FundYTDReturn', blank=True, null=True)
+    bench_perf = models.DecimalField(decimal_places=6, max_digits=18, db_column='BenchMonthlyReturn', blank=True, null=True)
+    bench_ytd = models.DecimalField(decimal_places=6, max_digits=18, db_column='BenchYTDReturn', blank=True, null=True)
     flag = models.CharField(max_length=1, db_column='Flag', blank=True, null=True)
-    sec_bench = models.DecimalField(decimal_places=6, max_digits=18, db_column='SecBenchMonthlyReturn', blank=True)
-    sec_bench_ytd = models.DecimalField(decimal_places=6, max_digits=18, db_column='SecBenchYTDReturn', blank=True)
+    sec_bench = models.DecimalField(decimal_places=6, max_digits=18, db_column='SecBenchMonthlyReturn', blank=True, null=True)
+    sec_bench_ytd = models.DecimalField(decimal_places=6, max_digits=18, db_column='SecBenchYTDReturn', blank=True, null=True)
+
+    objects = DataFrameManager()
 
     class Meta:
         db_table = 'ALP_FundsMonthlyVals_TS'
@@ -704,8 +707,8 @@ class Holding(models.Model):
     exchangename = models.CharField(max_length=50, db_column='ExchangeName', blank=True, null=True)
     parentcompanyname = models.CharField(max_length=50, db_column='ParentCompanyName', blank=True, null=True)
     assetclass = models.IntegerField(db_column='AssetClassID', blank=True, null=True)
-    country_ins = models.ForeignKey(Country, related_name='country_ins', db_column='CountryInsID', blank=True, null=True)
-    country_risk = models.ForeignKey(Country, related_name='country_risk', db_column='CountryRiskID', blank=True, null=True)
+    country_ins = models.ForeignKey(Country, related_name='country_ins', db_column='CountryIID', blank=True, null=True)
+    country_risk = models.ForeignKey(Country, related_name='country_risk', db_column='CountryRID', blank=True, null=True)
     industry_sector = models.ForeignKey(IndustrySector, db_column='IndustrySectorID', blank=True, null=True)
     industry_group = models.ForeignKey(IndustryGroup, db_column='IndustryGroupID', blank=True, null=True)
     industry_subgroup = models.ForeignKey(IndustrySubGroup, db_column='IndustrySubGroupID', blank=True, null=True)
@@ -775,15 +778,15 @@ class HoldingFixedIncome(models.Model):
     structured = models.CharField(max_length=1, db_column='Structured', blank=True, null=True)
     convertible = models.CharField(max_length=1, db_column='Convertible', blank=True, null=True)
     collateral_type = models.CharField(max_length=50, db_column='CollateralType', blank=True, null=True)
-    maturity = models.DateTimeField(null=True, db_column='Maturity', blank=True, null=True)
+    maturity = models.DateTimeField(db_column='Maturity', blank=True, null=True)
     maturity_type = models.CharField(max_length=50, db_column='MaturityType', blank=True, null=True)
-    first_coupon_date = models.DateTimeField(null=True, db_column='FirstCouponDate', blank=True, null=True)
+    first_coupon_date = models.DateTimeField(db_column='FirstCouponDate', blank=True, null=True)
     moodys_rating = models.CharField(max_length=50, db_column='MoodysRating', blank=True, null=True)
     snp_rating = models.CharField(max_length=50, db_column='SnPRating', blank=True, null=True)
     fitch_rating = models.CharField(max_length=50, db_column='FitchRating', blank=True, null=True)
     dbrs_rating = models.CharField(max_length=50, db_column='DBRSRating', blank=True, null=True)
-    date_rating_retrieval = models.DateTimeField(null=True, db_column='DateRatingRetrieval', blank=True, null=True)
-    amt_issued = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='AmtIssued', blank=True, null=True)
+    date_rating_retrieval = models.DateTimeField(db_column='DateRatingRetrieval', blank=True, null=True)
+    amt_issued = models.DecimalField(decimal_places=2, max_digits=18, db_column='AmtIssued', blank=True, null=True)
     put_table = models.CharField(max_length=1, db_column='Puttable', blank=True, null=True)
     callable = models.CharField(max_length=1, db_column='Callable', blank=True, null=True)
 
@@ -807,7 +810,7 @@ class HoldingFuture(models.Model):
     holding = models.ForeignKey(Holding, db_column='HoldingID')
     typeunderlying = models.CharField(max_length=50, db_column='TypeUnderlying', blank=True, null=True)
     maturity = models.DateTimeField(null=True, db_column='Maturity', blank=True)
-    contractsize = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='ContractSize', blank=True, null=True)
+    contractsize = models.DecimalField(decimal_places=2, max_digits=18, db_column='ContractSize', blank=True, null=True)
     value1pt = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='Value1pt', blank=True)
     ticksize = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='TickSize', blank=True)
 
@@ -823,7 +826,7 @@ class HoldingHedgeFund(models.Model):
     admin = models.ForeignKey(Administrator, null=True, db_column='AdminID', blank=True)
     custodian = models.ForeignKey(Custodian, null=True, db_column='CustodianID', blank=True)
     auditor = models.ForeignKey(Auditor, null=True, db_column='AuditorID', blank=True)
-    hfsector = models.ForeignKey(HfSector, null=True, db_column='HFSectorID', blank=True)
+    hf = models.ForeignKey(Hf, null=True, db_column='HFID', blank=True)
     softlock = models.CharField(max_length=10, db_column='SoftLock', blank=True, null=True)
     gate = models.CharField(max_length=10, db_column='Gate', blank=True, null=True)
     redemption_freq = models.CharField(max_length=1, db_column='RedemptionFreq', blank=True)
@@ -856,7 +859,7 @@ class HoldingOption(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     holding = models.ForeignKey(Holding, db_column='HoldingID')
     call_put = models.CharField(max_length=4, db_column='CallPut', blank=True)
-    type_undrlying = models.CharField(max_length=50, db_column='TypeUndrlying', blank=True)
+    type_undrlying = models.CharField(max_length=50, db_column='TypeUnderlying', blank=True)
     type_exercise = models.CharField(max_length=50, db_column='TypeExercise', blank=True)
     strike = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='Strike', blank=True)
     maturity = models.DateTimeField(null=True, db_column='Maturity', blank=True)
@@ -881,7 +884,7 @@ class HoldingWarrant(models.Model):
 class HoldingDaily(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     holding = models.ForeignKey(Holding, db_column='HoldingID')
-    value_date = models.DateTimeField(db_column='value_date')
+    value_date = models.DateTimeField(db_column='ValueDate')
     closing_price = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='ClosingPrice', blank=True)
     closing_bid = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='ClosingBid', blank=True)
     closing_ask = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='ClosingAsk', blank=True)
@@ -896,7 +899,7 @@ class HoldingDaily(models.Model):
 class HoldingMonthly(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     holding = models.ForeignKey(Holding, db_column='HoldingID')
-    value_date = models.DateTimeField(db_column='value_date')
+    value_date = models.DateTimeField(db_column='ValueDate')
     closingprice = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='ClosingPrice', blank=True)
 
     monthlyreturn = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MonthlyReturn', blank=True)
@@ -908,10 +911,10 @@ class HoldingMonthly(models.Model):
 
 
 class PositionDaily(models.Model):
-    id = models.AutoField(primary_key=True, db_column='PositionsDailyID')
+    id = models.AutoField(primary_key=True, db_column='id')
     fund = models.ForeignKey(Fund, db_column='FundID')
     holding = models.ForeignKey(Holding, db_column='HoldingID')
-    value_date = models.DateTimeField(db_column='value_date')
+    value_date = models.DateTimeField(db_column='ValueDate')
     size = models.DecimalField(decimal_places=4, null=True, max_digits=18, db_column='Size', blank=True)
     marketpricelcl = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='MarketPriceLcl', blank=True)
     marketpricefundcur = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='MarketPriceFundCur', blank=True)
@@ -928,15 +931,15 @@ class PositionDaily(models.Model):
 
 
 class PositionMonthly(models.Model):
-    id = models.AutoField(primary_key=True, db_column='PositionsMonthlyID')
+    id = models.AutoField(primary_key=True, db_column='id')
     fund = models.ForeignKey(Fund, db_column='FundID')
     holding = models.ForeignKey(Holding, db_column='HoldingID')
-    value_date = models.DateTimeField(db_column='value_date')
-    size1 = models.DecimalField(decimal_places=4, null=True, max_digits=18, db_column='Size1', blank=True)
-    marketpricelcl1 = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='MarketPriceLcl1', blank=True)
+    value_date = models.DateTimeField(db_column='ValueDate')
+    size1 = models.DecimalField(decimal_places=4, null=True, max_digits=18, db_column='Size', blank=True)
+    marketpricelcl1 = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='MarketPriceLcl', blank=True)
     marketpricefundcur = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='MarketPriceFundCur', blank=True)
-    marketvaluelcl1 = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MarketValueLcl1', blank=True)
-    marketvaluefundcur1 = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MarketValueFundCur1', blank=True)
+    marketvaluelcl1 = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MarketValueLcl', blank=True)
+    marketvaluefundcur1 = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MarketValueFundCur', blank=True)
     costpricelcl = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='CostPriceLcl', blank=True)
     costpricefundcur = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='CostPriceFundCur', blank=True)
     marketcostlcl = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MarketCostLcl', blank=True)

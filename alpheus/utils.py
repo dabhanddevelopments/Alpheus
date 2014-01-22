@@ -3,6 +3,10 @@ from django.utils import simplejson
 from json import encoder
 from django.core.serializers.json import DjangoJSONEncoder
 
+import pandas as pd
+import numpy as np
+
+
 class JsonResponse(HttpResponse):
     def __init__(self, data):
 
@@ -29,6 +33,13 @@ def set_columns(request, column_names):
 
     columns = []
     for key, column in enumerate(column_names):
+    
+        
+        if column == 'year':
+            sortable = True
+        else:
+            sortable = False
+
 
         try:
             dic = {
@@ -44,6 +55,8 @@ def set_columns(request, column_names):
             except:
                 raise
 
+        dic['sortable'] = sortable
+        
         if column == column_border_y:
             dic['tdCls'] = 'horizonal-border-column'
 
@@ -71,63 +84,21 @@ def create_modeladmin(modeladmin, model, name = None):
     admin.site.register(newmodel, modeladmin)
     return modeladmin
 
-import datetime
-from dateutil.relativedelta import relativedelta
-from datetime import timedelta as td
-from rpy2.robjects import r
-r.library("PerformanceAnalytics")
-r("source(file='/home/dan/alpheus/alpheus/MyFunctions.r')")
+def cumulative_return(data, perf_type):
 
-
-def fund_return_calculation(data_str, date, length):
-
-    end_date = date + relativedelta(months=int(length))
-
-    delta = relativedelta(months=+1)
-    d = date
-    months = []
-    while d <= end_date:
-        months.append(d)
-        d += delta
-
-    date = date.strftime('%Y/%m/%d')
-    print date, length
-    #print data_strf
-
-    r("x <- c(" + data_str[:-2] + ")")
-    r('MyDates <-  seq(as.Date("' + date + '"), by = "month", length.out = ' + length + ')')
-    r("x <- as.matrix(x)")
-    r("rownames(x) <- as.character(MyDates)")
-    r("myts <- as.xts(x)")
-    output = (r("apply.fromstart(myts/100, FUN = 'Return.cumulative', gap = 1)*100"))
-
-    return dict(zip(months, output))
-
-
-def bench_return_calculation(fund_str, bench_str, date, length):
-
-    end_date = date + relativedelta(months=int(length))
-
-    delta = relativedelta(months=+1)
-    d = date
-    months = []
-    while d <= end_date:
-        months.append(d)
-        d += delta
-
-    date = date.strftime('%Y/%m/%d')
-
-    r("x <- c(" + fund_str[:-2] + ")")
-    r("y <- c(" + bench_str[:-2] + ")")
-    r('MyDates <-  seq(as.Date("' + date + '"), by = "month", length.out = ' + length + ')')
-    r("x <-  as.matrix(x)")
-    r("rownames(x) <-   as.character(MyDates)")
-    r("myts <- as.xts(x)")
-    r("y <-  as.matrix(y)")
-    r("rownames(y) <- as.character(MyDates)")
-    r("mytsBench <- as.xts(y)")
-    output = (r("apply.fromstart(x/100, FUN = 'Return.cumulative', gap = 1)*100 - apply.fromstart(y/100, FUN = 'Return.cumulative', gap = 1)*100"))
-
-    return dict(zip(months, output))
-
+    # extract data for the cumulative calc
+    perf = []
+    for row in data['objects']:
+        perf.append(row.data[perf_type + '_perf'])
+        
+    r = pd.DataFrame(list(perf))
+    c = r/100
+    d = np.cumprod(c.values+1)-1
+    e = d*100
+    
+    # replace the old data with the calculated one
+    for id, row in enumerate(data['objects']):
+        data['objects'][id].data[perf_type + '_perf'] = e[id]
+        
+    return data
 

@@ -1,8 +1,11 @@
 from tastypie import fields
 from alpheus.base_resources import MainBaseResource
+from tastypie.resources import Resource, ModelResource
+from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from v2.models import *
-from alpheus.utils import fund_return_calculation, bench_return_calculation
-from datetime import datetime
+from alpheus.utils import cumulative_return
+from datetime import datetime, timedelta
+import decimal
 
 class AdministratorResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
@@ -100,10 +103,6 @@ class RegionResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = Region.objects.all()
 
-class ClientFilenameResource(MainBaseResource):
-    class Meta(MainBaseResource.Meta):
-        queryset = ClientFilename.objects.all()
-
 class ClientPositionAuditResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = ClientPositionAudit.objects.all()
@@ -145,49 +144,36 @@ class FundCharAuditResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = FundCharAudit.objects.all()
 
+
 class FundReturnResource(MainBaseResource):
 
     def alter_list_data_to_serialize(self, request, data):
     
         y1 = request.GET.get('y1', False)
-        y2 = request.GET.get('y2', False)
 
         if y1 != False:
-        
-            fund = ''
-            bench = ''
-            for row in data['objects']:
-                fund += str(row.data[y1]) + ', '
-                bench += str(row.data[y2]) + ', '
+            
+            # create new previous dummy month
+            first_date = data['objects'][0].data['value_date']
+            new_date = datetime(first_date.year, first_date.month, 1) - timedelta(days=1)
+            new_date = datetime(new_date.year, new_date.month, 1)
+            
+            new_data = {
+                'fund_perf': decimal.Decimal('0'), 
+                'value_date': new_date, 
+                'bench_perf': decimal.Decimal('0')
+            }
+            new_obj = self.build_bundle(data = new_data)
+            data['objects'].insert(0, new_obj)
 
-            if request.GET.get("graph_type", False):
-                y2 = False
+            data = cumulative_return(data, perf_type = 'fund')
+            data = cumulative_return(data, perf_type = 'bench')
+            
+            # delta
+            if request.GET.get("graph_type", False) == 'bench':
+                for id, row in enumerate(data['objects']):
+                    data['objects'][id].data['fund_perf'] = row.data['fund_perf'] - row.data['bench_perf']
 
-            length = str(len(data['objects']))
-            date = request.GET.get("value_date__gte", False)
-            if date:
-                date = datetime.strptime(date, '%Y-%m-%d')
-            else:
-                date = data['objects'][0].data[self.date]
-
-            if y2 != False:
-                fund = fund_return_calculation(fund, date, length)
-                bench = fund_return_calculation(bench, date, length)
-            else:
-                fund = bench_return_calculation(fund, bench, date, length)
-
-            for row in data['objects']:
-                for key, val in fund.iteritems():
-                    if row.data[self.date].year == key.year and row.data[self.date].month == key.month:
-                        row.data[y1] = val
-
-                if request.GET.get("graph_type", False) == False:
-                    
-                    for key, val in bench.iteritems():
-                        if row.data[self.date].year == key.year and row.data[self.date].month == key.month:
-                            row.data[y2] = val
-
-        
         return super(FundReturnResource, self) \
                 .alter_list_data_to_serialize(request, data)
 
@@ -198,10 +184,6 @@ class FundReturnDailyResource(MainBaseResource):
 class FundReturnDailyResource2(FundReturnResource):
     class Meta(MainBaseResource.Meta):
         queryset = FundReturnDaily.objects.all()
-
-class FundEstimateResource(MainBaseResource):
-    class Meta(MainBaseResource.Meta):
-        queryset = FundEstimate.objects.all()
 
 class FundReturnMonthlyResource(FundReturnResource):
     fund = fields.ForeignKey(FundResource, 'fund')

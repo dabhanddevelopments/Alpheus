@@ -497,7 +497,7 @@ table.month_table th {
 table.month_table td {
     background-color: #DEDCDA;
     border: 1px solid gray;
-    width: 60px;
+    width: 65px;
     height: 40px;
 }
 
@@ -505,18 +505,19 @@ table.month_table td {
   position: relative;
   top: -10px;
   left:5px;
-  font-size: 12px;
+  font-size: 10px;
 }
 
 .month_table_val {
   position: relative;
   top: 0px;
-  left: 10px;
+  left: 8px;
 }
 
 .month_table_val a {
-  font-size: 10px;
+  font-size: 12px;
   text-decoration: none;
+  font-weight: bold;
 }
 
 
@@ -597,6 +598,7 @@ table.month_table td {
 /* Make YTD cells blue */
 .custom-grid .x-grid-row .ytd-column {
     background-color: #A7BEDD;
+    /*color: white; */
 }
 
 /* Make all text in grid bold */

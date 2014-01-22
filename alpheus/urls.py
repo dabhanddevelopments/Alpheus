@@ -1,17 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.http import HttpResponse
-#from resources.api import api
-#from resources.widgets import widget
 from app import views
-#from fund import views as fund
-#from holding import views as holding
-#from client import views as client
-
-from fund.resources import *
-#from holding.resources import *
-#from client.resources import *
-#from comparative.resources import *
 
 admin.autodiscover()
 
@@ -49,7 +39,6 @@ api.register(IndustrySubGroupResource())
 api.register(IssuerIndustryResource())
 api.register(ManagerResource())
 api.register(RegionResource())
-api.register(ClientFilenameResource())
 api.register(ClientValAuditResource())
 api.register(FundFeeResource())
 api.register(FundFeeAuditResource())
@@ -58,7 +47,6 @@ api.register(FundPositionAuditResource())
 api.register(FundResource())
 api.register(FundCharAuditResource())
 api.register(FundReturnDailyResource())
-api.register(FundEstimateResource())
 api.register(FundReturnMonthlyResource())
 api.register(FundReturnMonthlyResource2())
 api.register(FundReturnMonthlyResource3())
@@ -136,7 +124,7 @@ api.register(PeerHistoryResource())
 """
 urlpatterns = patterns('',
     (r'^robots\.txt$', lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain")),
-    (r'^asdf$', lambda r: HttpResponse("<html><script> window.close(); </script></html>", mimetype="text/html")),
+    #(r'^asdf$', lambda r: HttpResponse("<html><script> window.close(); </script></html>", mimetype="text/html")),
     url(r'^$', views.index, name='index'),
 
     #url(r'^api/holding-performance-benchmark/$', holding.performancebenchmark),
