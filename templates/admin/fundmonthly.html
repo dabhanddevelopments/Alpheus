@@ -1,0 +1,83 @@
+{% extends "admin/admin/change_form.html" %}
+
+<!-- LOADING -->
+{% load url from future %}
+{% load admin_static i18n admin_modify grp_tags %}
+{% load humanize %}
+
+<!-- PAGE-TOOLS -->
+{% block page-tools %}{% endblock %}
+
+{% block title %}Fund Return Estimates | Alpheus{% endblock %}
+
+
+<!-- JAVASCRIPTS -->
+{% block javascripts %}
+    {{ block.super }}
+{% endblock %}
+
+<!-- BREADCRUMBS -->
+{% block breadcrumbs %}
+    {% if not is_popup %}
+        <ul>
+            <li>{% if has_change_permission %}<a href="../">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %}</li>
+            <li>{% if add %}{% trans "Add" %} {{ opts.verbose_name }}{% else %}{{ original|truncatewords:"18" }}{% endif %}</li>
+        </ul>
+    {% endif %}
+{% endblock %}
+
+
+<!-- OBJECT TOOLS -->
+{% block object-tools %}{% endblock %}
+
+{% block content %}
+
+<style>
+    .total {
+        background-color: #E4E4E4;
+    }
+    .row1 {
+        background-color: #D7E7F5;
+    }
+    .row2 {
+        background-color: #CCE0F2;
+    }
+</style>
+
+ 
+<form action="/admin/fund/returnestimate/" method="post">{% csrf_token %}
+        {{ formset.non_form_errors.as_ul }}
+        <table id="formset" class="form">
+        {% for form in form.forms %}
+          {% if forloop.first %}
+          <thead>
+            <tr>
+                <th></th>
+                {% for month in months %}
+                    <th colspan="2">{{ month|date:"M-y" }}</th>
+                {% endfor %}
+                <th></th>
+            </tr>
+            <tr>
+                <th></th><th>NAV</th><th>Weight</th><th>Return</th><th>NAV</th><th>Return</th><th>NAV</th><th>Ytd</th>
+            </tr>
+          </thead>
+          {% endif %}
+          
+          <tr class="{% if form.initial.total %}total{% else %}{% cycle row1,row2 %}{% endif %}">
+            <td>{{ form.pk }}{{ form.name }}</td><td>{{ form.nav1|floatformat:2 }}</td><td>{{ form.weight|floatformat:2 }}%</td>
+            <td>{% if form.initial.estimation2 == "Y" %}{{ form.return2 }}{% else %}{{ form.initial.return2|floatformat:2|intcomma }}%{% endif %}</td>
+            <td>{{ form.initial.nav2|floatformat:2|intcomma }}</td>
+            <td>{% if form.initial.estimation3 == "Y" %}{{ form.return3 }}{% else %}{{ form.initial.return3|floatformat:2|intcomma }}%{% endif %}</td>
+            <td>{{ form.initial.nav3|floatformat:2|intcomma }}</td>
+            <td>{{ form.initial.ytd }}</td>
+          </tr>
+        {% endfor %}
+        </table>
+        {{ form.management_form }}
+        <input type="submit" value="Reset" onClick="document.location.reload(true); return false; ">
+        <input type="submit" value="Update" />
+</form>
+
+{% endblock %}
+

@@ -1,7 +1,9 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.http import HttpResponse
-from app import views
+from app.views import *
+from v2.views import *
+from django.views.generic import TemplateView
 
 admin.autodiscover()
 
@@ -125,7 +127,9 @@ api.register(PeerHistoryResource())
 urlpatterns = patterns('',
     (r'^robots\.txt$', lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain")),
     #(r'^asdf$', lambda r: HttpResponse("<html><script> window.close(); </script></html>", mimetype="text/html")),
-    url(r'^$', views.index, name='index'),
+    url(r'^$', index, name='index'),
+    url(r'^admin/fund/returnestimate/$', fund_return_form, name='fund_return'),
+    #url(r'^admin/fundmonthly/$', TemplateView.as_view(template_name='admin/fundmonthly.html')),
 
     #url(r'^api/holding-performance-benchmark/$', holding.performancebenchmark),
     #url(r'^api/holding-reconciliation/$', holding.reconciliation),

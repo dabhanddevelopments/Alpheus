@@ -1883,7 +1883,6 @@ Ext.onReady(function() {
         }
     }
     
-    
     function lineChart(obj, widget, div) {
     
 
@@ -2025,7 +2024,6 @@ Ext.onReady(function() {
                                 return this.value + '%';
                             }
                         },
-                        //tickPositions:[11],
 		            }, {
 		                top: 500,
 		                height: 210,
@@ -2036,20 +2034,25 @@ Ext.onReady(function() {
                             }
                         },
                     },{
+                        height: 420,
                         opposite:true,
                         linkedTo:0,
                         tickPositions:[lastPoint[0]] ,
-                        gridLineWidth:1
+                        gridLineWidth:0,
+                        offset: 40,
                     },{
+                        height: 420,
                         opposite:true,
                         linkedTo:0,
                         tickPositions:[lastPoint[1]] ,
-                        gridLineWidth:1
+                        gridLineWidth:0
                     },{
+                        top: 500,    
+                        height: 210, 
                         opposite:true,
                         linkedTo:1,
                         tickPositions:[lastPoint[2]],
-                        gridLineWidth:1
+                        gridLineWidth:0
                     }],
                     xAxis: [{
                         type: 'datetime',
@@ -2884,6 +2887,7 @@ Ext.onReady(function() {
             hideHeaders = true;
         }
 
+        console.log(widget.url + widget.qs);
         $.getJSON(widget.url + widget.qs, function(data) {
 
             // for nested header columns as well
@@ -2941,7 +2945,6 @@ Ext.onReady(function() {
                     }
                 }
             }
-            console.log(data.columns);
 
             if(typeof data.columns[1]['summaryType'] != 'undefined') {
                 data.columns[0]['summaryRenderer'] = function(v, params, data){ return 'Total'};
@@ -3037,6 +3040,7 @@ Ext.onReady(function() {
                 border: false,
                 //enableLocking: true,
                 autoScroll: true,
+                //overflowY: 'scroll', // always show scrollbar
                 renderTo: div,
                 plugins: plugins,
                 //selModel: selModel, // selModel causing empty row at end of grid
@@ -4075,8 +4079,14 @@ Ext.onReady(function() {
         });
     }
 
-    function popup(section, page) {
-        window.open("/admin/" + section + "/" + page + "/", "", "fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes,directories=yes,location=no,width=900,height=700,left=400,top=200");
+    function popup(section, page, width, height) {
+        if(typeof width == 'undefined') {
+            width = 900;
+        }
+        if(typeof height == 'undefined') {
+            height = 700;
+        }        
+        window.open("/admin/" + section + "/" + page + "/", "", "fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes,directories=yes,location=no,width="+width+",height="+height+",left=400,top=100");
     }
 
     function viewPort() {
@@ -4260,13 +4270,19 @@ Ext.onReady(function() {
                                     } else if(page_id == 97) {
                                         popup('client', 'subscriptionredemption');
                                     } else if(page_id == 98) {
-                                        popup('app', 'custodian');
+                                        popup('v2', 'custodian');
                                     } else if(page_id == 99) {
-                                        popup('app', 'auditor');
+                                        popup('v2', 'auditor');
                                     } else if(page_id == 100) {
-                                        popup('app', 'administrator');
+                                        popup('v2', 'administrator');
                                     } else if(page_id == 101) {
                                         popup('fund', 'classification');
+                                    } else if(page_id == 182) {
+                                        popup('fund', 'returnestimate', 1000, 800);
+                                    } else if(page_id == 183) {
+                                        popup('v2', 'fundstyle');
+                                    } else if(page_id == 184) {
+                                        popup('v2', 'alpheusgroup');
                                     } else if(page_id == 102) {
                                         popup('app', 'fundperformanceestimate');
                                     } else if(page_id == 103) {
@@ -4339,9 +4355,9 @@ Ext.onReady(function() {
                                     } else if(page_id == 140) {
                                         popup('client', 'client');
                                     } else if(page_id == 141) {
-                                        popup('app', 'country');
+                                        popup('v2', 'country');
                                     } else if(page_id == 142) {
-                                        popup('app', 'currency');
+                                        popup('v2', 'currency');
                                     } else if(page_id == 143) {
                                         popup('fund', 'fxhedge');
                                     } else if(page_id == 144) {
@@ -4351,6 +4367,7 @@ Ext.onReady(function() {
                                     } else if(page_id == 147) {
                                         popup('auth', 'group');
                                     }
+                                    
 
 
 

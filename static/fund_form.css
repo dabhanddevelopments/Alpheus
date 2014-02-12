@@ -1,0 +1,3 @@
+.grp-module .grp-row:not(tr).grp-cells .grp-cell {
+    width: 500px;
+}
