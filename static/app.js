@@ -183,9 +183,9 @@ function displayInnerGrid(widget, data, renderId, hideHeaders, height) {
                     return '<span style="font-size:9; font-weight: normal;">' + val + '</span>';
                 };
                 if (val > 0) {
-                    return '<span style="color: #1803A1; font-weight: normal;">' + val + ' %</span>';
+                    return '<span style="color: #01017D; font-weight: normal;">' + val + ' %</span>';
                 } else if (val < 0) {
-                    return '<span style="color:red; font-weight: normal;">' + val + ' %</span>';
+                     return '<span style="color: #F73100; font-weight: normal;">' + val + ' %</span>';
                 }
                 if(val != '') {
                     return '<span style="font-weight: normal;">0 %</span>';
@@ -1979,7 +1979,6 @@ Ext.onReady(function() {
                                     chart.xAxis[1].update({
                                          offset: -200,
                                     });
-                                    console.log('default');
                               }
                           }
                         },
@@ -2542,9 +2541,9 @@ Ext.onReady(function() {
 
                 }
                 if(val < 0) {
-                    style = ' style="color:red;"';
+                    style = ' style="color: #F73100;"';
                 } else {
-                    style = ' style="color:green;"';
+                    style = ' style="color: #01017D;"';
                 }
                 html += '<td><div><span class="month_table_day">' + i + '</span><span class="month_table_val"><a href="#"' + style + ' onclick="refreshHoldPerfBar(\'w2\', \'' + date + '\', ' + fund + ');">' + val + ' <span style="font-weight: normal;">%</span></a></div></span></td>';
             }
@@ -2912,9 +2911,9 @@ Ext.onReady(function() {
                     if(row != 'year') {
                         data.columns[i]['renderer'] = function(val) {
                             if (val > 0) {
-                                return '<span style="color: #1803A1;">' + val + '  <span style="font-weight: normal;">%</span></span>';
+                                return '<span style="color: #01017D;">' + val + ' %</span>';
                             } else if (val < 0) {
-                                return '<span style="color:red;">' + val + '  <span style="font-weight: normal;">%</span></span>';
+                                return '<span style="color:#F73100;">' + val + ' %</span>';
                             }
                             if(val != '') {
                                 return val+' <span style="font-weight: normal;">%</span>';

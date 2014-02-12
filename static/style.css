@@ -22,7 +22,7 @@ ul, ol {
 * { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
 
 body {
-    background-color: #EEEEEE;
+    background-color: #01017D;
     font-family: 'Helvetica Neue', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     font-size: x-small;
@@ -479,8 +479,8 @@ article:not(:last-child),
 
 
 table.month_table{
-    margin:30px;
-    background-color: #DFE8F6;
+    margin:0px;
+    background-color: #FFFFFF;
 }
 
 table.month_table{
@@ -565,7 +565,7 @@ table.month_table td {
 }
 
 .custom-grid-sub .x-grid-row-alt { 
-    background-color: #E0E0E0; 
+    background-color: #DBEDFF; 
 }
 
 /* Grid cells when the mouse cursor is over the row */ 
@@ -579,7 +579,7 @@ table.month_table td {
 }
 
 .custom-grid .x-grid-row-alt { 
-    background-color: #E0E0E0; 
+    background-color: #DBEDFF; 
 }
 
 /* Overall Performance has a top border */
@@ -597,7 +597,7 @@ table.month_table td {
 
 /* Make YTD cells blue */
 .custom-grid .x-grid-row .ytd-column {
-    background-color: #A7BEDD;
+    background-color: #94BFFF;
     /*color: white; */
 }
 
@@ -608,7 +608,7 @@ table.month_table td {
 
 /* Make all grid headers dark blue */
 .custom-grid .x-column-header-inner {
-   background-color: #1803A1;
+   background-color: #01017D;
    color: white;
    font-weight: bold;
 }
