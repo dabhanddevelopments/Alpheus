@@ -285,7 +285,7 @@ class FundStyle(models.Model):
 
 class GicsCategory(models.Model):
     id = models.AutoField(primary_key=True, db_column='GICSCategoryID')
-    description = models.CharField(max_length=500, db_column='Name', blank=True)
+    description = models.CharField(max_length=500, db_column='Description', blank=True)
     gics_subindustry_code = models.CharField(max_length=20, db_column='GICSSubIndustryCode', blank=True, null=True)
     sub_industry_name = models.CharField(max_length=100, db_column='SubIndustryName', blank=True, null=True)
     gics_industry_code = models.CharField(max_length=20, db_column='GICSIndustryCode', blank=True, null=True)
@@ -578,9 +578,10 @@ class FundPositionAudit(models.Model):
     costprice_fundcur = models.DecimalField(decimal_places=6, max_digits=18, db_column='CostPriceFundCur', blank=True, null=True)
     marketcost_lcl = models.DecimalField(decimal_places=2, max_digits=18, db_column='MarketCostLcl', blank=True, null=True)
     marketcost_fundcur = models.DecimalField(decimal_places=2, max_digits=18, db_column='MarketCostFundCur', blank=True, null=True)
-
+    weight = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='Weight', blank=True)
+    
     class Meta:
-        db_table = 'ALP_FundPositions_TS'
+        db_table = 'ALP_PositionsMonthly'
 
 
 class Fund(models.Model):

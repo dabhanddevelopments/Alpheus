@@ -4276,7 +4276,7 @@ Ext.onReady(function() {
                                         popup('v2', 'administrator');
                                     } else if(page_id == 101) {
                                         popup('fund', 'classification');
-                                    } else if(page_id == 182) {
+                                    } else if(page_id == 219) {
                                         popup('fund', 'returnestimate', 1000, 800);
                                     } else if(page_id == 183) {
                                         popup('v2', 'fundstyle');

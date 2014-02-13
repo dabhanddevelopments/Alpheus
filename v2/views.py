@@ -20,7 +20,7 @@ def fund_return_form(request):
     months = []
     # check if this actually works, especially with feb
     now = datetime.datetime.now()
-    now = datetime.datetime(2013, 9, 5, 6, 22, 45, 517969)
+    now = datetime.datetime(2013, 12, 5, 6, 22, 45, 517969)
     
     months.append(now - datetime.timedelta(days=60))
     months.append(now - datetime.timedelta(days=30))
@@ -56,7 +56,7 @@ def fund_return_form(request):
     groups = ['Credit Suisse', 'HSBC', 'Private Equity']
     
     data = FundReturnMonthly.objects.filter(
-        fund__flash_flag='Y', value_date__gte=months[0]).\
+        fund__estimate_required='Y', value_date__gte=months[0]).\
         order_by('fund__name', 'value_date')
         
     
@@ -155,6 +155,7 @@ def fund_return_form(request):
     counter = 0
     group_counter = {}
     group_total = {}
+    lst_vars = ['nav1', 'nav2', 'nav3', 'weight', 'return2', 'return3']
     for group in groups:
         group_total[group] = {
             'name': '',
@@ -175,13 +176,14 @@ def fund_return_form(request):
                 if group_counter[group] == 0:
                     group_counter[group] = counter
                     
-                group_total[group]['nav1'] += dic[row]['nav1']
-                group_total[group]['nav2'] += dic[row]['nav2']
-                group_total[group]['nav3'] += dic[row]['nav3']
-                group_total[group]['weight'] += dic[row]['weight']
-                group_total[group]['return2'] += dic[row]['return2']
-                group_total[group]['return3'] += dic[row]['return3']
-                group_total[group]['ytd'] += dic[row]['ytd']
+                for var in lst_vars:
+                    try:
+                        val = dic[row][var]
+                    except:
+                        val = 0
+                        
+                    group_total[group][var] += val
+                    
                 total['ytd'] += dic[row]['ytd']
                 dic[row]['name'] = row
                 
