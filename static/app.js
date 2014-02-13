@@ -4264,8 +4264,8 @@ Ext.onReady(function() {
 
                                     page_id = record.raw.id;
 
-                                    if(page_id == 96) {
-                                        popup('fund', 'fund');
+                                    if(page_id == 222) {
+                                        popup('v2', 'fund', 1300, 800);
                                     } else if(page_id == 97) {
                                         popup('client', 'subscriptionredemption');
                                     } else if(page_id == 98) {
@@ -4278,9 +4278,9 @@ Ext.onReady(function() {
                                         popup('fund', 'classification');
                                     } else if(page_id == 219) {
                                         popup('fund', 'returnestimate', 1000, 800);
-                                    } else if(page_id == 183) {
+                                    } else if(page_id == 220) {
                                         popup('v2', 'fundstyle');
-                                    } else if(page_id == 184) {
+                                    } else if(page_id == 221) {
                                         popup('v2', 'alpheusgroup');
                                     } else if(page_id == 102) {
                                         popup('app', 'fundperformanceestimate');
