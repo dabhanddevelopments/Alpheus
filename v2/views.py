@@ -173,7 +173,12 @@ def fund_return_form(request):
                     fund = row.fund, value_date__gte=ytd_start, 
                     value_date__lte=ytd_end).\
                     order_by('value_date')
-                ytd_lst = [row.ytd for row in ytd_data]
+                ytd_lst = []
+                for row in ytd_data:
+                    if row.fund_perf == None:
+                        ytd_lst.append(0)
+                    else:
+                        ytd_lst.append(row.fund_perf)
                 ytd_val = cum_final(ytd_lst, ytd_start, len(ytd_lst))
                 dic[name]['ytd'] = Decimal('%0.2f' % ytd_val)
                 
@@ -209,7 +214,7 @@ def fund_return_form(request):
                     except:
                         val = 0
                         
-                    group_total[group][var] += val
+                    group_total[group][var] += Decimal(val)
                     
                 total['ytd'] += dic[row]['ytd']
                 dic[row]['name'] = row
