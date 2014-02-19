@@ -40,13 +40,13 @@ def fund_return_form(request):
                     continue
                 
                 for i in range(2, 4):                
-                    if row['estimation' + str(i)] == 'Y':
+                    if row['estimation' + str(i)] == True:
                         try:
                             returns = FundReturnMonthly.objects.get(
                                 fund = Fund.objects.get(pk=row['pk']), 
                                 value_date__year = months[i - 1].year,
                                 value_date__month = months[i - 1].month,
-                                fund__estimate_required='Y',
+                                fund__estimate_required=True,
                             )
                             returns.fund_perf = row['return' + str(i)]
                             returns.save()
@@ -60,7 +60,7 @@ def fund_return_form(request):
     groups = ['Credit Suisse', 'HSBC', 'Private Equity']
     
     data = FundReturnMonthly.objects.filter(
-        fund__estimate_required='Y', value_date__gte=months[0]).\
+        fund__estimate_required=True, value_date__gte=months[0]).\
         order_by('fund__name', 'value_date')
         
     
@@ -176,7 +176,7 @@ def fund_return_form(request):
                 ytd_lst = []
                 for row in ytd_data:
                     if row.fund_perf == None:
-                        ytd_lst.append(0)
+                        ytd_lst.append(Decimal(0))
                     else:
                         ytd_lst.append(row.fund_perf)
                 ytd_val = cum_final(ytd_lst, ytd_start, len(ytd_lst))

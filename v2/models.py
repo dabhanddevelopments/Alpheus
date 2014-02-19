@@ -603,8 +603,9 @@ class Fund(models.Model):
     custodian = models.ForeignKey(Custodian, db_column='CustodianID', blank=True, null=True)
     auditor = models.ForeignKey(Auditor,  db_column='AuditorID', blank=True, null=True)
     alarm = models.ForeignKey(Alarm, db_column='AlarmID', blank=True, null=True)
-    active = models.CharField(max_length=1, db_column='Active', blank=True, null=True)
-    estimate_required = models.CharField(max_length=1, db_column='FlashFlag', blank=True, null=True)
+    active = models.NullBooleanField(db_column='Active', default=False)
+    estimate_required = models.NullBooleanField(max_length=1, db_column='FlashFlag', default=False)
+    estimate = models.NullBooleanField(max_length=1, db_column='EstimateFlag', default=False)
     
 
     class Meta:
@@ -632,9 +633,9 @@ class FundCharAudit(models.Model):
     custodian = models.ForeignKey(Custodian, db_column='CustodianID', blank=True, null=True)
     auditor = models.ForeignKey(Auditor, db_column='AuditorID', blank=True, null=True)
     alarm = models.ForeignKey(Alarm, db_column='AlarmID', blank=True, null=True)
-    active = models.CharField(max_length=1, db_column='Active', blank=True, null=True)
-    flash_flag = models.CharField(max_length=1, db_column='FlashFlag', blank=True, null=True)
-    sec_bench = models.ForeignKey('Holding', db_column='SecBenchID', blank=True, null=True)
+    active = models.NullBooleanField(max_length=1, db_column='Active', blank=True, null=True)
+    flash_flag = models.NullBooleanField(max_length=1, db_column='FlashFlag', default=False)
+    sec_bench = models.ForeignKey('Holding', db_column='SecBenchID', default=False)
 
     class Meta:
         db_table = 'ALP_FundsChars_TS'
