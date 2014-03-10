@@ -6,6 +6,9 @@ from v2.models import *
 from alpheus.utils import cumulative_return
 from datetime import datetime, timedelta
 import decimal
+import numpy as np
+import pandas as pd
+from django.utils.datastructures import SortedDict
 
 class AdministratorResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
@@ -147,8 +150,26 @@ class FundCharAuditResource(MainBaseResource):
 
 class FundReturnResource(MainBaseResource):
 
-    def alter_list_data_to_serialize(self, request, data):
+    def alter_list_data_to_serialize(self, request, data):            
     
+        # Histogram
+        if request.GET.get('histogram', False):
+        
+            lst = [row.data['fund_perf'] for row in data['objects']]
+            
+            hist = np.histogram(lst, bins=21, range=(-10,11), density=False)
+            
+            values = [int(row) for row in hist[0]]
+            keys = [row for row in hist[1]]
+                
+            data = {
+                'data': values,
+                'columns': keys,
+            }
+            
+            return data
+            
+        # cumulative return
         y1 = request.GET.get('y1', False)
 
         if y1 != False:
@@ -165,9 +186,10 @@ class FundReturnResource(MainBaseResource):
             }
             new_obj = self.build_bundle(data = new_data)
             data['objects'].insert(0, new_obj)
-
+            
             data = cumulative_return(data, perf_type = 'fund')
             data = cumulative_return(data, perf_type = 'bench')
+            
             
             # delta
             if request.GET.get("graph_type", False) == 'bench':
@@ -177,7 +199,7 @@ class FundReturnResource(MainBaseResource):
         return super(FundReturnResource, self) \
                 .alter_list_data_to_serialize(request, data)
 
-class FundReturnDailyResource(MainBaseResource):
+class FundReturnDailyResource(FundReturnResource):
     class Meta(MainBaseResource.Meta):
         queryset = FundReturnDaily.objects.all()
 
@@ -187,6 +209,7 @@ class FundReturnDailyResource2(FundReturnResource):
 
 class FundReturnMonthlyResource(FundReturnResource):
     fund = fields.ForeignKey(FundResource, 'fund')
+    
     class Meta(MainBaseResource.Meta):
         queryset = FundReturnMonthly.objects.all()
 
@@ -213,6 +236,29 @@ class HoldingDailyResource(MainBaseResource):
 class HoldingMonthlyResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = HoldingMonthly.objects.all()
+        
+
+    def alter_list_data_to_serialize(self, request, data):            
+    
+        fund = request.GET.get('fund', False)
+        
+        # W2 - Holding Performance Bar
+        if request.GET.get('performance', False) and fund:
+            
+            # We order the bar graph by the weight in positionmonthly
+            # @TODO: implement this when we have data in positionmonthly
+            #pos = PositionMonthly.objects.filter(fund=fund)
+            #new_data = []
+            #for order_data in pos:
+            #    for old_data in data['objects']:
+            #        #if order_data.
+            
+            #return data
+            pass
+                    
+        
+        return super(HoldingMonthlyResource, self) \
+                .alter_list_data_to_serialize(request, data)
 
 class HoldingDepositResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):

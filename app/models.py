@@ -121,7 +121,7 @@ class WidgetParam(models.Model):
 class Widget(models.Model):
     name = models.CharField(max_length=100)
     key = models.CharField(max_length=50)
-    widget_type = models.ForeignKey(WidgetType)
+    widget_type = models.ForeignKey(WidgetType, null=True, blank=True)
     widget_param = models.ManyToManyField(WidgetParam, null=True, blank=True)
     window = models.ForeignKey(Window)
     description = models.TextField(blank=True, null=True)

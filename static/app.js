@@ -55,6 +55,66 @@ Ext.define('Rx.grid.MyRowExpander', function() {
 });
 
 
+Ext.define('Ext.form.field.Month', {
+    extend:'Ext.form.field.Date',
+    alias: 'widget.monthfield',
+    requires: ['Ext.picker.Month'],
+    alternateClassName: ['Ext.form.MonthField', 'Ext.form.Month'],
+    selectMonth: null,
+    createPicker: function() {
+        var me = this,
+            format = Ext.String.format;
+        return Ext.create('Ext.picker.Month', {
+            pickerField: me,
+            ownerCt: me.ownerCt,
+            renderTo: document.body,
+            floating: true,
+            hidden: true,
+            focusOnShow: true,
+            minDate: me.minValue,
+            maxDate: me.maxValue,
+            disabledDatesRE: me.disabledDatesRE,
+            disabledDatesText: me.disabledDatesText,
+            disabledDays: me.disabledDays,
+            disabledDaysText: me.disabledDaysText,
+            format: me.format,
+            showToday: me.showToday,
+            startDay: me.startDay,
+            minText: format(me.minText, me.formatDate(me.minValue)),
+            maxText: format(me.maxText, me.formatDate(me.maxValue)),
+            listeners: { 
+        select:        { scope: me,   fn: me.onSelect     }, 
+        monthdblclick: { scope: me,   fn: me.onOKClick     },    
+        yeardblclick:  { scope: me,   fn: me.onOKClick     },
+        OkClick:       { scope: me,   fn: me.onOKClick     },    
+        CancelClick:   { scope: me,   fn: me.onCancelClick }        
+            },
+            keyNavConfig: {
+                esc: function() {
+                    me.collapse();
+                }
+            }
+        });
+    },
+    onCancelClick: function() {
+        var me = this;    
+    me.selectMonth = null;
+        me.collapse();
+    },
+    onOKClick: function() {
+        var me = this;    
+    if( me.selectMonth ) {
+               me.setValue(me.selectMonth);
+            me.fireEvent('select', me, me.selectMonth);
+    }
+        me.collapse();
+    },
+    onSelect: function(m, d) {
+        var me = this;    
+    me.selectMonth = new Date(( d[0]+1 ) +'/1/'+d[1]);
+    }
+});  
+
 function investmentNAV(div, type) {
 
     var id = $('#data').data(type);
@@ -846,11 +906,13 @@ Ext.onReady(function() {
        //console.log("ROW: " + row);
 
 
-        // is this needed?
+        
         Ext.onReady(function(){
             var win = new Ext.Window({
                 renderTo: Ext.getBody(),
                 items: items,
+                
+                // is this needed?
                 listeners: {
                     'close': function(tabPanel, tab){
                         $.each(graphs, function(x, row) {
@@ -1077,7 +1139,7 @@ Ext.onReady(function() {
             type: "GET",
             url: '/api/pagewindow/?page=' + pagewindow,
             success: function(data) {
-
+            
                 $('#data').data('grid_data' + page, data); // doesn't seem to be used anywhere
 
 
@@ -1104,7 +1166,7 @@ Ext.onReady(function() {
         if(typeof obj.fund == 'undefined') {
             obj.fund = $('#data').data('fund');
         }
-
+        
         // for w18
         function createGrid(tabId, data,flex) {
 
@@ -1313,7 +1375,6 @@ Ext.onReady(function() {
         var window = '<div id="' + page + '_' + data.window.id + '" pagewindow="' + data.id + '" class="layout_block"></div>';
 
         grid.add_widget(window, data.window.size_x, data.window.size_y, data.col, data.row);
-
 
         // div for window
         var window_id = 'page_' + page + '_' + data.window.id;
@@ -1616,7 +1677,7 @@ Ext.onReady(function() {
         }
 
 
-       //console.log(data.window.key)
+       console.log('adsf', '/api/widgets/?window=' + data.window.id + '&disabled=0')
 
         // get the widgets for this window
         $.ajax({
@@ -1624,6 +1685,8 @@ Ext.onReady(function() {
             url: '/api/widgets/?window=' + data.window.id + '&disabled=0',
             ajaxI: i,
             success: function(widgets) {
+            
+            console.log('widgets', widgets);
 
                 // now I will be i asynchronously
                 I = this.ajaxI;
@@ -1638,6 +1701,7 @@ Ext.onReady(function() {
 
                     // div for widget
                     var widget_id = 'page_' + page + '_win_' + data.window.id + '_widget_' + widgets[x].id;
+                    $('<div id="' + widget_id + 'top"></div>').appendTo('#' + window_id);
                     $('<div id="' + widget_id + '"></div>').appendTo('#' + window_id);
 
                     var panel = createWidget(obj, widgets[x], widget_id);
@@ -1678,7 +1742,7 @@ Ext.onReady(function() {
     }
 
     function widgetWindow(key, page, title, size_x, size_y, pagewindow, window) {
-
+    
         if(typeof $('#data').data('date') !== 'undefined') {
             var date = $('#data').data('date');
         } else {
@@ -1764,6 +1828,9 @@ Ext.onReady(function() {
         if(typeof obj.fund == 'undefined') {
             obj.fund = $('#data').data('fund');
         }
+        
+        widget.width = (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 30;
+        widget.height = (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 30,
 
         // is this needed?
         obj.id = obj.fund;
@@ -1825,8 +1892,18 @@ Ext.onReady(function() {
                widget.qs += '?fields=' + widget.columns;
            }
         }
-
-        if(widget.type == 'data_table') {
+        
+        if(widget.key == 'return_histogram') {
+        
+            return returnHistogram(obj, widget, div);
+            
+            
+        
+        } else if(widget.key == 'holding_performance') {
+        
+            return holdingPerformance(obj, widget, div);
+        
+        } else if(widget.type == 'data_table') {
 
             return dataTable(obj, widget, div);
 
@@ -1881,6 +1958,365 @@ Ext.onReady(function() {
 
 
         }
+    }
+
+    
+    function dateSpanPicker(id, div, widget, url) {
+    
+        
+    
+        var dateSpan = Ext.create('Ext.form.Panel', {
+            header: false,
+            border: false,
+            width: widget.width,
+            bodyPadding: 5,
+            items: [
+            {
+                xtype: 'fieldcontainer',
+                layout: 'hbox',
+                items: [
+                    {
+                        xtype: 'datefield',
+                        id: id + 'from_date',
+                        width: 90,
+                        //name: 'from_date',
+                        maxValue: new Date(),  // limited to the current date or prior
+                        listeners: {
+                            select: function(combo, record, index) {
+                             console.log('new from date', record);
+                                from = moment(record).format('YYYY-MM-DD');
+                                to = Ext.getCmp(id + 'to_date').getValue();
+                                console.log('old to date', to);
+                                to = moment(to).format('YYYY-MM-DD');
+                                $.getJSON(url + '&value_date__gte=' + from + '&value_date__lte=' + to, function(new_data) {
+                                
+                                    var chart = $('#data').data('chart-' + div);
+                                    try {
+                                       chart.series[0].setData(new_data[0].data);
+                                    } catch(err) {
+                                        chart.series[0].setData(new_data.data);
+                                    }
+                                    chart.redraw();
+                                });
+                            }
+                        },                  
+                    }, {
+                        xtype: 'splitter'
+                    }, {
+                        xtype: 'datefield',
+                        id: id + 'to_date',
+                        width: 90,
+                        //name: 'to_date',
+                        value: new Date(),  // defaults to today
+                        maxValue: new Date(),  // limited to the current date or prior
+                        listeners: {
+                            select: function(combo, record, index) {
+                                to = moment(record).format('YYYY-MM-DD');
+                                from = Ext.getCmp(id + 'from_date').getValue();
+                                from = moment(record).format('YYYY-MM-DD');
+                                $.getJSON(url + '&value_date__gte=' + from + '&value_date__lte=' + to, function(new_data) {
+                                    var chart = $('#data').data('chart-' + div);
+                                    try {
+                                       chart.series[0].setData(new_data[0].data);
+                                    } catch(err) {
+                                        chart.series[0].setData(new_data.data);
+                                    }
+                                    chart.redraw();
+                                });
+                            }
+                        }, 
+                    }
+                ]
+             }
+             ]
+        });
+        return dateSpan;
+    
+    }
+    
+    
+    
+    // W2 - Holding Performance Bar
+    function holdingPerformance(obj, widget, div) {
+    
+        function getUrl() {
+            return '/api/holdingmonthly/?y1=monthlyreturn&title=holding__name&data_type=graph';
+        }
+        
+        function fundOptions(year, month) {
+            var chart = $('#data').data('chart-' + div + '_tab1');
+            var options = $('#data').data('chart-options' + div + '_tab1');
+            console.log('options', options);
+            return; // @TODO: Implement later
+            
+            
+            $.getJSON('/api/fundreturnmonthly/?fund=' + $('#data').data('fund') + '&fields=fund_perf&value_date__year=' + year + '&value_date__month=' + month, function(fund) {
+                console.log('url', '/api/fundreturnmonthly/?fund=' + $('#data').data('fund') + '&fields=fund_perf&value_date__year=' + year + '&value_date__month=' + month);
+                console.log('fund', fund);
+                //options.yAxis = {};
+                options.yAxis.plotLines = [{
+                    value: fund[0].fund_perf,
+                    width: 1,
+                    color: 'black',
+                    label: {
+                        text: $('#data').data('fund_name') + ' Performance',
+
+                    },
+                    zIndex: 5,
+                }];
+                var chart = new Highcharts.Chart(options);
+           });
+        }
+                
+        var year = moment().year();
+        var year = 2013; // todo: remove this later when we have the data
+        var month = moment().month();
+        console.log('month', month);
+        var month = 2; // todo: remove this later when we have the data
+
+        widget.url = '/api/holdingmonthly/';
+        widget.qs = '?y1=monthlyreturn&title=holding__name&data_type=graph&value_date__year=' + year + '&value_date__month=' + month + '&holding__fund=' + obj.fund
+
+        widget.params.labels = 'rotated';
+        widget.params.legend = 'false';
+
+        $('<div id="' + div + '_tab1"></div>').appendTo("#" + div);
+        $('<div id="' + div + '_tab2"></div>').appendTo("#" + div);
+        
+        widget.height -= 70; // compensate for date picker
+        
+        var chart = barChart(obj, widget, div + '_tab1');
+
+        var data = widget;
+        var tabPanel = Ext.create('Ext.tab.Panel', {
+            height: widget.height + 70,
+            width:  widget.width + 10,
+            activeTab: 0,
+            border: false,
+            items: [
+                {
+                    title: 'Performance',
+                    bodyPadding: 10,
+                    //border: false,
+                    items: [
+                    
+                        {
+                            xtype: 'monthfield',
+                            submitFormat: 'Y-m-d',
+                            name: 'month',
+                            fieldLabel: 'month',
+                            format: 'F, Y',
+                            listeners: {
+                                select: function(combo, record, index) {
+                                    year = moment(record).format('YYYY');
+                                    month = from = moment(record).format('MM');
+                                    $.getJSON(getUrl() + '&value_date__year=' + year + '&value_date__month=' + month, function(new_data) {
+                                        var chart = $('#data').data('chart-' + div + '_tab1');
+                                        chart.series[0].setData(new_data[0].data);
+                                        chart.redraw();
+                                        fundOptions(year, month);
+                                    });
+                                }
+                            },
+                        }, {
+                            xtype: 'container',
+                            contentEl: div + '_tab1',
+                        }
+                    ],
+                },
+                {
+                    title: 'Weighted Performance',
+                    contentEl: div + '_tab2',
+                    id: div + '_tab2',
+                }
+            ],
+            renderTo: div,
+        });
+        
+        
+  
+    
+    
+    }
+    
+    function returnHistogram(obj, widget, div) {
+    
+        function getUrl(type) {
+            return '/api/fundreturn' + type + '/?histogram=true&fields=fund_perf';
+        }
+        
+        $.getJSON("/api/fundreturnmonthly/?histogram=true&fields=fund_perf", function(data) {
+
+            var width = (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 10;
+
+            var options = {
+	            chart: {
+	                renderTo: div,
+                    width: width,
+                    height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 70,
+                    type: 'column',
+	            },
+	            title: {
+	                text: false
+	            },
+                credits: {
+                    enabled: false
+                },
+                yAxis: {
+                    title: {
+                        text: false,
+                    },
+                },
+                legend: {
+                    enabled: false,
+                },
+                scrollbar: {
+                    enabled: false,
+                }, 
+                xAxis: {
+                    type: 'category',
+                    categories: data.columns,
+                    labels: {
+                        rotation: -45,
+                    },
+                },
+                series: [{
+                    data: data.data
+                }],
+	        };
+	        var chart = new Highcharts.Chart(options);
+	        
+	        $('#data').data('chart-' + div, chart);
+
+            var button1m = Ext.create('Ext.Button', {
+                text: '1m',
+                handler: function() {
+                    var date = moment().subtract('months', 1).format("YYYY-MM-DD");
+                    $.getJSON(getUrl(dateType) + '&value_date__gte=' + date, function(new_data) {
+                        chart.series[0].setData(new_data.data);
+                        chart.redraw();
+                    });
+                }
+            });
+            
+            var button3m = Ext.create('Ext.Button', {
+                text: '3m',
+                handler: function() {
+                    var date = moment().subtract('months', 3).format("YYYY-MM-DD");
+                    console.log(date);
+                    $.getJSON(getUrl(dateType) + '&value_date__gte=' + date, function(new_data) {
+                        chart.series[0].setData(new_data.data);
+                        chart.redraw();
+                    });
+                }
+            });
+            
+            var button6m = Ext.create('Ext.Button', {
+                text: '6m',
+                handler: function() {
+                    var date = moment().subtract('months', 6).format("YYYY-MM-DD");
+                    $.getJSON(getUrl(dateType) + '&value_date__gte=' + date, function(new_data) {
+                        chart.series[0].setData(new_data.data);
+                        chart.redraw();
+                    });
+                }
+            });            
+
+            var button1y = Ext.create('Ext.Button', {
+                text: '1y',
+                handler: function() {
+                    var date = moment().subtract('year', 1).format("YYYY-MM-DD");
+                    $.getJSON(getUrl(dateType) + '&value_date__gte=' + date, function(new_data) {
+                        chart.series[0].setData(new_data.data);
+                        chart.redraw();
+                    });
+                }
+            });
+            
+            var buttonYtd = Ext.create('Ext.Button', {
+                text: 'YTD',
+                handler: function() {
+                    var date = moment().startOf('year').format("YYYY-MM-DD"); 
+                    $.getJSON(getUrl(dateType) + '&value_date__gte=' + date, function(new_data) {
+                        chart.series[0].setData(new_data.data);
+                        chart.redraw();
+                    });
+                }
+            });
+            
+            var buttonAll = Ext.create('Ext.Button', {
+                text: 'All',
+                handler: function() {
+                    $.getJSON(getUrl(dateType), function(new_data) {
+                        chart.series[0].setData(new_data.data);
+                        chart.redraw();
+                    });
+                }
+            });
+
+
+            var buttonContainer = Ext.create('Ext.container.Container', {
+                padding: 5,
+                items: [button1m, button3m, button6m, button1y, buttonYtd, buttonAll],
+            });
+            
+            
+
+            var dateTypeStore = Ext.create('Ext.data.Store', {
+                fields: ['name'],
+                data : [
+                    {"id": "monthly", "name":"Monthly"},
+                    {"id": "daily", "name":"Daily"},
+                ]
+            });
+            
+            var dateTypeSelect = Ext.create('Ext.form.ComboBox', {
+                store: dateTypeStore,
+                //id: 'dateType',
+                padding: 5, 
+                width: 80,
+                queryMode: 'local',
+                displayField: 'name',
+                valueField: 'id',
+                listeners: {
+                    'change': function(field, selectedValue) {
+                       dateType = selectedValue;
+                        $.getJSON(getUrl(dateType), function(new_data) {
+                            chart.series[0].setData(new_data.data);
+                            chart.redraw();
+                            console.log(dateType, new_data);
+                            Ext.getCmp('hist_from_date').setValue();
+                            Ext.getCmp('hist_to_date').setValue(new Date());
+                        });
+                    }
+                }
+            });
+                    
+            dateTypeSelect.setValue(dateTypeStore.getAt('0').get('id'));
+            
+            var dateSpan = dateSpanPicker('hist_', div, widget, getUrl(dateType));
+
+            // check if it has daily data, if not we don't display the data type drop down menu            
+            $.getJSON("/api/fundreturndaily/?fields=id&fund=" + obj.fund, function(data) {
+                if(data.length === 0) {
+                    items = [buttonContainer, dateSpan];
+                } else {
+                    items = [buttonContainer, dateTypeSelect, dateSpan]
+                }
+                
+                var upperContainer = Ext.create('Ext.container.Container', {
+                    renderTo: div + 'top',
+                    autoFit: true,
+                    layout: 'hbox',
+                    style: {
+                        background: 'white',
+                    },
+                    items: items,
+                });
+            });
+            
+	    });
+    
     }
     
     function lineChart(obj, widget, div) {
@@ -2342,8 +2778,9 @@ Ext.onReady(function() {
     function barChart(obj, widget, div) {
 
         $.getJSON(widget.url + widget.qs, function(data) {
-
-
+        
+            console.log('bar chart data', data.data)
+        
             var title = false;
             if(typeof widget.params.title != 'undefined' && widget.params.title == "true") {
                 title = widget.name;
@@ -2377,8 +2814,8 @@ Ext.onReady(function() {
                     //marginBottom: 50,
                     renderTo: div,
                     type: type,
-                    width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 30,
-                    height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 35,
+                    width: widget.width,
+                    height: widget.height,
                 },
                 title: {
                     text: false
@@ -2386,7 +2823,9 @@ Ext.onReady(function() {
                 subtitle: {
                     text: false
                 },
-
+                credits: {
+                    enabled: false
+                },
                 yAxis: {
                     title: {
                         text: false,//'Holding Performance XXXX-XX-XX'
@@ -2406,7 +2845,7 @@ Ext.onReady(function() {
                     categories: data.columns,
                     //type : "datetime",
                 },
-                series: data.objects,
+                series: data,
             }
 
             if(typeof widget.params.labels != 'undefined' && widget.params.labels == 'rotated') {
@@ -2423,7 +2862,7 @@ Ext.onReady(function() {
 
            //console.log(widget.window.key);
             // vertical fund performance line over bar graph
-            if(widget.window.key == 'w2' || widget.window.key == 'w52') {
+            if(widget.window.key == 'holding_performance1' || widget.window.key == 'w52') {
 
                 $.getJSON('/api/fund/' + $('#data').data('fund') + '/?fields=mtd', function(fund) {
                     options.yAxis.plotLines = [{
@@ -2443,7 +2882,16 @@ Ext.onReady(function() {
 
             }
 
+            // save div for later
             $('#data').data('barchart-' + widget.window.key, div);
+            
+            // save data
+            $('#data').data('chart-' + div, chart);
+            
+            // save options
+            $('#data').data('chart-options-' + div, options);
+            
+            return chart;
 
         });
 

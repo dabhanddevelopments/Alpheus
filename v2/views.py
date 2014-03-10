@@ -58,12 +58,13 @@ def fund_return_form(request):
 
     # the groups used and their order
     groups = ['Credit Suisse', 'HSBC', 'Private Equity']
+    group_qs = AlpheusGroup.objects.all()
+    groups = [row.name for row in group_qs]
     
     data = FundReturnMonthly.objects.filter(
         fund__estimate_required=True, value_date__gte=months[0]).\
         order_by('fund__name', 'value_date')
         
-    
     # set the total nav of all funds
     total = {
         'name': 'Alpheus',
@@ -93,28 +94,33 @@ def fund_return_form(request):
     # calculate the values for each fund
     initial = []
     dic = SortedDict()
-    for row in data:
     
-
+    #assert False
+    for row in data:
+        
+        
+        name = row.fund.name
+        try:
+            dic[name]
+        except KeyError:
+            dic[name] = {
+                'nav1': 0.00,
+                'nav2': 0.00,
+                'nav3': 0.00,   
+                'return2': 0,
+                'return3': 0,
+            }
+        
         for group in groups:
         
             if group == row.fund.group.name:
             
-                #if row.nav == None:
-                #    continue
-            
-                name = row.fund.name
-                
                 if row.fund_perf == None:
                     fund_perf = 0
                 else:
                     fund_perf = row.fund_perf
-                #print 'name', name
                 
-                try:
-                    dic[name]
-                except:
-                    dic[name] = {}
+
                     
                 dic[name]['pk'] = row.fund.pk
                 dic[name]['group'] = group
@@ -145,24 +151,8 @@ def fund_return_form(request):
                     dic[name]['nav3'] = Decimal('%0.2f' % (nav2 + (nav2 * fund_perf)))
                     dic[name]['return3'] = Decimal('%0.2f' % (fund_perf))
                     dic[name]['estimation3'] = row.estimation
-                 
-                try:
-                    dic[name]['nav2']
-                except:
-                    dic[name]['nav2'] = 0.00   
-                try:
-                    dic[name]['nav3']
-                except:
-                    dic[name]['nav3'] = 0.00   
-                try:
-                    dic[name]['return2']
-                except:
-                    dic[name]['return2'] = 0
-                try:
-                    dic[name]['return3']
-                except:
-                    dic[name]['return3'] = 0
                     
+                 
                 # calculate the ytd data
                 ytd_start = date(months[0].year, 1, 1)
                 y = months[2].year
@@ -227,8 +217,8 @@ def fund_return_form(request):
         extra = {
             'name': group,
             'total': True,
-            'estimation2': "N",
-            'estimation3': "N",
+            'estimation2': 0,
+            'estimation3': 0,
         }
         group_total[group].update(extra)
         initial.insert(group_counter[group] - counter, group_total[group])

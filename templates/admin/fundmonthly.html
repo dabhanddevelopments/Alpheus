@@ -67,9 +67,9 @@
           <tr class="{% if form.initial.total %}total{% else %}{% cycle row1,row2 %}{% endif %}">
             <td>{{ form.pk }}{{ form.estimation2 }}{{ form.estimation3 }}{{ form.name }}</td>
             <td>{{ form.nav1|floatformat:2 }}</td><td>{{ form.weight|floatformat:2 }}%</td>
-            <td>{% if form.initial.estimation2 == "Y" %}{{ form.return2 }}{% else %}{{ form.initial.return2|floatformat:2|intcomma }}%{% endif %}</td>
+            <td>{% if form.initial.estimation2 %}{{ form.return2 }}{% else %}{{ form.initial.return2|floatformat:2|intcomma }}%{% endif %}</td>
             <td>{{ form.initial.nav2|floatformat:2|intcomma }}</td>
-            <td>{% if form.initial.estimation3 == "Y" %}{{ form.return3 }}{% else %}{{ form.initial.return3|floatformat:2|intcomma }}%{% endif %}</td>
+            <td>{% if form.initial.estimation3 %}{{ form.return3 }}{% else %}{{ form.initial.return3|floatformat:2|intcomma }}%{% endif %}</td>
             <td>{{ form.initial.nav3|floatformat:2|intcomma }}</td>
             <td>{{ form.initial.ytd }}</td>
           </tr>

@@ -474,7 +474,7 @@ class MainBaseResource(SpecifiedFields):
                         'y': float(row.data[self.y1]), #@TODO: Perm fix for float bug
                         'name': ' '.join([row.data[title] for title in self.title]),
                     })
-                return {'objects': [{'data': y1}]}
+                return [{'data': y1}]
 
             elif self.y1 and self.date:
 
@@ -535,15 +535,16 @@ class MainBaseResource(SpecifiedFields):
             return response
 
 
-        if self.specified_fields:
-            return {
-                'columns': self.set_columns(request, self.specified_fields),
-                'fields': self.specified_fields,
-                'rows': data['objects'],
-            }
-        else:
+        #if self.specified_fields:
+        #    return {
+        #        'columns': self.set_columns(request, self.specified_fields),
+        #        'fields': self.specified_fields,
+        #        'rows': data['objects'],
+        #    }
+        #else:
 
-            return data['objects']
+        #    return data['objects']
+        return data['objects']
 
 
 

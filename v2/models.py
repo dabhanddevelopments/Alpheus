@@ -605,7 +605,8 @@ class Fund(models.Model):
     alarm = models.ForeignKey(Alarm, db_column='AlarmID', blank=True, null=True)
     active = models.NullBooleanField(db_column='Active', default=False)
     estimate_required = models.NullBooleanField(max_length=1, db_column='FlashFlag', default=False)
-    estimate = models.NullBooleanField(max_length=1, db_column='EstimateFlag', default=False)
+    estimate = models.NullBooleanField(db_column='EstimateFlag', default=False)
+    daily_data = models.NullBooleanField(db_column='DailyData', default=False)
     
 
     class Meta:
@@ -927,6 +928,7 @@ class PositionDaily(models.Model):
     costpricefundcur = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='CostPriceFundCur', blank=True)
     marketcostlcl = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MarketCostLcl', blank=True)
     marketcostfundcur = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MarketCostFundCur', blank=True)
+    weight = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='MarketCostFundCur', blank=True)
 
     class Meta:
         db_table = 'ALP_PositionsDaily'
@@ -947,6 +949,7 @@ class PositionMonthly(models.Model):
     costpricefundcur = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='CostPriceFundCur', blank=True)
     marketcostlcl = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MarketCostLcl', blank=True)
     marketcostfundcur = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MarketCostFundCur', blank=True)
+    weight = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='MarketCostFundCur', blank=True)
 
     class Meta:
         db_table = 'ALP_PositionsMonthly'

@@ -112,7 +112,7 @@ class WidgetParamResource(StandardBaseResource):
 
 
 class WidgetsResource(StandardBaseResource):
-    widget_type = fields.ForeignKey(WidgetTypeResource, 'widget_type',full=True,)
+    widget_type = fields.ForeignKey(WidgetTypeResource, 'widget_type',full=True, null=True)
     widget_param = fields.ToManyField(WidgetParamResource, 'widget_param',full=True,)
     window = fields.ForeignKey(WindowResource, 'window',full=True)
 
@@ -130,7 +130,10 @@ class WidgetsResource(StandardBaseResource):
     def dehydrate(self, bundle):
 
         # @TODO: Consider getting rid of this
-        bundle.data['type'] = bundle.data['widget_type'].data['key']
+        try:
+            bundle.data['type'] = bundle.data['widget_type'].data['key']
+        except AttributeError:
+            pass
 
         qs = '?'
         params = {}
