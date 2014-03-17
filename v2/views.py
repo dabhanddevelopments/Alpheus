@@ -97,7 +97,9 @@ def fund_return_form(request):
     
     #assert False
     for row in data:
-        
+
+        if row.fund.group == None:
+            continue
         
         name = row.fund.name
         try:
