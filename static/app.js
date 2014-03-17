@@ -2039,32 +2039,41 @@ Ext.onReady(function() {
     // W2 - Holding Performance Bar
     function holdingPerformance(obj, widget, div) {
     
-        function getUrl() {
-            return '/api/holdingmonthly/?y1=monthlyreturn&title=holding__name&data_type=graph';
+        function getUrl(type) {
+            if(type === 1) {
+                var params = '&y1=monthlyreturn&fields=monthlyreturn';
+            } else {
+                var params = '&y1=weighted_perf&fields=monthlyreturn';
+            }
+            return '/api/holdingmonthly/?title=holding__name&data_type=graph&performance=true&value_date__year=' + year + '&value_date__month=' + month + '&holding__fund=' + obj.fund + params;
         }
         
-        function fundOptions(year, month) {
-            var chart = $('#data').data('chart-' + div + '_tab1');
-            var options = $('#data').data('chart-options' + div + '_tab1');
-            console.log('options', options);
-            return; // @TODO: Implement later
+        function updateChart(record, type) {
+        
+        
+            year = moment(record).format('YYYY');
+            month = from = moment(record).format('MM');
             
-            
-            $.getJSON('/api/fundreturnmonthly/?fund=' + $('#data').data('fund') + '&fields=fund_perf&value_date__year=' + year + '&value_date__month=' + month, function(fund) {
-                console.log('url', '/api/fundreturnmonthly/?fund=' + $('#data').data('fund') + '&fields=fund_perf&value_date__year=' + year + '&value_date__month=' + month);
-                console.log('fund', fund);
-                //options.yAxis = {};
-                options.yAxis.plotLines = [{
-                    value: fund[0].fund_perf,
-                    width: 1,
-                    color: 'black',
-                    label: {
-                        text: $('#data').data('fund_name') + ' Performance',
+            $.getJSON(getUrl(type), function(new_data) {
 
-                    },
-                    zIndex: 5,
-                }];
-                var chart = new Highcharts.Chart(options);
+                var options = $('#data').data('chart-options-' + div + '_tab' + type); 
+                
+                var url = '/api/fundreturnmonthly/?fund=' + $('#data').data('fund') + '&fields=fund_perf&value_date__year=' + year + '&value_date__month=' + month;
+                
+                console.log('update chart url', getUrl(type));
+                $.getJSON(url, function(fund) {
+                    options.series = [{data: new_data[0].data}];
+                    options.yAxis.plotLines = [{
+                        value: fund[0].fund_perf,
+                        width: 1,
+                        color: 'black',
+                        label: {
+                            text: $('#data').data('fund_name') + ' Performance',
+                        },
+                        zIndex: 5,
+                    }];
+                    new Highcharts.Chart(options);
+                });
            });
         }
                 
@@ -2075,18 +2084,29 @@ Ext.onReady(function() {
         var month = 2; // todo: remove this later when we have the data
 
         widget.url = '/api/holdingmonthly/';
-        widget.qs = '?y1=monthlyreturn&title=holding__name&data_type=graph&value_date__year=' + year + '&value_date__month=' + month + '&holding__fund=' + obj.fund
+        var params = '?title=holding__name&data_type=graph&performance=true&value_date__year=' + year + '&value_date__month=' + month + '&holding__fund=' + obj.fund
+        
 
         widget.params.labels = 'rotated';
         widget.params.legend = 'false';
 
         $('<div id="' + div + '_tab1"></div>').appendTo("#" + div);
         $('<div id="' + div + '_tab2"></div>').appendTo("#" + div);
+        $('<div id="' + div + '_tab3"></div>').appendTo("#" + div);
         
         widget.height -= 70; // compensate for date picker
         
-        var chart = barChart(obj, widget, div + '_tab1');
-
+        
+        widget.qs = '';
+        widget.url = getUrl(1);
+        
+        barChart(obj, widget, div + '_tab1');
+        
+        widget.url = getUrl(2);
+        
+        console.log('qs', widget.qs);
+        barChart(obj, widget, div + '_tab2');
+        
         var data = widget;
         var tabPanel = Ext.create('Ext.tab.Panel', {
             height: widget.height + 70,
@@ -2098,24 +2118,17 @@ Ext.onReady(function() {
                     title: 'Performance',
                     bodyPadding: 10,
                     //border: false,
+                    //id: div + '_tab1',
                     items: [
-                    
                         {
                             xtype: 'monthfield',
                             submitFormat: 'Y-m-d',
                             name: 'month',
-                            fieldLabel: 'month',
                             format: 'F, Y',
+                            value: new Date(),
                             listeners: {
                                 select: function(combo, record, index) {
-                                    year = moment(record).format('YYYY');
-                                    month = from = moment(record).format('MM');
-                                    $.getJSON(getUrl() + '&value_date__year=' + year + '&value_date__month=' + month, function(new_data) {
-                                        var chart = $('#data').data('chart-' + div + '_tab1');
-                                        chart.series[0].setData(new_data[0].data);
-                                        chart.redraw();
-                                        fundOptions(year, month);
-                                    });
+                                    updateChart(record, 1);
                                 }
                             },
                         }, {
@@ -2126,17 +2139,31 @@ Ext.onReady(function() {
                 },
                 {
                     title: 'Weighted Performance',
-                    contentEl: div + '_tab2',
-                    id: div + '_tab2',
-                }
+                    //id: div + '_tab2',
+                    items: [
+                        {
+                            xtype: 'monthfield',
+                            submitFormat: 'Y-m-d',
+                            name: 'month',
+                            format: 'F, Y',
+                            value: new Date(),
+                            listeners: {
+                                select: function(combo, record, index) {
+                                    updateChart(record, 2);
+                                }
+                            },
+                        }, {
+                            xtype: 'container',
+                            contentEl: div + '_tab2',
+                        }
+                    ],
+                },
             ],
             renderTo: div,
         });
         
+        //tabPanel.setActiveTab(0);
         
-  
-    
-    
     }
     
     function returnHistogram(obj, widget, div) {
@@ -2862,24 +2889,31 @@ Ext.onReady(function() {
 
            //console.log(widget.window.key);
             // vertical fund performance line over bar graph
-            if(widget.window.key == 'holding_performance1' || widget.window.key == 'w52') {
-
-                $.getJSON('/api/fund/' + $('#data').data('fund') + '/?fields=mtd', function(fund) {
+            
+            if(widget.window.key == 'holding_performance') { 
+            
+                var year = moment().year();
+                year = 2013;  // @TODO: get rid of this later
+                var month = moment().month();
+                var url = '/api/fundreturnmonthly/?fund=' + $('#data').data('fund') + '&fields=fund_perf&value_date__year=' + year + '&value_date__month=' + month;
+                
+                $.getJSON(url, function(fund) {
                     options.yAxis.plotLines = [{
-                        value: fund.mtd,
+                        value: fund[0].fund_perf,
                         width: 1,
                         color: 'black',
                         label: {
                             text: $('#data').data('fund_name') + ' Performance',
-
                         },
                         zIndex: 5,
                     }];
                     var chart = new Highcharts.Chart(options);
+                    
+                    $('#data').data('chart-' + div, chart);
+                    $('#data').data('chart-options-' + div, options);
                });
             } else {
                 var chart = new Highcharts.Chart(options);
-
             }
 
             // save div for later

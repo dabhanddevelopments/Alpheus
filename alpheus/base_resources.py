@@ -159,6 +159,7 @@ class MainBaseResource(SpecifiedFields):
     def dispatch(self, request_type, request, **kwargs):
 
         self.data_type = request.GET.get("data_type", False)
+        performance = request.GET.get("performance", False)
         #self.date_type = request.GET.get("date_type", False)
 
         self.specified_fields = []
@@ -186,7 +187,7 @@ class MainBaseResource(SpecifiedFields):
             self.specified_fields += self.title
 
         self.y1 = request.GET.get("y1", False)
-        if self.y1:
+        if self.y1 and not performance:
             self.specified_fields.append(self.y1)
 
         self.y2 = request.GET.get("y2", False)
@@ -474,7 +475,7 @@ class MainBaseResource(SpecifiedFields):
                         'y': float(row.data[self.y1]), #@TODO: Perm fix for float bug
                         'name': ' '.join([row.data[title] for title in self.title]),
                     })
-                return [{'data': y1}]
+                return [{'data': y1, 'negativeColor': '#FF0000',}]
 
             elif self.y1 and self.date:
 

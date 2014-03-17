@@ -57,7 +57,7 @@ def fund_return_form(request):
 
 
     # the groups used and their order
-    groups = ['Credit Suisse', 'HSBC', 'Private Equity']
+    #groups = ['Credit Suisse', 'HSBC', 'Private Equity']
     group_qs = AlpheusGroup.objects.all()
     groups = [row.name for row in group_qs]
     
@@ -122,7 +122,7 @@ def fund_return_form(request):
                 else:
                     fund_perf = row.fund_perf
                 
-
+                print name, '-', group
                     
                 dic[name]['pk'] = row.fund.pk
                 dic[name]['group'] = group
@@ -222,9 +222,11 @@ def fund_return_form(request):
             'estimation2': 0,
             'estimation3': 0,
         }
-        group_total[group].update(extra)
-        initial.insert(group_counter[group] - counter, group_total[group])
-        counter -= 1
+        if group_total[group]['nav1'] != 0 and group_total[group]['nav2'] != 0 \
+            and group_total[group]['nav3'] != 0:
+            group_total[group].update(extra)
+            initial.insert(group_counter[group] - counter, group_total[group])
+            #counter -= 1
         
     # insert the total for all groups
     initial.insert(0, total)
