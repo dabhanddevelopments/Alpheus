@@ -240,23 +240,29 @@ class HoldingMonthlyResource(MainBaseResource):
 
     def alter_list_data_to_serialize(self, request, data):            
     
-        fund = request.GET.get('fund', False)
+        fund = request.GET.get('holding__fund', False)
+        year = request.GET.get('value_date__year', False)
+        month = request.GET.get('value_date__month', False)
+        performance = request.GET.get('performance', False) 
         
         # W2 - Holding Performance Bar
-        if request.GET.get('performance', False) and fund:
+        if performance and year and month and fund:
             
-            # We order the bar graph by the weight in positionmonthly
-            # @TODO: implement this when we have data in positionmonthly
-            #pos = PositionMonthly.objects.filter(fund=fund)
-            #new_data = []
-            #for order_data in pos:
-            #    for old_data in data['objects']:
-            #        #if order_data.
+            # Get the weight of the holding from PositionMonthly
+            pos = PositionMonthly.objects.filter(fund=fund, 
+                value_date__year=year, value_date__month=month). \
+                select_related('holding')
             
-            #return data
-            pass
-                    
+            new_data = []
+            for i, d in enumerate(data['objects']):
+                d.data['weight'] = 0
+                d.data['weighted_perf'] = 0
+                for p in pos:
+                    if d.data['holding__name'] == p.holding.name:
+                        d.data['weight'] = p.weight
+                        d.data['weighted_perf'] = d.data['monthlyreturn'] * p.weight
         
+            
         return super(HoldingMonthlyResource, self) \
                 .alter_list_data_to_serialize(request, data)
 

@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 from django.db import models
-from django_pandas.managers import DataFrameManager
 
 class Administrator(models.Model):
     id = models.AutoField(primary_key=True, db_column='AdminID')
@@ -693,8 +692,6 @@ class FundReturnMonthly(models.Model):
     sec_bench = models.DecimalField(decimal_places=6, max_digits=18, db_column='SecBenchMonthlyReturn', blank=True, null=True)
     sec_bench_ytd = models.DecimalField(decimal_places=6, max_digits=18, db_column='SecBenchYTDReturn', blank=True, null=True)
 
-    objects = DataFrameManager()
-
     class Meta:
         db_table = 'ALP_FundsMonthlyVals_TS'
 
@@ -723,9 +720,9 @@ class Holding(models.Model):
     idsedol = models.CharField(max_length=20, db_column='IDSedol', blank=True, null=True)
     idvaloren = models.CharField(max_length=20, db_column='IDValoren', blank=True, null=True)
     idother = models.CharField(max_length=20, db_column='IDOther', blank=True, null=True)
-    region1 = models.ForeignKey(Region, related_name='holding_region1', db_column='Region1ID', blank=True)
-    region2 = models.ForeignKey(Region, related_name='holding_region2', db_column='Region2ID', blank=True)
-    region3 = models.ForeignKey(Region, related_name='holding_region3', db_column='Region3ID', blank=True)
+    region1 = models.ForeignKey(Region, related_name='holding_region1', db_column='Region1ID', blank=True, null=True)
+    region2 = models.ForeignKey(Region, related_name='holding_region2', db_column='Region2ID', blank=True, null=True)
+    region3 = models.ForeignKey(Region, related_name='holding_region3', db_column='Region3ID', blank=True, null=True)
 
     class Meta:
         db_table = 'ALP_Holdings'
@@ -928,7 +925,7 @@ class PositionDaily(models.Model):
     costpricefundcur = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='CostPriceFundCur', blank=True)
     marketcostlcl = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MarketCostLcl', blank=True)
     marketcostfundcur = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MarketCostFundCur', blank=True)
-    weight = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='MarketCostFundCur', blank=True)
+    weight = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='Weight', blank=True)
 
     class Meta:
         db_table = 'ALP_PositionsDaily'
@@ -949,7 +946,7 @@ class PositionMonthly(models.Model):
     costpricefundcur = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='CostPriceFundCur', blank=True)
     marketcostlcl = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MarketCostLcl', blank=True)
     marketcostfundcur = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MarketCostFundCur', blank=True)
-    weight = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='MarketCostFundCur', blank=True)
+    weight = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='Weight', blank=True)
 
     class Meta:
         db_table = 'ALP_PositionsMonthly'
