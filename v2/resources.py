@@ -234,37 +234,9 @@ class HoldingDailyResource(MainBaseResource):
         queryset = HoldingDaily.objects.all()
 
 class HoldingMonthlyResource(MainBaseResource):
+    holding = fields.ForeignKey(HoldingResource, 'holding')
     class Meta(MainBaseResource.Meta):
         queryset = HoldingMonthly.objects.all()
-        
-
-    def alter_list_data_to_serialize(self, request, data):            
-    
-        fund = request.GET.get('holding__fund', False)
-        year = request.GET.get('value_date__year', False)
-        month = request.GET.get('value_date__month', False)
-        performance = request.GET.get('performance', False) 
-        
-        # W2 - Holding Performance Bar
-        if performance and year and month and fund:
-            
-            # Get the weight of the holding from PositionMonthly
-            pos = PositionMonthly.objects.filter(fund=fund, 
-                value_date__year=year, value_date__month=month). \
-                select_related('holding')
-            
-            new_data = []
-            for i, d in enumerate(data['objects']):
-                d.data['weight'] = 0
-                d.data['weighted_perf'] = 0
-                for p in pos:
-                    if d.data['holding__name'] == p.holding.name:
-                        d.data['weight'] = p.weight
-                        d.data['weighted_perf'] = d.data['monthlyreturn'] * p.weight
-        
-            
-        return super(HoldingMonthlyResource, self) \
-                .alter_list_data_to_serialize(request, data)
 
 class HoldingDepositResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
@@ -311,6 +283,8 @@ class HoldingPositionDailyResource(MainBaseResource):
         queryset = HoldingPositionDaily.objects.all()
 
 class HoldingPositionMonthlyResource(MainBaseResource):
+    fund = fields.ForeignKey(FundResource, 'fund')
+    
     class Meta(MainBaseResource.Meta):
         queryset = HoldingPositionMonthly.objects.all()
         
@@ -326,10 +300,11 @@ class HoldingPositionMonthlyResource(MainBaseResource):
         # Get monthlyreturn from HoldingMonthly (only utilized in W2)
         # and the weight of the prior month to calculate the average weight
         if performance and year and month and fund:
+        
             
             hm = HoldingMonthly.objects.filter(
                 value_date__year=year, value_date__month=month). \
-                select_related('holding')
+                select_related('holding').only('holding__name', 'monthlyreturn')
                 
             if int(month) == 1:
                 prior_year = int(year) - 1
@@ -341,7 +316,7 @@ class HoldingPositionMonthlyResource(MainBaseResource):
             prior_pos = HoldingPositionMonthly.objects.filter(
                 value_date__year=prior_year, value_date__month=prior_month,
                 fund=fund). \
-                select_related('holding')
+                select_related('holding').only('holding__name', 'weight')
                 
             pos = data['objects']
             data['objects'] = [] # delete old data
@@ -366,7 +341,7 @@ class HoldingPositionMonthlyResource(MainBaseResource):
                                 }
                                 new_obj = self.build_bundle(data = new_data)
                                 data['objects'].insert(0, new_obj)
-                
+         
         return super(HoldingPositionMonthlyResource, self) \
                 .alter_list_data_to_serialize(request, data)
 
