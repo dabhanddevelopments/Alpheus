@@ -150,7 +150,9 @@ class FundCharAuditResource(MainBaseResource):
 
 class FundReturnResource(MainBaseResource):
 
-    def alter_list_data_to_serialize(self, request, data):            
+    def alter_list_data_to_serialize(self, request, data):   
+    
+        fund = request.GET.get('fund', False)      
     
         # Histogram
         if request.GET.get('histogram', False):
@@ -168,6 +170,12 @@ class FundReturnResource(MainBaseResource):
             }
             
             return data
+            
+        # W15 - Fund Summary
+        if request.GET.get('summary', False):
+        
+            daily = FundReturnDaily.objects.filter(fund=fund) \
+                .select_related('fund').only('nav') 
             
         # cumulative return
         y1 = request.GET.get('y1', False)
