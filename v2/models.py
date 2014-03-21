@@ -911,7 +911,7 @@ class HoldingMonthly(models.Model):
 
 
 
-class PositionDaily(models.Model):
+class HoldingPositionDaily(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     fund = models.ForeignKey(Fund, db_column='FundID')
     holding = models.ForeignKey(Holding, db_column='HoldingID')
@@ -932,7 +932,7 @@ class PositionDaily(models.Model):
         verbose_name_plural = 'Position Daily'
 
 
-class PositionMonthly(models.Model):
+class HoldingPositionMonthly(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     fund = models.ForeignKey(Fund, db_column='FundID')
     holding = models.ForeignKey(Holding, db_column='HoldingID')
@@ -941,7 +941,7 @@ class PositionMonthly(models.Model):
     marketpricelcl1 = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='MarketPriceLcl', blank=True)
     marketpricefundcur = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='MarketPriceFundCur', blank=True)
     marketvaluelcl1 = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MarketValueLcl', blank=True)
-    marketvaluefundcur1 = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MarketValueFundCur', blank=True)
+    marketvaluefundcur = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MarketValueFundCur', blank=True)
     costpricelcl = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='CostPriceLcl', blank=True)
     costpricefundcur = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='CostPriceFundCur', blank=True)
     marketcostlcl = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MarketCostLcl', blank=True)

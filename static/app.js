@@ -1134,14 +1134,17 @@ Ext.onReady(function() {
         } catch(e) {
             var pagewindow = page;
         }
+        
+        var url = '/api/pagewindow/?page=' + pagewindow;
 
         $.ajax({
             type: "GET",
-            url: '/api/pagewindow/?page=' + pagewindow,
+            url: url,
             success: function(data) {
             
                 $('#data').data('grid_data' + page, data); // doesn't seem to be used anywhere
 
+                console.log('pagewindow', data, url);
 
                 // get the window id from pagewindow by filtering by page id (of current page)
                 // delete window div/dom
@@ -1901,7 +1904,13 @@ Ext.onReady(function() {
         
         } else if(widget.key == 'holding_performance') {
         
-            return holdingPerformance(obj, widget, div);
+            return holdingPerformance(obj, widget, div, 'performance');
+        
+        } else if(widget.key == 'holding_nav') {
+        
+            console.log('holding NAV');
+        
+            return holdingPerformance(obj, widget, div, 'nav');
         
         } else if(widget.type == 'data_table') {
 
@@ -2036,16 +2045,25 @@ Ext.onReady(function() {
     
     
     
-    // W2 - Holding Performance Bar
-    function holdingPerformance(obj, widget, div) {
+    // W2 - Holding Performance Bar & W7 - Holding NAV Bar
+    function holdingPerformance(obj, widget, div, perfType) {
     
         function getUrl(type) {
-            if(type === 1) {
-                var params = '&y1=monthlyreturn&fields=monthlyreturn';
-            } else {
-                var params = '&y1=weighted_perf&fields=monthlyreturn';
+        
+            if(perfType == 'nav') {
+                if(type === 1) {
+                    var params = '&y1=marketvaluefundcur&fields=marketvaluefundcur,weight';
+                } else {
+                    var params = '&y1=average_weight&fields=weight';
+                } 
+            } else {   
+                if(type === 1) {
+                    var params = '&y1=monthlyreturn&fields=weight';
+                } else {
+                    var params = '&y1=weighted_perf&fields=weight';
+                }
             }
-            return '/api/holdingmonthly/?title=holding__name&data_type=graph&performance=true&value_date__year=' + year + '&value_date__month=' + month + '&holding__fund=' + obj.fund + params;
+            return '/api/holdingpositionmonthly/?title=holding__name&data_type=graph&performance=true&value_date__year=' + year + '&value_date__month=' + month + '&fund=' + obj.fund + params;
         }
         
         function updateChart(record, type) {
@@ -2078,33 +2096,27 @@ Ext.onReady(function() {
         }
                 
         var year = moment().year();
-        var year = 2013; // todo: remove this later when we have the data
         var month = moment().month();
-        console.log('month', month);
-        var month = 2; // todo: remove this later when we have the data
-
-        widget.url = '/api/holdingmonthly/';
-        var params = '?title=holding__name&data_type=graph&performance=true&value_date__year=' + year + '&value_date__month=' + month + '&holding__fund=' + obj.fund
-        
 
         widget.params.labels = 'rotated';
         widget.params.legend = 'false';
 
         $('<div id="' + div + '_tab1"></div>').appendTo("#" + div);
         $('<div id="' + div + '_tab2"></div>').appendTo("#" + div);
-        $('<div id="' + div + '_tab3"></div>').appendTo("#" + div);
         
         widget.height -= 70; // compensate for date picker
         
         
         widget.qs = '';
         widget.url = getUrl(1);
+        console.log('url1', widget.url);
         
         barChart(obj, widget, div + '_tab1');
         
         widget.url = getUrl(2);
         
-        console.log('qs', widget.qs);
+        console.log('url2', widget.url);
+        
         barChart(obj, widget, div + '_tab2');
         
         var data = widget;
@@ -2140,6 +2152,7 @@ Ext.onReady(function() {
                 {
                     title: 'Weighted Performance',
                     //id: div + '_tab2',
+                    bodyPadding: 10,
                     items: [
                         {
                             xtype: 'monthfield',
@@ -2166,10 +2179,12 @@ Ext.onReady(function() {
         
     }
     
+    
+    
     function returnHistogram(obj, widget, div) {
     
         function getUrl(type) {
-            return '/api/fundreturn' + type + '/?histogram=true&fields=fund_perf';
+            return '/api/fundreturn' + type + '/?histogram=true&fields=fund_perf&fund=' + obj.fund;
         }
         
         $.getJSON("/api/fundreturnmonthly/?histogram=true&fields=fund_perf", function(data) {
@@ -2230,8 +2245,8 @@ Ext.onReady(function() {
                 text: '3m',
                 handler: function() {
                     var date = moment().subtract('months', 3).format("YYYY-MM-DD");
-                    console.log(date);
                     $.getJSON(getUrl(dateType) + '&value_date__gte=' + date, function(new_data) {
+                        //console.log('3m filter', getUrl(dateType) + '&value_date__gte=' + date);
                         chart.series[0].setData(new_data.data);
                         chart.redraw();
                     });
@@ -2880,7 +2895,7 @@ Ext.onReady(function() {
                     rotation: -45,
                     align: 'right',
                     style: {
-                        fontSize: '10px',
+                        fontSize: '8px',
                         fontFamily: 'Verdana, sans-serif'
                     }
                 }
@@ -3391,14 +3406,28 @@ Ext.onReady(function() {
                 } else {
                     row = data.columns[i].dataIndex;
                     if(row != 'year') {
+                        
                         data.columns[i]['renderer'] = function(val) {
+                        
+                            console.log('widget key', widget);
+                            if(widget.window.key == 'w6') {
+                            
+                                number = Ext.util.Format.currency(val, '&euro;');
+                            } else {
+                                number = val;
+                            }
                             if (val > 0) {
-                                return '<span style="color: #01017D;">' + val + ' %</span>';
+                                renderer = '<span style="color: #01017D;">' + number;
                             } else if (val < 0) {
-                                return '<span style="color:#F73100;">' + val + ' %</span>';
+                                renderer = '<span style="color:#F73100;">' + number;
                             }
                             if(val != '') {
-                                return val+' <span style="font-weight: normal;">%</span>';
+                                //renderer = ' <span style="font-weight: normal;">';
+                            }
+                            if(widget.window.key == 'w6') {
+                                return renderer +  ' </span>';
+                            } else {
+                                return renderer +  ' %</span>';
                             }
                             /*
                             if(row == 'ytd') {

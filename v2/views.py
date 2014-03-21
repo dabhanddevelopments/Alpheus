@@ -15,6 +15,7 @@ from alpheus.calcs import cum_final
 from datetime import date
 import calendar
 
+                    
 def fund_return_form(request):
 
     months = []
@@ -98,6 +99,9 @@ def fund_return_form(request):
     #assert False
     for row in data:
         
+        # if a fund doesn't have a group
+        if row.fund.group == None:
+            continue
         
         name = row.fund.name
         try:
@@ -120,8 +124,6 @@ def fund_return_form(request):
                 else:
                     fund_perf = row.fund_perf
                 
-                print name, '-', group
-                    
                 dic[name]['pk'] = row.fund.pk
                 dic[name]['group'] = group
                 dic[name]['total'] = False

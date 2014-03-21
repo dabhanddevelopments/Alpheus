@@ -306,13 +306,69 @@ class HoldingWarrantResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = HoldingWarrant.objects.all()
 
-class PositionDailyResource(MainBaseResource):
+class HoldingPositionDailyResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
-        queryset = PositionDaily.objects.all()
+        queryset = HoldingPositionDaily.objects.all()
 
-class PositionMonthlyResource(MainBaseResource):
+class HoldingPositionMonthlyResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
-        queryset = PositionMonthly.objects.all()
+        queryset = HoldingPositionMonthly.objects.all()
+        
+
+    def alter_list_data_to_serialize(self, request, data):            
+    
+        fund = request.GET.get('fund', False)
+        year = request.GET.get('value_date__year', False)
+        month = request.GET.get('value_date__month', False)
+        performance = request.GET.get('performance', False) 
+        
+        # W2 - Holding Performance Bar & W7 Holding NAV
+        # Get monthlyreturn from HoldingMonthly (only utilized in W2)
+        # and the weight of the prior month to calculate the average weight
+        if performance and year and month and fund:
+            
+            hm = HoldingMonthly.objects.filter(
+                value_date__year=year, value_date__month=month). \
+                select_related('holding')
+                
+            if int(month) == 1:
+                prior_year = int(year) - 1
+                prior_month = 12
+            else:
+                prior_year = year
+                prior_month = int(month) - 1
+                
+            prior_pos = HoldingPositionMonthly.objects.filter(
+                value_date__year=prior_year, value_date__month=prior_month,
+                fund=fund). \
+                select_related('holding')
+                
+            pos = data['objects']
+            data['objects'] = [] # delete old data
+            
+            for i, p in enumerate(pos):
+                for pp in prior_pos:
+                    for h in hm:
+                        if p.data['holding__name'] == h.holding.name and pp.holding.name == h.holding.name:
+                            
+                            if pp.weight > 0:
+                                average_weight = p.data['weight'] + (pp.weight / 2)
+                            else:
+                                average_weight = 0
+                                
+                            if average_weight <= 0:
+                            
+                                new_data = {
+                                    'weighted_perf': p.data['weight'] * h.monthlyreturn,
+                                    'average_weight': average_weight, 
+                                    'monthlyreturn': h.monthlyreturn,
+                                    'holding__name': p.data['holding__name'],
+                                }
+                                new_obj = self.build_bundle(data = new_data)
+                                data['objects'].insert(0, new_obj)
+                
+        return super(HoldingPositionMonthlyResource, self) \
+                .alter_list_data_to_serialize(request, data)
 
 class TradeResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):

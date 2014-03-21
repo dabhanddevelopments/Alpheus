@@ -65,8 +65,8 @@ api.register(HoldingHedgeFundsResource())
 api.register(HoldingMutualFundResource())
 api.register(HoldingOptionResource())
 api.register(HoldingWarrantResource())
-api.register(PositionDailyResource())
-api.register(PositionMonthlyResource())
+api.register(HoldingPositionDailyResource())
+api.register(HoldingPositionMonthlyResource())
 api.register(TradeResource())
 
 
