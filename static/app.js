@@ -1970,10 +1970,12 @@ Ext.onReady(function() {
     }
 
     
-    function dateSpanPicker(id, div, widget, url) {
+    function dateSpanPicker(id, div, widget) {
     
         
-    
+        url = getReturnHistogramUrl(Ext.getCmp('dateTypeHistogram').value);
+        console.log('date type hist', Ext.getCmp('dateTypeHistogram').value);
+        
         var dateSpan = Ext.create('Ext.form.Panel', {
             header: false,
             border: false,
@@ -1992,10 +1994,12 @@ Ext.onReady(function() {
                         maxValue: new Date(),  // limited to the current date or prior
                         listeners: {
                             select: function(combo, record, index) {
-                             console.log('new from date', record);
+                                url = getReturnHistogramUrl(Ext.getCmp('dateTypeHistogram').value);
+                                //console.log('new from date', record);
                                 from = moment(record).format('YYYY-MM-DD');
                                 to = Ext.getCmp(id + 'to_date').getValue();
-                                console.log('old to date', to);
+                                console.log('date daily', url);
+                                //console.log('old to date', to);
                                 to = moment(to).format('YYYY-MM-DD');
                                 $.getJSON(url + '&value_date__gte=' + from + '&value_date__lte=' + to, function(new_data) {
                                 
@@ -2020,9 +2024,11 @@ Ext.onReady(function() {
                         maxValue: new Date(),  // limited to the current date or prior
                         listeners: {
                             select: function(combo, record, index) {
+                                url = getReturnHistogramUrl(Ext.getCmp('dateTypeHistogram').value);
                                 to = moment(record).format('YYYY-MM-DD');
                                 from = Ext.getCmp(id + 'from_date').getValue();
                                 from = moment(record).format('YYYY-MM-DD');
+                                console.log('date monthly', url);
                                 $.getJSON(url + '&value_date__gte=' + from + '&value_date__lte=' + to, function(new_data) {
                                     var chart = $('#data').data('chart-' + div);
                                     try {
@@ -2179,12 +2185,14 @@ Ext.onReady(function() {
         
     }
     
-    
+    function getReturnHistogramUrl(type) {
+        return '/api/fundreturn' + type + '/?histogram=true&fields=fund_perf&fund=' + obj.fund;
+    }    
     
     function returnHistogram(obj, widget, div) {
     
         function getUrl(type) {
-            return '/api/fundreturn' + type + '/?histogram=true&fields=fund_perf&fund=' + obj.fund;
+            return getReturnHistogramUrl(type);
         }
         
         $.getJSON("/api/fundreturnmonthly/?histogram=true&fields=fund_perf", function(data) {
@@ -2314,7 +2322,7 @@ Ext.onReady(function() {
             
             var dateTypeSelect = Ext.create('Ext.form.ComboBox', {
                 store: dateTypeStore,
-                //id: 'dateType',
+                id: 'dateTypeHistogram',
                 padding: 5, 
                 width: 80,
                 queryMode: 'local',
@@ -2326,7 +2334,8 @@ Ext.onReady(function() {
                         $.getJSON(getUrl(dateType), function(new_data) {
                             chart.series[0].setData(new_data.data);
                             chart.redraw();
-                            console.log(dateType, new_data);
+                            //console.log(dateType, new_data);
+                            console.log('date select', getUrl(dateType));
                             Ext.getCmp('hist_from_date').setValue();
                             Ext.getCmp('hist_to_date').setValue(new Date());
                         });
@@ -2336,7 +2345,7 @@ Ext.onReady(function() {
                     
             dateTypeSelect.setValue(dateTypeStore.getAt('0').get('id'));
             
-            var dateSpan = dateSpanPicker('hist_', div, widget, getUrl(dateType));
+            var dateSpan = dateSpanPicker('hist_', div, widget);
 
             // check if it has daily data, if not we don't display the data type drop down menu            
             $.getJSON("/api/fundreturndaily/?fields=id&fund=" + obj.fund, function(data) {
