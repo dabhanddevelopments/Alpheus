@@ -424,11 +424,20 @@ class MainBaseResource(SpecifiedFields):
                     for row in data['objects']:
 
                         if row.data[self.date].year == category:
-                            month = row.data[self.date].month
-                            month_name = calendar.month_abbr[month].lower()
-                            dic[month_name] = row.data[value]
-                            for extra_field in self.extra_fields:
-                                dic[extra_field] = row.data[extra_field]
+                        
+                            for month in range(1, 13):
+                            
+                                if row.data[self.date].month == month:
+                                    #month = row.data[self.date].month
+                                    month_name = calendar.month_abbr[month].lower()
+                                    try:
+                                        dic[month_name] = row.data[value]
+                                    except:
+                                        dic[month_name] = 0
+                                        
+                                    for extra_field in self.extra_fields:
+                                        dic[extra_field] = row.data[extra_field]
+                                    
                     months.append(dic)
 
                 columns = ['Year'] + self.get_month_list() + self.extra_fields

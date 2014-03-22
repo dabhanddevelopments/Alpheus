@@ -2974,10 +2974,7 @@ Ext.onReady(function() {
         mo_widget.url = '/api/fundreturndaily/';
         mo_widget.qs = '?fund=' + fund + '&fields=value_date,fund_mtd&order_by=value_date&value_date__year=' + year + '&value_date__month=' + month;
 
-        //console.log(widget.url + widget.qs);
         $.getJSON(mo_widget.url + mo_widget.qs , function(data) {
-
-            data = data.rows;
 
             // first day in first week of month
             var d = new Date(year, month - 1, 1);
@@ -3606,7 +3603,7 @@ Ext.onReady(function() {
                         */
 
                         if(widget.window.key == 'w1') {
-
+                        
                             // year view
                             if(columnIndex == 1) {
 
@@ -3657,7 +3654,7 @@ Ext.onReady(function() {
                             }
                         }
                         else if(widget.window.key == 'w1b') {
-
+                        
                             // year view
                             if(columnIndex == 1) {
 
