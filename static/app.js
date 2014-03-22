@@ -1972,10 +1972,6 @@ Ext.onReady(function() {
     
     function dateSpanPicker(id, div, widget) {
     
-        
-        url = getReturnHistogramUrl(Ext.getCmp('dateTypeHistogram').value);
-        console.log('date type hist', Ext.getCmp('dateTypeHistogram').value);
-        
         var dateSpan = Ext.create('Ext.form.Panel', {
             header: false,
             border: false,
@@ -1998,7 +1994,7 @@ Ext.onReady(function() {
                                 //console.log('new from date', record);
                                 from = moment(record).format('YYYY-MM-DD');
                                 to = Ext.getCmp(id + 'to_date').getValue();
-                                console.log('date daily', url);
+                                console.log('date from', url);
                                 //console.log('old to date', to);
                                 to = moment(to).format('YYYY-MM-DD');
                                 $.getJSON(url + '&value_date__gte=' + from + '&value_date__lte=' + to, function(new_data) {
@@ -2027,17 +2023,22 @@ Ext.onReady(function() {
                                 url = getReturnHistogramUrl(Ext.getCmp('dateTypeHistogram').value);
                                 to = moment(record).format('YYYY-MM-DD');
                                 from = Ext.getCmp(id + 'from_date').getValue();
-                                from = moment(record).format('YYYY-MM-DD');
-                                console.log('date monthly', url);
-                                $.getJSON(url + '&value_date__gte=' + from + '&value_date__lte=' + to, function(new_data) {
-                                    var chart = $('#data').data('chart-' + div);
-                                    try {
-                                       chart.series[0].setData(new_data[0].data);
-                                    } catch(err) {
-                                        chart.series[0].setData(new_data.data);
-                                    }
-                                    chart.redraw();
-                                });
+                                
+                                if(from) {
+                                    from = moment(from).format('YYYY-MM-DD');
+                                    
+                                    $.getJSON(url + '&value_date__gte=' + from + '&value_date__lte=' + to, function(new_data) {
+                                    
+                                        console.log('date to', url + '&value_date__gte=' + from + '&value_date__lte=' + to);
+                                        var chart = $('#data').data('chart-' + div);
+                                        try {
+                                           chart.series[0].setData(new_data[0].data);
+                                        } catch(err) {
+                                            chart.series[0].setData(new_data.data);
+                                        }
+                                        chart.redraw();
+                                    });
+                                }
                             }
                         }, 
                     }
