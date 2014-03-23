@@ -427,14 +427,17 @@ class MainBaseResource(SpecifiedFields):
                         
                             for month in range(1, 13):
                             
+                                month_name = calendar.month_abbr[month].lower()
+                                
+                                try:
+                                    dic[month_name]
+                                except KeyError:
+                                    dic[month_name] = "0"
+                            
                                 if row.data[self.date].month == month:
-                                    #month = row.data[self.date].month
-                                    month_name = calendar.month_abbr[month].lower()
-                                    try:
-                                        dic[month_name] = row.data[value]
-                                    except:
-                                        dic[month_name] = 0
-                                        
+                                    
+                                    dic[month_name] = row.data[value]
+                                    
                                     for extra_field in self.extra_fields:
                                         dic[extra_field] = row.data[extra_field]
                                     

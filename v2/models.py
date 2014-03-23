@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 from django.db import models
+from django.contrib.auth.models import User
 
 class Administrator(models.Model):
     id = models.AutoField(primary_key=True, db_column='AdminID')
@@ -56,7 +57,7 @@ class AssetClass(models.Model):
     id = models.AutoField(primary_key=True, db_column='AssetClassID')
     investment_category = models.ForeignKey('InvestmentCategory', db_column='InvestmentCategoryID', blank=True, null=True)
     asset_type = models.ForeignKey('AssetType', db_column='AssetTypeID', blank=True, null=True)
-    asset_class_risk = models.ForeignKey('AssetClassRisk', db_column='AssetClassRiskID', blank=True, null=True)
+    risk = models.ForeignKey('AssetClassRisk', db_column='AssetClassRiskID', blank=True, null=True)
     holding_type = models.CharField(max_length=5, choices=HOLDING_TYPES, db_column='HoldingType', blank=True, null=True)
 
     class Meta:
@@ -554,9 +555,9 @@ class FundFeeAudit(models.Model):
 
 class FundPeer(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
-    user = models.IntegerField(db_column='UserID')
+    user = models.ForeignKey(User, db_column='UserID')
     fund = models.ForeignKey('Fund', db_column='FundID')
-    holding = models.ForeignKey('Holding', db_column='HoldingID')
+    benchpeer = models.ForeignKey('BenchPeer', db_column='HoldingID') # Incorrectly named on Alpheus side
     #benchpeer = models.ForeignKey(BenchPeer, db_column='BenchPeerID')
 
     class Meta:
@@ -591,7 +592,7 @@ class Fund(models.Model):
     currency = models.ForeignKey(Currency, related_name='fund_currency', db_column='CurrencyID', blank=True, null=True)
     asset_class = models.ForeignKey(AssetClass, db_column='AssetClassID', blank=True, null=True)
     country_issue = models.ForeignKey(Country, related_name='country_i', db_column='CountryIID', blank=True, null=True, verbose_name='Country of Issuance')
-    country_risk = models.IntegerField(db_column='CountryRID', blank=True, null=True, verbose_name='Country of Risk')
+    country_risk = models.ForeignKey(Country, related_name='country_ri', db_column='CountryRID', blank=True, null=True, verbose_name='Country of Risk')
     region_1 = models.ForeignKey(Region, related_name='fund_region1', db_column='Region1ID', blank=True, null=True)
     region_2 = models.ForeignKey(Region, related_name='fund_region2', db_column='Region2ID', blank=True, null=True)
     region_3 = models.ForeignKey(Region, related_name='fund_region3', db_column='Region3ID', blank=True, null=True)
@@ -649,8 +650,8 @@ class FundReturnDaily(models.Model):
     nav = models.DecimalField(decimal_places=2, max_digits=18, db_column='NAV', blank=True, null=True)
     shares = models.DecimalField(decimal_places=4, max_digits=18, db_column='Shares', blank=True, null=True)
     nav_per_share = models.DecimalField(decimal_places=6, max_digits=18, db_column='NAVPerShare', blank=True, null=True)
-    inflows = models.DecimalField(decimal_places=2, max_digits=18, db_column='Inflows', blank=True, null=True)
-    outflows = models.DecimalField(decimal_places=2, max_digits=18, db_column='Outflows', blank=True, null=True)
+    inflow = models.DecimalField(decimal_places=2, max_digits=18, db_column='Inflows', blank=True, null=True)
+    outflow = models.DecimalField(decimal_places=2, max_digits=18, db_column='Outflows', blank=True, null=True)
     fund_perf = models.DecimalField(decimal_places=6, max_digits=18, db_column='FundDailyReturn', blank=True, null=True)
     fund_mtd = models.DecimalField(decimal_places=6, max_digits=18, db_column='FundMTDReturn', blank=True, null=True)
     ytd = models.DecimalField(decimal_places=6, max_digits=18, db_column='FundYTDReturn', blank=True, null=True)
@@ -682,8 +683,8 @@ class FundReturnMonthly(models.Model):
     nav = models.DecimalField(decimal_places=2, max_digits=18, db_column='NAV', blank=True, null=True)
     shares = models.DecimalField(decimal_places=4, max_digits=18, db_column='Shares', blank=True, null=True)
     nav_per_share = models.DecimalField(decimal_places=6, max_digits=18, db_column='NAVPerShare', blank=True, null=True)
-    inflows = models.DecimalField(decimal_places=2, max_digits=18, db_column='Inflows', blank=True, null=True)
-    outflows = models.DecimalField(decimal_places=2, max_digits=18, db_column='Outflows', blank=True, null=True)
+    inflow = models.DecimalField(decimal_places=2, max_digits=18, db_column='Inflows', blank=True, null=True)
+    outflow = models.DecimalField(decimal_places=2, max_digits=18, db_column='Outflows', blank=True, null=True)
     fund_perf = models.DecimalField(decimal_places=6, max_digits=18, db_column='FundMonthlyReturn', blank=True, null=True)
     ytd = models.DecimalField(decimal_places=6, max_digits=18, db_column='FundYTDReturn', blank=True, null=True)
     bench_perf = models.DecimalField(decimal_places=6, max_digits=18, db_column='BenchMonthlyReturn', blank=True, null=True)
@@ -714,7 +715,7 @@ class Holding(models.Model):
     industry_group = models.ForeignKey(IndustryGroup, db_column='IndustryGroupID', blank=True, null=True)
     industry_subgroup = models.ForeignKey(IndustrySubGroup, db_column='IndustrySubGroupID', blank=True, null=True)
     issuer_industry = models.ForeignKey(IssuerIndustry, db_column='IssuerIndustryID', blank=True, null=True)
-    idisin = models.CharField(max_length=20, db_column='IDIsin', blank=True, null=True)
+    isin = models.CharField(max_length=20, db_column='IDIsin', blank=True, null=True)
     idcusip = models.CharField(max_length=20, db_column='IDCusip', blank=True, null=True)
     idbloombergticker = models.CharField(max_length=20, db_column='IDBloombergTicker', blank=True, null=True)
     idsedol = models.CharField(max_length=20, db_column='IDSedol', blank=True, null=True)

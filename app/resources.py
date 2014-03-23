@@ -82,6 +82,7 @@ class UserResource(ModelResource):
         if user:
             if user.is_active:
                 login(request, user)
+                return self.create_response(request, { 'success': True, 'user_id': user.id })
                 return HttpResponse(status=200)
             else:
                 return HttpResponse(status=401)

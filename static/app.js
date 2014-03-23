@@ -1383,43 +1383,51 @@ Ext.onReady(function() {
         var window_id = 'page_' + page + '_' + data.window.id;
         $('<div id="' + window_id + '"></div>').appendTo('body');
 
-        // at TODO:change benchmark to support mtom
+        // W15 - Fund Summary
         if(data.window.key == 'w15') {
-
-              var fields = 'name,user__first_name,performance_fee,user__last_name,description,custodian__name,custodian__contact_name,custodian__contact_number,custodian_management_fee,custodian_performance_fee,administrator__contact_name,administrator__contact_number,administrator__name,administrator_fee,auditor_fee,auditor__name,auditor__contact_number,auditor__contact_name,subscription_frequency,redemption_frequency,management_fee';
+        
+              var fields = 'name,manager__name,description,custodian__name,administrator__name,currency__name,auditor__name,benchpeer__name,asset_class__risk__name,country_risk__name,region_1__name&summary=true';
               $.getJSON('/api/fund/' + obj.fund + '/?fields=' + fields, function(summary) {
 
-             //console.log(summary);
-                     widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
-                    html = '<div> <table width="100%" class="html_table">' +
-                    '<tr><td>Fund Name</td><td>'+ summary.name + '</td></tr>' +
-                    //'<tr><td>Fund Type</td><td>'+ summary.fund_type__name + '</td></tr>' +
-                    '<tr><td>Fund Manager</td><td>'+ summary.user__first_name + summary.user__last_name + '</td></tr>' +
-                    '<tr><td>Description</td><td>'+ summary.description + '<d></tr>' +
-                    '<tr><td>Custodian</td><td>'+ summary.custodian__name + '</td><td>'+ summary.custodian__contact_name + '</td><td>' + summary.custodian__contact_number + '</td><td>Managment Fee</td><td>'+ summary.custodian_management_fee + '</td><td>Performance Fee</td><td>'+ summary.custodian_performance_fee + '</td></tr>' +
-                    '<tr><td>Administrator</td><td>'+ summary.administrator__name + '</td><td>'+ summary.administrator__contact_name + '</td><td>' + summary.administrator__contact_number + '</td><td>Administrator Fee</td><td>'+ summary.administrator_fee + '</td></tr>' +
-                    '<tr><td>Auditor</td><td>'+ summary.auditor__name + '</td><td>'+ summary.auditor__contact_name + '</td><td>' + summary.auditor__contact_number + '</td><td>Auditor Fee</td><td>'+ summary.auditor_fee + '</td></tr>' +
-                    '<tr><td>Subscription Terms</td><td>'+ summary.subscription_frequency + '</td></tr>' +
-                    '<tr><td>Redemption Terms</td><td>'+ summary.redemption_frequency + '</td></tr>' +
-                    '<tr><td>Management Fees</td><td>'+ summary.management_fee + '</td></tr>' +
-                    '<tr><td>Performance Fees</td><td>'+ summary.performance_fee + '</td></tr>';
+                    widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id, true);
+                    html = '<div> <table class="html_table">' +
+                    '<tr><th>Fund Name</th><td>'+ summary.name + '</td><th>Fund Manager</th><td>'+ summary.manager__name + '</td></tr>' +
+                    '<tr><th>Benchmark</th><td>' + summary.benchpeer__name + '</td><th>Launch Date</th><td>' + summary.launch_date + '</td></tr>' +
+                    '<tr><th>Currency</th><td>'+ summary.currency__name + '</td></tr>' +
+                    '</table><table class="html_table">' +
+                    '<tr><th>Description</th><td>'+ summary.description + '</td></tr>' +
+                    '</table><table class="html_table">' +
+                    '<tr><td colspan="2"><h3>Fund Classification & Size</h3></td></tr>' +
+                    '<tr><th>Starting NAV</th><td>'+ Ext.util.Format.currency(summary.start_nav, '&euro;') + '</td><th>Asset Class Focus</th><td>'+ summary.asset_class__risk__name + '</td></tr>' +
+                    '<tr><th>Current NAV</th><td>'+ Ext.util.Format.currency(summary.end_nav, '&euro;') + '</td><th>Country Focus</th><td>'+ summary.country_risk__name + '</td></tr>' +
+                    '<tr><th>Net Flows</th><td>'+ Ext.util.Format.currency(summary.net_flow, '&euro;') + '</td><th>Regional Focus</th><td>'+ summary.region_1__name + '</td></tr>' +
+                    '</table><table class="html_table">' +
+                    '<tr><td colspan="2"><h3>Custody, Admin & Audit Section</h3></td></tr>' +
+                    '<tr><th>Custodian</th><td>'+ summary.custodian__name + '</td></tr>' +
+                    '<tr><th>Admin</th><td>'+ summary.admin__name + '</td></tr>' +
+                    '<tr><th>Auditor</th><td>'+ summary.auditor__name + '</td></tr>' +
+                    '</table><table class="html_table">' +
+                    '<tr><td colspan="2"><h3>Fees Section</h3></td></tr>';
 
 
 
-                    $.getJSON('/api/benchmark/?fields=name&fund=' + obj.fund, function(benchmarks) {
+                    $.getJSON('/api/fundfee/?summary=true&fund=' + obj.fund, function(fee) {
 
-                        for(i=0; i<benchmarks.rows.length; i++) {
-                            if(i == 0) {
-                                var td = 'Benchmarks';
-                            } else {
-                                var td = '';
-                            }
-                            html += '<tr><td>' + td + '</td><td>'+ benchmarks.rows[i].name + '</td></tr>';
+                        for(i=0; i<fee.length; i++) {
+                            html += '<tr><th>' + fee[i].name + '</th><td>'+ fee[i].formula + '</td></tr>';
                         }
-
-
-                        html += '</table> </div>';
-                        $(html).appendTo('#' + window_id);
+                   
+                        html += '</table><table class="html_table">' +
+                        '<tr><td colspan="2"><h3>User Defined Peers Section</h3></td></tr>';
+                       
+                       $.getJSON('/api/fundpeer/?user=1&fields=benchpeer__name,benchpeer__formula&fund=' + obj.fund + '&user=' + $('#data').data('userId'), function(peer) {
+                       
+                            for(i=0; i<peer.length; i++) {
+                                html += '<tr><th>' + peer[i].benchpeer__name + '</th><td>'+ peer[i].benchpeer__formula + '</td></tr>';
+                            }
+                            html += '</table> </div>';
+                            $(html).appendTo('#' + window_id);
+                       });
                    });
             });
 
@@ -1744,7 +1752,7 @@ Ext.onReady(function() {
         });
     }
 
-    function widgetWindow(key, page, title, size_x, size_y, pagewindow, window) {
+    function widgetWindow(key, page, title, size_x, size_y, pagewindow, window, scroll) {
     
         if(typeof $('#data').data('date') !== 'undefined') {
             var date = $('#data').data('date');
@@ -1767,6 +1775,12 @@ Ext.onReady(function() {
         if(typeof  $('#data').data('holding_name') != 'undefined') {
             title = title.replace('HOLDING_NAME', $('#data').data('holding_name'));
         }
+        
+
+        if(typeof scroll == 'undefined') {
+            var scroll = false;
+        }
+
 
         Ext.create('Ext.window.Window', {
             title: title,
@@ -1777,6 +1791,7 @@ Ext.onReady(function() {
             floatable: false,
             draggable: false,
             closable: false,
+            autoScroll: scroll,
             contentEl: window,
             x: 0,
             y: 0,
@@ -2070,7 +2085,9 @@ Ext.onReady(function() {
                     var params = '&y1=weighted_perf&fields=weight';
                 }
             }
-            return '/api/holdingpositionmonthly/?title=holding__name&data_type=graph&performance=true&value_date__year=' + year + '&value_date__month=' + month + '&fund=' + obj.fund + params;
+            var url = '/api/holdingpositionmonthly/?title=holding__name&data_type=graph&performance=true&value_date__year=' + year + '&value_date__month=' + month + '&fund=' + obj.fund + params;
+            console.log('holding perf url', url);
+            return url;
         }
         
         function updateChart(record, type) {
@@ -3416,14 +3433,13 @@ Ext.onReady(function() {
                         
                         data.columns[i]['renderer'] = function(val) {
                         
-                            console.log('widget key', widget);
                             if(widget.window.key == 'w6') {
                             
                                 number = Ext.util.Format.currency(val, '&euro;');
                             } else {
                                 number = val;
                             }
-                            if (val > 0) {
+                            if (val >= 0) {
                                 renderer = '<span style="color: #01017D;">' + number;
                             } else if (val < 0) {
                                 renderer = '<span style="color:#F73100;">' + number;
@@ -5057,6 +5073,9 @@ $.ajax({
                     form.submit({
                         url: '/api/user/login/',
                         success: function(form, action) {
+                        
+                            $('#data').data('userId', action.result.user_id);
+                            
                             formPanel.hide();
 
                             setGlobal('fund');

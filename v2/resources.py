@@ -9,6 +9,8 @@ import decimal
 import numpy as np
 import pandas as pd
 from django.utils.datastructures import SortedDict
+from operator import itemgetter
+from django.db.models import Sum
 
 class AdministratorResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
@@ -125,14 +127,41 @@ class ClientValAuditResource(MainBaseResource):
 class FundFeeResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = FundFee.objects.all()
+  
 
+    def alter_list_data_to_serialize(self, request, data):   
+          
+        fund = request.GET.get('fund', False)  
+        
+        # W15 - Fund Summary
+        if request.GET.get('summary', False):
+        
+            fees = FundFee.objects.filter(fund=fund).select_related('fee').only('fee__name', 'fee__formula')
+            
+            data['objects'] = []
+            new_data = {}
+            for fee in fees:
+            
+                if fee.fee.formula == None:
+                    formula = 'n/a'
+                else:
+                    formula = fee.fee.formula
+                    
+                new_data = {
+                    'name': fee.fee.name,
+                    'formula': formula
+                }
+                new_obj = self.build_bundle(data = new_data)
+                data['objects'].insert(0, new_obj)
+                
+        return super(FundFeeResource, self) \
+                .alter_list_data_to_serialize(request, data)
+                
+                
 class FundFeeAuditResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = FundFeeAudit.objects.all()
 
-class FundPeerResource(MainBaseResource):
-    class Meta(MainBaseResource.Meta):
-        queryset = FundPeer.objects.all()
 
 class FundPositionAuditResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
@@ -140,9 +169,46 @@ class FundPositionAuditResource(MainBaseResource):
 
 class FundResource(MainBaseResource):
     benchpeer = fields.ForeignKey(BenchPeer, "benchpeer")
+    
     class Meta(MainBaseResource.Meta):
         queryset = Fund.objects.all()
+    
 
+    def alter_detail_data_to_serialize(self, request, data):   
+    
+        # W15 - Fund Summary
+        if request.GET.get('summary', False):
+        
+            first = FundReturnDaily.objects.filter(fund=data.data['id']) \
+                .select_related('fund').only('value_date', 'nav').order_by('value_date')[0]
+            
+            if not first:
+                first = FundReturnMonthly.objects.filter(fund=data.data['id']) \
+                .select_related('fund').only('value_date', 'nav').order_by('value_date')[0]
+                
+            last = FundReturnDaily.objects.filter(fund=data.data['id']) \
+                .select_related('fund').only('value_date', 'nav').order_by('-value_date')[0]
+            
+            if not last:
+                first = FundReturnMonthly.objects.filter(fund=data.data['id']) \
+                .select_related('fund').only('value_date', 'nav').order_by('-value_date')[0]
+                
+            flows = FundReturnMonthly.objects.aggregate(Sum('inflow'), Sum('outflow'))
+            
+            data.data['launch_date'] = first.value_date
+            data.data['start_nav'] = first.nav
+            data.data['end_nav'] = last.nav
+            data.data['net_flow'] = flows['inflow__sum'] + flows['outflow__sum']
+                
+        return super(FundResource, self) \
+                .alter_detail_data_to_serialize(request, data)
+                
+
+class FundPeerResource(MainBaseResource):
+    fund = fields.ForeignKey(FundResource, 'fund')
+    class Meta(MainBaseResource.Meta):
+        queryset = FundPeer.objects.all()
+        
 class FundCharAuditResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = FundCharAudit.objects.all()
@@ -171,11 +237,6 @@ class FundReturnResource(MainBaseResource):
             
             return data
             
-        # W15 - Fund Summary
-        if request.GET.get('summary', False):
-        
-            daily = FundReturnDaily.objects.filter(fund=fund) \
-                .select_related('fund').only('nav') 
             
         # cumulative return
         y1 = request.GET.get('y1', False)
@@ -328,27 +389,45 @@ class HoldingPositionMonthlyResource(MainBaseResource):
                 
             pos = data['objects']
             data['objects'] = [] # delete old data
+            new_data = {}
             
+            # set the average weight for the current month
+            for i, p in enumerate(pos):
+                for h in hm:
+                    if p.data['holding__name'] == h.holding.name:
+                        
+                        name = h.holding.name
+                        
+                        average_weight = p.data['weight']
+                            
+                        if average_weight >= 0:
+                        
+                            new_data[name] = {
+                                'weighted_perf': p.data['weight'] * h.monthlyreturn,
+                                'average_weight': average_weight, 
+                                'monthlyreturn': h.monthlyreturn,
+                                'holding__name': p.data['holding__name'],
+                            }
+                            
+            # update the average weight for prior months (if exists)
             for i, p in enumerate(pos):
                 for pp in prior_pos:
                     for h in hm:
                         if p.data['holding__name'] == h.holding.name and pp.holding.name == h.holding.name:
+                        
+                            name = h.holding.name
                             
                             if pp.weight > 0:
                                 average_weight = p.data['weight'] + (pp.weight / 2)
-                            else:
-                                average_weight = 0
+                        
+                                new_data[name]['average_weight'] = average_weight
                                 
-                            if average_weight <= 0:
+            # sort by average weight
+            newlist = sorted(list_to_be_sorted, key=itemgetter('average_weight')) 
                             
-                                new_data = {
-                                    'weighted_perf': p.data['weight'] * h.monthlyreturn,
-                                    'average_weight': average_weight, 
-                                    'monthlyreturn': h.monthlyreturn,
-                                    'holding__name': p.data['holding__name'],
-                                }
-                                new_obj = self.build_bundle(data = new_data)
-                                data['objects'].insert(0, new_obj)
+            for i, new in new_data.iteritems():
+                new_obj = self.build_bundle(data = new)
+                data['objects'].insert(0, new_obj)
          
         return super(HoldingPositionMonthlyResource, self) \
                 .alter_list_data_to_serialize(request, data)
