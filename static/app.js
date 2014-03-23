@@ -2070,6 +2070,14 @@ Ext.onReady(function() {
     // W2 - Holding Performance Bar & W7 - Holding NAV Bar
     function holdingPerformance(obj, widget, div, perfType) {
     
+        if(perfType == 'nav') {
+            var title1 = 'Performance';
+            var title2 = 'Weighted Performance';
+        } else {
+            var title1 = 'NAV';
+            var title2 = 'Weight';
+        }
+    
         function getUrl(type) {
         
             if(perfType == 'nav') {
@@ -2086,7 +2094,6 @@ Ext.onReady(function() {
                 }
             }
             var url = '/api/holdingpositionmonthly/?title=holding__name&data_type=graph&performance=true&value_date__year=' + year + '&value_date__month=' + month + '&fund=' + obj.fund + params;
-            console.log('holding perf url', url);
             return url;
         }
         
@@ -2102,9 +2109,8 @@ Ext.onReady(function() {
                 
                 var url = '/api/fundreturnmonthly/?fund=' + $('#data').data('fund') + '&fields=fund_perf&value_date__year=' + year + '&value_date__month=' + month;
                 
-                console.log('update chart url', getUrl(type));
                 $.getJSON(url, function(fund) {
-                    options.series = [{data: new_data[0].data}];
+                    options.series = [new_data[0]];
                     options.yAxis.plotLines = [{
                         value: fund[0].fund_perf,
                         width: 1,
@@ -2151,7 +2157,7 @@ Ext.onReady(function() {
             border: false,
             items: [
                 {
-                    title: 'Performance',
+                    title: title1,
                     bodyPadding: 10,
                     //border: false,
                     //id: div + '_tab1',
@@ -2174,7 +2180,7 @@ Ext.onReady(function() {
                     ],
                 },
                 {
-                    title: 'Weighted Performance',
+                    title: title2,
                     //id: div + '_tab2',
                     bodyPadding: 10,
                     items: [

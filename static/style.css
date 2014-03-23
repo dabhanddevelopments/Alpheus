@@ -636,6 +636,13 @@ table.month_table td {
     padding: 5px 0px 5px 0px;
 }
 
+/* Fix for Extjs bug that the monthpicker doesn't display all years */
+.x-monthpicker-buttons {
+    position: relative;
+}
+.x-datepicker .x-monthpicker-buttons {
+    position: absolute;
+}
 
 
    p {
