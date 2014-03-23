@@ -145,9 +145,9 @@ def fund_return_form(request):
                 if months[2].month == row.value_date.month:
 
                     try:
-                        nav2 = dic[name]['nav2']
+                        nav2 = Decimal(dic[name]['nav2'])
                     except:
-                        nav2 = 0.00
+                        nav2 = Decimal(0.00)
 
                     dic[name]['nav3'] = Decimal('%0.2f' % (nav2 + (nav2 * fund_perf)))
                     dic[name]['return3'] = Decimal('%0.2f' % (fund_perf))
@@ -225,7 +225,7 @@ def fund_return_form(request):
             and group_total[group]['nav3'] != 0:
             group_total[group].update(extra)
             initial.insert(group_counter[group] - counter, group_total[group])
-            #counter -= 1
+            counter -= 1
 
     # insert the total for all groups
     initial.insert(0, total)

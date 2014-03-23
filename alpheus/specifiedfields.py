@@ -113,9 +113,11 @@ class SpecifiedFields(ModelResource):
             except:
                 continue
 
-            bundle.data[row] = reduce(getattr, f, bundle.obj)
-
-            if bundle.data[row] == None:
+            try:
+                bundle.data[row] = reduce(getattr, f, bundle.obj)
+                if bundle.data[row] == None:
+                   bundle.data[row] = '' 
+            except AttributeError:
                 bundle.data[row] = ''
 
             # display actual values for `choices` fields

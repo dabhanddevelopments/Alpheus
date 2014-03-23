@@ -179,19 +179,22 @@ class FundResource(MainBaseResource):
         # W15 - Fund Summary
         if request.GET.get('summary', False):
         
-            first = FundReturnDaily.objects.filter(fund=data.data['id']) \
-                .select_related('fund').only('value_date', 'nav').order_by('value_date')[0]
-            
-            if not first:
-                first = FundReturnMonthly.objects.filter(fund=data.data['id']) \
-                .select_related('fund').only('value_date', 'nav').order_by('value_date')[0]
-                
-            last = FundReturnDaily.objects.filter(fund=data.data['id']) \
-                .select_related('fund').only('value_date', 'nav').order_by('-value_date')[0]
-            
-            if not last:
-                first = FundReturnMonthly.objects.filter(fund=data.data['id']) \
-                .select_related('fund').only('value_date', 'nav').order_by('-value_date')[0]
+            try:
+                first = FundReturnDaily.objects.filter(fund=data.data['id']) \
+                    .only('value_date', 'nav').order_by('value_date')[0]
+            except IndexError:
+                try:
+                    first = FundReturnMonthly.objects.filter(fund=data.data['id']) \
+                        .only('value_date', 'nav').order_by('value_date')[0]
+                except IndexError:
+                    return
+               
+            try: 
+                last = FundReturnDaily.objects.filter(fund=data.data['id']) \
+                    .only('value_date', 'nav').order_by('-value_date')[0]
+            except IndexError:
+                last = FundReturnMonthly.objects.filter(fund=data.data['id']) \
+                   .only('value_date', 'nav').order_by('-value_date')[0]
                 
             flows = FundReturnMonthly.objects.aggregate(Sum('inflow'), Sum('outflow'))
             
