@@ -422,10 +422,16 @@ class HoldingPositionMonthlyResource(MainBaseResource):
                         
                                 new_data[name]['average_weight'] = average_weight
                                 
-            # sort by average weight
-            newlist = sorted(list_to_be_sorted, key=itemgetter('average_weight')) 
-                            
+            # convert dictionary to a list of dictionaries
+            sorted_data = []
             for i, new in new_data.iteritems():
+                sorted_data.append(new)
+             
+            # sort by average weight
+            new_data = sorted(sorted_data, key=itemgetter('average_weight')) 
+            
+            # insert new data
+            for new in new_data:
                 new_obj = self.build_bundle(data = new)
                 data['objects'].insert(0, new_obj)
          
