@@ -2070,7 +2070,7 @@ Ext.onReady(function() {
     // W2 - Holding Performance Bar & W7 - Holding NAV Bar
     function holdingPerformance(obj, widget, div, perfType) {
     
-        if(perfType == 'nav') {
+        if(perfType != 'nav') {
             var title1 = 'Performance';
             var title2 = 'Weighted Performance';
         } else {
