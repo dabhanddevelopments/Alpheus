@@ -406,8 +406,8 @@ class HoldingPositionMonthlyResource(MainBaseResource):
                         if average_weight >= 0:
                         
                             new_data[name] = {
-                                'weighted_perf': p.data['weight'] * h.monthlyreturn,
-                                'average_weight': average_weight, 
+                                'weighted_perf': (p.data['weight'] * h.monthlyreturn) / 100,
+                                'average_weight': (average_weight) / 100, 
                                 'monthlyreturn': h.monthlyreturn,
                                 'holding__name': p.data['holding__name'],
                             }
@@ -421,7 +421,7 @@ class HoldingPositionMonthlyResource(MainBaseResource):
                             name = h.holding.name
                             
                             if pp.weight > 0:
-                                average_weight = p.data['weight'] + (pp.weight / 2)
+                                average_weight = (p.data['weight'] + pp.weight) / 2 / 100
                         
                                 new_data[name]['average_weight'] = average_weight
                                 
