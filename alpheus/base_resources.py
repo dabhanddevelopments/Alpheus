@@ -160,6 +160,7 @@ class MainBaseResource(SpecifiedFields):
 
         self.data_type = request.GET.get("data_type", False)
         performance = request.GET.get("performance", False)
+        metrics = request.GET.get("metrics", False)
         #self.date_type = request.GET.get("date_type", False)
 
         self.specified_fields = []
@@ -187,7 +188,7 @@ class MainBaseResource(SpecifiedFields):
             self.specified_fields += self.title
 
         self.y1 = request.GET.get("y1", False)
-        if self.y1 and not performance:
+        if self.y1 and not performance and not metrics:
             self.specified_fields.append(self.y1)
 
         self.y2 = request.GET.get("y2", False)

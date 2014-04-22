@@ -293,7 +293,7 @@ class MenuResource(TreeBaseResource, StandardBaseResource):
     parent = fields.ForeignKey('self', 'parent', null=True)
 
     class Meta(MainBaseResource.Meta):
-        queryset = Menu.objects.all().select_related('parent', 'page', 'fund')
+        queryset = Menu.objects.all().select_related('parent', 'page', 'fund', 'benchpeer')
         allowed_methods = ['get']
         fields = ['id', 'name', 'page']
 
@@ -309,12 +309,18 @@ class MenuResource(TreeBaseResource, StandardBaseResource):
             fund = obj.fund.id
         except:
             fund = 0
+            
+        try:
+            benchpeer = obj.fund.benchpeer.name
+        except AttributeError:
+            benchpeer = 0
 
         node = {
             'id': obj.id,
             'name': obj.name,
             'page': page,
             'fund': fund,
+            'benchpeer': benchpeer,
             'expanded': False
         }
 

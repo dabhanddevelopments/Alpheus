@@ -57,14 +57,16 @@ def fund_return_form(request):
 
 
     # the groups used and their order
-    #groups = ['Credit Suisse', 'HSBC', 'Private Equity']
     group_qs = AlpheusGroup.objects.all()
     groups = [row.name for row in group_qs]
-
+    
     data = FundReturnMonthly.objects.filter(
         fund__estimate_required=True, value_date__gte=months[0]).\
         order_by('fund__name', 'value_date')
 
+    for asdf in data:
+        print asdf.fund.name
+        
     # set the total nav of all funds
     total = {
         'name': 'Alpheus',
@@ -193,6 +195,8 @@ def fund_return_form(request):
         group_counter[group] = 0
         for row in dic:
             if group == dic[row]['group']:
+            
+                print group, dic[row]['pk'], row
 
                 # set the location of the first fund in the group
                 counter += 1
@@ -212,6 +216,7 @@ def fund_return_form(request):
 
                 initial.append(dic[row])
 
+    #assert False
     # modify the list to include the totals of each group
     counter = 1
     for group in groups:
@@ -222,9 +227,10 @@ def fund_return_form(request):
             'estimation3': 0,
         }
         if group_total[group]['nav1'] != 0 and group_total[group]['nav2'] != 0 \
-            and group_total[group]['nav3'] != 0:
+            and group_total[group]['nav3'] != 0 and group_counter[group] != 0:
             group_total[group].update(extra)
             initial.insert(group_counter[group] - counter, group_total[group])
+            print group_counter[group] - counter, group
             counter -= 1
 
     # insert the total for all groups

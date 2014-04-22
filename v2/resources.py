@@ -4,6 +4,7 @@ from tastypie.resources import Resource, ModelResource
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from v2.models import *
 from alpheus.utils import cumulative_return
+from alpheus.calcs import *
 from datetime import datetime, timedelta
 import decimal
 import numpy as np
@@ -217,11 +218,199 @@ class FundCharAuditResource(MainBaseResource):
         queryset = FundCharAudit.objects.all()
 
 
+# Base class for both monthly and daily
 class FundReturnResource(MainBaseResource):
 
     def alter_list_data_to_serialize(self, request, data):   
     
-        fund = request.GET.get('fund', False)      
+        fund = request.GET.get('fund', False)    
+        metric = request.GET.get('metric', False)  
+        date_from = request.GET.get('value_date__gte', False)
+        date_to = request.GET.get('value_date__lte', False)
+        date_type = request.GET.get('date_type', False)  
+        
+        window = request.GET.get('window', False) 
+        layer = request.GET.get('layer', False) 
+        axis = request.GET.get('axis', False) 
+        plot = request.GET.get('plot', False) 
+        mar = request.GET.get('mar', False) 
+        rfr = request.GET.get('rfr', False) 
+        step = request.GET.get('step', False) 
+        under = request.GET.get('under', False) 
+        sec_under = request.GET.get('sec_under', False) 
+        position = request.GET.get('position', False) 
+        
+        """
+        W18 Fund Historical Stats
+        """
+        if metric is not False \
+            and window is not False \
+            and layer is not False \
+            and axis is not False \
+            and rfr is not False \
+            and plot is not False \
+            and mar is not False \
+            and step is not False \
+            and under is not False \
+            and sec_under is not False \
+            and position is not False:
+            
+            # if we don't have a start date we need to look it up
+            if not date_from:
+            
+                if date_type == 'monthly':
+                    first = FundReturnMonthly.objects.order_by('value_date')[0]
+                else:
+                    first = FundReturnDaily.objects.order_by('value_date')[0]
+                    
+                date_from = first.value_date
+            
+            metrics = metric.split(',')
+            windows = window.split(',')
+            layers = layer.split(',')
+            axis = axis.split(',')
+            plots = plot.split(',')
+            mars = mar.split(',')
+            steps = step.split(',')
+            unders = under.split(',')
+            sec_unders = sec_under.split(',')
+            positions = position.split(',')
+            
+            
+            
+            
+
+            series = []
+            for i, m in enumerate(metrics):
+            
+                lst = [row.data['fund_perf'] for row in data['objects']]
+                lst2 = [row.data['bench_perf'] for row in data['objects']]
+            
+                if unders[i] == 'fund':
+                    lst = [row.data['fund_perf'] for row in data['objects']]
+                    
+                elif unders[i] == 'benchpeer':
+                    lst = [row.data['bench_perf'] for row in data['objects']]
+                    
+                elif unders[i][:5] == 'metric': 
+                    lst = lst_vals[unders[i][6:]]
+                    
+                #else
+                #    FundPeer/BenchPeer - what column to get data from?
+                
+                    
+                    
+                elif sec_unders[i] == 'benchpeer':
+                    lst2 = [row.data['bench_perf'] for row in data['objects']]
+                    
+                elif unders[i][:5] == 'metric': 
+                    lst2 = lst_vals[unders[i][6:]]
+                    
+                    
+                # remove any empty strings in the list that might exist
+                lst = filter(None, lst)
+                lst2 = filter(None, lst2)
+                
+                # save prior values for other underlying metrics
+                try:
+                    lst_vals[i] = lst
+                except:
+                    lst_vals = []
+                
+                try:
+                    lst_vals2[i] = lst2
+                except:
+                    lst_vals2 = []
+                
+                dates = date_range(lst, date_from)
+                df = to_dataframe(lst, dates)
+                dates2 = date_range(lst2, date_from)
+                df2 = to_dataframe(lst2, dates2)
+                
+                win = int(windows[i])
+                
+                values = []
+
+                if m == "cumulative": 
+                    values = cum_returns(df, dates)
+                    name = "Cumulative Return"
+                     
+                if m == "return":
+                    values = df
+                    name = "Returns"  
+                        
+                if m == "roll_average":
+                    values = roll_mean(df, win)
+                    name = "Rolling Average"
+                     
+                if m == "delta": 
+                    values = delta_cum_returns(df, df2, dates, dates2)
+                    name = "Delta Cumulative Return"
+                    
+                if m == "roll_deviation":
+                    values = roll_standard_deviation(df, win)
+                    name = "Rolling Standard Deviation"
+                    
+                if m == "roll_cumulative":
+                    values = roll_cum_returns(df, win)
+                    name = "Rolling Cumulative Return"                
+                
+                if m == "roll_skewness":
+                    values = roll_skewness (df, win)
+                    name = "Rolling Skewness"
+                    
+                    
+                if m == "roll_kurtosis":
+                    values = roll_kurtosis (df, win)
+                    name = "Rolling Kurtosis"
+                    
+                if m == "roll_annualised":
+                    values = annualised_returns(df, f=12, window=12, LessThanWin=True)
+                    name = "Rolling Annualised Return"
+                    
+                if m == "roll_volatility":
+                    values = roll_volatility(df, win, f=12)
+                    name = "Rolling Volatility"
+                    
+                if m == "roll_sharpe": 
+                    values = roll_sharpe_base( series, f=12)
+                    name = "Rolling Sharpe"
+                    
+                #if m == "roll_sortino":
+                #if m == "roll_downside":
+                
+                if m == "roll_excess": 
+                    values = roll_delta_cum_returns (df, df2, win)
+                    name = "Rolling Excess Return"
+
+                #if m == "roll_tracking":
+
+                if m == "roll_correlation":
+                    values = roll_correlation (series1, series2, win)
+                    name = "Rolling Correlation"
+                    
+                if m == "roll_alpha":
+                    values = roll_alpha(df, df2, win)
+                    name = "Rolling Alpha"
+                    
+
+                if m == "roll_beta":
+                    values = roll_beta(df, df2, win)
+                    name = "Rolling Beta"
+                    
+                #if m == "roll_rsq":
+                
+                series.append({
+                    'data': to_list(values),
+                    'name': name,
+                    'yAxis': i,
+                    'xAxis': 0, #int(positions[i]) - 1,
+                    'type': plots[i],
+                    'zIndex': layers[i],
+                })
+                
+            return series
+        
     
         # Histogram
         if request.GET.get('histogram', False):
@@ -241,7 +430,7 @@ class FundReturnResource(MainBaseResource):
             return data
             
             
-        # cumulative return
+        # W6 - cumulative return
         y1 = request.GET.get('y1', False)
 
         if y1 != False:
@@ -274,6 +463,13 @@ class FundReturnResource(MainBaseResource):
 class FundReturnDailyResource(FundReturnResource):
     class Meta(MainBaseResource.Meta):
         queryset = FundReturnDaily.objects.all()
+        
+    def alter_detail_data_to_serialize(self, request, data): 
+        if request.GET.get('has_data', False):
+            return FundReturnDaily.objects.filter(fund=data.data['id']).count()
+        
+        return super(FundReturnDailyResource, self) \
+                .alter_detail_data_to_serialize(request, data)        
 
 class FundReturnDailyResource2(FundReturnResource):
     class Meta(MainBaseResource.Meta):

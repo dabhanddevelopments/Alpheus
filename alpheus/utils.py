@@ -89,8 +89,9 @@ def cumulative_return(data, perf_type):
     # extract data for the cumulative calc
     perf = []
     for row in data['objects']:
-        perf.append(row.data[perf_type + '_perf'])
-        
+        if row.data[perf_type + '_perf'] != '':
+            perf.append(row.data[perf_type + '_perf'])
+       
     r = pd.DataFrame(list(perf))
     c = r/100
     d = np.cumprod(c.values+1)-1
@@ -98,7 +99,12 @@ def cumulative_return(data, perf_type):
     
     # replace the old data with the calculated one
     for id, row in enumerate(data['objects']):
-        data['objects'][id].data[perf_type + '_perf'] = e[id]
+        try:
+            data['objects'][id].data[perf_type + '_perf'] = e[id]
+        except IndexError:
+            pass
         
     return data
+
+
 
