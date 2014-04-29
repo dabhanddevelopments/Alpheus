@@ -223,6 +223,7 @@ class FundReturnResource(MainBaseResource):
 
     def alter_list_data_to_serialize(self, request, data):   
     
+        data_type = request.GET.get('data_type', 'graph')
         fund = request.GET.get('fund', False)    
         metric = request.GET.get('metric', False)  
         date_from = request.GET.get('value_date__gte', False)
@@ -277,10 +278,9 @@ class FundReturnResource(MainBaseResource):
             positions = position.split(',')
             
             
-            
-            
-
             series = []
+            table = {}
+            
             for i, m in enumerate(metrics):
             
                 lst = [row.data['fund_perf'] for row in data['objects']]
@@ -400,16 +400,50 @@ class FundReturnResource(MainBaseResource):
                     
                 #if m == "roll_rsq":
                 
-                series.append({
-                    'data': to_list(values),
-                    'name': name,
-                    'yAxis': i,
-                    'xAxis': 0, #int(positions[i]) - 1,
-                    'type': plots[i],
-                    'zIndex': layers[i],
-                })
+                if data_type == 'table':
+                    asdf = to_list(values, False)
+                    
+                    for p, a in enumerate(asdf):
+                        
+                        try:
+                            table[p]['date']
+                        except:
+                            table[p] = {}
+                        table[p]['date'] = a[0]
+                        table[p]['metric_' + str(i + 1)] = a[1]
+                        
+                        #except:
+                        #    series[p] = a[0]
+                        #if i == 0:
+                        #    series[i]['date'] = a[0]
+                        #series[i] = {'metric_' + str(i + 1): a[1]}
+                    #set_columns(request)
+                    
+                    
+                else:
+                    series.append({
+                        'data': to_list(values),
+                        'name': name,
+                        'yAxis': i,
+                        'xAxis': 0, #int(positions[i]) - 1,
+                        'type': plots[i],
+                        'zIndex': layers[i],
+                    })
+             
+            if data_type == 'table':
+                columns = ['metric_' + str(i + 1) for i, m in enumerate(metrics)]
+                columns.insert(0, 'date')
                 
-            return series
+                for i, dic in table.iteritems():
+                    series.append(dic)   
+                    
+                return {
+                    'rows': series,
+                    'columns': super(FundReturnResource, self).set_columns(request, columns)
+                }
+                
+            else:
+                return series
         
     
         # Histogram

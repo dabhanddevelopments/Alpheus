@@ -64,12 +64,15 @@ def date_range(lst, date):
 def to_dataframe(lst, dates):
     return pd.DataFrame(np.array(lst), index=dates)  
    
-def to_list(series):
+def to_list(series, timestamp=True):
     dic = series[0].to_dict()
     
     lst = []
     for i, a in dic.iteritems():
-        date = int(mktime(i.timetuple())) * 1000
+        if timestamp:
+            date = int(mktime(i.timetuple())) * 1000
+        else:
+            date = i.strftime('%Y-%m-%d')
         val = float("%.2f" % a)
         lst.append([date, val])
         
