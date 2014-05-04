@@ -261,8 +261,12 @@ class FundReturnResource(MainBaseResource):
             
                 if date_type == 'monthly':
                     first = FundReturnMonthly.objects.order_by('value_date')[0]
+                    freq = 'm'
+                    factor = 12 #Annualisation Factor
                 else:
                     first = FundReturnDaily.objects.order_by('value_date')[0]
+                    freq = 'BDay'
+                    factor = 252 #Annualisation Factor
                     
                 date_from = first.value_date
             
@@ -288,12 +292,15 @@ class FundReturnResource(MainBaseResource):
             
                 if unders[i] == 'fund':
                     lst = [row.data['fund_perf'] for row in data['objects']]
+                    color = 'blue'
                     
                 elif unders[i] == 'benchpeer':
                     lst = [row.data['bench_perf'] for row in data['objects']]
+                    color = 'green'
                     
                 elif unders[i][:5] == 'metric': 
                     lst = lst_vals[unders[i][6:]]
+                    color = 'pink'
                     
                 #else
                 #    FundPeer/BenchPeer - what column to get data from?
@@ -305,6 +312,9 @@ class FundReturnResource(MainBaseResource):
                     
                 elif unders[i][:5] == 'metric': 
                     lst2 = lst_vals[unders[i][6:]]
+                    
+                elif unders[i].isdigit():
+                    pass # where to take the value from?
                     
                     
                 # remove any empty strings in the list that might exist
@@ -322,9 +332,9 @@ class FundReturnResource(MainBaseResource):
                 except:
                     lst_vals2 = []
                 
-                dates = date_range(lst, date_from)
+                dates = date_range(lst, date_from, freq)
                 df = to_dataframe(lst, dates)
-                dates2 = date_range(lst2, date_from)
+                dates2 = date_range(lst2, date_from, freq)
                 df2 = to_dataframe(lst2, dates2)
                 
                 win = int(windows[i])
@@ -365,15 +375,15 @@ class FundReturnResource(MainBaseResource):
                     name = "Rolling Kurtosis"
                     
                 if m == "roll_annualised":
-                    values = annualised_returns(df, f=12, window=12, LessThanWin=True)
+                    values = annualised_returns(df, factor, win, LessThanWin=True)
                     name = "Rolling Annualised Return"
                     
                 if m == "roll_volatility":
-                    values = roll_volatility(df, win, f=12)
+                    values = roll_volatility(df, win, factor)
                     name = "Rolling Volatility"
                     
                 if m == "roll_sharpe": 
-                    values = roll_sharpe_base( series, f=12)
+                    values = roll_sharpe_base( series, factor)
                     name = "Rolling Sharpe"
                     
                 #if m == "roll_sortino":
@@ -400,10 +410,18 @@ class FundReturnResource(MainBaseResource):
                     
                 #if m == "roll_rsq":
                 
-                if data_type == 'table':
-                    asdf = to_list(values, False)
+                step_metrics = [
+                    "roll_average", "roll_deviation", "roll_cumulative", "roll_skewness", 
+                    "roll_kurtosis", "roll_annualised", "roll_volatility",  "roll_sharpe",  
+                    "roll_sortino", "roll_downside", "roll_excess", "roll_tracking", "roll_correlation"   
+                ]
+                if m in step_metrics:
+                    values = values[::steps[i]]
                     
-                    for p, a in enumerate(asdf):
+                if data_type == 'table':
+                    list_values = to_list(values, False)
+                    
+                    for p, a in enumerate(list_values):
                         
                         try:
                             table[p]['date']
@@ -412,18 +430,11 @@ class FundReturnResource(MainBaseResource):
                         table[p]['date'] = a[0]
                         table[p]['metric_' + str(i + 1)] = a[1]
                         
-                        #except:
-                        #    series[p] = a[0]
-                        #if i == 0:
-                        #    series[i]['date'] = a[0]
-                        #series[i] = {'metric_' + str(i + 1): a[1]}
-                    #set_columns(request)
-                    
-                    
                 else:
                     series.append({
                         'data': to_list(values),
                         'name': name,
+                        'color': color,
                         'yAxis': i,
                         'xAxis': 0, #int(positions[i]) - 1,
                         'type': plots[i],

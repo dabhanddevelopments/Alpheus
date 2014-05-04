@@ -419,9 +419,9 @@ class MainBaseResource(SpecifiedFields):
                 categories = sorted(categories, reverse=True)
 
                 months = []
-                for category in categories:
+                for key, category in enumerate(categories):
                     dic = {'year': category}
-                    dic['id'] = category
+                    dic['id'] = (key + 1) * 10
                     for row in data['objects']:
 
                         if row.data[self.date].year == category:
@@ -441,11 +441,9 @@ class MainBaseResource(SpecifiedFields):
                                     
                                     for extra_field in self.extra_fields:
                                         dic[extra_field] = row.data[extra_field]
-                                    
                     months.append(dic)
 
                 columns = ['Year'] + self.get_month_list() + self.extra_fields
-
             return {
                 'columns': self.set_columns(request, columns),
                 'rows': months,

@@ -52,14 +52,14 @@ bench = pd.DataFrame(np.array([-2.190000, -0.160000, 1.700000, 2.580000, 3.11000
                                2.920000, 2.660000, -4.140000]),
                                          index=dates)
 
-def date_range(lst, date):
+def date_range(lst, date, freq):
 
     # format date to string format if not done already
     if not isinstance(date, (str, unicode)):
         date = date.strftime('%Y%m%d')
         
     # return the date range
-    return pd.date_range(date, periods=len(lst), freq='m')
+    return pd.date_range(date, periods=len(lst), freq=freq)
 
 def to_dataframe(lst, dates):
     return pd.DataFrame(np.array(lst), index=dates)  

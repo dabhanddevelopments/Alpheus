@@ -2506,8 +2506,8 @@ Ext.onReady(function() {
                 if(axis[i]['opposite'] == 'right') {
                     console.log('TRUE');
                     widget.yAxis[i]['opposite'] = true;
-                //} else {
-                //    widget.xAxis[i] = {};
+                } else {
+                    widget.yAxis[i]['opposite'] = false;
                 }
                 //console.log('debug yAxis', widget.yAxis);
             }
@@ -2572,6 +2572,7 @@ Ext.onReady(function() {
                     width: 945,
                     renderTo: div,
                     id: div,
+                    autoScroll: true,
                 });
                 
             } else {
@@ -2587,6 +2588,7 @@ Ext.onReady(function() {
             console.log('GET URL', getUrl());
             
             widget.url = getUrl();
+            widget.params.date_type = Ext.getCmp('date_type_combo').getValue();
             
             $.getJSON(widget.url + '&data_type=table', function(data) {
                 
@@ -2879,21 +2881,6 @@ Ext.onReady(function() {
                 
                 secUnderlyingSelect.setValue(secUnderlyingStore.getAt('0').get('id'));
                     
-                // Add the open metric tabs to the underlying drop downs
-                for(i=1; i <= tabId; i++) {
-                     store1 = Ext.data.StoreManager.lookup('under_store_' + i);
-                     store2 = Ext.data.StoreManager.lookup('sec_under_store_' + i);
-                     for(x=1; x <= tabId; x++) {
-                         store1.add({
-                            'id': 'metric' + x, 
-                            'name': 'Metric ' + x
-                         });
-                         store2.add({
-                            'id': 'metric' + x, 
-                            'name': 'Metric ' + x
-                         });
-                     }
-                }
                 
                 // Add the benchmarks assigned to this fund for the underlying drop downs
                 $.getJSON("/api/fundpeer/?fields=benchpeer__name&fund=" + obj.fund +'&user=' + obj.user, function(data) {
@@ -3026,7 +3013,7 @@ Ext.onReady(function() {
                 
                 // What metrics makes the Second Underlying drop down visible
                 var secondUnderlying = new Array(
-                    "roll_average", "roll_deviation", "roll_excess", 
+                    "delta", "roll_excess", 
                     "roll_tracking", "roll_correlation", "roll_alpha",
                     "roll_beta",  "roll_rsq"
                );
@@ -3109,6 +3096,24 @@ Ext.onReady(function() {
                             } else {
                                 rfrSelect.show();
                             }
+                            
+                            // Add the open metric tabs to the underlying drop downs
+                            if(selectedValue === 'roll_average' || selectedValue == 'roll_deviation') {
+                                for(i=1; i <= tabId; i++) {
+                                     store1 = Ext.data.StoreManager.lookup('under_store_' + i);
+                                     store2 = Ext.data.StoreManager.lookup('sec_under_store_' + i);
+                                     for(x=1; x <= tabId; x++) {
+                                         store1.add({
+                                            'id': 'metric' + x, 
+                                            'name': 'Metric ' + x
+                                         });
+                                         store2.add({
+                                            'id': 'metric' + x, 
+                                            'name': 'Metric ' + x
+                                         });
+                                     }
+                                }
+                           }
                             
                            if(firstRun == false) {
                                updateChart();
@@ -3609,6 +3614,7 @@ Ext.onReady(function() {
 
     function chart(obj, widget, div) {
     
+    
         var chartDiv = div;
         div = div + '_stats_graph';
 
@@ -3699,14 +3705,27 @@ Ext.onReady(function() {
         console.log('HEIGHT', (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)));
 
 
-        //console.log('url + qs', widget.url + widget.qs);
-        console.log('ajax call', widget.url);        
+        var colors = new Array();
+        
+        console.log('yAxis', yAxis);
+        //console.log('xAxis', xAxis);
+        
+        console.log('ajax call', 'http://localhost:8000/' + widget.url);        
         $.getJSON(widget.url + widget.qs, function(data) {
-
-            var options = {
+        
+            $.each(data, function( index, obj ) {
+                colors.push(obj.color);
+            });
+            
+            // default colors
+            if(colors.length === 0) {
                 colors: [
                    'orange',
-                ],
+                ];           
+            }
+
+            var options = {
+                colors: colors,
                 chart: {
                     type: type,
                     marginRight: 25,
@@ -3728,11 +3747,6 @@ Ext.onReady(function() {
                 },
                 scrollbar: {
                     enabled: scrollbar
-                },
-
-                rangeSelector: {
-                    enabled: rangeSelector,
-                    selected : 4
                 },
                 title: {
                     text: title,
@@ -3761,261 +3775,8 @@ Ext.onReady(function() {
             };
             //console.log('data', data);
 
-            if(typeof widget.params.date_type != 'undefined' && widget.params.date_type == 'month') {
+            if(typeof widget.params.date_type != 'undefined' && widget.params.date_type == 'monthly') {
                 options['rangeSelector'] = {
-                    enabled: true,
-			        buttons: [{
-				        type: 'year',
-				        count: 1,
-				        text: '1y'
-			        }, {
-				        type: 'year',
-				        count: 5,
-				        text: '5y'
-			        }, {
-				        type: 'year',
-				        count: 10,
-				        text: '10y'
-			        }, {
-				        type: 'all',
-				        text: 'All'
-			        }],
-			        inputEnabled: true,
-			        selected : 1
-                }
-            }
-            if(typeof widget.params.zoom != 'undefined' && widget.params.zoom == 'true') {
-               //console.log(options.xAxis);
-                options['xAxis'] = {
-                    events: {
-                        afterSetExtremes: function(e){
-                           //console.log(e);
-                            zoomGraph(e, widget);
-                        }
-                    },
-                    minRange: 3600 * 1000 // one hour
-                };
-               //console.log(options);
-            } else {
-
-            }
-            
-            if(typeof $('#' + div).highcharts() !== 'undefined') {
-                $('#' + div).highcharts().destroy();
-                delete $('#' + div);
-                $('<div id="' + div + '"></div>').appendTo("#" + chartDiv);
-                //console.log('DESTROYING CHART');
-            }
-            var chart = new Highcharts.StockChart(options);
-            //console.log('CREATING NEW CHART');
-
-        });
-    }
-    
-    // not in use
-    function lineChart2(obj, widget, div) {
-    
-    console.log('line chart', div);
-
-        if(typeof $('#' + div).highcharts() != 'undefined') {
-           //console.log('chart already created');
-        }
-
-        if(typeof widget.params.type == 'undefined') {
-            var type = 'line';
-        } else {
-            var type = widget.params.type;
-        }
-
-
-        var title = false;
-        if(typeof widget.params.title != 'undefined' && widget.params.title == "true") {
-            title = widget.name;
-        }
-
-        var yDecimals = true;
-        if(typeof widget.params.yDecimals != 'undefined' && widget.params.yDecimals === 'false') {
-            yDecimals = false;
-        }
-
-        var yAxisTitle = 'Performance';
-        if(typeof widget.params.yAxisTitle != 'undefined') {
-            if(widget.params.yAxisTitle == 'false') {
-                yAxisTitle = false;
-            } else {
-                yAxisTitle = widget.params.yAxisTitle;
-            }
-        }
-
-        var labels = true;
-        if(typeof widget.params.labels != 'undefined' && widget.params.labels == 'false') {
-            labels = false;
-        }
-
-        var legend = true;
-        if(typeof widget.params.legend != 'undefined' && widget.params.legend == 'false') {
-            legend = false;
-        }
-
-        var scrollbar = false;
-        if(typeof widget.params.scrollbar != 'undefined' && widget.params.scrollbar == 'true') {
-            scrollbar = true;
-        }
-
-        var navigator = false;
-        if(typeof widget.params.navigator != 'undefined' && widget.params.navigator == 'true') {
-            navigator = true;
-        }
-
-        var rangeSelector = true;
-        if(typeof widget.params.rangeSelector != 'undefined' && widget.params.rangeSelector == 'false') {
-            rangeSelector = false;
-        }
-
-
-       //console.log(widget.url + widget.qs);
-        $.getJSON(widget.url + widget.qs, function(data) {
-
-            var options = {
-                colors: [
-                   'orange',
-                ],
-                chart: {
-                    type: type,
-                    marginRight: 25,
-                    //marginBottom: 25,
-                    spacingBottom: -20,
-                    size: '100%',
-                    renderTo: div,
-                    width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 10,
-                    height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
-                },
-                navigator:{
-                    enabled: navigator,
-				    adaptToUpdatedData: false,
-				    series: data.objects,
-				    height: 20,
-                },
-                scrollbar: {
-                    enabled: scrollbar
-                },
-
-                rangeSelector: {
-                    enabled: rangeSelector,
-                    selected : 4
-                },
-                title: {
-                    text: title,
-                //    x: -20 //center
-                },
-                xAxis: {
-                    //gridLineWidth: 1,
-                    type: 'category',
-                    categories: data.objects.columns,
-                },
-                yAxis: {
-                    title: {
-                        text: yAxisTitle,
-                    },
-                    plotLines: [{
-                        value: 0,
-                        width: 1,
-                        color: '#808080'
-                    }]
-                },
-                tooltip: {
-                    //valueSuffix: '€'
-                },
-                legend: {
-                    enabled: legend,
-                    //layout: 'vertical',
-                    //align: 'right',
-                    //verticalAlign: 'top',
-                    //x: -10,
-                    //y: 100,
-                    //borderWidth: 0
-                },
-                series: data.objects,
-            };
-
-            if(typeof widget.params.date_type != 'undefined' && widget.params.date_type == 'month') {
-                options['rangeSelector'] = {
-                    enabled: true,
-			        buttons: [{
-				        type: 'year',
-				        count: 1,
-				        text: '1y'
-			        }, {
-				        type: 'year',
-				        count: 5,
-				        text: '5y'
-			        }, {
-				        type: 'year',
-				        count: 10,
-				        text: '10y'
-			        }, {
-				        type: 'all',
-				        text: 'All'
-			        }],
-			        inputEnabled: true,
-			        selected : 1
-                }
-            }
-            if(typeof widget.params.zoom != 'undefined' && widget.params.zoom == 'true') {
-               //console.log(options.xAxis);
-                options['xAxis'] = {
-                    events: {
-                        afterSetExtremes: function(e){
-                           //console.log(e);
-                            zoomGraph(e, widget);
-                        }
-                    },
-                    minRange: 3600 * 1000 // one hour
-                };
-               //console.log(options);
-            } else {
-
-            }
-            var chart = new Highcharts.StockChart(options);
-
-        });
-    }
-
-   function chartDoubleY(obj, widget, div) {
-
-        if(typeof widget.params.type == 'undefined') {
-            var type = 'line';
-        } else {
-            var type = widget.params.type;
-        }
-
-        var navigator = false;
-        if(typeof widget.params.navigator != 'undefined' && widget.params.navigator == 'true') {
-            navigator = true;
-        }
-
-        $.getJSON(widget.url + widget.qs, function(data) {
-
-            var chart = new Highcharts.StockChart({
-                chart: {
-                    type: type,
-                    //marginRight: 25,
-                    //marginBottom: 25,
-                    //size: '100%',
-                    spacingBottom: -13,
-                    renderTo: div,
-                    width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 10,
-                    height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
-                },
-                navigator:{
-                    enabled: navigator,
-                    adaptToUpdatedData: false,
-                    height: 10,
-                },
-                scrollbar: {
-                    enabled:false
-                },
-			    rangeSelector : {
                     enabled: true,
 			        buttons: [{
 				        type: 'year',
@@ -4035,161 +3796,72 @@ Ext.onReady(function() {
 			        }],
 			        inputEnabled: true,
 			        selected : 3
-			    },
-			    title : {
-				    text : false
-			    },
-                xAxis: {
-                    type: 'datetime',
+                }
+            } else if(typeof widget.params.date_type != 'undefined' && widget.params.date_type == 'daily') {
+                options['rangeSelector'] = {
+                    enabled: true,
+			        buttons: [{
+				        type: 'month',
+				        count: 1,
+				        text: '1m'
+			        }, {
+				        type: 'month',
+				        count: 3,
+				        text: '3m'
+			        }, {
+				        type: 'month',
+				        count: 6,
+				        text: '6m'
+			        }, {
+				        type: 'year',
+				        count: 1,
+				        text: '1y'
+			        }, {
+				        type: 'year',
+				        count: 5,
+				        text: '5y'
+			        }, {
+				        type: 'year',
+				        count: 10,
+				        text: '10y'
+			        }, {
+				        type: 'all',
+				        text: 'All'
+			        }],
+			        inputEnabled: true,
+			        selected : 6
+                }
+            }
+            if(typeof widget.params.zoom != 'undefined' && widget.params.zoom == 'true') {
+               //console.log(options.xAxis);
+               console.log('ZOOMING');
+                options['xAxis'] = {
                     events: {
                         afterSetExtremes: function(e){
-                            refreshGraph(e, widget);
+                           //console.log(e);
+                            zoomGraph(e, widget);
                         }
                     },
-                },
-                yAxis: [{
-			        //title : {
-				    //    text : false
-			        //},
-                },{
-                    opposite: true
-                }],
-			    series: data
-            });
-        });
-    }
-
-    function barChart(obj, widget, div) {
-
-        $.getJSON(widget.url + widget.qs, function(data) {
-        
-            console.log('bar chart data', data.data)
-        
-            var title = false;
-            if(typeof widget.params.title != 'undefined' && widget.params.title == "true") {
-                title = widget.name;
-            }
-
-            var type = 'column';
-            if(typeof widget.params.type != 'undefined') {
-                type = widget.params.type;
-            }
-
-            var yDecimals = true;
-            if(typeof widget.params.yDecimals != 'undefined' && widget.params.yDecimals === 'false') {
-                yDecimals = false;
-            }
-
-            var legend = true;
-            if(typeof widget.params.legend != 'undefined' && widget.params.legend == "false") {
-                legend = false;
-            }
-
-            var scrollbar = false;
-            if(typeof widget.params.scrollbar != 'undefined' && widget.params.scrollbar == "true") {
-                scrollbar = true;
-            }
-           //console.log(labels);
-
-            var options = {
-                chart: {
-                    //marginRight: 25,
-                    //marginTop: 50,
-                    //marginBottom: 50,
-                    renderTo: div,
-                    type: type,
-                    width: widget.width,
-                    height: widget.height,
-                },
-                title: {
-                    text: false
-                },
-                subtitle: {
-                    text: false
-                },
-                credits: {
-                    enabled: false
-                },
-                yAxis: {
-                    title: {
-                        text: false,//'Holding Performance XXXX-XX-XX'
-                    },
-                    allowDecimals: yDecimals,
-                },
-                legend: {
-                    enabled: legend,
-                },
-
-                exporting: {
-                    enabled: true
-                },
-
-                xAxis: {
-                    type: 'category',
-                    categories: data.columns,
-                    //type : "datetime",
-                },
-                series: data,
-            }
-
-            if(typeof widget.params.labels != 'undefined' && widget.params.labels == 'rotated') {
-                labels = {
-                    rotation: -45,
-                    align: 'right',
-                    style: {
-                        fontSize: '8px',
-                        fontFamily: 'Verdana, sans-serif'
-                    }
-                }
-                options.xAxis.labels = labels;
-            }
-
-           //console.log(widget.window.key);
-            // vertical fund performance line over bar graph
-            
-            if(widget.window.key == 'holding_performance') { 
-            
-                var year = moment().year();
-                year = 2013;  // @TODO: get rid of this later
-                var month = moment().month();
-                var url = '/api/fundreturnmonthly/?fund=' + $('#data').data('fund') + '&fields=fund_perf&value_date__year=' + year + '&value_date__month=' + month;
-                
-                $.getJSON(url, function(fund) {
-                    options.yAxis.plotLines = [{
-                        value: fund[0].fund_perf,
-                        width: 1,
-                        color: 'black',
-                        label: {
-                            text: $('#data').data('fund_name') + ' Performance',
-                        },
-                        zIndex: 5,
-                    }];
-                    var chart = new Highcharts.Chart(options);
-                    
-                    $('#data').data('chart-' + div, chart);
-                    $('#data').data('chart-options-' + div, options);
-               });
+                    minRange: 3600 * 1000 // one hour
+                };
+               //console.log(options);
             } else {
-                var chart = new Highcharts.Chart(options);
+
             }
-
-            // save div for later
-            $('#data').data('barchart-' + widget.window.key, div);
             
-            // save data
-            $('#data').data('chart-' + div, chart);
-            
-            // save options
-            $('#data').data('chart-options-' + div, options);
-            
-            return chart;
-
+            if(typeof $('#' + div).highcharts() !== 'undefined') {
+                $('#' + div).highcharts().destroy();
+                delete $('#' + div);
+                $('<div id="' + div + '"></div>').appendTo("#" + chartDiv);
+                console.log('DESTROYING CHART');
+            }
+            var chart = new Highcharts.StockChart(options);
+            //var chart = new Highcharts.Chart(options); // cannot be used with rangeSelector options
+            //console.log('CREATING NEW CHART');
+           
         });
-
-
-
     }
-
+ 
 
     function monthTable(year, month) {
 
@@ -4613,6 +4285,12 @@ Ext.onReady(function() {
             });
         //});
     }
+    
+    
+    
+    
+    
+    
 
 
     function dataTable(data, obj, widget, div) {
@@ -4749,7 +4427,7 @@ Ext.onReady(function() {
             }
         });
 
-        Ext.create('Ext.data.Store', {
+        var tableStore = Ext.create('Ext.data.Store', {
             storeId: widget.key,
             fields: fields,
             data: data.rows,
@@ -4760,10 +4438,10 @@ Ext.onReady(function() {
                     root: 'rows'
                 }
             },
-            sortInfo: {
-                direction: "DESC",
-                field: "year"
-            },
+            sorters: [ {
+                property: 'id',
+                direction: 'ASC'
+            } ],
         });
 
         // for innergrids
@@ -4798,12 +4476,8 @@ Ext.onReady(function() {
             }
         }
 
-       //console.log('ere');
-       //console.log(cls);
-       //console.log(widget.key);
-       //console.log(widget.window.key);
-       //console.log(div);
-       //console.log(plugins);
+        var isClicked = new Array();
+        
         var panel = Ext.create('Ext.grid.Panel', {
             title: title,
             id: div,
@@ -4812,8 +4486,8 @@ Ext.onReady(function() {
             hideHeaders: hideHeaders,
             store: Ext.data.StoreManager.lookup(widget.key),
             columns: data.columns,
-            width: width - 23,
-            height: height - 50,
+            width: width,
+            height: height - 10,
             header: false,
             border: false,
             //enableLocking: true,
@@ -4832,9 +4506,39 @@ Ext.onReady(function() {
             listeners: {
                 cellclick: function(gridView,htmlElement,columnIndex,dataRecord) {
 
-                    year = dataRecord.data.year;
-                   //console.log(dataRecord);
-                   //console.log(columnIndex);
+                    var id = dataRecord.data.id;
+                    var year = dataRecord.data.year + '';
+                 
+                 
+                    if(widget.window.key == 'w1' || widget.window.key == 'w1b') {
+                    
+                        if(year.substr(0, 5) !== 'bench') {
+
+                            $.getJSON("api/fundreturnmonthly/?align=center&data_type=year&date=value_date&extra_fields=bench_ytd&fund=" + obj.fund + "&value=bench_perf&value_date__year=" + year, function(w1) {
+                                
+                                tableStore.load();
+                                
+                                if(jQuery.inArray(id, isClicked) !== -1) {
+                                
+                                    isClicked.splice(isClicked.indexOf(id), 1);
+                                    for(i=0; i<data.rows.length; i++) {
+                                        if(data.rows[i]['id'] === (id + 1)) {
+                                            data.rows.splice(i, 1);
+                                        }
+                                    }
+                                } else {
+                                    w1.rows[0]['id'] = id + 1;
+                                    w1.rows[0]['year'] = 'Bench';
+                                    w1.rows[0]['ytd'] = w1.rows[0]['bench_ytd'];
+                                    console.log('w1', w1.rows[0]);
+                                    data.rows.push(w1.rows[0]);
+                                    isClicked.push(id);
+                                }
+                                tableStore.loadData(data.rows);
+                                tableStore.sync();
+                            });
+                        }
+                    }
 
                     obj.page = $('#data').data('page_id');
                     obj.grid = $('#data').data('grid' + obj.page);
@@ -4845,283 +4549,20 @@ Ext.onReady(function() {
                     obj.month = 1;
                     month = columnIndex - 1;
 
-
-                    /*
-                    Fund Classifications
-                    11 Alpheus
-                    10 Private Equity
-                    9 Side Pockets
-                    8 Limited Holdings
-                    7 CS Options
-                    6 CS Cal/Vol
-                    5 CS Equities
-                    4 HSBC Equities, Options, Futures
-                    3 CS Fixed Income & Treasuries
-                    2 HSBC Fixed Income & Treasuries
-                    1 Fund (Fund of Fund)
-
-                    @TODO: Rewrite this properly
-                    */
-
-                    if(widget.window.key == 'w1') {
-                    
-                        // year view
-                        if(columnIndex == 1) {
-
-                            if($('#data').data('classification') == 9)  {
-
-                                refreshWindow('w3', obj, extra_params);
-                                refreshWindow('w4d', obj, extra_params);
-                                refreshWindow('w5', obj, extra_params);
-
-                            } else if($('#data').data('classification') == 4)  {
-
-                                refreshWindow('w3', obj, extra_params);
-                                refreshWindow('w4b', obj, extra_params);
-                                refreshWindow('w5b', obj, extra_params);
-
-                            } else if($('#data').data('classification') == 10)  {
-
-                                refreshWindow('w3', obj, extra_params);
-                                refreshWindow('w5', obj, extra_params);
-                                refreshWindow('w31', obj, extra_params);
-
-                            } else if($('#data').data('classification') == 8)  {
-
-                                refreshWindow('w3b', obj, extra_params);
-                                refreshWindow('w4b', obj, extra_params);
-                                refreshWindow('w5', obj, extra_params);
-
-                            } else if($('#data').data('classification') == 2)  {
-
-                                refreshWindow('w3', obj, extra_params);
-                                refreshWindow('w4b', obj, extra_params);
-                                refreshWindow('w5', obj, extra_params);
-
-                            } else if($('#data').data('classification') == 1)  {
-
-                                refreshWindow('w3', obj, extra_params);
-                                refreshWindow('w4', obj, extra_params);
-                                refreshWindow('w5', obj, extra_params);
-                            }
-
-                        // monthly view
-                        } else if(columnIndex < 14) {
-                            //if($('#data').data('classification') == 'pe')  {
-                            //    refreshWindow('w2', obj, extra_params);
-                            //} else {
-                                refreshHoldPerfBar('w2', year + '-' + month + '-1', obj.fund, true);
-                            //}
-                        }
-                    }
-                    else if(widget.window.key == 'w1b') {
-                    
-                        // year view
-                        if(columnIndex == 1) {
-
-                            if($('#data').data('classification') == 3)  {
-
-                                refreshWindow('w3', obj, extra_params);
-                                refreshWindow('w4b', obj, extra_params);
-                                refreshWindow('w5', obj, extra_params);
-
-                            } else if($('#data').data('classification') == 5)  {
-
-                                refreshWindow('w3', obj, extra_params);
-                                refreshWindow('w4b', obj, extra_params);
-                                refreshWindow('w5b', obj, extra_params);
-
-                            } else if($('#data').data('classification') == 6)  {
-
-                                refreshWindow('w3', obj, extra_params);
-                                refreshWindow('w4b', obj, extra_params);
-                                refreshWindow('w5b', obj, extra_params);
-
-                            } else if($('#data').data('classification') == 7)  {
-
-                                refreshWindow('w3', obj, extra_params);
-                                refreshWindow('w4b', obj, extra_params);
-                                refreshWindow('w5b', obj, extra_params);
-                            }
-
-
-
-
-                        // month view
-                        } else if(columnIndex > 0 && columnIndex < 14) {
-                            //refreshHoldPerfBar('w2', year + '-' + month + '-1', obj.fund, true);
-                            console.log("columnIndex", columnIndex);
-
-                            monthTable(year, month);
-                        }
-                    }
-
-
-                    if(widget.window.key == 'w6') {
-
-                        // year view
-                        if(columnIndex == 1) {
-
-                            // save this for W8, 9 and 10
-                            $('#data').data('year', year);
-
-                            if($('#data').data('classification') == 9)  {
-
-                                refreshWindow('w9c', obj, extra_params);
-                                refreshWindow('w26', obj, extra_params);
-                                refreshWindow('w27', obj, extra_params);
-
-                            } else if($('#data').data('classification') == 4)  {
-
-                                refreshWindow('w8', obj, extra_params);
-                                refreshWindow('w4b', obj, extra_params);
-                                refreshWindow('w10b', obj, extra_params);
-
-                            } else if($('#data').data('classification') == 10)  {
-
-                                refreshWindow('w8', obj, extra_params);
-                                refreshWindow('w10', obj, extra_params);
-                                refreshWindow('w31', obj, extra_params);
-
-                            } else if($('#data').data('classification') == 8)  {
-
-                                refreshWindow('w8b', obj, extra_params);
-                                refreshWindow('w9b', obj, extra_params);
-                                refreshWindow('w10', obj, extra_params);
-
-                            } else if($('#data').data('classification') == 2)  {
-
-                                refreshWindow('w8', obj, extra_params);
-                                refreshWindow('w9b', obj, extra_params);
-                                refreshWindow('w10', obj, extra_params);
-
-                            } else if($('#data').data('classification') == 1)  {
-
-                                refreshWindow('w8', obj, extra_params);
-                                refreshWindow('w9', obj, extra_params);
-                                refreshWindow('w10', obj, extra_params);
-                            }
-
-                        // month view
-                        } else if(columnIndex < 13) {
-                            refreshHoldPerfBar('w7', year + '-' + month + '-1', obj.fund, true, 'mtd', 'weight');
-                        }
-                    }
-                    else if(widget.window.key == 'w6b') {
-
-                        // year view
-                        if(columnIndex == 1) {
-
-                            if($('#data').data('classification') == 3)  {
-
-                                refreshWindow('w8', obj, extra_params);
-                                refreshWindow('w9b', obj, extra_params);
-                                refreshWindow('w10b', obj, extra_params);
-
-                            } else if($('#data').data('classification') == 5)  {
-
-                                refreshWindow('w8', obj, extra_params);
-                                refreshWindow('w9', obj, extra_params);
-                                refreshWindow('w10', obj, extra_params);
-                            }
-
-
-                        // month view
-                        } else if(columnIndex < 14) {
-                            refreshHoldPerfBar('w7', year + '-' + month + '-1', obj.fund, true);
-
-                            monthTable(year, month);
-                        }
-                    }
-                    else if(widget.window.key == 'w44') {
-
-                        // year view
-                        if(columnIndex == 1) {
-
-                                refreshWindow('w8', obj, extra_params);
-
-                        // month view
-                        } else if(columnIndex < 14) {
-                            refreshHoldPerfBar('w45', year + '-' + month + '-1', obj.client, true);
-                        }
-                    }
-                    else if(widget.window.key == 'w32') {
-
-                        // year view
-                        if(columnIndex == 1) {
-
-                            refreshWindow('w34', obj, extra_params);
-
-                        // month view
-                        } else if(columnIndex < 14) {
-                            refreshHoldPerfBar('w33', year + '-' + month + '-1', obj.client, true);
-                        }
-                    }
-                    else if(widget.window.key == 'w51') {
-
-                        // year view
-                        if(columnIndex == 1) {
-
-                                refreshWindow('w53', obj, extra_params);
-                                refreshWindow('w54', obj, extra_params);
-
-                                // div for window w55
-                                var window_id = 'page_' + obj.page + '_82';
-                                //$('<div id="' + window_id + '"></div>').appendTo('body');
-
-                               $('#data').data('date', new Date(year));
-
-                                investmentNAV(window_id, 'fund');
-
-                                var title = 'Alpheus / YEAR / Alpheus Performance by Fund';
-                                title = title.replace('YEAR', moment(new Date(year)).format("YYYY"))
-                                win = Ext.getCmp('page_14_win_82');
-                                win.setTitle(title);
-
-                        // month view
-                        } else if(columnIndex < 14) {
-                            refreshHoldPerfBar('w52', year + '-' + month + '-1', obj.fund, true);
-                        }
-                    }
-                    else if(widget.window.key == 'w64') {
-
-                        // year view
-                        if(columnIndex == 1) {
-
-                                refreshWindow('w67', obj, extra_params);
-                                refreshWindow('w66', obj, extra_params);
-
-                        // month view
-                        } else if(columnIndex < 14) {
-                            refreshHoldPerfBar('w65', year + '-' + month + '-1', obj.fund, true);
-                        }
-                    }
-
-
-
-
-
-
-
                 }
             }
 
         });
 
+
         panel.view.on('expandBody', function (rowNode, record, expandRow, eOpts) {
 
             var id = record.get('id');
 
-            if(widget.window.key == 'w1' || widget.window.key == 'w1b') {
-
-                $.getJSON("api/fundreturnmonthly/?align=center&data_type=year&date=value_date&extra_fields=bench_ytd&fund=" + obj.fund + "&value=bench_perf&value_date__year=" + id, function(w1) {
-
-                    displayInnerGrid(widget, w1, id, true);
-                });
-            }
 
 
-            else if(widget.window.key == 'w11') {
+
+            if(widget.window.key == 'w11') {
 
                 var fields = 'trade_date,settlement_date,no_of_units,trade_price_euro,fx_euro,trade_price_base,base_nav';
                 //var fields = 'trade_date,settlement_date,buy_sell,no_of_units,trade_price_base_base,fx_to_euro,trade_price_base,base_nav';
@@ -5237,6 +4678,59 @@ Ext.onReady(function() {
         });
     }
 
+
+
+    function refreshWindow(window_key, obj, extra_params) {
+
+
+        $.getJSON('/api/widgets/?window__key=' + window_key, function(widget_data) {
+
+
+            for(x=0; x<widget_data.length; x++) {
+
+                var window_id = 'page_' + obj.page + '_win_' + widget_data[x].window.id;
+                var widget_id = window_id + '_widget_' + widget_data[x].id;
+
+
+
+                var title = widget_data[x].window.name;
+
+                year = extra_params.year;
+                week = 1; // fill this dynamic later
+
+                title = title.replace('FUND_NAME', $('#data').data('fund_name'));
+                title = title.replace('YEAR', year);
+                title = title.replace('WEEK', week);
+
+                win = Ext.getCmp(window_id);
+
+                if(typeof win != 'undefined') {
+                    win.setTitle(title);
+                    //return;
+                } else {
+                   //console.log(window_id);
+                }
+
+                if(widget_data[x].type == 'data_table') {
+                    var widget_obj = Ext.getCmp(widget_id);
+
+                } else {
+                    var widget_obj = $('#' + widget_id).highcharts();
+                }
+                try {
+                    widget_obj.destroy();
+                } catch(err) {
+
+                }
+
+                $('<div id="' + widget_id + '"></div>').appendTo('#' + window_id);
+
+                createWidget(obj, widget_data[x], widget_id, extra_params);
+            }
+
+        });
+    }
+
  function dataTableSub(obj, widget, div) {
 
         $.getJSON(widget.url + widget.qs, function(data) {
@@ -5256,7 +4750,7 @@ Ext.onReady(function() {
                         type: 'json',
                         root: 'objects'
                     }
-                }
+                },
             });
 
             var mainGrid = Ext.create('Ext.grid.Panel', {
