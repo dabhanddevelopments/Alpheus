@@ -2114,7 +2114,7 @@ Ext.onReady(function() {
                 } 
             } else {   
                 if(type === 1) {
-                    var params = '&y1=monthlyreturn&fields=weight';
+                    var params = '&y1=performance&fields=weight';
                 } else {
                     var params = '&y1=weighted_perf&fields=weight';
                 }

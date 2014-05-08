@@ -627,14 +627,14 @@ class HoldingPositionMonthlyResource(MainBaseResource):
         performance = request.GET.get('performance', False) 
         
         # W2 - Holding Performance Bar & W7 Holding NAV
-        # Get monthlyreturn from HoldingMonthly (only utilized in W2)
+        # Get performance from HoldingMonthly (only utilized in W2)
         # and the weight of the prior month to calculate the average weight
         if performance and year and month and fund:
         
             
             hm = HoldingMonthly.objects.filter(
                 value_date__year=year, value_date__month=month). \
-                select_related('holding').only('holding__name', 'monthlyreturn')
+                select_related('holding').only('holding__name', 'performance')
                 
             if int(month) == 1:
                 prior_year = int(year) - 1
@@ -664,9 +664,9 @@ class HoldingPositionMonthlyResource(MainBaseResource):
                         if average_weight >= 0:
                         
                             new_data[name] = {
-                                'weighted_perf': (p.data['weight'] * h.monthlyreturn) / 100,
+                                'weighted_perf': (p.data['weight'] * h.performance) / 100,
                                 'average_weight': (average_weight) / 100, 
-                                'monthlyreturn': h.monthlyreturn,
+                                'performance': h.performance,
                                 'holding__name': p.data['holding__name'],
                             }
                             
