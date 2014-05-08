@@ -439,6 +439,12 @@ class MainBaseResource(SpecifiedFields):
                                     
                                     dic[month_name] = row.data[value]
                                     
+                                    if row.data['estimation'] in [1, '1', 'Y', 'y']:
+                                        dic[month_name] = str(dic[month_name]) + 'e'
+                                    else:
+                                        dic[month_name] = str(dic[month_name]) + 'e'
+                                        #dic[month_name + '_est'] = False
+                                    
                                     for extra_field in self.extra_fields:
                                         dic[extra_field] = row.data[extra_field]
                     months.append(dic)

@@ -1950,6 +1950,9 @@ Ext.onReady(function() {
         
         } else if(widget.type == 'data_table') {
 
+            
+            widget.qs += '&fields=estimation';
+            console.log('data table url', widget.url + widget.qs);
             $.getJSON(widget.url + widget.qs, function(data) {
                 return dataTable(data, obj, widget, div);
             });
@@ -2883,15 +2886,15 @@ Ext.onReady(function() {
                     
                 
                 // Add the benchmarks assigned to this fund for the underlying drop downs
-                $.getJSON("/api/fundpeer/?fields=benchpeer__name&fund=" + obj.fund +'&user=' + obj.user, function(data) {
+                $.getJSON("/api/fundpeer/?fields=benchpeer__holding__id,benchpeer__name&fund=" + obj.fund +'&user=' + obj.user, function(data) {
                     
                     for(i=0; i < data.length; i++) { 
                          underlyingStore.add({
-                            'id': data[i].id, 
+                            'benchpeer__holding__id': data[i].id, 
                             'name':  data[i].benchpeer__name
                          });
                          secUnderlyingStore.add({
-                            'id': data[i].id, 
+                            'benchpeer__holding__id': data[i].id, 
                             'name':  data[i].benchpeer__name
                          });
                     }
@@ -3403,19 +3406,22 @@ Ext.onReady(function() {
     
     function lineChart(obj, widget, div) {
     
-
-        $.getJSON("/api/fundreturnmonthly/?data_type=graph&date=value_date&fund=" + obj.fund + "&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name", function(series) {
-            $.getJSON("/api/fundreturnmonthly/?bench_graph=bench_perf&data_type=graph&date=value_date&fund=" + obj.fund + "&graph_type=bench&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name", function(series2) {
+        var url1 = "/api/fundreturnmonthly/?data_type=graph&date=value_date&fund=" + obj.fund + "&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name";
+        var url2 = "/api/fundreturnmonthly/?bench_graph=bench_perf&data_type=graph&date=value_date&fund=" + obj.fund + "&graph_type=bench&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name";
+        console.log('url1', url1);
+        console.log('url2', url2);
+        $.getJSON(url1, function(series) {
+            $.getJSON(url2, function(series2) {
     
                 series[2] = series2;
                 
                 
-                console.log(series[0].data.length);
+                //console.log(series[0].data.length);
                 var lastPoint = Array();
                 lastPoint[0] = series[0].data[series[0].data.length - 1][1];
                 lastPoint[1] = series[1].data[series[1].data.length - 1][1];
                 lastPoint[2] = series[2].data[series[2].data.length - 1][1];
-                console.log(lastPoint);
+                //console.log(lastPoint);
                 
                 //alert(lastPoint[0]);
                 
@@ -4348,7 +4354,138 @@ Ext.onReady(function() {
     
     
     
-    
+
+    function barChart(obj, widget, div) {
+
+        $.getJSON(widget.url + widget.qs, function(data) {
+        
+            console.log('bar chart data', data.data)
+        
+            var title = false;
+            if(typeof widget.params.title != 'undefined' && widget.params.title == "true") {
+                title = widget.name;
+            }
+
+            var type = 'column';
+            if(typeof widget.params.type != 'undefined') {
+                type = widget.params.type;
+            }
+
+            var yDecimals = true;
+            if(typeof widget.params.yDecimals != 'undefined' && widget.params.yDecimals === 'false') {
+                yDecimals = false;
+            }
+
+            var legend = true;
+            if(typeof widget.params.legend != 'undefined' && widget.params.legend == "false") {
+                legend = false;
+            }
+
+            var scrollbar = false;
+            if(typeof widget.params.scrollbar != 'undefined' && widget.params.scrollbar == "true") {
+                scrollbar = true;
+            }
+           //console.log(labels);
+
+            var options = {
+                chart: {
+                    //marginRight: 25,
+                    //marginTop: 50,
+                    //marginBottom: 50,
+                    renderTo: div,
+                    type: type,
+                    width: widget.width,
+                    height: widget.height,
+                },
+                title: {
+                    text: false
+                },
+                subtitle: {
+                    text: false
+                },
+                credits: {
+                    enabled: false
+                },
+                yAxis: {
+                    title: {
+                        text: false,//'Holding Performance XXXX-XX-XX'
+                    },
+                    allowDecimals: yDecimals,
+                },
+                legend: {
+                    enabled: legend,
+                },
+
+                exporting: {
+                    enabled: true
+                },
+
+                xAxis: {
+                    type: 'category',
+                    categories: data.columns,
+                    //type : "datetime",
+                },
+                series: data,
+            }
+
+            if(typeof widget.params.labels != 'undefined' && widget.params.labels == 'rotated') {
+                labels = {
+                    rotation: -45,
+                    align: 'right',
+                    style: {
+                        fontSize: '8px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                }
+                options.xAxis.labels = labels;
+            }
+
+           //console.log(widget.window.key);
+            // vertical fund performance line over bar graph
+            
+            if(widget.window.key == 'holding_performance') { 
+            
+                var year = moment().year();
+                year = 2013;  // @TODO: get rid of this later
+                var month = moment().month();
+                var url = '/api/fundreturnmonthly/?fund=' + $('#data').data('fund') + '&fields=fund_perf&value_date__year=' + year + '&value_date__month=' + month;
+                
+                $.getJSON(url, function(fund) {
+                    options.yAxis.plotLines = [{
+                        value: fund[0].fund_perf,
+                        width: 1,
+                        color: 'black',
+                        label: {
+                            text: $('#data').data('fund_name') + ' Performance',
+                        },
+                        zIndex: 5,
+                    }];
+                    var chart = new Highcharts.Chart(options);
+                    
+                    $('#data').data('chart-' + div, chart);
+                    $('#data').data('chart-options-' + div, options);
+               });
+            } else {
+                var chart = new Highcharts.Chart(options);
+            }
+
+            // save div for later
+            $('#data').data('barchart-' + widget.window.key, div);
+            
+            // save data
+            $('#data').data('chart-' + div, chart);
+            
+            // save options
+            $('#data').data('chart-options-' + div, options);
+            
+            return chart;
+
+        });
+
+
+
+    }
+  
     
 
 
@@ -4388,7 +4525,7 @@ Ext.onReady(function() {
         for(i=0; i < data.columns.length; i++) {
             if(typeof data.columns[i].columns != 'undefined') {
             
-                console.log('UNDEFINED');
+               // console.log('UNDEFINED');
                 
                 for(x=0; x < data.columns[i].columns.length; x++) {
                     arr = {};
@@ -4400,6 +4537,7 @@ Ext.onReady(function() {
                     } else {
                         arr['type'] = 'string';
                     }
+                    arr['type'] = 'string';
                     arr['name'] = row
                     fields.push(arr);
                 }
@@ -4410,18 +4548,23 @@ Ext.onReady(function() {
                     
                     data.columns[i]['renderer'] = function(val) {
                     
-                    
-                        if(widget.window.key == 'w6') {
+                        format_val = val.replace('e', '');
                         
-                            number = Ext.util.Format.currency(val, '&euro;');
+                        if(widget.window.key == 'w6') {
+                            number = Ext.util.Format.currency(format_val, '&euro;');
+                            if(val.search('e') !== -1) {
+                                number = number + 'e';
+                            }
                         } else {
                             number = val;
                         }
                         
-                        if (val >= 0) {
+                        if (format_val > 0) {
                             renderer = '<span style="color: #01017D;">' + number;
-                        } else if (val < 0) {
+                        } else if (format_val < 0) {
                             renderer = '<span style="color:#F73100;">' + number;
+                        } else if (format_val == 0) {
+                            return '<span style="color:black;">-</span>';
                         }
                         
                         if(val != '') {
@@ -4431,6 +4574,7 @@ Ext.onReady(function() {
                         if(widget.window.key == 'w6') {
                             return renderer +  ' </span>';
                         } else {
+                            //console.log('ASDF', data.columns);
                             return renderer +  ' %</span>';
                         }
                         /*
@@ -4449,7 +4593,7 @@ Ext.onReady(function() {
                 }
                 if(typeof row != 'undefined') {
                 
-                    console.log('UNDEFINED2');
+                   // console.log('UNDEFINED2');
                     
                     arr = {};
                     if($.isNumeric(row)) {
@@ -4457,6 +4601,7 @@ Ext.onReady(function() {
                     } else {
                         arr['type'] = 'string';
                     }
+                    arr['type'] = 'string';
                     arr['name'] = row
                     fields.push(arr);
                 }
@@ -4474,14 +4619,14 @@ Ext.onReady(function() {
 
                     // tastypie returns floats as strings, hence this ugly hack
                     if(value.toString().indexOf('.') != -1) {
-                        data.rows[parent][key] = parseFloat(value.toString());
+                        //data.rows[parent][key] = parseFloat(value.toString());
                     }
                 });
             } else {
 
                 // tastypie returns floats as strings, hence this ugly hack
                 if(row.toString().indexOf('.') != -1) {
-                    data.rows[parent] = parseFloat(row.toString());
+                    //data.rows[parent] = parseFloat(row.toString());
                 }
             }
         });
@@ -4567,13 +4712,15 @@ Ext.onReady(function() {
 
                     var id = dataRecord.data.id;
                     var year = dataRecord.data.year + '';
+
+                    var month = columnIndex - 1;
                  
                  
                     if(widget.window.key == 'w1' || widget.window.key == 'w1b') {
                     
                         if(year.substr(0, 5) !== 'bench') {
 
-                            $.getJSON("api/fundreturnmonthly/?align=center&data_type=year&date=value_date&extra_fields=bench_ytd&fund=" + obj.fund + "&value=bench_perf&value_date__year=" + year, function(w1) {
+                            $.getJSON("api/fundreturnmonthly/?align=center&data_type=year&date=value_date&extra_fields=bench_ytd&fund=" + obj.fund + "&fields=estimation&value=bench_perf&value_date__year=" + year, function(w1) {
                                 
                                 tableStore.load();
                                 
@@ -4598,6 +4745,11 @@ Ext.onReady(function() {
                             });
                         }
                     }
+                    
+                    if(widget.window.key == 'w1b' && columnIndex > 0 && columnIndex < 14) {
+                        monthTable(year, month);
+                    }
+                            
 
                     obj.page = $('#data').data('page_id');
                     obj.grid = $('#data').data('grid' + obj.page);

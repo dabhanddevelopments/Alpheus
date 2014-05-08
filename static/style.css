@@ -591,10 +591,11 @@ table.month_table td {
     background-color: #F9FC9D !important; 
 } 
  
-/* Grid cells in the selected row */ 
+/* Grid cells in the selected row */
 .custom-grid .x-grid-row-selected .x-grid-cell { 
     background-color: #CFCFCF !important; 
 }
+  
 
 .custom-grid .x-grid-row-alt { 
     background-color: #DBEDFF; 

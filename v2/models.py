@@ -698,7 +698,7 @@ class FundReturnMonthly(models.Model):
 
 
 class Holding(models.Model):
-    holding = models.AutoField(primary_key=True, db_column='HoldingID')
+    id = models.AutoField(primary_key=True, db_column='HoldingID')
     name = models.CharField(max_length=200, db_column='Name', blank=True, null=True)
     bloomberg_name = models.CharField(max_length=200, db_column='BloombergName', blank=True, null=True)
     description = models.CharField(max_length=500, db_column='Description', blank=True, null=True)
@@ -890,7 +890,7 @@ class HoldingDaily(models.Model):
     closing_price = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='ClosingPrice', blank=True)
     closing_bid = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='ClosingBid', blank=True)
     closing_ask = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='ClosingAsk', blank=True)
-    daily_return = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='DailyReturn', blank=True)
+    performance = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='DailyReturn', blank=True)
     mtd = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MTDReturn', blank=True)
     ytd = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='YTDReturn', blank=True)
 
@@ -904,7 +904,7 @@ class HoldingMonthly(models.Model):
     value_date = models.DateTimeField(db_column='ValueDate')
     closingprice = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='ClosingPrice', blank=True)
 
-    monthlyreturn = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MonthlyReturn', blank=True)
+    performance = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='MonthlyReturn', blank=True)
     ytd = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='YTDReturn', blank=True)
 
     class Meta:

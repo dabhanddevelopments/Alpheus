@@ -12,6 +12,7 @@ import pandas as pd
 from django.utils.datastructures import SortedDict
 from operator import itemgetter
 from django.db.models import Sum
+from random import randint
 
 class AdministratorResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
@@ -223,6 +224,14 @@ class FundReturnResource(MainBaseResource):
 
     def alter_list_data_to_serialize(self, request, data):   
     
+    
+        def holding_data(key):
+            if date_type == 'monthly':
+                holding_data = HoldingMonthly.objects.filter(key)
+            else:
+                holding_data = HoldingDaily.objects.filter(key)
+            return [row.data['performance'] for row in data['objects']]
+            
         data_type = request.GET.get('data_type', 'graph')
         fund = request.GET.get('fund', False)    
         metric = request.GET.get('metric', False)  
@@ -287,14 +296,7 @@ class FundReturnResource(MainBaseResource):
             
             for i, m in enumerate(metrics):
             
-                lst = [row.data['fund_perf'] for row in data['objects']]
-                lst2 = [row.data['bench_perf'] for row in data['objects']]
-            
-                if unders[i] == 'fund':
-                    lst = [row.data['fund_perf'] for row in data['objects']]
-                    color = 'blue'
-                    
-                elif unders[i] == 'benchpeer':
+                if unders[i] == 'benchpeer':
                     lst = [row.data['bench_perf'] for row in data['objects']]
                     color = 'green'
                     
@@ -302,19 +304,28 @@ class FundReturnResource(MainBaseResource):
                     lst = lst_vals[unders[i][6:]]
                     color = 'pink'
                     
-                #else
-                #    FundPeer/BenchPeer - what column to get data from?
+                elif unders[i].isdigit():
+                    lst = holding_dataunders[i]()
+                    color = 'peer'
                 
+                else:
+                    lst = [row.data['fund_perf'] for row in data['objects']]
+                    color = 'blue'    
                     
                     
-                elif sec_unders[i] == 'benchpeer':
+                if sec_unders[i] == 'benchpeer':
                     lst2 = [row.data['bench_perf'] for row in data['objects']]
                     
-                elif unders[i][:5] == 'metric': 
+                elif sec_unders[i][:5] == 'metric': 
                     lst2 = lst_vals[unders[i][6:]]
                     
-                elif unders[i].isdigit():
-                    pass # where to take the value from?
+                elif sec_unders[i].isdigit():
+                    lst2 = holding_data(unders[i])
+                    color = 'peer'
+                 
+                else:
+                    lst2 = [row.data['bench_perf'] for row in data['objects']]
+                    color = 'blue'
                     
                     
                 # remove any empty strings in the list that might exist
@@ -454,6 +465,11 @@ class FundReturnResource(MainBaseResource):
                 }
                 
             else:
+                peer_colors = ['orange', 'red', 'brown', 'purple', 'yellow']
+                for i, row in enumerate(series):
+                    if row['color'] == 'peer':
+                        row['color'] = peer_colors[randint(0, len(peer_colors))]
+                        
                 return series
         
     
@@ -525,6 +541,7 @@ class FundReturnMonthlyResource(FundReturnResource):
     
     class Meta(MainBaseResource.Meta):
         queryset = FundReturnMonthly.objects.all()
+        ordering = ['value_date']
 
 
 class FundReturnMonthlyResource2(FundReturnResource):
