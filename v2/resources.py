@@ -270,14 +270,17 @@ class FundReturnResource(MainBaseResource):
             
                 if date_type == 'monthly':
                     first = FundReturnMonthly.objects.order_by('value_date')[0]
-                    freq = 'm'
-                    factor = 12 #Annualisation Factor
                 else:
                     first = FundReturnDaily.objects.order_by('value_date')[0]
-                    freq = 'BDay'
-                    factor = 252 #Annualisation Factor
                     
                 date_from = first.value_date
+                
+            if date_type == 'monthly':
+                freq = 'm'
+                factor = 12 #Annualisation Factor
+            else:
+                freq = 'WEEKDAY'
+                factor = 252 #Annualisation Factor
             
             metrics = metric.split(',')
             windows = window.split(',')
@@ -349,6 +352,7 @@ class FundReturnResource(MainBaseResource):
                 df2 = to_dataframe(lst2, dates2)
                 
                 win = int(windows[i])
+                step = int(steps[i])
                 
                 values = []
 
@@ -370,6 +374,8 @@ class FundReturnResource(MainBaseResource):
                     
                 if m == "roll_deviation":
                     values = roll_standard_deviation(df, win)
+                    #values = roll_standard_deviation(df, win)[::12]
+                    print 'steps', steps[i]
                     name = "Rolling Standard Deviation"
                     
                 if m == "roll_cumulative":
@@ -427,7 +433,7 @@ class FundReturnResource(MainBaseResource):
                     "roll_sortino", "roll_downside", "roll_excess", "roll_tracking", "roll_correlation"   
                 ]
                 if m in step_metrics:
-                    values = values[::steps[i]]
+                    values = values[::step]
                     
                 if data_type == 'table':
                     list_values = to_list(values, False)
@@ -438,6 +444,7 @@ class FundReturnResource(MainBaseResource):
                             table[p]['date']
                         except:
                             table[p] = {}
+                            
                         table[p]['date'] = a[0]
                         table[p]['metric_' + str(i + 1)] = a[1]
                         
@@ -631,7 +638,6 @@ class HoldingPositionMonthlyResource(MainBaseResource):
         # and the weight of the prior month to calculate the average weight
         if performance and year and month and fund:
         
-            
             hm = HoldingMonthly.objects.filter(
                 value_date__year=year, value_date__month=month). \
                 select_related('holding').only('holding__name', 'performance')
@@ -695,7 +701,7 @@ class HoldingPositionMonthlyResource(MainBaseResource):
             for new in new_data:
                 new_obj = self.build_bundle(data = new)
                 data['objects'].insert(0, new_obj)
-         
+        
         return super(HoldingPositionMonthlyResource, self) \
                 .alter_list_data_to_serialize(request, data)
 

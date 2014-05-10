@@ -65,7 +65,7 @@ def to_dataframe(lst, dates):
     return pd.DataFrame(np.array(lst), index=dates)  
    
 def to_list(series, timestamp=True):
-    dic = series[0].to_dict()
+    dic = series[0].fillna(0).to_dict()
     
     lst = []
     for i, a in dic.iteritems():

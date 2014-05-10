@@ -1400,7 +1400,7 @@ Ext.onReady(function() {
                     widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id, true);
                     html = '<div> <table class="html_table">' +
                     '<tr><th>Fund Name</th><td>'+ summary.name + '</td><th>Fund Manager</th><td>'+ summary.manager__name + '</td></tr>' +
-                    '<tr><th>Benchmark</th><td>' + summary.benchpeer__name + '</td><th>Launch Date</th><td>' + summary.launch_date + '</td></tr>' +
+                    '<tr><th>Benchmark</th><td>' + summary.benchpeer__name + '</td><th>Launch Date</th><td>' + moment(summary.launch_date).format('YYYY-MM-DD') + '</td></tr>' +
                     '<tr><th>Currency</th><td>'+ summary.currency__name + '</td></tr>' +
                     '</table><table class="html_table">' +
                     '<tr><th>Description</th><td>'+ summary.description + '</td></tr>' +
@@ -2114,12 +2114,12 @@ Ext.onReady(function() {
                 } 
             } else {   
                 if(type === 1) {
-                    var params = '&y1=performance&fields=weight';
+                    var params = '&y1=performance&fields=weight&performance=true';
                 } else {
-                    var params = '&y1=weighted_perf&fields=weight';
+                    var params = '&y1=weighted_perf&fields=weight&performance=true';
                 }
             }
-            var url = '/api/holdingpositionmonthly/?title=holding__name&data_type=graph&performance=true&value_date__year=' + year + '&value_date__month=' + month + '&fund=' + obj.fund + params;
+            var url = '/api/holdingpositionmonthly/?title=holding__name&data_type=graph&value_date__year=' + year + '&value_date__month=' + month + '&fund=' + obj.fund + params;
             return url;
         }
         
@@ -2135,8 +2135,20 @@ Ext.onReady(function() {
                 
                 var url = '/api/fundreturnmonthly/?fund=' + $('#data').data('fund') + '&fields=fund_perf&value_date__year=' + year + '&value_date__month=' + month;
                 
+               // console.log('dissecting line on bar', url);
                 $.getJSON(url, function(fund) {
+                
+                    // commented this as for now we are not displaying the fund performance if it's outside the y axis
+                   // var fundValues = new Array();
+                    //$.each(fund, function( index, value ) {
+                   //     fundValues.push(value.fund_perf);
+                   // });
+                   // var maxVal = Math.max.apply(Math, fundValues); 
+                   // var minVal = Math.min.apply(Math, fundValues); 
+                    
                     options.series = [new_data[0]];
+                   // options.yAxis.max = maxVal;
+                   // options.yAxis.min = minVal;
                     options.yAxis.plotLines = [{
                         value: fund[0].fund_perf,
                         width: 1,
@@ -2231,7 +2243,8 @@ Ext.onReady(function() {
             renderTo: div,
         });
         
-        //tabPanel.setActiveTab(0);
+        tabPanel.setActiveTab(1);
+        tabPanel.setActiveTab(0);
         
     }
     
@@ -2552,9 +2565,6 @@ Ext.onReady(function() {
             
         function updateChart() {
         
-            
-                  
-
             $('<div id="' + div + '_stats_graph"></div>').appendTo("#" + div);
           
             var graphContainer = Ext.create('Ext.container.Container', {
@@ -2565,6 +2575,7 @@ Ext.onReady(function() {
             });   
             
             var tabPanel = Ext.getCmp(div);
+            
             
             if(typeof tabPanel === 'undefined') {       
           
@@ -2584,16 +2595,20 @@ Ext.onReady(function() {
                 {
                     tabPanel.remove(tabPanel.items.getAt(0));
                 }
+                
             }
 
             widget.params.title = 'Table';
             
-            console.log('GET URL', getUrl());
+            //console.log('GET URL', getUrl());
             
             widget.url = getUrl();
             widget.params.date_type = Ext.getCmp('date_type_combo').getValue();
             
+            //console.log('data table url', widget.url + '&data_type=table');
+
             $.getJSON(widget.url + '&data_type=table', function(data) {
+            
                 
                 chart(obj, widget, div);
                 
@@ -2602,9 +2617,12 @@ Ext.onReady(function() {
                 tabPanel.add(graphContainer);                
                 tabPanel.add(table);
                 tabPanel.doLayout(); 
+                tabPanel.setActiveTab(0);
 
                 
             });
+            
+            
 
             
         }
@@ -2811,7 +2829,7 @@ Ext.onReady(function() {
                 var firstRun = true;
                 
 
-                
+                console.log('dateType', dateType);
                 
                      
                 // Underlying drop down
@@ -2837,7 +2855,7 @@ Ext.onReady(function() {
                     valueField: 'id',
                     listeners: {
                         'change': function(field, selectedValue) {
-                           dateType = selectedValue;
+                           //dateType = selectedValue;
                            //console.log('underlying changing value', selectedValue);
                            
                            if(firstRun == false) {
@@ -2873,7 +2891,7 @@ Ext.onReady(function() {
                     valueField: 'id',
                     listeners: {
                         'change': function(field, selectedValue) {
-                           dateType = selectedValue;
+                           //dateType = selectedValue;
                            console.log('underlying changing value', selectedValue);
                            if(firstRun == false) {
                                updateChart();
@@ -2914,6 +2932,7 @@ Ext.onReady(function() {
                     var windowStepValues = new Array(1, 5, 21, 63, 126, 252, 504);
                     var windowStepDefault = 1;
                 }
+                console.log('dateType2', dateType);
                 var windowSelect = Ext.create('Ext.form.ComboBox', {
                     store: windowStepValues,
                     id: 'window_combo_' + tabId,
@@ -2924,7 +2943,7 @@ Ext.onReady(function() {
                     queryMode: 'local',
                     listeners: {
                         'change': function(field, selectedValue) {
-                           dateType = selectedValue;
+                           //dateType = selectedValue;
                            if(firstRun == false) {
                                updateChart();
                            }
@@ -3708,15 +3727,15 @@ Ext.onReady(function() {
             rangeSelector = false;
         }
         
-        console.log('HEIGHT', (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)));
+        //console.log('HEIGHT', (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)));
 
 
         var colors = new Array();
         
-        console.log('yAxis', yAxis);
+        //console.log('yAxis', yAxis);
         //console.log('xAxis', xAxis);
         
-        console.log('ajax call', 'http://localhost:8000/' + widget.url);        
+        console.log('chart call', 'http://localhost:8000/' + widget.url);        
         $.getJSON(widget.url + widget.qs, function(data) {
         
                 
@@ -4520,7 +4539,7 @@ Ext.onReady(function() {
     
 
         // for nested header columns as well
-        console.log('data.columns', data.columns);
+        //console.log('data.columns', data.columns);
         fields = [];
         for(i=0; i < data.columns.length; i++) {
             if(typeof data.columns[i].columns != 'undefined') {
