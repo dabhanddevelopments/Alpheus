@@ -334,8 +334,8 @@ function refreshGraph(e, widget) {
     chart.showLoading('Loading data from server...');
 
     $.getJSON(widget.url + widget.qs + date, function(data) {
-        //console.log(widget.url + widget.qs + date);
-        console.log('data', data);
+        console.log('refreshGraph1', widget.url + widget.qs + date);
+        //console.log('data', data);
         chart.series[0].setData(data[0].data);
         chart.series[1].setData(data[1].data);
         chart.hideLoading();
@@ -343,7 +343,8 @@ function refreshGraph(e, widget) {
 
     var qs = widget.qs;
     $.getJSON(widget.url + qs + date + '&graph_type=graph', function(data) {
-        console.log('data2', data);
+        console.log('refreshGraph2', widget.url + widget.qs + date);
+        //console.log('data2', data);
          chart.series[2].setData(data.data);
          chart.hideLoading();
     });
@@ -1968,7 +1969,28 @@ Ext.onReady(function() {
 
         } else if(widget.type == 'line_chart') {
 
-            return lineChart(obj, widget, div);
+            var url1 = "/api/fundreturnmonthly/?data_type=graph&date=value_date&fund=" + obj.fund + "&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name";
+            var url2 = "/api/fundreturnmonthly/?bench_graph=bench_perf&data_type=graph&date=value_date&fund=" + obj.fund + "&graph_type=bench&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name";
+        
+            console.log('w16 url1', url1);
+            console.log('w16 url2', url2);
+            $.getJSON(url1, function(series) {
+                $.getJSON(url2, function(series2) {
+                    return lineChart(obj, widget, div, series, series2);
+		        });
+		    });
+
+
+        } else if(widget.type == 'w152') {
+
+            var url = "/api/fundreturnmonthly/?widget=w152&fund=" + obj.fund;
+        
+            //console.log('url', url);
+            $.getJSON(url, function(series) {
+                return lineChart(obj, widget, div, series);
+		    });
+
+             
 
         } else if(widget.type == 'chart_doubley') {
 
@@ -3423,215 +3445,279 @@ Ext.onReady(function() {
         */
     }
     
-    function lineChart(obj, widget, div) {
+    function lineChart(obj, widget, div, series, series2) {
     
-        var url1 = "/api/fundreturnmonthly/?data_type=graph&date=value_date&fund=" + obj.fund + "&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name";
-        var url2 = "/api/fundreturnmonthly/?bench_graph=bench_perf&data_type=graph&date=value_date&fund=" + obj.fund + "&graph_type=bench&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name";
-        console.log('url1', url1);
-        console.log('url2', url2);
-        $.getJSON(url1, function(series) {
-            $.getJSON(url2, function(series2) {
-    
-                series[2] = series2;
-                
-                
-                //console.log(series[0].data.length);
-                var lastPoint = Array();
-                lastPoint[0] = series[0].data[series[0].data.length - 1][1];
-                lastPoint[1] = series[1].data[series[1].data.length - 1][1];
-                lastPoint[2] = series[2].data[series[2].data.length - 1][1];
-                //console.log(lastPoint);
-                
-                //alert(lastPoint[0]);
-                
-                var options = {
-		            chart: {
-		                spacingBottom: -50, // hide the navigator
-		                renderTo: div,
-                        width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 10,
-                        height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
-		            },
-                    colors: [
-                       '#01017D', 
-                       '#01810E', 
-                        '#9A5D01',
-                    ],
-                    navigator:{
-                        enabled: true,
-                        adaptToUpdatedData: false,
-                        height: 0,
-                        margin: 60,
-                    }, 
-                    scrollbar: {
-                        enabled: false,
-                    },   
-                    plotOptions: {
-                      series: {
-                        events: {
-                          legendItemClick: function(event) {
-                              var series = this.yAxis.series,
-                                  seriesLen = series.length,
-                                  visible = this.visible ? 1 : -1; 
-                                  // +1 when visible series, because it will be changed after that callback
 
-                              for(var i = 0; i < seriesLen; i++) {
-                                if(!series[i].visible) {
-                                  visible++;
-                                }
-                              }
-                              if(visible >= 2 && this.index < 2) { // disable fund/bench
-                                    chart.yAxis[0].update({
-                                         height:5
-                                    });
-                                    chart.yAxis[1].update({
-                                         height: 600,
-                                         top: 50,
-                                    });
-                                    chart.xAxis[0].update({
-                                         offset: -700,
-                                    });
-                                    chart.xAxis[1].update({
-                                         offset: 0,
-                                    });
-                              } else if(visible >= 1 && this.index >= 2) { // disable delta
-                                    chart.yAxis[0].update({
-                                         height: 600,
-                                         top: 50,
-                                    });
-                                    chart.yAxis[1].update({
-                                         height:5,
-                                         top: 50,
-                                    });
-                                    chart.xAxis[0].update({
-                                         offset: -700,
-                                    });
-                                    chart.xAxis[1].update({
-                                         offset: 0,
-                                    });
-                              } else {  //  default
-                                    chart.yAxis[0].update({
-                                         height: 420
-                                    });
-                                    chart.yAxis[1].update({
-                                         height: 210,
-                                         top: 500,
-                                    });
-                                    chart.xAxis[0].update({
-                                         offset: -700,
-                                    });
-                                    chart.xAxis[1].update({
-                                         offset: -200,
-                                    });
-                              }
-                          }
-                        },
+        if(typeof series2 !== 'undefined') {
+            series[2] = series2;
+        }
+        
+        
+        //console.log(series[0].data.length);
+        var lastPoint = Array();
+        lastPoint[0] = series[0].data[series[0].data.length - 1][1];
+        lastPoint[1] = series[1].data[series[1].data.length - 1][1];
+        lastPoint[2] = series[2].data[series[2].data.length - 1][1];
+        
+        if(widget.key === 'w152') {
+            lastPoint[3] = series[3].data[series[3].data.length - 1][1];
+            lastPoint[4] = series[4].data[series[4].data.length - 1][1];
+        }
+        //console.log(lastPoint);
+        
+
+            
+        if(widget.key === 'w152') {
+            var yAxis = [{
+                    height: 420,
+                    lineWidth: 2,
+                    labels: {
+                        formatter: function() {
+                            return this.value + '%';
+                        }
+                    },
+                    min: 0,
+                }, {
+                    top: 500,
+                    height: 210,
+                    lineWidth: 2,
+                    labels: {
+                        formatter: function() {
+                            return this.value + '%';
+                        }
+                    },
+                    min: 0,
+                }, {
+                    height: 420,
+                    opposite:true,
+                    linkedTo:0,
+                    tickPositions:[lastPoint[0]] ,
+                    gridLineWidth:0,
+                    offset: 40,
+                }, {
+                    height: 420,
+                    opposite:true,
+                    linkedTo:0,
+                    tickPositions:[lastPoint[1]] ,
+                    gridLineWidth:0
+                }, {
+                    height: 420,
+                    opposite:true,
+                    linkedTo:0,
+                    tickPositions:[lastPoint[2]] ,
+                    gridLineWidth:0
+                },{
+                    top: 500,    
+                    height: 210, 
+                    opposite:true,
+                    linkedTo:1,
+                    tickPositions:[lastPoint[3]],
+                    gridLineWidth:0
+                },{
+                    top: 500,    
+                    height: 210, 
+                    opposite:true,
+                    linkedTo:1,
+                    tickPositions:[lastPoint[4]],
+                    gridLineWidth:0
+            }];
+        } else {
+        
+            var yAxis = [{
+                    height: 420,
+                    lineWidth: 2,
+                    labels: {
+                        formatter: function() {
+                            return this.value + '%';
+                        }
+                    },
+                    min: 0,
+                }, {
+                    top: 500,
+                    height: 210,
+                    lineWidth: 2,
+                    labels: {
+                        formatter: function() {
+                            return this.value + '%';
+                        }
+                    },
+                    //min: 0,
+                }, {
+                    height: 420,
+                    opposite:true,
+                    linkedTo:0,
+                    tickPositions:[lastPoint[0]] ,
+                    gridLineWidth:0,
+                    offset: 40,
+                }, {
+                    height: 420,
+                    opposite:true,
+                    linkedTo:0,
+                    tickPositions:[lastPoint[1]] ,
+                    gridLineWidth:0
+                },{
+                    top: 500,    
+                    height: 210, 
+                    opposite:true,
+                    linkedTo:1,
+                    tickPositions:[lastPoint[2]],
+                    gridLineWidth:0
+                }];
+        }
+        
+        var options = {
+            chart: {
+                spacingBottom: -50, // hide the navigator
+                renderTo: div,
+                width: (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 10,
+                height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
+            },
+            colors: [
+               '#01017D', 
+               '#01810E', 
+                '#9A5D01',
+                'red',
+                'brown',
+                'LightSkyBlue',
+            ],
+            navigator:{
+                enabled: true,
+                adaptToUpdatedData: false,
+                height: 0,
+                margin: 60,
+            }, 
+            scrollbar: {
+                enabled: false,
+            },   
+            plotOptions: {
+              series: {
+                events: {
+                  legendItemClick: function(event) {
+                      var series = this.yAxis.series,
+                          seriesLen = series.length,
+                          visible = this.visible ? 1 : -1; 
+                          // +1 when visible series, because it will be changed after that callback
+
+                      for(var i = 0; i < seriesLen; i++) {
+                        if(!series[i].visible) {
+                          visible++;
+                        }
                       }
-                    },
-		            rangeSelector: {
-                        enabled: true,
-                        buttons: [{
-                            type: 'year',
-                            count: 1,
-                            text: '1y'
-                        }, {
-                            type: 'year',
-                            count: 5,
-                            text: '5y'
-                        }, {
-                            type: 'year',
-                            count: 10,
-                            text: '10y'
-                        }, {
-                            type: 'all',
-                            text: 'All'
-                        }],
-                        inputEnabled: true,
-                        selected : 3
-                    },
-                    credits: {
-                        enabled: false
-                    },
-		            title: {
-		                text: false
-		            },
-                    legend: {
-                        enabled: true,
-                        y: -75,
-                    },
-		            yAxis: [{
-		                height: 420,
-		                lineWidth: 2,
-                        labels: {
-                            formatter: function() {
-                                return this.value + '%';
-                            }
-                        },
-		            }, {
-		                top: 500,
-		                height: 210,
-		                lineWidth: 2,
-                        labels: {
-                            formatter: function() {
-                                return this.value + '%';
-                            }
-                        },
-                    },{
-                        height: 420,
-                        opposite:true,
-                        linkedTo:0,
-                        tickPositions:[lastPoint[0]] ,
-                        gridLineWidth:0,
-                        offset: 40,
-                    },{
-                        height: 420,
-                        opposite:true,
-                        linkedTo:0,
-                        tickPositions:[lastPoint[1]] ,
-                        gridLineWidth:0
-                    },{
-                        top: 500,    
-                        height: 210, 
-                        opposite:true,
-                        linkedTo:1,
-                        tickPositions:[lastPoint[2]],
-                        gridLineWidth:0
-                    }],
-                    xAxis: [{
-                        type: 'datetime',
-                        //events: {
-                        //    afterSetExtremes: function(e){
-                        //        refreshGraph(e, widget);
-                        //    }
-                        //},
+                      if(visible >= 2 && this.index < 2) { // disable fund/bench
+                            chart.yAxis[0].update({
+                                 height:5
+                            });
+                            chart.yAxis[1].update({
+                                 height: 600,
+                                 top: 50,
+                            });
+                            chart.xAxis[0].update({
+                                 offset: -700,
+                            });
+                            chart.xAxis[1].update({
+                                 offset: 0,
+                            });
+                      } else if(visible >= 1 && this.index >= 2) { // disable delta
+                            chart.yAxis[0].update({
+                                 height: 600,
+                                 top: 50,
+                            });
+                            chart.yAxis[1].update({
+                                 height:5,
+                                 top: 50,
+                            });
+                            chart.xAxis[0].update({
+                                 offset: -700,
+                            });
+                            chart.xAxis[1].update({
+                                 offset: 0,
+                            });
+                      } else {  //  default
+                            chart.yAxis[0].update({
+                                 height: 420
+                            });
+                            chart.yAxis[1].update({
+                                 height: 210,
+                                 top: 500,
+                            });
+                            chart.xAxis[0].update({
+                                 offset: -700,
+                            });
+                            chart.xAxis[1].update({
+                                 offset: -200,
+                            });
+                      }
+                  }
+                },
+              }
+            },
+            rangeSelector: {
+                enabled: true,
+                buttons: [{
+                    type: 'year',
+                    count: 1,
+                    text: '1y'
+                }, {
+                    type: 'year',
+                    count: 5,
+                    text: '5y'
+                }, {
+                    type: 'year',
+                    count: 10,
+                    text: '10y'
+                }, {
+                    type: 'all',
+                    text: 'All'
+                }],
+                inputEnabled: true,
+                selected : 3
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                text: false
+            },
+            legend: {
+                enabled: true,
+                y: -75,
+            },
+            yAxis: yAxis,
+            xAxis: [{
+                type: 'datetime',
+                //events: {
+                //    afterSetExtremes: function(e){
+                //        refreshGraph(e, widget);
+                //    }
+                //},
+                
+                opposite: true,
+                offset: -700,
+                //offset: -45,
+                events:{
+                    afterSetExtremes:function(e){
+                        console.log(this);
+                        var min = this.min,
+                            max = this.max,
+                            chart = this.chart;
                         
-                        opposite: true,
-                        offset: -700,
-                        //offset: -45,
-                        events:{
-                            afterSetExtremes:function(e){
-                                console.log(this);
-                                var min = this.min,
-                                    max = this.max,
-                                    chart = this.chart;
-                                
-                                chart.xAxis[1].setExtremes(min,max);
-                                refreshGraph(e, widget);
-                                
-
-                            }
-                        },
-                    },{
-                        type: 'datetime',
+                        chart.xAxis[1].setExtremes(min,max);
+                        refreshGraph(e, widget);
                         
-                        offset: -200,
-                    }],
-		            
-		            series: series,
-		        };
-		        var chart = new Highcharts.StockChart(options);
 
-		    });
-		});
+                    }
+                },
+            },{
+                type: 'datetime',
+                
+                offset: -200,
+            }],
+            
+            series: series,
+        };
+        var chart = new Highcharts.StockChart(options);
+
+
     }
 
 

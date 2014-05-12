@@ -92,6 +92,7 @@ def cumulative_return(data, perf_type):
         if row.data[perf_type + '_perf'] != '':
             perf.append(row.data[perf_type + '_perf'])
        
+
     r = pd.DataFrame(list(perf))
     c = r/100
     d = np.cumprod(c.values+1)-1

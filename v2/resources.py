@@ -224,7 +224,6 @@ class FundReturnResource(MainBaseResource):
 
     def alter_list_data_to_serialize(self, request, data):   
     
-    
         def holding_data(key):
             if date_type == 'monthly':
                 holding_data = HoldingMonthly.objects.filter(key)
@@ -249,6 +248,8 @@ class FundReturnResource(MainBaseResource):
         under = request.GET.get('under', False) 
         sec_under = request.GET.get('sec_under', False) 
         position = request.GET.get('position', False) 
+        
+        widget = request.GET.get("widget", False)
         
         """
         W18 Fund Historical Stats
@@ -498,11 +499,11 @@ class FundReturnResource(MainBaseResource):
             return data
             
             
-        # W6 - cumulative return
+        # W16 - cumulative return
         y1 = request.GET.get('y1', False)
 
         if y1 != False:
-            
+        
             # create new previous dummy month
             first_date = data['objects'][0].data['value_date']
             new_date = datetime(first_date.year, first_date.month, 1) - timedelta(days=1)
@@ -521,9 +522,64 @@ class FundReturnResource(MainBaseResource):
             
             
             # delta
-            if request.GET.get("graph_type", False) == 'bench':
+            if request.GET.get("graph_type", False) == 'bench' and widget == 'w16':
                 for id, row in enumerate(data['objects']):
                     data['objects'][id].data['fund_perf'] = row.data['fund_perf'] - row.data['bench_perf']
+                 
+        # W152   
+        # @TODO: this does not work with specified fields. 
+        if widget == 'w152':
+            try:
+                name = data['objects'][0].data['fund__name']
+            except:
+                name = 'n/a'
+
+            first = FundReturnMonthly.objects.order_by('value_date')[0]
+            
+            lst = [row.data['fund_perf'] for row in data['objects']]
+            dates1 = date_range(lst, first.value_date)
+            df1 = to_dataframe(lst, dates1)
+            cum1 = cum_returns(df1, dates1)
+            
+            
+            lst = [row.data['bench_perf'] for row in data['objects']]
+            dates = date_range(lst, first.value_date)
+            df = to_dataframe(lst, dates)
+            cum2 = cum_returns(df, dates)
+            delta1 = delta_cum_returns(df1, df, dates1, dates)
+            
+            lst = [row.data['sec_bench'] for row in data['objects']]
+            dates = date_range(lst, first.value_date)
+            df = to_dataframe(lst, dates)
+            cum3 = cum_returns(df, dates)
+            delta2 = delta_cum_returns(df1, df, dates1, dates)
+            
+            return [{
+                'name': name,
+                'data': to_list(cum1),
+                'xAxis': 0,
+                'yAxis': 0,
+            },{
+                'data': to_list(cum2),
+                'name': 'Benchmark',
+                'xAxis': 0,
+                'yAxis': 0,
+            },{
+                'data': to_list(cum3),
+                'name': 'Secondary Benchmark',
+                'xAxis': 0,
+                'yAxis': 0,
+            },{
+                'data': to_list(delta1),
+                'name': 'Fund vs Benchmark',
+                'xAxis': 0,
+                'yAxis': 1,
+            },{
+                'data': to_list(delta2),
+                'name': 'Fund vs Secondary Benchmark',
+                'xAxis': 0,
+                'yAxis': 1,
+            }]
 
         return super(FundReturnResource, self) \
                 .alter_list_data_to_serialize(request, data)

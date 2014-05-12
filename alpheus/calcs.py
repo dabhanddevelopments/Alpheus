@@ -52,7 +52,7 @@ bench = pd.DataFrame(np.array([-2.190000, -0.160000, 1.700000, 2.580000, 3.11000
                                2.920000, 2.660000, -4.140000]),
                                          index=dates)
 
-def date_range(lst, date, freq):
+def date_range(lst, date, freq = 'm'):
 
     # format date to string format if not done already
     if not isinstance(date, (str, unicode)):
@@ -62,7 +62,7 @@ def date_range(lst, date, freq):
     return pd.date_range(date, periods=len(lst), freq=freq)
 
 def to_dataframe(lst, dates):
-    return pd.DataFrame(np.array(lst), index=dates)  
+    return pd.DataFrame(np.array(lst), index=dates).fillna(0)
    
 def to_list(series, timestamp=True):
     dic = series[0].fillna(0).to_dict()
