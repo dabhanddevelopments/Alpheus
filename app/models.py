@@ -83,7 +83,7 @@ class Window(models.Model):
         ('v', 'Vertical'),
         ('h', 'Horizontal')
     )
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
     key = models.CharField(max_length=50)
     access = models.ManyToManyField(Group)
     size_y = models.SmallIntegerField()

@@ -2930,11 +2930,11 @@ Ext.onReady(function() {
                     
                     for(i=0; i < data.length; i++) { 
                          underlyingStore.add({
-                            'benchpeer__holding__id': data[i].id, 
+                            'id': data[i].benchpeer__holding__id, 
                             'name':  data[i].benchpeer__name
                          });
                          secUnderlyingStore.add({
-                            'benchpeer__holding__id': data[i].id, 
+                            'id': data[i].benchpeer__holding__id, 
                             'name':  data[i].benchpeer__name
                          });
                     }
@@ -2949,10 +2949,12 @@ Ext.onReady(function() {
                 //////////////////////
                 if(dateType == 'monthly') {
                     var windowStepValues = new Array(1, 3, 6, 9, 12, 24);
-                    var windowStepDefault = 12;
+                    var windowDefault = 12;
+                    var stepDefault = 1;
                 } else {        
                     var windowStepValues = new Array(1, 5, 21, 63, 126, 252, 504);
-                    var windowStepDefault = 1;
+                    var windowDefault = 252;
+                    var stepDefault = 21;
                 }
                 console.log('dateType2', dateType);
                 var windowSelect = Ext.create('Ext.form.ComboBox', {
@@ -2972,7 +2974,7 @@ Ext.onReady(function() {
                         }
                     }
                 }).hide();  // hidden by default
-                windowSelect.setValue(windowStepDefault);
+                windowSelect.setValue(windowDefault);
                 
                 
                 
@@ -2996,7 +2998,7 @@ Ext.onReady(function() {
                         }
                     }
                 }).hide();  // hidden by default
-                stepSelect.setValue(windowStepDefault);
+                stepSelect.setValue(stepDefault);
                 
                                     
                                        
@@ -3821,7 +3823,7 @@ Ext.onReady(function() {
         //console.log('yAxis', yAxis);
         //console.log('xAxis', xAxis);
         
-        console.log('chart call', 'http://localhost:8000/' + widget.url);        
+        console.log('chart call', 'http://localhost:8000' + widget.url);        
         $.getJSON(widget.url + widget.qs, function(data) {
         
                 
@@ -3884,6 +3886,7 @@ Ext.onReady(function() {
         
             $.each(data, function( index, obj ) {
                 colors.push(obj.color);
+                console.log('adding color', obj.color);
             });
             
             // default colors

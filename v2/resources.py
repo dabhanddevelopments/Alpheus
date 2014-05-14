@@ -224,12 +224,12 @@ class FundReturnResource(MainBaseResource):
 
     def alter_list_data_to_serialize(self, request, data):   
     
-        def holding_data(key):
+        def holding_data(holding):
             if date_type == 'monthly':
-                holding_data = HoldingMonthly.objects.filter(key)
+                holding_data = HoldingMonthly.objects.filter(holding=holding)
             else:
-                holding_data = HoldingDaily.objects.filter(key)
-            return [row.data['performance'] for row in data['objects']]
+                holding_data = HoldingDaily.objects.filter(holding=holding)
+            return [row.performance for row in holding_data]
             
         data_type = request.GET.get('data_type', 'graph')
         fund = request.GET.get('fund', False)    
@@ -276,6 +276,7 @@ class FundReturnResource(MainBaseResource):
                     
                 date_from = first.value_date
                 
+                
             if date_type == 'monthly':
                 freq = 'm'
                 factor = 12 #Annualisation Factor
@@ -309,7 +310,7 @@ class FundReturnResource(MainBaseResource):
                     color = 'pink'
                     
                 elif unders[i].isdigit():
-                    lst = holding_dataunders[i]()
+                    lst = holding_data(unders[i])
                     color = 'peer'
                 
                 else:
@@ -325,11 +326,11 @@ class FundReturnResource(MainBaseResource):
                     
                 elif sec_unders[i].isdigit():
                     lst2 = holding_data(unders[i])
-                    color = 'peer'
+                    #color = 'peer'
                  
                 else:
                     lst2 = [row.data['bench_perf'] for row in data['objects']]
-                    color = 'blue'
+                    #color = 'blue'
                     
                     
                 # remove any empty strings in the list that might exist
@@ -393,7 +394,7 @@ class FundReturnResource(MainBaseResource):
                     name = "Rolling Kurtosis"
                     
                 if m == "roll_annualised":
-                    values = annualised_returns(df, factor, win, LessThanWin=True)
+                    values = roll_annualised_returns(df, factor, win, LessThanWin=True)
                     name = "Rolling Annualised Return"
                     
                 if m == "roll_volatility":
@@ -401,7 +402,7 @@ class FundReturnResource(MainBaseResource):
                     name = "Rolling Volatility"
                     
                 if m == "roll_sharpe": 
-                    values = roll_sharpe_base( series, factor)
+                    values = roll_sharpe_base(df, factor)
                     name = "Rolling Sharpe"
                     
                 #if m == "roll_sortino":
@@ -414,7 +415,7 @@ class FundReturnResource(MainBaseResource):
                 #if m == "roll_tracking":
 
                 if m == "roll_correlation":
-                    values = roll_correlation (series1, series2, win)
+                    values = roll_correlation (df, df2, win)
                     name = "Rolling Correlation"
                     
                 if m == "roll_alpha":
@@ -450,8 +451,22 @@ class FundReturnResource(MainBaseResource):
                         table[p]['metric_' + str(i + 1)] = a[1]
                         
                 else:
+                
+                    values = to_list(values)
+                
+                    # create new previous dummy month
+                    if isinstance(date_from, (str, unicode)):
+                        date_from = datetime.strptime(date_from, '%Y-%m-%d')
+                    new_date = datetime(date_from.year, date_from.month, 1) - timedelta(days=1)
+                    new_date = datetime(new_date.year, new_date.month, 1)
+                    values.insert(0, [
+                        int(mktime(new_date.timetuple())) * 1000, 
+                        0
+                    ])
+                    #assert False
+                    
                     series.append({
-                        'data': to_list(values),
+                        'data': values,
                         'name': name,
                         'color': color,
                         'yAxis': i,

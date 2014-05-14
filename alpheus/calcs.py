@@ -321,8 +321,8 @@ def roll_kurtosis (series, window):
 def annualised_returns(series, f=12):
     n = len(series)
     simple_returns = simple(series)
-    simple_annualised_returns = np.power(np.product(1 + simple_returns, axis=0), (f*1.0)/(n*1.0))-1
-    annualised_returns = simple2percent(simple_annualised_returns)
+    simple_annualised = np.power(np.product(1 + simple_returns, axis=0), (f*1.0)/(n*1.0))-1
+    annualised_returns = simple2percent(simple_annualised)
     return annualised_returns
 
 #window = n  Freq = [::n]
