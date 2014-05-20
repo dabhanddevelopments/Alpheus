@@ -2587,67 +2587,73 @@ Ext.onReady(function() {
             
         function updateChart() {
         
-            $('<div id="' + div + '_stats_graph"></div>').appendTo("#" + div);
-          
-            var graphContainer = Ext.create('Ext.container.Container', {
-                contentEl: div + '_stats_graph',
-                title: 'Graph',
-                width: 945,
-                height: 640,
-            });   
+            if(widget.key === 'w156') {
             
-            var tabPanel = Ext.getCmp(div);
-            
-            
-            if(typeof tabPanel === 'undefined') {       
-          
-                tabPanel = Ext.create('Ext.tab.Panel', {
-                    //height: 200, //(120 * data.size_y) + (10 * data.size_y) + (10 * (data.size_y - 1)) - 20,
-                    //width:  800, //(120 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20,
-                    //layout: 'fit',
-                    width: 945,
-                    renderTo: div,
-                    id: div,
-                    autoScroll: true,
-                });
-                
-            } else {
-                // remove old panels
-                for(i=0; i<=tabPanel.items.length; i++)
-                {
-                    tabPanel.remove(tabPanel.items.getAt(0));
-                }
-                
-            }
-
-            widget.params.title = 'Table';
-            
-            //console.log('GET URL', getUrl());
-            
-            widget.url = getUrl();
-            widget.params.date_type = Ext.getCmp('date_type_combo').getValue();
-            
-            //console.log('data table url', widget.url + '&data_type=table');
-
-            $.getJSON(widget.url + '&data_type=table', function(data) {
-            
-                
                 chart(obj, widget, div);
+            
+            } else {
+        
+                $('<div id="' + div + '_stats_graph"></div>').appendTo("#" + div);
+              
+                var graphContainer = Ext.create('Ext.container.Container', {
+                    contentEl: div + '_stats_graph',
+                    title: 'Graph',
+                    width: 945,
+                    height: 640,
+                });   
                 
-                var table = dataTable(data, obj, widget);
-
-                tabPanel.add(graphContainer);                
-                tabPanel.add(table);
-                tabPanel.doLayout(); 
-                tabPanel.setActiveTab(0);
-
+                var tabPanel = Ext.getCmp(div);
                 
-            });
-            
-            
+                
+                if(typeof tabPanel === 'undefined') {       
+              
+                    tabPanel = Ext.create('Ext.tab.Panel', {
+                        //height: 200, //(120 * data.size_y) + (10 * data.size_y) + (10 * (data.size_y - 1)) - 20,
+                        //width:  800, //(120 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20,
+                        //layout: 'fit',
+                        width: 945,
+                        renderTo: div,
+                        id: div,
+                        autoScroll: true,
+                    });
+                    
+                } else {
+                    // remove old panels
+                    for(i=0; i<=tabPanel.items.length; i++)
+                    {
+                        tabPanel.remove(tabPanel.items.getAt(0));
+                    }
+                    
+                }
 
-            
+                widget.params.title = 'Table';
+                
+                //console.log('GET URL', getUrl());
+                
+                widget.url = getUrl();
+                widget.params.date_type = Ext.getCmp('date_type_combo').getValue();
+                
+                //console.log('data table url', widget.url + '&data_type=table');
+
+                $.getJSON(widget.url + '&data_type=table', function(data) {
+                
+                    
+                    chart(obj, widget, div);
+                    
+                    var table = dataTable(data, obj, widget);
+
+                    tabPanel.add(graphContainer);                
+                    tabPanel.add(table);
+                    tabPanel.doLayout(); 
+                    tabPanel.setActiveTab(0);
+
+                    
+                });
+            }
         }
+        
+        
+
     
         
         $('#data').data('chart-' + div, chart);
@@ -2856,6 +2862,11 @@ Ext.onReady(function() {
                      
                 // Underlying drop down
                 ///////////////////////
+                if(widget.key === 'w155') {
+                    var multiSelect = true;
+                } else {
+                    var multiSelect = false;
+                }
                 var underlyingStore = Ext.create('Ext.data.Store', {
                     fields: ['name'],
                     data : [
@@ -2868,6 +2879,8 @@ Ext.onReady(function() {
                     store: underlyingStore,
                     id: 'under_combo_' + tabId,
                     //contentEl: div + '_metric' + tabId,
+                    multiSelect: multiSelect,
+                    editable: false, 
                     fieldLabel: 'Underlying',
                     labelAlign: 'top',
                     padding: '0 5 5 5',
@@ -2904,6 +2917,7 @@ Ext.onReady(function() {
                 var secUnderlyingSelect = Ext.create('Ext.form.ComboBox', {
                     store: underlyingStore,
                     id: 'sec_under_combo_' + tabId,
+                    editable: false, 
                     fieldLabel: 'Second Underlying',
                     labelAlign: 'top',
                     padding: '0 5 5 5',
@@ -2914,7 +2928,7 @@ Ext.onReady(function() {
                     listeners: {
                         'change': function(field, selectedValue) {
                            //dateType = selectedValue;
-                           console.log('underlying changing value', selectedValue);
+                           console.log('sec underlying changing value', selectedValue);
                            if(firstRun == false) {
                                updateChart();
                            }
@@ -2941,6 +2955,23 @@ Ext.onReady(function() {
 
                 }); 
                 
+                // Add the secondary benchmarks assigned to this fund for the underlying drop downs
+                if(widget.key === 'w156') {
+                    $.getJSON("/api/fund/?fields=sec_bench__name&fund=" + obj.fund +'&flash=1', function(data) {
+                        
+                        for(i=0; i < data.length; i++) { 
+                             underlyingStore.add({
+                                'id': data[i].sec_bench__holding__id, 
+                                'name':  data[i].sec_bench__name
+                             });
+                             secUnderlyingStore.add({
+                                'id': data[i].sec_bench__holding__id, 
+                                'name':  data[i].sec_bench__name
+                             });
+                        }
+
+                    }); 
+                }
                 
                 
                 
@@ -2987,7 +3018,7 @@ Ext.onReady(function() {
                     fieldLabel: 'Step',
                     labelAlign: 'top',
                     padding: '0 5 0 5',
-                    width: 180,
+                    width: 100,
                     queryMode: 'local',
                     listeners: {
                         'change': function(field, selectedValue) {
@@ -3057,27 +3088,36 @@ Ext.onReady(function() {
                     "roll_sortino", "roll_downside", "roll_excess", "roll_tracking", "roll_correlation"                    
                 );
                 
+                
                 // What metrics makes the Second Underlying drop down visible
-                var secondUnderlying = new Array(
-                    "delta", "roll_excess", 
-                    "roll_tracking", "roll_correlation", "roll_alpha",
-                    "roll_beta",  "roll_rsq"
-               );
+                if(jQuery.inArray(widget.key, ['w18']) !==-1 ) {
+                    var secondUnderlying = new Array(
+                        "delta", "roll_excess", 
+                        "roll_tracking", "roll_correlation", "roll_alpha",
+                        "roll_beta",  "roll_rsq"
+                    );
+                } else if(jQuery.inArray(widget.key, ['w151', 'w155']) !==-1 ) {
+                    var secondUnderlying = [                
+                        'delta_cum_returns_final_val', 'tracking_error', 
+                        'correlation', 'alpha', 'beta', 'r2',
+                    ];
+                }
                
-               // What metrics makes the MAR drop down visible
-               var mar = new Array("roll_downside");
                
-               // What metrics makes the RAR drop down visible
-               var rfr = new Array("roll_alpha", "roll_beta", "roll_rsq");
+               
+                // What metrics makes the MAR drop down visible
+                var mar = new Array("roll_downside");
+               
+                // What metrics makes the RAR drop down visible
+                var rfr = new Array("roll_alpha", "roll_beta", "roll_rsq");
                    
                                                             
 
 
                 // Metric drop down
-                ///////////////////                                
-                var metricStore = Ext.create('Ext.data.Store', {
-                    fields: ['name'],
-                    data : [
+                ///////////////////           
+                if(jQuery.inArray(widget.key, ['w18']) !==-1 ) {
+                    var metricData = [
                         {"id": "cumulative", "name": "Cumulative Return"},
                         {"id": "return", "name": "Returns"},
                         {"id": "delta", "name": "Delta Cumulative Return"},
@@ -3097,12 +3137,38 @@ Ext.onReady(function() {
                         {"id": "roll_alpha", "name": "Rolling Alpha"},
                         {"id": "roll_beta", "name": "Rolling Beta"},
                         {"id": "roll_rsq", "name": "Rolling RSQ"},
-                    ]
+                    ];
+                } else {                
+                    var metricData = [              
+                        {"id": "delta_cum_returns_final_val", "name": "Excess Return"},
+                        {"id": "tracking_error", "name": "Tracking Error"},                               
+                        {"id": "correlation", "name": "Correlation"},
+                        {"id": "alpha", "name": "Alpha"},
+                        {"id": "beta", "name": "Beta"},
+                        {"id": "r2", "name": "RSQ"},
+                        //##### Do not require a second series#####
+                        {"id": "mean", "name": "Average"},
+                        {"id": "standard_deviation", "name": "Standard Deviation"},
+                        {"id": "variance", "name": "Variance"},
+                        {"id": "max_drawdown", "name": "Maximum DrawDown"},
+                        {"id": "cum_returns_final", "name": "Final Value Cumulative Return"},
+                        {"id": "skewness", "name": "Skewness"},
+                        {"id": "kurtosis", "name": "Kurtosis"},
+                        {"id": "annualised_returns", "name": "Annualised Return"},
+                        {"id": "annualised_volatility", "name": "Annualised Volatility"},
+                        {"id": "downside_volatility", "name": "Downside Volatility"},
+                        {"id": "sortino_ratio", "name": "Sortino Ratio"},
+                        {"id": "sharpe_ratio", "name": "Sharpe Ratio"},
+                    ]; 
+                }
+                var metricStore = Ext.create('Ext.data.Store', {
+                    fields: ['name'],
+                    data: metricData,
                 });
-                
                 var metricSelect = Ext.create('Ext.form.ComboBox', {
                     store: metricStore,
                     id: 'metric_combo_' + tabId,
+                    editable: false, 
                     fieldLabel: 'Metric',
                     labelAlign: 'top',
                     padding: '0 5 5 5',
@@ -3113,53 +3179,58 @@ Ext.onReady(function() {
                     listeners: {
                         'change': function(field, selectedValue) {
                         
-                            // show the Window drop down when certain metrics are selected
-                            if(windowSteps.indexOf(selectedValue) == -1) {
-                                windowSelect.hide();
-                                stepSelect.hide();
-                            } else {
-                                windowSelect.show();
-                                stepSelect.show();
-                            }
-                            
-                            // show the Second Underlying drop down when certain metrics are selected
-                            if(secondUnderlying.indexOf(selectedValue) == -1) {
-                                secUnderlyingSelect.hide();
-                            } else {
-                                secUnderlyingSelect.show();
-                            }
-                            
-                            // show the MAR drop down when certain metrics are selected
-                            if(mar.indexOf(selectedValue) == -1) {
-                                marSelect.hide();
-                            } else {
-                                marSelect.show();
-                            }
-                            
-                            // show the RFR drop down when certain metrics are selected
-                            if(rfr.indexOf(selectedValue) == -1) {
-                                rfrSelect.hide();
-                            } else {
-                                rfrSelect.show();
-                            }
-                            
-                            // Add the open metric tabs to the underlying drop downs
-                            if(selectedValue === 'roll_average' || selectedValue == 'roll_deviation') {
-                                for(i=1; i <= tabId; i++) {
-                                     store1 = Ext.data.StoreManager.lookup('under_store_' + i);
-                                     store2 = Ext.data.StoreManager.lookup('sec_under_store_' + i);
-                                     for(x=1; x <= tabId; x++) {
-                                         store1.add({
-                                            'id': 'metric' + x, 
-                                            'name': 'Metric ' + x
-                                         });
-                                         store2.add({
-                                            'id': 'metric' + x, 
-                                            'name': 'Metric ' + x
-                                         });
-                                     }
+                            if(jQuery.inArray(widget.key, ['w18', 'w151', 'w155']) !==-1 ) {
+                                
+                                // show the Second Underlying drop down when certain metrics are selected
+                                if(secondUnderlying.indexOf(selectedValue) == -1) {
+                                    secUnderlyingSelect.hide();
+                                } else {
+                                    secUnderlyingSelect.show();
                                 }
-                           }
+                            }
+                            if(jQuery.inArray(widget.key, ['w18']) !==-1 ) {
+                            
+                                // show the Window drop down when certain metrics are selected
+                                if(windowSteps.indexOf(selectedValue) == -1) {
+                                    windowSelect.hide();
+                                    stepSelect.hide();
+                                } else {
+                                    windowSelect.show();
+                                    stepSelect.show();
+                                }
+                                
+                                // show the MAR drop down when certain metrics are selected
+                                if(mar.indexOf(selectedValue) == -1) {
+                                    marSelect.hide();
+                                } else {
+                                    marSelect.show();
+                                }
+                                
+                                // show the RFR drop down when certain metrics are selected
+                                if(rfr.indexOf(selectedValue) == -1) {
+                                    rfrSelect.hide();
+                                } else {
+                                    rfrSelect.show();
+                                }
+                                
+                                // Add the open metric tabs to the underlying drop downs
+                                if(selectedValue === 'roll_average' || selectedValue == 'roll_deviation') {
+                                    for(i=1; i <= tabId; i++) {
+                                         store1 = Ext.data.StoreManager.lookup('under_store_' + i);
+                                         store2 = Ext.data.StoreManager.lookup('sec_under_store_' + i);
+                                         for(x=1; x <= tabId; x++) {
+                                             store1.add({
+                                                'id': 'metric' + x, 
+                                                'name': 'Metric ' + x
+                                             });
+                                             store2.add({
+                                                'id': 'metric' + x, 
+                                                'name': 'Metric ' + x
+                                             });
+                                         }
+                                    }
+                               }
+                           };
                             
                            if(firstRun == false) {
                                updateChart();
@@ -3167,9 +3238,56 @@ Ext.onReady(function() {
 
                         }
                     }
-                });
+                }).hide();
                 
                 metricSelect.setValue(metricStore.getAt('0').get('id'));
+                
+                
+                // X&Y Axis Drop Down for W156
+                //////////////////////////////
+                var xAxisSelect = Ext.create('Ext.form.ComboBox', {
+                    store: metricStore,
+                    id: 'xaxis_combo_' + tabId,
+                    fieldLabel: 'X Axis',
+                    labelAlign: 'top',
+                    padding: '0 5 5 5',
+                    width: 100,
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'id',
+                    listeners: {
+                        'change': function(field, selectedValue) {
+                           //dateType = selectedValue;
+                           if(firstRun == false) {
+                               updateChart();
+                           }
+                        }
+                    }
+                }).hide();
+                xAxisSelect.setValue(metricStore.getAt('0').get('id'));
+                
+                var yAxisSelect = Ext.create('Ext.form.ComboBox', {
+                    store: metricStore,
+                    id: 'yaxis_combo_' + tabId,
+                    fieldLabel: 'Y Axis',
+                    labelAlign: 'top',
+                    padding: '0 5 5 5',
+                    width: 100,
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'id',
+                    listeners: {
+                        'change': function(field, selectedValue) {
+                          // dateType = selectedValue;
+                           if(firstRun == false) {
+                               updateChart();
+                           }
+                        }
+                    }
+                }).hide();
+                yAxisSelect.setValue(metricStore.getAt('0').get('id'));
+
+                
                 
                 
                 
@@ -3197,7 +3315,7 @@ Ext.onReady(function() {
                     valueField: 'id',
                     listeners: {
                         'change': function(field, selectedValue) {
-                           dateType = selectedValue;
+                           //dateType = selectedValue;
                            if(firstRun == false) {
                                updateChart();
                            }
@@ -3231,7 +3349,7 @@ Ext.onReady(function() {
                     valueField: 'id',
                     listeners: {
                         'change': function(field, selectedValue) {
-                           dateType = selectedValue;
+                           //dateType = selectedValue;
                            if(firstRun == false) {
                                updateChart();
                            }
@@ -3309,6 +3427,24 @@ Ext.onReady(function() {
                 
                 firstRun = false;
                 
+                
+                
+                // Show or Hide
+                if(jQuery.inArray(widget.key, ['w155']) !==-1 ) {
+                    rfrSelect.show();
+                    secUnderlyingSelect.show();
+                    windowSelect.show();
+                    stepSelect.show();
+                } else if(jQuery.inArray(widget.key, ['w156']) !==-1 ) {
+                    xAxisSelect.show();
+                    yAxisSelect.show();
+                    secUnderlyingSelect.show();
+                    marSelect.show();
+                    rfrSelect.show();
+                } else if(jQuery.inArray(widget.key, ['w18']) !==-1 ) {
+                    metricSelect.show();
+                }
+                
                   
 
                 // Containers
@@ -3319,12 +3455,12 @@ Ext.onReady(function() {
                         columnWidth: .70,
                         border: 0,
                         layout: 'hbox',
-                        items: [metricSelect, windowSelect],
+                        items: [yAxisSelect, metricSelect, windowSelect],
                     },{
                         columnWidth: .30,
                         border: 0,
                         layout: 'hbox',
-                        items: [plotSelect, axisSelect],
+                        items: [yAxisSelect, plotSelect, axisSelect],
                     }],
                 });    
                 
@@ -4667,12 +4803,15 @@ Ext.onReady(function() {
                             number = val;
                         }
                         
-                        if (format_val > 0) {
+                        console.log('format_val', format_val);
+                        if (format_val == "-1000") {
+                            return '<span style="color:black;">-';
+                        } else if (format_val > 0) {
                             renderer = '<span style="color: #01017D;">' + number;
                         } else if (format_val < 0) {
                             renderer = '<span style="color:#F73100;">' + number;
                         } else if (format_val == 0) {
-                            return '<span style="color:black;">-</span>';
+                            return '<span style="color:black;">0.00';
                         }
                         
                         if(val != '') {
@@ -4823,39 +4962,41 @@ Ext.onReady(function() {
 
                     var month = columnIndex - 1;
                  
-                 
-                    if(widget.window.key == 'w1' || widget.window.key == 'w1b') {
-                    
-                        if(year.substr(0, 5) !== 'bench') {
+                    // first column
+                    if(columnIndex == 1) {
+                        if(widget.window.key == 'w1' || widget.window.key == 'w1b') {
+                        
+                            if(year.substr(0, 5) !== 'bench') {
 
-                            $.getJSON("api/fundreturnmonthly/?align=center&data_type=year&date=value_date&extra_fields=bench_ytd&fund=" + obj.fund + "&fields=estimation&value=bench_perf&value_date__year=" + year, function(w1) {
-                                
-                                tableStore.load();
-                                
-                                if(jQuery.inArray(id, isClicked) !== -1) {
-                                
-                                    isClicked.splice(isClicked.indexOf(id), 1);
-                                    for(i=0; i<data.rows.length; i++) {
-                                        if(data.rows[i]['id'] === (id + 1)) {
-                                            data.rows.splice(i, 1);
+                                $.getJSON("api/fundreturnmonthly/?align=center&data_type=year&date=value_date&extra_fields=bench_ytd&fund=" + obj.fund + "&fields=estimation&value=bench_perf&value_date__year=" + year, function(w1) {
+                                    
+                                    tableStore.load();
+                                    
+                                    if(jQuery.inArray(id, isClicked) !== -1) {
+                                    
+                                        isClicked.splice(isClicked.indexOf(id), 1);
+                                        for(i=0; i<data.rows.length; i++) {
+                                            if(data.rows[i]['id'] === (id + 1)) {
+                                                data.rows.splice(i, 1);
+                                            }
                                         }
+                                    } else {
+                                        w1.rows[0]['id'] = id + 1;
+                                        w1.rows[0]['year'] = 'Bench';
+                                        w1.rows[0]['ytd'] = w1.rows[0]['bench_ytd'];
+                                        console.log('w1', w1.rows[0]);
+                                        data.rows.push(w1.rows[0]);
+                                        isClicked.push(id);
                                     }
-                                } else {
-                                    w1.rows[0]['id'] = id + 1;
-                                    w1.rows[0]['year'] = 'Bench';
-                                    w1.rows[0]['ytd'] = w1.rows[0]['bench_ytd'];
-                                    console.log('w1', w1.rows[0]);
-                                    data.rows.push(w1.rows[0]);
-                                    isClicked.push(id);
-                                }
-                                tableStore.loadData(data.rows);
-                                tableStore.sync();
-                            });
+                                    tableStore.loadData(data.rows);
+                                    tableStore.sync();
+                                });
+                            }
                         }
-                    }
-                    
-                    if(widget.window.key == 'w1b' && columnIndex > 0 && columnIndex < 14) {
-                        monthTable(year, month);
+                    } else {
+                        if(widget.window.key == 'w1b' && columnIndex > 0 && columnIndex < 14) {
+                            monthTable(year, month);
+                        }
                     }
                             
 

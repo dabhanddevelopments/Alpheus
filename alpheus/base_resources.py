@@ -433,7 +433,7 @@ class MainBaseResource(SpecifiedFields):
                                 try:
                                     dic[month_name]
                                 except KeyError:
-                                    dic[month_name] = "0"
+                                    dic[month_name] = "-1000"
                             
                                 if row.data[self.date].month == month:
                                     

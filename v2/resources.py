@@ -226,10 +226,17 @@ class FundReturnResource(MainBaseResource):
     
         def holding_data(holding):
             if date_type == 'monthly':
-                holding_data = HoldingMonthly.objects.filter(holding=holding)
+                h_data = HoldingMonthly.objects.filter(holding=holding).only('performance')
             else:
-                holding_data = HoldingDaily.objects.filter(holding=holding)
-            return [row.performance for row in holding_data]
+                h_data = HoldingDaily.objects.filter(holding=holding).only('performance')
+            return [row.performance for row in h_data]
+            
+        def start_date():
+            if date_type == 'monthly':
+                first = FundReturnMonthly.objects.order_by('value_date').only('value_date')[0]
+            else:
+                first = FundReturnDaily.objects.order_by('value_date').only('value_date')[0]
+            return first.value_date
             
         data_type = request.GET.get('data_type', 'graph')
         fund = request.GET.get('fund', False)    
@@ -248,8 +255,184 @@ class FundReturnResource(MainBaseResource):
         under = request.GET.get('under', False) 
         sec_under = request.GET.get('sec_under', False) 
         position = request.GET.get('position', False) 
+        yaxis = request.GET.get('yaxis', False) 
+        xaxis = request.GET.get('xaxis', False) 
         
         widget = request.GET.get("widget", False)
+        
+        # W151 & W155 Two metric scatter plot
+        if rfr is not False \
+            and mar is not False \
+            and under is not False \
+            and sec_under is not False \
+            and yaxis is not False \
+            and xaxis is not False:
+            
+            # if we don't have a start date we need to look it up
+            if not date_from:
+                date_from = start_date()
+                
+            if date_type == 'monthly':
+                freq = 'm'
+                factor = 12 #Annualisation Factor
+            else:
+                freq = 'WEEKDAY'
+                factor = 252 #Annualisation Factor
+            
+            unders = under.split(',')
+            axis = [yaxis, xaxis]
+            
+            
+            if sec_under == 'benchpeer':
+                lst2 = [row.data['bench_perf'] for row in data['objects']]
+                
+            elif sec_under[:5] == 'metric': 
+                lst2 = lst_vals[unders[i][6:]]
+                
+            elif sec_under.isdigit():
+                lst2 = holding_data(unders[i])
+                #color = 'peer'
+             
+            else:
+                lst2 = [row.data['bench_perf'] for row in data['objects']]
+                #color = 'blue'
+                
+                    
+            # remove any empty strings in the list that might exist
+            lst2 = filter(None, lst2)
+            
+            # save prior values for other underlying metrics
+            try:
+                lst_vals2[i] = lst2
+            except:
+                lst_vals2 = []
+            
+            dates2 = date_range(lst2, date_from, freq)
+            df2 = to_dataframe(lst2, dates2)
+
+            series = []
+            
+            for u in unders:
+            
+                if u == 'benchpeer':
+                    lst = [row.data['bench_perf'] for row in data['objects']]
+                    #color = 'green'
+                    name = data['objects'][0].data['fund__benchpeer__name']
+                    
+                elif u[:5] == 'metric': 
+                    lst = lst_vals[u[6:]]
+                    #color = 'pink'
+                    if m == "delta_cum_returns_final_val":
+	                    name = "Excess Return"
+                    if m == "tracking_error":
+	                    name = "Tracking Error"                               
+                    if m == "correlation":
+	                    name = "Correlation"
+                    if m == "alpha":
+	                    name = "Alpha"
+                    if m == "beta":
+	                    name = "Beta"
+                    if m == "r2":
+	                    name = "RSQ"
+                    if m == "mean":
+	                    name = "Average"
+                    if m == "standard_deviation":
+	                    name = "Standard Deviation"
+                    if m == "variance":
+	                    name = "Variance"
+                    if m == "max_drawdown":
+	                    name = "Maximum DrawDown"
+                    if m == "cum_returns_final":
+	                    name = "Final Value Cumulative Return"
+                    if m == "skewness":
+	                    name = "Skewness"
+                    if m == "kurtosis":
+	                    name = "Kurtosis"
+                    if m == "annualised_returns":
+	                    name = "Annualised Return"
+                    if m == "annualised_volatility":
+	                    name = "Annualised Volatility"
+                    if m == "downside_volatility":
+	                    name = "Downside Volatility"
+                    if m == "sortino_ratio":
+	                    name = "Sortino Ratio"
+                    if m == "sharpe_ratio":
+	                    name = "Sharpe Ratio"
+	                    
+                elif u.isdigit():
+                    lst = holding_data(u)
+                    #color = 'peer'
+                    name = 'fundpeer'
+                
+                else:
+                    lst = [row.data['fund_perf'] for row in data['objects']]
+                    color = 'blue'
+                    name = 'fund'
+                    
+                # remove any empty strings in the list that might exist
+                lst = filter(None, lst)
+                
+                # save prior values for other underlying metrics
+                try:
+                    lst_vals[i] = lst
+                except:
+                    lst_vals = []
+                
+                dates = date_range(lst, date_from, freq)
+                df = to_dataframe(lst, dates)
+                
+                val = []
+                
+                
+                for m in axis:    
+                    
+                    if m == "delta_cum_returns_final_val":
+                        values = delta_cum_returns_final_val(df, df2, dates, dates2)
+                    if m == "tracking_error":
+                        values = tracking_error(df, df2)
+                    if m == "correlation":
+                        values = correlation(df, df2)
+                    if m == "alpha":
+                        values = alpha(df, df2)
+                    if m == "beta":
+                        values = beta(df, df2)
+                    if m == "r2":
+                        values = r2(df, df2)
+                    if m == "mean":
+                        values = mean(df)
+                    if m == "standard_deviation":
+                        values = standard_deviation(df)
+                    if m == "variance":
+                        values = variance(df)
+                    if m == "max_drawdown":
+                        values = max_drawdown(df)
+                    if m == "cum_returns_final":
+                        values = cum_returns_final_val(df, dates)
+                    if m == "skewness":
+                        values = skewness(df)
+                    if m == "kurtosis":
+                        values = kurtosis(df)
+                    if m == "annualised_returns":
+                        values = annualised_returns(df, freq)
+                    if m == "annualised_volatility":
+                        values = volatility(df, freq)
+                    if m == "downside_volatility":
+                        values = downside_volatility(df, mar, freq)
+                    if m == "sortino_ratio":
+                        values = sortino_ratio(df, freq)
+                    if m == "sharpe_ratio":
+                        values = sharpe_ratio(df, freq)
+                    
+                    val.append(values[0])
+	                
+                    
+                series.append({
+                    'data': [val],
+                    'name': name,
+                    #'color': color,
+                })
+            return series    
+            
         
         """
         W18 Fund Historical Stats
@@ -268,13 +451,7 @@ class FundReturnResource(MainBaseResource):
             
             # if we don't have a start date we need to look it up
             if not date_from:
-            
-                if date_type == 'monthly':
-                    first = FundReturnMonthly.objects.order_by('value_date')[0]
-                else:
-                    first = FundReturnDaily.objects.order_by('value_date')[0]
-                    
-                date_from = first.value_date
+                date_from = start_date()
                 
                 
             if date_type == 'monthly':
@@ -294,12 +471,11 @@ class FundReturnResource(MainBaseResource):
             unders = under.split(',')
             sec_unders = sec_under.split(',')
             positions = position.split(',')
-            
-            
+
             series = []
             table = {}
             
-            for i, m in enumerate(metrics):
+            for i, u in enumerate(unders):
             
                 if unders[i] == 'benchpeer':
                     lst = [row.data['bench_perf'] for row in data['objects']]
@@ -358,83 +534,87 @@ class FundReturnResource(MainBaseResource):
                 
                 values = []
 
-                if m == "cumulative": 
+                if metrics[i] == "cumulative": 
                     values = cum_returns(df, dates)
                     name = "Cumulative Return"
                      
-                if m == "return":
+                if metrics[i] == "return":
                     values = df
                     name = "Returns"  
                         
-                if m == "roll_average":
+                if metrics[i] == "roll_average":
                     values = roll_mean(df, win)
                     name = "Rolling Average"
                      
-                if m == "delta": 
+                if metrics[i] == "delta": 
                     values = delta_cum_returns(df, df2, dates, dates2)
                     name = "Delta Cumulative Return"
                     
-                if m == "roll_deviation":
+                if metrics[i] == "roll_deviation":
                     values = roll_standard_deviation(df, win)
                     #values = roll_standard_deviation(df, win)[::12]
                     print 'steps', steps[i]
                     name = "Rolling Standard Deviation"
                     
-                if m == "roll_cumulative":
+                if metrics[i] == "roll_cumulative":
                     values = roll_cum_returns(df, win)
                     name = "Rolling Cumulative Return"                
                 
-                if m == "roll_skewness":
+                if metrics[i] == "roll_skewness":
                     values = roll_skewness (df, win)
                     name = "Rolling Skewness"
                     
                     
-                if m == "roll_kurtosis":
+                if metrics[i] == "roll_kurtosis":
                     values = roll_kurtosis (df, win)
                     name = "Rolling Kurtosis"
                     
-                if m == "roll_annualised":
+                if metrics[i] == "roll_annualised":
                     values = roll_annualised_returns(df, factor, win, LessThanWin=True)
                     name = "Rolling Annualised Return"
                     
-                if m == "roll_volatility":
+                if metrics[i] == "roll_volatility":
                     values = roll_volatility(df, win, factor)
                     name = "Rolling Volatility"
                     
-                if m == "roll_sharpe": 
+                if metrics[i] == "roll_sharpe": 
                     values = roll_sharpe_base(df, factor)
                     name = "Rolling Sharpe"
                     
-                #if m == "roll_sortino":
-                #if m == "roll_downside":
+                if metrics[i] == "roll_sortino":
+                    raise "Not implemented"
+                if metrics[i] == "roll_downside":
+                    raise "Not implemented"
                 
-                if m == "roll_excess": 
+                if metrics[i] == "roll_excess": 
                     values = roll_delta_cum_returns (df, df2, win)
                     name = "Rolling Excess Return"
 
-                #if m == "roll_tracking":
+                if metrics[i] == "roll_tracking":
+                    raise "Not implemented"
 
-                if m == "roll_correlation":
+                if metrics[i] == "roll_correlation":
                     values = roll_correlation (df, df2, win)
                     name = "Rolling Correlation"
                     
-                if m == "roll_alpha":
+                if metrics[i] == "roll_alpha":
                     values = roll_alpha(df, df2, win)
                     name = "Rolling Alpha"
                     
 
-                if m == "roll_beta":
+                if metrics[i] == "roll_beta":
                     values = roll_beta(df, df2, win)
                     name = "Rolling Beta"
                     
-                #if m == "roll_rsq":
+                if metrics[i] == "roll_rsq":
+                    raise "Not implemented"
                 
                 step_metrics = [
                     "roll_average", "roll_deviation", "roll_cumulative", "roll_skewness", 
                     "roll_kurtosis", "roll_annualised", "roll_volatility",  "roll_sharpe",  
                     "roll_sortino", "roll_downside", "roll_excess", "roll_tracking", "roll_correlation"   
                 ]
-                if m in step_metrics:
+                if metrics[i] in step_metrics:
                     values = values[::step]
                     
                 if data_type == 'table':

@@ -30,7 +30,7 @@ fund = pd.DataFrame(np.array([-3.104000, -0.255945, 0.907479, 3.148125, 1.683955
 
 
 #create a dataframe for the benchmarks monthly returns
-dates = pd.date_range('20060531', periods=93, freq='m')
+dates2 = pd.date_range('20060531', periods=93, freq='m')
 bench = pd.DataFrame(np.array([-2.190000, -0.160000, 1.700000, 2.580000, 3.110000,
                                3.420000, 1.740000, 1.800000, 1.090000, -3.150000,
                                1.060000, 4.850000, 3.500000, -1.250000, -2.340000, 
@@ -50,7 +50,7 @@ bench = pd.DataFrame(np.array([-2.190000, -0.160000, 1.700000, 2.580000, 3.11000
                                4.280000, 1.200000, 2.920000, 2.110000, 2.180000,
                                -1.740000, 4.865426, -3.070000, 2.350000, 4.610000,
                                2.920000, 2.660000, -4.140000]),
-                                         index=dates)
+                                         index=dates2)
 
 def date_range(lst, date, freq = 'm'):
 
@@ -164,11 +164,11 @@ def delta_cum_returns (series1, series2, dates, dates2):
 
 #Excess return 
 # calculates the final value of delta_cum_ret
-def delta_cum_returns_final_val (series1, series2):
-    delta_cum_returns = (cum_returns(series1) - cum_returns(series2))
-    delta_cum_returns_dates = pd.DataFrame(delta_cum_returns, index=dates)
-    delta_cum_returns_final_val_dates = pd.DataFrame.tail(delta_cum_returns_dates,1) 
-    return delta_cum_returns_final_val_dates
+def delta_cum_returns_final_val (series1, series2, dates, dates2):
+    dcm = (cum_returns(series1, dates) - cum_returns(series2, dates2))
+    dcm = pd.DataFrame(dcm, index=dates)
+    dcm = pd.DataFrame.tail(dcm,1) 
+    return dcm
 
 
 #calculates the rolling cumulative returns of a monthly returns series

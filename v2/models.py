@@ -58,7 +58,7 @@ class AssetClass(models.Model):
     investment_category = models.ForeignKey('InvestmentCategory', db_column='InvestmentCategoryID', blank=True, null=True)
     asset_type = models.ForeignKey('AssetType', db_column='AssetTypeID', blank=True, null=True)
     risk = models.ForeignKey('AssetClassRisk', db_column='AssetClassRiskID', blank=True, null=True)
-    holding_type = models.CharField(max_length=5, choices=HOLDING_TYPES, db_column='HoldingType', blank=True, null=True)
+    holding_type = models.CharField(max_length=100, choices=HOLDING_TYPES, db_column='HoldingType', blank=True, null=True)
 
     class Meta:
         db_table = 'ALP_App_AssetClass'
@@ -596,8 +596,8 @@ class Fund(models.Model):
     region_1 = models.ForeignKey(Region, related_name='fund_region1', db_column='Region1ID', blank=True, null=True)
     region_2 = models.ForeignKey(Region, related_name='fund_region2', db_column='Region2ID', blank=True, null=True)
     region_3 = models.ForeignKey(Region, related_name='fund_region3', db_column='Region3ID', blank=True, null=True)
-    benchpeer = models.ForeignKey(BenchPeer, db_column='BenchPeerID', blank=True, null=True, verbose_name='Benchmark')
-    sec_bench = models.ForeignKey('Holding', db_column='SecBenchID', blank=True, null=True, verbose_name='Secondary Benchmark')
+    benchpeer = models.ForeignKey(BenchPeer, db_column='BenchPeerID', blank=True, null=True, verbose_name='Benchmark', related_name='bench')
+    sec_bench = models.ForeignKey(BenchPeer, db_column='SecBenchID', blank=True, null=True, verbose_name='Secondary Benchmark', related_name='sec_bench')
     administrator = models.ForeignKey(Administrator, db_column='AdminID', blank=True, null=True)
     manager = models.ForeignKey(Manager, db_column='ManagerID', blank=True, null=True)
     custodian = models.ForeignKey(Custodian, db_column='CustodianID', blank=True, null=True)
@@ -636,7 +636,7 @@ class FundCharAudit(models.Model):
     alarm = models.ForeignKey(Alarm, db_column='AlarmID', blank=True, null=True)
     active = models.NullBooleanField(max_length=1, db_column='Active', blank=True, null=True)
     flash_flag = models.NullBooleanField(max_length=1, db_column='FlashFlag', default=False)
-    sec_bench = models.ForeignKey('Holding', db_column='SecBenchID', default=False)
+    sec_bench = models.ForeignKey('Holding', db_column='SecBenchID', default=False, blank=True, null=True)
 
     class Meta:
         db_table = 'ALP_FundsChars_TS'
@@ -950,7 +950,7 @@ class HoldingPositionMonthly(models.Model):
     weight = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='Weight', blank=True)
 
     class Meta:
-        db_table = 'ALP_PositionsMonthly'
+        db_table = 'ALP_PositionsMonthly_TS'
         verbose_name_plural = 'Position Monthly'
 
 
