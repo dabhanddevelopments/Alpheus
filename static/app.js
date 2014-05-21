@@ -2151,14 +2151,16 @@ Ext.onReady(function() {
             year = moment(record).format('YYYY');
             month = from = moment(record).format('MM');
             
+            console.log('update chart w2', getUrl(type));
             $.getJSON(getUrl(type), function(new_data) {
 
                 var options = $('#data').data('chart-options-' + div + '_tab' + type); 
                 
-                var url = '/api/fundreturnmonthly/?fund=' + $('#data').data('fund') + '&fields=fund_perf&value_date__year=' + year + '&value_date__month=' + month;
+                // disabling the fund performance line
+                //var url = '/api/fundreturnmonthly/?fund=' + $('#data').data('fund') + '&fields=fund_perf&value_date__year=' + year + '&value_date__month=' + month;
                 
                // console.log('dissecting line on bar', url);
-                $.getJSON(url, function(fund) {
+                //$.getJSON(url, function(fund) {
                 
                     // commented this as for now we are not displaying the fund performance if it's outside the y axis
                    // var fundValues = new Array();
@@ -2171,17 +2173,17 @@ Ext.onReady(function() {
                     options.series = [new_data[0]];
                    // options.yAxis.max = maxVal;
                    // options.yAxis.min = minVal;
-                    options.yAxis.plotLines = [{
-                        value: fund[0].fund_perf,
-                        width: 1,
-                        color: 'black',
-                        label: {
-                            text: $('#data').data('fund_name') + ' Performance',
-                        },
-                        zIndex: 5,
-                    }];
+                   // options.yAxis.plotLines = [{
+                   //     value: fund[0].fund_perf,
+                   //     width: 1,
+                   //     color: 'black',
+                   //     label: {
+                   //         text: $('#data').data('fund_name') + ' Performance',
+                   //     },
+                   //     zIndex: 5,
+                  //  }];
                     new Highcharts.Chart(options);
-                });
+               // });
            });
         }
                 
@@ -4803,7 +4805,6 @@ Ext.onReady(function() {
                             number = val;
                         }
                         
-                        console.log('format_val', format_val);
                         if (format_val == "-1000") {
                             return '<span style="color:black;">-';
                         } else if (format_val > 0) {
