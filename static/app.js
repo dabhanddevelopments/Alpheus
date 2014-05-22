@@ -4656,6 +4656,7 @@ Ext.onReady(function() {
                     title: {
                         text: false,//'Holding Performance XXXX-XX-XX'
                     },
+                    minorTickInterval: 'auto',
                     allowDecimals: yDecimals,
                 },
                 legend: {
@@ -4676,11 +4677,18 @@ Ext.onReady(function() {
 
             if(typeof widget.params.labels != 'undefined' && widget.params.labels == 'rotated') {
                 labels = {
-                    rotation: -45,
-                    align: 'right',
+                    rotation: 90,
+                    align: 'left',
                     style: {
                         fontSize: '8px',
                         fontFamily: 'Verdana, sans-serif'
+                    },
+                    formatter: function() {
+                        if(this.value.length > 20) {
+                            return this.value.substr(0, 20) + '...';
+                        } else {
+                            return this.value;
+                        }
                     }
                 }
                 options.xAxis.labels = labels;
