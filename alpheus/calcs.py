@@ -4,6 +4,7 @@ from time import mktime
 import scipy as py
 #import statsmodels.formula.api as sm
 from decimal import Decimal
+import math as math
 
 #create a dataframe for the fund monthly returns
 dates = pd.date_range('20060531', periods=93, freq='m')
@@ -538,6 +539,6 @@ def roll_adjr2(series1, series2, window, f=12):
     
 #W22 - return histogram
 def hist(series):
-    hist = np.histogram(series, bins=20, range=(-10,10))
+    hist = np.histogram(series,range=(math.floor(series.min()),math.ceil(series.max())),bins = math.ceil(series.max())-math.floor(series.min()))
     return hist
   
