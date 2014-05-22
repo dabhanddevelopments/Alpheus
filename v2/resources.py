@@ -164,10 +164,11 @@ class FundFeeAuditResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = FundFeeAudit.objects.all()
 
-
+"""
 class FundPositionAuditResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = FundPositionAudit.objects.all()
+"""
 
 class FundResource(MainBaseResource):
     benchpeer = fields.ForeignKey(BenchPeer, "benchpeer")
@@ -870,11 +871,11 @@ class HoldingPositionDailyResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = HoldingPositionDaily.objects.all()
 
-class HoldingPositionMonthlyResource(MainBaseResource):
+class PositionMonthlyResource(MainBaseResource):
     fund = fields.ForeignKey(FundResource, 'fund')
     
     class Meta(MainBaseResource.Meta):
-        queryset = HoldingPositionMonthly.objects.all()
+        queryset = PositionMonthly.objects.all()
         
 
     def alter_list_data_to_serialize(self, request, data):            
@@ -900,7 +901,7 @@ class HoldingPositionMonthlyResource(MainBaseResource):
                 prior_year = year
                 prior_month = int(month) - 1
                 
-            prior_pos = HoldingPositionMonthly.objects.filter(
+            prior_pos = PositionMonthly.objects.filter(
                 value_date__year=prior_year, value_date__month=prior_month,
                 fund=fund). \
                 select_related('holding').only('holding__name', 'weight')
@@ -953,7 +954,7 @@ class HoldingPositionMonthlyResource(MainBaseResource):
                 new_obj = self.build_bundle(data = new)
                 data['objects'].insert(0, new_obj)
         
-        return super(HoldingPositionMonthlyResource, self) \
+        return super(PositionMonthlyResource, self) \
                 .alter_list_data_to_serialize(request, data)
 
 class TradeResource(MainBaseResource):

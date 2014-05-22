@@ -563,7 +563,7 @@ class FundPeer(models.Model):
     class Meta:
         db_table = 'ALP_FundPeers'
 
-
+"""
 class FundPositionAudit(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     fund = models.ForeignKey('Fund', db_column='FundID')
@@ -582,7 +582,7 @@ class FundPositionAudit(models.Model):
     
     class Meta:
         db_table = 'ALP_PositionsMonthly'
-
+"""
 
 class Fund(models.Model):
     id = models.AutoField(primary_key=True, db_column='FundID')
@@ -933,7 +933,7 @@ class HoldingPositionDaily(models.Model):
         verbose_name_plural = 'Position Daily'
 
 
-class HoldingPositionMonthly(models.Model):
+class PositionMonthly(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     fund = models.ForeignKey(Fund, db_column='FundID')
     holding = models.ForeignKey(Holding, db_column='HoldingID')
@@ -950,7 +950,7 @@ class HoldingPositionMonthly(models.Model):
     weight = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='Weight', blank=True)
 
     class Meta:
-        db_table = 'ALP_PositionsMonthly_TS'
+        db_table = 'ALP_PositionsMonthly'
         verbose_name_plural = 'Position Monthly'
 
 

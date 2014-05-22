@@ -2141,7 +2141,7 @@ Ext.onReady(function() {
                     var params = '&y1=weighted_perf&fields=weight&performance=true';
                 }
             }
-            var url = '/api/holdingpositionmonthly/?title=holding__name&data_type=graph&value_date__year=' + year + '&value_date__month=' + month + '&fund=' + obj.fund + params;
+            var url = '/api/positionmonthly/?title=holding__name&data_type=graph&value_date__year=' + year + '&value_date__month=' + month + '&fund=' + obj.fund + params;
             return url;
         }
         
