@@ -2132,7 +2132,7 @@ Ext.onReady(function() {
                 if(type === 1) {
                     var params = '&y1=marketvaluefundcur&fields=marketvaluefundcur,weight';
                 } else {
-                    var params = '&y1=weight&fields=weight&performance=true';
+                    var params = '&y1=average_weight&fields=weight&performance=true';
                 } 
             } else {   
                 if(type === 1) {
