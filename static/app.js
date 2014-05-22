@@ -2132,7 +2132,7 @@ Ext.onReady(function() {
                 if(type === 1) {
                     var params = '&y1=marketvaluefundcur&fields=marketvaluefundcur,weight';
                 } else {
-                    var params = '&y1=average_weight&fields=weight';
+                    var params = '&y1=weight&fields=weight&performance=true';
                 } 
             } else {   
                 if(type === 1) {
@@ -3902,8 +3902,11 @@ Ext.onReady(function() {
         if(typeof widget.yAxis !== 'undefined') {
             var yAxis = widget.yAxis;
             for(i=0; i<widget.yAxis.length; i++) {
-                yAxis[i]['title'] = {
-                    text: yAxisTitle,
+                yAxis[i] = { //['title'] = {
+                    title: {
+                        text: yAxisTitle,
+                    },
+                    minorTickInterval: 'auto',
                 };
             }
         } else {
@@ -3911,6 +3914,7 @@ Ext.onReady(function() {
                 title: {
                     text: yAxisTitle,
                 },
+                minorTickInterval: 'auto',
             };
         }
         

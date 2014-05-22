@@ -878,7 +878,8 @@ class PositionMonthlyResource(MainBaseResource):
         queryset = PositionMonthly.objects.all()
         
 
-    def alter_list_data_to_serialize(self, request, data):            
+    def alter_list_data_to_serialize(self, request, data):  
+    
     
         fund = request.GET.get('fund', False)
         year = request.GET.get('value_date__year', False)
