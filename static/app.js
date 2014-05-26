@@ -1168,15 +1168,7 @@ Ext.onReady(function() {
     function createWindows(data, i, obj, extra_params) {
 
         if(typeof obj.fund == 'undefined') {
-            obj.fund = $('#data').data('fund');
-        }
-        
-        if(typeof obj.name == 'undefined') {
-            obj.name = $('#data').data("fund_name");
-        }
-        
-        if(typeof obj.benchpeer == 'undefined') {
-            obj.benchpeer = $('#data').data('benchpeer');
+            obj.fund = $('#data').data('fund_obj').id;
         }
         
         // for w18
@@ -1226,14 +1218,14 @@ Ext.onReady(function() {
                 date[0] = tabId;
                 tabId = tabId + '-1';
            }
-           $.getJSON('/api/fund-subredtable/?fund=' + obj.fund + '&year=' + date[0] + '&month='  + date[1] + '&column_width=80,80', function(data1) {
+           $.getJSON('/api/fund-subredtable/?fund=' + obj.fund.id + '&year=' + date[0] + '&month='  + date[1] + '&column_width=80,80', function(data1) {
                 tab = Ext.getCmp(tabId);
                 var table = createGrid(tabId, data1, 0);
                 tab.add(table);
 
                 var fields = "&fields=client__first_name,client__last_name,sub_red_switch,no_of_units,sub_red_switch,sub_red_euro_nav,percent_released,trade_date,instruction_date";
 
-                $.getJSON('/api/subscription-redemption/?fund=' + obj.fund + '&trade_date__year=' + date[0] + '&trade_date__month='  + date[1] + '&column_width=100,100' + fields, function(data2) {
+                $.getJSON('/api/subscription-redemption/?fund=' + obj.fund.id + '&trade_date__year=' + date[0] + '&trade_date__month='  + date[1] + '&column_width=100,100' + fields, function(data2) {
                     tab = Ext.getCmp(tabId);
                     var table = createGrid('client' + tabId, data2, 1);
                     tab.add(table);
@@ -1245,7 +1237,7 @@ Ext.onReady(function() {
 
         //for w13
         function appendGridToGrossAssetTab(tab, year) {
-            $.getJSON('/api/fund-grossasset1/?fund=' + obj.fund + '&year=' + year + '&column_width=160,85', function(assets) {
+            $.getJSON('/api/fund-grossasset1/?fund=' + obj.fund.id + '&year=' + year + '&column_width=160,85', function(assets) {
                 var grid = dataGroupTable(assets, data.window);
                 tab.insert(0, grid);
                 tab.doLayout();
@@ -1396,7 +1388,7 @@ Ext.onReady(function() {
         if(data.window.key == 'w15') {
         
               var fields = 'name,manager__name,description,custodian__name,administrator__name,currency__name,auditor__name,benchpeer__name,asset_class__risk__name,country_risk__name,region_1__name&summary=true';
-              $.getJSON('/api/fund/' + obj.fund + '/?fields=' + fields, function(summary) {
+              $.getJSON('/api/fund/' + obj.fund.id + '/?fields=' + fields, function(summary) {
 
                     widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id, true);
                     html = '<div> <table class="html_table">' +
@@ -1420,7 +1412,7 @@ Ext.onReady(function() {
 
 
 
-                    $.getJSON('/api/fundfee/?summary=true&fund=' + obj.fund, function(fee) {
+                    $.getJSON('/api/fundfee/?summary=true&fund=' + obj.fund.id, function(fee) {
 
                         for(i=0; i<fee.length; i++) {
                             html += '<tr><th>' + fee[i].name + '</th><td>'+ fee[i].formula + '</td></tr>';
@@ -1429,7 +1421,7 @@ Ext.onReady(function() {
                         html += '</table><table class="html_table">' +
                         '<tr><td colspan="2"><h3>User Defined Peers Section</h3></td></tr>';
                        
-                       $.getJSON('/api/fundpeer/?user=1&fields=benchpeer__name,benchpeer__formula&fund=' + obj.fund + '&user=' + $('#data').data('userId'), function(peer) {
+                       $.getJSON('/api/fundpeer/?user=1&fields=benchpeer__name,benchpeer__formula&fund=' + obj.fund.id + '&user=' + $('#data').data('userId'), function(peer) {
                        
                             for(i=0; i<peer.length; i++) {
                                 html += '<tr><th>' + peer[i].benchpeer__name + '</th><td>'+ peer[i].benchpeer__formula + '</td></tr>';
@@ -1697,8 +1689,6 @@ Ext.onReady(function() {
         }
 
 
-       console.log('adsf', '/api/widgets/?window=' + data.window.id + '&disabled=0')
-
         // get the widgets for this window
         $.ajax({
             type: "GET",
@@ -1706,7 +1696,7 @@ Ext.onReady(function() {
             ajaxI: i,
             success: function(widgets) {
             
-            console.log('widgets', widgets);
+            //console.log('widgets', widgets);
 
                 // now I will be i asynchronously
                 I = this.ajaxI;
@@ -1772,10 +1762,10 @@ Ext.onReady(function() {
         title = title.replace('MONTH', moment(date).format('MMM'));
 
         // Sets the fund name to the window title
-        if(typeof  $('#data').data('fund_name') != 'undefined') {
-            title = title.replace('FUND_NAME', $('#data').data('fund_name'));
+        if(typeof  $('#data').data('fund_obj').name !== 'undefined') {
+            title = title.replace('FUND_NAME', $('#data').data('fund_obj').name);
         }
-
+        
         if(typeof  $('#data').data('client_name') != 'undefined') {
             title = title.replace('CLIENT_NAME', $('#data').data('client_name'));
         }
@@ -1852,8 +1842,8 @@ Ext.onReady(function() {
             obj.client = $('#data').data('client');
         }
 
-        if(typeof obj.fund == 'undefined') {
-            obj.fund = $('#data').data('fund');
+        if(typeof obj.fund.id == 'undefined') {
+            obj.fund = $('#data').data('fund_obj').id;
         }
         
         obj.scroll = false;
@@ -1866,8 +1856,8 @@ Ext.onReady(function() {
         }
         
         // is this needed?
-        obj.id = obj.fund;
-        obj.holding__fund = obj.fund;
+        obj.id = obj.fund.id;
+        obj.holding__fund = obj.fund.id;
 
         if(typeof $('#data').data('holding') != 'undefined') {
             obj.holding = $('#data').data('holding');
@@ -1969,8 +1959,8 @@ Ext.onReady(function() {
 
         } else if(widget.type == 'line_chart') {
 
-            var url1 = "/api/fundreturnmonthly/?data_type=graph&date=value_date&fund=" + obj.fund + "&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name";
-            var url2 = "/api/fundreturnmonthly/?bench_graph=bench_perf&data_type=graph&date=value_date&fund=" + obj.fund + "&graph_type=bench&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name";
+            var url1 = "/api/fundreturnmonthly/?data_type=graph&date=value_date&fund=" + obj.fund.id + "&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name";
+            var url2 = "/api/fundreturnmonthly/?bench_graph=bench_perf&data_type=graph&date=value_date&fund=" + obj.fund.id + "&graph_type=bench&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name";
         
             console.log('w16 url1', url1);
             console.log('w16 url2', url2);
@@ -1983,7 +1973,7 @@ Ext.onReady(function() {
 
         } else if(widget.type == 'w152') {
 
-            var url = "/api/fundreturnmonthly/?widget=w152&fund=" + obj.fund;
+            var url = "/api/fundreturnmonthly/?widget=w152&fund=" + obj.fund.id;
         
             //console.log('url', url);
             $.getJSON(url, function(series) {
@@ -2141,7 +2131,7 @@ Ext.onReady(function() {
                     var params = '&y1=weighted_perf&fields=weight&performance=true';
                 }
             }
-            var url = '/api/positionmonthly/?title=holding__name&data_type=graph&value_date__year=' + year + '&value_date__month=' + month + '&fund=' + obj.fund + params;
+            var url = '/api/positionmonthly/?title=holding__name&data_type=graph&value_date__year=' + year + '&value_date__month=' + month + '&fund=' + obj.fund.id + params;
             return url;
         }
         
@@ -2391,7 +2381,7 @@ Ext.onReady(function() {
 
     
     function getReturnHistogramUrl(type) {
-        return '/api/fundreturn' + type + '/?histogram=true&fields=fund_perf&fund=' + obj.fund;
+        return '/api/fundreturn' + type + '/?histogram=true&fields=fund_perf&fund=' + obj.fund.id;
     }    
     
     function returnHistogram(obj, widget, div) {
@@ -2449,7 +2439,7 @@ Ext.onReady(function() {
             
             
             // check if it has daily data, if not we don't display the data type drop down menu            
-            $.getJSON("/api/fundreturndaily/?fields=id&fund=" + obj.fund, function(data) {
+            $.getJSON("/api/fundreturndaily/?fields=id&fund=" + obj.fund.id, function(data) {
                 if(data.length === 0) {
                     items = [buttonContainer, dateSpan];
                 } else {
@@ -2583,7 +2573,7 @@ Ext.onReady(function() {
                 qs = qs.slice(0, -1); // remove last comma
             }
             
-            return '/api/fundreturn' + dateType + '/?' + qs + '&fund=' + obj.fund + '&fields=fund_perf,bench_perf';
+            return '/api/fundreturn' + dateType + '/?' + qs + '&fund=' + obj.fund.id + '&fields=fund_perf,bench_perf';
         
         }
             
@@ -2942,7 +2932,7 @@ Ext.onReady(function() {
                     
                 
                 // Add the benchmarks assigned to this fund for the underlying drop downs
-                $.getJSON("/api/fundpeer/?fields=benchpeer__holding__id,benchpeer__name&fund=" + obj.fund +'&user=' + obj.user, function(data) {
+                $.getJSON("/api/fundpeer/?fields=benchpeer__holding__id,benchpeer__name&fund=" + obj.fund.id +'&user=' + obj.user, function(data) {
                     
                     for(i=0; i < data.length; i++) { 
                          underlyingStore.add({
@@ -2958,17 +2948,31 @@ Ext.onReady(function() {
                 }); 
                 
                 // Add the secondary benchmarks assigned to this fund for the underlying drop downs
-                if(widget.key === 'w156') {
-                    $.getJSON("/api/fund/?fields=sec_bench__name&fund=" + obj.fund +'&flash=1', function(data) {
+                if(jQuery.inArray(widget.key, ['w155', 'w156', 'w157']) !==-1 ) {
+        
+                     underlyingStore.add({
+                        'id': obj.fund.sec_bench.id, 
+                        'name': obj.fund.sec_bench.name
+                     });
+                     secUnderlyingStore.add({
+                        'id': obj.fund.sec_bench.id, 
+                        'name': obj.fund.sec_bench.name
+                     });     
+                        
+                }
+                
+                // add the 
+                if(jQuery.inArray(widget.key, ['w155', 'w156', 'w157']) !==-1 ) {
+                    $.getJSON("/api/fund/?fields=name,id&estimate_required=1", function(data) {
                         
                         for(i=0; i < data.length; i++) { 
                              underlyingStore.add({
-                                'id': data[i].sec_bench__holding__id, 
-                                'name':  data[i].sec_bench__name
+                                'id': data[i].id, 
+                                'name':  data[i].name
                              });
                              secUnderlyingStore.add({
-                                'id': data[i].sec_bench__holding__id, 
-                                'name':  data[i].sec_bench__name
+                                'id': data[i].id, 
+                                'name':  data[i].name
                              });
                         }
 
@@ -3543,7 +3547,7 @@ Ext.onReady(function() {
         
         
         // check if it has daily data           
-        $.getJSON("/api/fundreturndaily/" + obj.fund + "/?fields=id&has_data=true", function(data) {
+        $.getJSON("/api/fundreturndaily/" + obj.fund.id + "/?fields=id&has_data=true", function(data) {
         
             //if it hasn't, hide the date type drop down menu 
             if(data == 0) {
@@ -3616,7 +3620,7 @@ Ext.onReady(function() {
                             return this.value + '%';
                         }
                     },
-                    min: 0,
+                    //min: 0,
                 }, {
                     top: 500,
                     height: 210,
@@ -3626,7 +3630,9 @@ Ext.onReady(function() {
                             return this.value + '%';
                         }
                     },
-                    min: 0,
+                    //min: 0,
+            }];
+            /*
                 }, {
                     height: 420,
                     opposite:true,
@@ -3661,6 +3667,7 @@ Ext.onReady(function() {
                     tickPositions:[lastPoint[4]],
                     gridLineWidth:0
             }];
+            */
         } else {
         
             var yAxis = [{
@@ -3671,7 +3678,7 @@ Ext.onReady(function() {
                             return this.value + '%';
                         }
                     },
-                    min: 0,
+                    //min: 0,
                 }, {
                     top: 500,
                     height: 210,
@@ -3682,6 +3689,8 @@ Ext.onReady(function() {
                         }
                     },
                     //min: 0,
+            }];
+            /*
                 }, {
                     height: 420,
                     opposite:true,
@@ -3703,6 +3712,7 @@ Ext.onReady(function() {
                     tickPositions:[lastPoint[2]],
                     gridLineWidth:0
                 }];
+             */
         }
         
         var options = {
@@ -4714,7 +4724,7 @@ Ext.onReady(function() {
                         width: 1,
                         color: 'black',
                         label: {
-                            text: $('#data').data('fund_name') + ' Performance',
+                            text: $('#data').data('fund_obj').name + ' Performance',
                         },
                         zIndex: 5,
                     }];
@@ -4981,7 +4991,7 @@ Ext.onReady(function() {
                         
                             if(year.substr(0, 5) !== 'bench') {
 
-                                $.getJSON("api/fundreturnmonthly/?align=center&data_type=year&date=value_date&extra_fields=bench_ytd&fund=" + obj.fund + "&fields=estimation&value=bench_perf&value_date__year=" + year, function(w1) {
+                                $.getJSON("api/fundreturnmonthly/?align=center&data_type=year&date=value_date&extra_fields=bench_ytd&fund=" + obj.fund.id + "&fields=estimation&value=bench_perf&value_date__year=" + year, function(w1) {
                                     
                                     tableStore.load();
                                     
@@ -5044,7 +5054,7 @@ Ext.onReady(function() {
                     displayInnerGrid(widget, w11,id);
 
                     widget.holding = record.get('id');
-                    widget.fund = obj.fund;
+                    widget.fund = obj.fund.id;
                     lineBarChart(widget);
                 });
 
@@ -5053,7 +5063,7 @@ Ext.onReady(function() {
 
                 var fields = '&fields=first_name,last_name,no_of_units,base_nav,pending_nav';
 
-                $.getJSON("/api/client/?&fund=" + obj.fund + '&client=' + id + '&column_width=100,100' + fields, function(w12) {
+                $.getJSON("/api/client/?&fund=" + obj.fund.id + '&client=' + id + '&column_width=100,100' + fields, function(w12) {
 
                     displayInnerGrid(widget, w12, id);
                 });
@@ -5118,7 +5128,7 @@ Ext.onReady(function() {
                 year = extra_params.year;
                 week = 1; // fill this dynamic later
 
-                title = title.replace('FUND_NAME', $('#data').data('fund_name'));
+                title = title.replace('FUND_NAME', $('#data').data('fund_obj').name);
                 title = title.replace('YEAR', year);
                 title = title.replace('WEEK', week);
 
@@ -5171,7 +5181,7 @@ Ext.onReady(function() {
                 year = extra_params.year;
                 week = 1; // fill this dynamic later
 
-                title = title.replace('FUND_NAME', $('#data').data('fund_name'));
+                title = title.replace('FUND_NAME', $('#data').data('fund_obj').name);
                 title = title.replace('YEAR', year);
                 title = title.replace('WEEK', week);
 
@@ -5800,15 +5810,26 @@ Ext.onReady(function() {
         });
     }
 
-    function setFundName(id) {
+    function setFund(id) {
          $.ajax({
             type: "GET",
-            url: '/api/fund/' + id + '?fields=name',//,benchpeer__name',//,classification__id',
+            url: '/api/fund/' + id + '?fields=name,benchpeer__name,benchpeer__id,sec_bench__name,sec_bench__id',//,benchpeer__name',//,classification__id',
             success: function(data) {
-                $('#data').data("fund_name", data.name);
-               // $('#data').data("benchpeer_name", data.fund__benchpeer__name);
-                //$('#data').data("classification", data.classification__id);
-               //console.log(data);
+            
+                var fund = {
+                    id: data.id,
+                    name: data.name,
+                    benchpeer: {
+                        id: data.benchpeer__id,
+                        name: data.benchpeer__name,
+                    },
+                    sec_bench: {
+                        id: data.sec_bench__id,
+                        name: data.sec_bench__name,
+                    },
+                };
+                
+                $('#data').data("fund_obj", fund);
             }
         });
     }
@@ -5979,9 +6000,10 @@ Ext.onReady(function() {
                                     }
 
                                     //console.log('record.raw', record.raw);
-                                    if(typeof record.raw.fund != 'undefined' && record.raw.fund != 0) {
+                                    if(typeof record.raw.fund !== 'undefined' && record.raw.fund !== null && record.raw.fund !== 0) {
                                         $('#data').data('fund', record.raw.fund);
-                                        setFundName(record.raw.fund);
+                                        console.log('OBJ FUND', record.raw.fund);
+                                        setFund(record.raw.fund);
                                     }
                                     
                                     if(typeof record.raw.benchpeer != 'undefined') {

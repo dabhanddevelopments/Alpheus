@@ -388,7 +388,7 @@ class FundReturnResource(MainBaseResource):
                 for m in axis:    
                     
                     if m == "delta_cum_returns_final_val":
-                        values = delta_cum_returns_final_val(df, df2, dates, dates2)
+                        values = delta_cum_returns_final_val(df, df2, dates, dates2)[0]
                     if m == "tracking_error":
                         values = tracking_error(df, df2)
                     if m == "correlation":
@@ -424,8 +424,8 @@ class FundReturnResource(MainBaseResource):
                     if m == "sharpe_ratio":
                         values = sharpe_ratio(df, freq)
                     
-                    val.append(values[0])
-	                
+                    val.append(float(values[0]))
+                #assert False
                     
                 series.append({
                     'data': [val],
@@ -489,6 +489,11 @@ class FundReturnResource(MainBaseResource):
                 elif unders[i].isdigit():
                     lst = holding_data(unders[i])
                     color = 'peer'
+                
+                elif unders[i][:5] == 'flash': 
+                
+                    obj = Fund.objects.get(id=unders[i][5:])
+                    #assert False
                 
                 else:
                     lst = [row.data['fund_perf'] for row in data['objects']]
@@ -682,7 +687,10 @@ class FundReturnResource(MainBaseResource):
         
             lst = [row.data['fund_perf'] for row in data['objects']]
             
-            hist = np.histogram(lst, bins=21, range=(-10,11), density=False)
+            #hist = np.histogram(lst, bins=21, range=(-10,11), density=False)
+            
+            #change to hist
+            np.histogram(series,range=(math.floor(series.min()),math.ceil(series.max())),bins = math.ceil(series.max())-math.floor(series.min()))
             
             values = [int(row) for row in hist[0]]
             keys = [row for row in hist[1]]
