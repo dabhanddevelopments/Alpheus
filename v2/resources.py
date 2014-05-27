@@ -261,6 +261,14 @@ class FundReturnResource(MainBaseResource):
         
         widget = request.GET.get("widget", False)
         
+        
+        if date_type == 'monthly':
+            freq = 'm'
+            factor = 12 #Annualisation Factor
+        else:
+            freq = 'WEEKDAY'
+            factor = 252 #Annualisation Factor
+        
         # W151 & W155 Two metric scatter plot
         if rfr is not False \
             and mar is not False \
@@ -272,13 +280,6 @@ class FundReturnResource(MainBaseResource):
             # if we don't have a start date we need to look it up
             if not date_from:
                 date_from = start_date()
-                
-            if date_type == 'monthly':
-                freq = 'm'
-                factor = 12 #Annualisation Factor
-            else:
-                freq = 'WEEKDAY'
-                factor = 252 #Annualisation Factor
             
             unders = under.split(',')
             axis = [yaxis, xaxis]
@@ -454,13 +455,6 @@ class FundReturnResource(MainBaseResource):
             if not date_from:
                 date_from = start_date()
                 
-                
-            if date_type == 'monthly':
-                freq = 'm'
-                factor = 12 #Annualisation Factor
-            else:
-                freq = 'WEEKDAY'
-                factor = 252 #Annualisation Factor
             
             metrics = metric.split(',')
             windows = window.split(',')
@@ -687,11 +681,19 @@ class FundReturnResource(MainBaseResource):
         
             lst = [row.data['fund_perf'] for row in data['objects']]
             
-            #hist = np.histogram(lst, bins=21, range=(-10,11), density=False)
+            if not date_from:
+                date_from = start_date()
+            
+            dates = date_range(lst, date_from, freq)
+            df = to_dataframe(lst, dates)
             
             #change to hist
-            np.histogram(series,range=(math.floor(series.min()),math.ceil(series.max())),bins = math.ceil(series.max())-math.floor(series.min()))
+            if lst:
+                hist = histogram(df)
+            else:
+                hist = np.histogram(lst, bins=18, range=(-10,8), density=False)
             
+            #assert False
             values = [int(row) for row in hist[0]]
             keys = [row for row in hist[1]]
                 

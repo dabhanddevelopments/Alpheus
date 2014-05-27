@@ -1168,7 +1168,7 @@ Ext.onReady(function() {
     function createWindows(data, i, obj, extra_params) {
 
         if(typeof obj.fund == 'undefined') {
-            obj.fund = $('#data').data('fund_obj').id;
+            obj.fund = $('#data').data('fund_obj');
         }
         
         // for w18
@@ -1843,7 +1843,7 @@ Ext.onReady(function() {
         }
 
         if(typeof obj.fund.id == 'undefined') {
-            obj.fund = $('#data').data('fund_obj').id;
+            obj.fund = $('#data').data('fund_obj');
         }
         
         obj.scroll = false;
@@ -2381,16 +2381,19 @@ Ext.onReady(function() {
 
     
     function getReturnHistogramUrl(type) {
-        return '/api/fundreturn' + type + '/?histogram=true&fields=fund_perf&fund=' + obj.fund.id;
+        var url = '/api/fundreturn' + type + '/?histogram=true&fields=fund_perf&date_type=monthly&fund=' + obj.fund.id;
+        console.log('HISTOGRAM URL', url);
+        return url;
     }    
     
     function returnHistogram(obj, widget, div) {
     
         function getUrl(type) {
+            console.log('HISTOGRAM URL2', getReturnHistogramUrl(type));
             return getReturnHistogramUrl(type);
         }
         
-        $.getJSON("/api/fundreturnmonthly/?histogram=true&fields=fund_perf", function(data) {
+        $.getJSON(getReturnHistogramUrl('monthly'), function(data) {
 
             var width = (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 10;
 
@@ -2825,8 +2828,13 @@ Ext.onReady(function() {
                     */
                 }
             }
-        });
-               
+        }).hide();
+        
+        // show dateTypeSelect for all except ...
+        if(jQuery.inArray(widget.key, ['w155']) ===-1 ) {
+            dateTypeSelect.show();
+        }
+                           
         // Set default value for drop down
         dateTypeSelect.setValue(dateTypeStore.getAt('0').get('id'));
         
@@ -4716,7 +4724,7 @@ Ext.onReady(function() {
                 var year = moment().year();
                 year = 2013;  // @TODO: get rid of this later
                 var month = moment().month();
-                var url = '/api/fundreturnmonthly/?fund=' + $('#data').data('fund') + '&fields=fund_perf&value_date__year=' + year + '&value_date__month=' + month;
+                var url = '/api/fundreturnmonthly/?fund=' + $('#data').data('fund_obj').id + '&fields=fund_perf&value_date__year=' + year + '&value_date__month=' + month;
                 
                 $.getJSON(url, function(fund) {
                     options.yAxis.plotLines = [{
@@ -6002,7 +6010,6 @@ Ext.onReady(function() {
                                     //console.log('record.raw', record.raw);
                                     if(typeof record.raw.fund !== 'undefined' && record.raw.fund !== null && record.raw.fund !== 0) {
                                         $('#data').data('fund', record.raw.fund);
-                                        console.log('OBJ FUND', record.raw.fund);
                                         setFund(record.raw.fund);
                                     }
                                     
