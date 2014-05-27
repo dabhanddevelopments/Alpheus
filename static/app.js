@@ -1842,9 +1842,9 @@ Ext.onReady(function() {
             obj.client = $('#data').data('client');
         }
 
-        if(typeof obj.fund == 'undefined') {
+        //if(typeof obj.fund == 'undefined') {
             obj.fund = $('#data').data('fund_obj');
-        }
+        //}
         
         obj.scroll = false;
         
@@ -1903,7 +1903,10 @@ Ext.onReady(function() {
                 key_val = key.split('__');
                 widget.qs = widget.qs.replace(key_val[1].toUpperCase(), value.id);
              } catch(e) {
-                widget.qs = widget.qs.replace(key.toUpperCase(), value);
+                 try {
+                    widget.qs = widget.qs.replace(key.toUpperCase(), value.id);
+                 } catch(e) {
+                 }
              }
         });
 
@@ -1922,7 +1925,9 @@ Ext.onReady(function() {
             
             
         
-        } else if(widget.key == 'holding_performance') {
+        } else if(widget.key == 'w2') {
+        
+            
         
             return holdingPerformance(obj, widget, div, 'performance');
             
@@ -1962,8 +1967,8 @@ Ext.onReady(function() {
             var url1 = "/api/fundreturnmonthly/?data_type=graph&date=value_date&fund=" + obj.fund.id + "&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name";
             var url2 = "/api/fundreturnmonthly/?bench_graph=bench_perf&data_type=graph&date=value_date&fund=" + obj.fund.id + "&graph_type=bench&order_by=value_date&y1=fund_perf&y2=bench_perf&fields=fund__name";
         
-            console.log('w16 url1', url1);
-            console.log('w16 url2', url2);
+            //console.log('w16 url1', url1);
+            //console.log('w16 url2', url2);
             $.getJSON(url1, function(series) {
                 $.getJSON(url2, function(series2) {
                     return lineChart(obj, widget, div, series, series2);
@@ -2120,9 +2125,9 @@ Ext.onReady(function() {
         
             if(perfType == 'nav') {
                 if(type === 1) {
-                    var params = '&y1=marketvaluefundcur&fields=marketvaluefundcur,weight';
+                    var params = '&y1=marketvaluefundcur&fields=marketvaluefundcur,weight&order_by=weight';
                 } else {
-                    var params = '&y1=average_weight&fields=weight&performance=true';
+                    var params = '&y1=average_weight&fields=weight&performance=true&order_by=weight';
                 } 
             } else {   
                 if(type === 1) {
@@ -2160,6 +2165,13 @@ Ext.onReady(function() {
                    // var maxVal = Math.max.apply(Math, fundValues); 
                    // var minVal = Math.min.apply(Math, fundValues); 
                     
+                    if(widget.key == 'w2' || (widget.key == 'w7' && type !== 1)) {
+                        options.yAxis.labels = {
+                            formatter: function() {
+                                return this.value + '%';
+                            }
+                        };
+                    }
                     options.series = [new_data[0]];
                    // options.yAxis.max = maxVal;
                    // options.yAxis.min = minVal;
@@ -2491,14 +2503,16 @@ Ext.onReady(function() {
             });
             
             widget.yAxis = [];
+            ///widget.xAxis = [];
             var top = 0;
+            console.log('axis', axis);
             for(i=0; i<=(axis.length - 1); i++) {
                 
                 //widget.xAxis[i] = {}; 
                 //console.log('LOOPING axis', axis[i]);
                 
                 // unique positions equal seperate xAxis
-/*
+                /*
                 if(jQuery.inArray(axis[i]['position'], xAxisvals) === -1) {
                     widget.xAxis[i] = {
                         type: 'datetime',
@@ -2507,10 +2521,10 @@ Ext.onReady(function() {
                     };
                     xAxisvals[i] = axis[i]['position'];
                 }
-*/
+                */
 
                 if(axis[i]['position'] == 1) {
-                    var top = 0;
+                    var top = 50;
                     widget.height = 500;
                 }
                 else if(axis[i]['position'] == 2) {
@@ -2518,23 +2532,25 @@ Ext.onReady(function() {
                     widget.height = 1000;
                 }
                 else if(axis[i]['position'] == 3) {
-                    var top = 1000;
+                    var top = 995;
                     widget.height = 1500;
                 }
                 else if(axis[i]['position'] == 4) {
-                    var top = 1500;
+                    var top = 1400;
                 }
                 else {
-                    top += 2000;
+                    top += 900;
                 }
                 //if(i == 1) {
                 //    var top = 500;
                 //} else {
                 //    var top = 1000;
                 //}
+                
                 widget.yAxis[i] = {
                     height: 400,
                     top: top,
+                    minorTickInterval: 'auto',
                 };
                 if(axis[i]['opposite'] == 'right') {
                     console.log('TRUE');
@@ -2542,10 +2558,11 @@ Ext.onReady(function() {
                 } else {
                     widget.yAxis[i]['opposite'] = false;
                 }
-                //console.log('debug yAxis', widget.yAxis);
+                //console.log('debug yAxis3', widget.yAxis);
             }
         
             //widget.xAxis = [{height:;
+            
             //console.log('first yAxis', widget.yAxis);
             //console.log('first xAxis', widget.xAxis);
             
@@ -3692,6 +3709,7 @@ Ext.onReady(function() {
                     height: 210,
                     lineWidth: 2,
                     labels: {
+                        x: -20,
                         formatter: function() {
                             return this.value + '%';
                         }
@@ -3920,11 +3938,8 @@ Ext.onReady(function() {
         if(typeof widget.yAxis !== 'undefined') {
             var yAxis = widget.yAxis;
             for(i=0; i<widget.yAxis.length; i++) {
-                yAxis[i] = { //['title'] = {
-                    title: {
-                        text: yAxisTitle,
-                    },
-                    minorTickInterval: 'auto',
+                yAxis[i]['title'] = {
+                    text: yAxisTitle,
                 };
             }
         } else {
@@ -4719,28 +4734,28 @@ Ext.onReady(function() {
            //console.log(widget.window.key);
             // vertical fund performance line over bar graph
             
-            if(widget.window.key == 'holding_performance') { 
+            if(widget.window.key == 'w2') { 
             
                 var year = moment().year();
                 year = 2013;  // @TODO: get rid of this later
                 var month = moment().month();
                 var url = '/api/fundreturnmonthly/?fund=' + $('#data').data('fund_obj').id + '&fields=fund_perf&value_date__year=' + year + '&value_date__month=' + month;
                 
-                $.getJSON(url, function(fund) {
-                    options.yAxis.plotLines = [{
-                        value: fund[0].fund_perf,
-                        width: 1,
-                        color: 'black',
-                        label: {
-                            text: $('#data').data('fund_obj').name + ' Performance',
-                        },
-                        zIndex: 5,
-                    }];
+                //$.getJSON(url, function(fund) {
+                //    options.yAxis.plotLines = [{
+                //        value: fund[0].fund_perf,
+                //        width: 1,
+                //        color: 'black',
+                //        label: {
+                //            text: $('#data').data('fund_obj').name + ' Performance',
+                //        },
+                //        zIndex: 5,
+                //    }];
                     var chart = new Highcharts.Chart(options);
                     
                     $('#data').data('chart-' + div, chart);
                     $('#data').data('chart-options-' + div, options);
-               });
+              // });
             } else {
                 var chart = new Highcharts.Chart(options);
             }

@@ -41,8 +41,9 @@ class MainBaseResource(SpecifiedFields):
     """
     Allow all 'order_by' by default
     """
-    def apply_sorting(self, obj_list, options=None):
-        return obj_list.order_by()
+    # this for some reason causes the 'order_by' not to work
+    #def apply_sorting(self, obj_list, options=None):
+    #    return obj_list.order_by()
 
     """
     Allow all filters by default
@@ -200,7 +201,7 @@ class MainBaseResource(SpecifiedFields):
     def get_object_list(self, request):
 
         """ Set verbose column names """
-
+        
         # @TODO: Use another hook for this
         objects = super(MainBaseResource, self).get_object_list(request)
 
@@ -244,7 +245,7 @@ class MainBaseResource(SpecifiedFields):
 
 
     def get_columns(self, request, column_names):
-
+    
         column_width = request.GET.get('column_width', '50,50').split(',')
         #column_border_y = request.GET.get('column_border_y', 'ytd')
         align = request.GET.get('align', 'left')
@@ -284,7 +285,7 @@ class MainBaseResource(SpecifiedFields):
 
 
     def set_columns(self, request, column_names):
-
+    
         column_width = request.GET.get('column_width', '50,50').split(',')
         #column_border_y = request.GET.get('column_border_y', 'ytd')
         align = request.GET.get('align', 'left')
@@ -296,7 +297,7 @@ class MainBaseResource(SpecifiedFields):
             if value == 'id':
                 continue
                 
-            if key == 0:
+            if key == 0 and value != 'Year':
                 sortable = True
             else:
                 sortable = False

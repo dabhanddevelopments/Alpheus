@@ -886,7 +886,8 @@ class PositionMonthlyResource(MainBaseResource):
     
     class Meta(MainBaseResource.Meta):
         queryset = PositionMonthly.objects.all()
-        
+        ordering = ['weight']
+
 
     def alter_list_data_to_serialize(self, request, data):  
     
