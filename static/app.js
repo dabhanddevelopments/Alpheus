@@ -1405,7 +1405,7 @@ Ext.onReady(function() {
                     '</table><table class="html_table">' +
                     '<tr><td colspan="2"><h3>Custody, Admin & Audit Section</h3></td></tr>' +
                     '<tr><th>Custodian</th><td>'+ summary.custodian__name + '</td></tr>' +
-                    '<tr><th>Admin</th><td>'+ summary.admin__name + '</td></tr>' +
+                    '<tr><th>Admin</th><td>'+ summary.administrator__name + '</td></tr>' +
                     '<tr><th>Auditor</th><td>'+ summary.auditor__name + '</td></tr>' +
                     '</table><table class="html_table">' +
                     '<tr><td colspan="2"><h3>Fees Section</h3></td></tr>';
