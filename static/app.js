@@ -1842,7 +1842,7 @@ Ext.onReady(function() {
             obj.client = $('#data').data('client');
         }
 
-        if(typeof obj.fund.id == 'undefined') {
+        if(typeof obj.fund == 'undefined') {
             obj.fund = $('#data').data('fund_obj');
         }
         
@@ -1901,7 +1901,7 @@ Ext.onReady(function() {
             // e.g holding__fund=FUND
              try {
                 key_val = key.split('__');
-                widget.qs = widget.qs.replace(key_val[1].toUpperCase(), value);
+                widget.qs = widget.qs.replace(key_val[1].toUpperCase(), value.id);
              } catch(e) {
                 widget.qs = widget.qs.replace(key.toUpperCase(), value);
              }
