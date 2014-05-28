@@ -63,6 +63,9 @@ class AssetClass(models.Model):
     class Meta:
         db_table = 'ALP_App_AssetClass'
         verbose_name_plural = "Asset Classes"
+        
+    def __unicode__(self):
+        return self.investment_category.name + ' / ' + self.asset_type.name + ' / ' + self.risk.name
 
 
 class AssetClassRisk(models.Model):
@@ -430,8 +433,9 @@ class Manager(models.Model):
 class Region(models.Model):
     #@TODO: need list of actual region types
     REGION_TYPE = (
-        ('US', 'US'),
-        ('EURO', 'Euro'),
+        (1, 1),
+        (2, 2),
+        (3, 3),
     )
     id = models.AutoField(primary_key=True, db_column='RegionID')
     name = models.CharField(max_length=200, db_column='Name', blank=True, null=True)
@@ -593,9 +597,9 @@ class Fund(models.Model):
     asset_class = models.ForeignKey(AssetClass, db_column='AssetClassID', blank=True, null=True)
     country_issue = models.ForeignKey(Country, related_name='country_i', db_column='CountryIID', blank=True, null=True, verbose_name='Country of Issuance')
     country_risk = models.ForeignKey(Country, related_name='country_ri', db_column='CountryRID', blank=True, null=True, verbose_name='Country of Risk')
-    region_1 = models.ForeignKey(Region, related_name='fund_region1', db_column='Region1ID', blank=True, null=True)
-    region_2 = models.ForeignKey(Region, related_name='fund_region2', db_column='Region2ID', blank=True, null=True)
-    region_3 = models.ForeignKey(Region, related_name='fund_region3', db_column='Region3ID', blank=True, null=True)
+    region_1 = models.ForeignKey(Region, related_name='fund_region1', db_column='Region1ID', blank=True, null=True, limit_choices_to={'region_type': 1})
+    region_2 = models.ForeignKey(Region, related_name='fund_region2', db_column='Region2ID', blank=True, null=True, limit_choices_to={'region_type': 2})
+    region_3 = models.ForeignKey(Region, related_name='fund_region3', db_column='Region3ID', blank=True, null=True, limit_choices_to={'region_type': 3})
     benchpeer = models.ForeignKey(BenchPeer, db_column='BenchPeerID', blank=True, null=True, verbose_name='Benchmark', related_name='bench')
     sec_bench = models.ForeignKey(BenchPeer, db_column='SecBenchID', blank=True, null=True, verbose_name='Secondary Benchmark', related_name='sec_bench')
     administrator = models.ForeignKey(Administrator, db_column='AdminID', blank=True, null=True)
