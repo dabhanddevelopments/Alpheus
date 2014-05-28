@@ -2127,7 +2127,7 @@ Ext.onReady(function() {
                 if(type === 1) {
                     var params = '&y1=marketvaluefundcur&order_by=-weight';
                 } else {
-                    var params = '&y1=weight&fields=weight&performance=true&order_by=-weight';
+                    var params = '&y1=weight&fields=weight&order_by=-weight';
                 } 
             } else {   
                 if(type === 1) {
