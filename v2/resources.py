@@ -487,7 +487,7 @@ class FundReturnResource(MainBaseResource):
                     #assert False
                 
                 else:
-                    lst = [float(row.data['fund_perf']) for row in data['objects']]
+                    lst = [row.data['fund_perf'] for row in data['objects']]
                     color = 'blue'    
                     
                     
