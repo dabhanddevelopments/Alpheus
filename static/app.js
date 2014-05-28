@@ -2125,9 +2125,9 @@ Ext.onReady(function() {
         
             if(perfType == 'nav') {
                 if(type === 1) {
-                    var params = '&y1=marketvaluefundcur&fields=marketvaluefundcur,weight&order_by=-weight';
+                    var params = '&y1=marketvaluefundcur&order_by=-weight';
                 } else {
-                    var params = '&y1=weight&fields=weight&performance=true&order_by=-weight';
+                    var params = '&y1=weight&performance=true&order_by=-weight';
                 } 
             } else {   
                 if(type === 1) {
