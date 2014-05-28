@@ -2505,7 +2505,7 @@ Ext.onReady(function() {
             widget.yAxis = [];
             ///widget.xAxis = [];
             var top = 0;
-            console.log('axis', axis);
+            //console.log('axis', axis);
             for(i=0; i<=(axis.length - 1); i++) {
                 
                 //widget.xAxis[i] = {}; 
@@ -2552,6 +2552,7 @@ Ext.onReady(function() {
                     top: top,
                     minorTickInterval: 'auto',
                 };
+
                 if(axis[i]['opposite'] == 'right') {
                     console.log('TRUE');
                     widget.yAxis[i]['opposite'] = true;
@@ -4063,7 +4064,15 @@ Ext.onReady(function() {
         
             $.each(data, function( index, obj ) {
                 colors.push(obj.color);
-                console.log('adding color', obj.color);
+                yAxis[index]['labels'] = {
+                    formatter: function() {
+                        return this.value + obj.label;
+                    },
+                    x: -10,
+                };
+                yAxis[index]['minorTickInterval'] = 'auto';
+                
+                
             });
             
             // default colors

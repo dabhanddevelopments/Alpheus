@@ -495,14 +495,14 @@ class FundReturnResource(MainBaseResource):
                     lst2 = [row.data['bench_perf'] for row in data['objects']]
                     
                 elif sec_unders[i][:5] == 'metric': 
-                    lst2 = lst_vals[unders[i][6:]]
+                    lst2 = lst_vals[sec_unders[i][6:]]
                     
                 elif sec_unders[i].isdigit():
-                    lst2 = holding_data(unders[i])
+                    lst2 = holding_data(sec_unders[i])
                     #color = 'peer'
                  
                 else:
-                    lst2 = [row.data['bench_perf'] for row in data['objects']]
+                    lst2 = [row.data['fund_perf'] for row in data['objects']]
                     #color = 'blue'
                     
                     
@@ -534,58 +534,72 @@ class FundReturnResource(MainBaseResource):
                 if metrics[i] == "cumulative": 
                     values = cum_returns(df, dates)
                     name = "Cumulative Return"
+                    label = '%'
                      
                 if metrics[i] == "return":
                     values = df
                     name = "Returns"  
+                    label = '%'
                         
                 if metrics[i] == "roll_average":
                     values = roll_mean(df, win)
                     name = "Rolling Average"
+                    label = '%'
                      
                 if metrics[i] == "delta": 
                     values = delta_cum_returns(df, df2, dates, dates2)
                     name = "Delta Cumulative Return"
+                    label = '%'
                     
                 if metrics[i] == "roll_deviation":
                     values = roll_standard_deviation(df, win)
                     #values = roll_standard_deviation(df, win)[::12]
-                    print 'steps', steps[i]
                     name = "Rolling Standard Deviation"
+                    label = '%'
                     
                 if metrics[i] == "roll_cumulative":
                     values = roll_cum_returns(df, win)
                     name = "Rolling Cumulative Return"                
+                    label = '%'
                 
                 if metrics[i] == "roll_skewness":
                     values = roll_skewness (df, win)
                     name = "Rolling Skewness"
+                    label = ''
                     
                     
                 if metrics[i] == "roll_kurtosis":
                     values = roll_kurtosis (df, win)
                     name = "Rolling Kurtosis"
+                    label = ''
                     
                 if metrics[i] == "roll_annualised":
                     values = roll_annualised_returns(df, factor, win, LessThanWin=True)
                     name = "Rolling Annualised Return"
+                    label = '%'
                     
                 if metrics[i] == "roll_volatility":
                     values = roll_volatility(df, win, factor)
                     name = "Rolling Volatility"
+                    label = '%'
                     
                 if metrics[i] == "roll_sharpe": 
                     values = roll_sharpe_ratio(df, win, factor)
                     name = "Rolling Sharpe"
+                    label = ''
                     
                 if metrics[i] == "roll_sortino":
+                    label = ''
                     raise "Not implemented"
+                    
                 if metrics[i] == "roll_downside":
+                    label = ''
                     raise "Not implemented"
                 
                 if metrics[i] == "roll_excess": 
                     values = roll_delta_cum_returns (df, df2, win)
                     name = "Rolling Excess Return"
+                    label = '%'
 
                 if metrics[i] == "roll_tracking":
                     raise "Not implemented"
@@ -593,15 +607,18 @@ class FundReturnResource(MainBaseResource):
                 if metrics[i] == "roll_correlation":
                     values = roll_correlation (df, df2, win)
                     name = "Rolling Correlation"
+                    label = ''
                     
                 if metrics[i] == "roll_alpha":
                     values = roll_alpha(df, df2, win)
                     name = "Rolling Alpha"
+                    label = ''
                     
 
                 if metrics[i] == "roll_beta":
                     values = roll_beta(df, df2, win)
                     name = "Rolling Beta"
+                    label = ''
                     
                 if metrics[i] == "roll_rsq":
                     raise "Not implemented"
@@ -650,6 +667,7 @@ class FundReturnResource(MainBaseResource):
                         'xAxis': 0, #int(positions[i]) - 1,
                         'type': plots[i],
                         'zIndex': layers[i],
+                        'label': label,
                     })
              
             if data_type == 'table':
