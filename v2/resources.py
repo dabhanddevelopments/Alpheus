@@ -959,6 +959,7 @@ class PositionMonthlyResource(MainBaseResource):
                                 'average_weight': (average_weight) / 100, 
                                 'performance': h.performance,
                                 'holding__name': p.data['holding__name'],
+                                'weight': p.data['weight'],
                             }
                             
             # update the average weight for prior months (if exists)
