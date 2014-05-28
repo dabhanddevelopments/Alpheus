@@ -462,7 +462,7 @@ class MainBaseResource(SpecifiedFields):
             if self.y1 and self.y2 and request.GET.get("graph_type", False) == False and self.date:
 
                 try:
-                    name = data['objects'][0].data['fund__name']
+                    name = data['objects'][1].data['fund__name']
                 except:
                     name = 'n/a'
 

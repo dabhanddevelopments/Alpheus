@@ -277,9 +277,7 @@ class FundReturnResource(MainBaseResource):
             and yaxis is not False \
             and xaxis is not False:
             
-            # if we don't have a start date we need to look it up
-            if not date_from:
-                date_from = start_date()
+            date_from = start_date()
             
             unders = under.split(',')
             axis = [yaxis, xaxis]
@@ -451,9 +449,8 @@ class FundReturnResource(MainBaseResource):
             and sec_under is not False \
             and position is not False:
             
-            # if we don't have a start date we need to look it up
-            if not date_from:
-                date_from = start_date()
+            # look up the start date 
+            date_from = start_date()
                 
             
             metrics = metric.split(',')
@@ -490,7 +487,7 @@ class FundReturnResource(MainBaseResource):
                     #assert False
                 
                 else:
-                    lst = [row.data['fund_perf'] for row in data['objects']]
+                    lst = [float(row.data['fund_perf']) for row in data['objects']]
                     color = 'blue'    
                     
                     
@@ -578,7 +575,7 @@ class FundReturnResource(MainBaseResource):
                     name = "Rolling Volatility"
                     
                 if metrics[i] == "roll_sharpe": 
-                    values = roll_sharpe_base(df, factor)
+                    values = roll_sharpe_ratio(df, win, factor)
                     name = "Rolling Sharpe"
                     
                 if metrics[i] == "roll_sortino":
@@ -671,7 +668,7 @@ class FundReturnResource(MainBaseResource):
                 peer_colors = ['orange', 'red', 'brown', 'purple', 'yellow']
                 for i, row in enumerate(series):
                     if row['color'] == 'peer':
-                        row['color'] = peer_colors[randint(0, len(peer_colors))]
+                        row['color'] = peer_colors[randint(0, len(peer_colors) - 1)]
                         
                 return series
         
@@ -709,7 +706,9 @@ class FundReturnResource(MainBaseResource):
         y1 = request.GET.get('y1', False)
 
         if y1 != False:
-        
+
+            name = data['objects'][0].data['fund__name']
+            
             # create new previous dummy month
             first_date = data['objects'][0].data['value_date']
             new_date = datetime(first_date.year, first_date.month, 1) - timedelta(days=1)
@@ -735,6 +734,7 @@ class FundReturnResource(MainBaseResource):
         # W152   
         # @TODO: this does not work with specified fields. 
         if widget == 'w152':
+        
             try:
                 name = data['objects'][0].data['fund__name']
             except:

@@ -538,7 +538,7 @@ def roll_adjr2(series1, series2, window, f=12):
     return roll_adjr2
     
 #W22 - return histogram
-def histogram(series):
+def hist(series):
     hist = np.histogram(series,range=(math.floor(series.min()),math.ceil(series.max())),bins = math.ceil(series.max())-math.floor(series.min()))
     return hist
   

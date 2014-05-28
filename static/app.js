@@ -2887,8 +2887,8 @@ Ext.onReady(function() {
                 var underlyingStore = Ext.create('Ext.data.Store', {
                     fields: ['name'],
                     data : [
-                        {"id": "fund", "name": obj.name},
-                        {"id": "benchpeer", "name": obj.benchpeer},
+                        {"id": "fund", "name": obj.fund.name},
+                        {"id": "benchpeer", "name": obj.fund.benchpeer.name},
                     ],
                     id: 'under_store_' + tabId,
                 });
@@ -2926,8 +2926,8 @@ Ext.onReady(function() {
                 var secUnderlyingStore = Ext.create('Ext.data.Store', {
                     fields: ['name'],
                     data : [
-                        {"id": "fund", "name": obj.name},
-                        {"id": "benchpeer", "name": obj.benchpeer},
+                        {"id": "fund", "name": obj.fund.name},
+                        {"id": "benchpeer", "name": obj.fund.benchpeer},
                     ],
                     id: 'sec_under_store_' + tabId,
                 });
@@ -3160,14 +3160,14 @@ Ext.onReady(function() {
                         {"id": "roll_annualised", "name": "Rolling Annualised Return"},
                         {"id": "roll_volatility", "name": "Rolling Volatility"},
                         {"id": "roll_sharpe", "name": "Rolling Sharpe"},
-                        {"id": "roll_sortino", "name": "Rolling Sortino"},
-                        {"id": "roll_downside", "name": "Rolling Downside Vol"},
+                        //{"id": "roll_sortino", "name": "Rolling Sortino"},
+                        //{"id": "roll_downside", "name": "Rolling Downside Vol"},
                         {"id": "roll_excess", "name": "Rolling Excess Return"},
                         {"id": "roll_tracking", "name": "Rolling Tracking Error"},
                         {"id": "roll_correlation", "name": "Rolling Correlation"},
                         {"id": "roll_alpha", "name": "Rolling Alpha"},
                         {"id": "roll_beta", "name": "Rolling Beta"},
-                        {"id": "roll_rsq", "name": "Rolling RSQ"},
+                        //{"id": "roll_rsq", "name": "Rolling RSQ"},
                     ];
                 } else {                
                     var metricData = [              
@@ -3703,6 +3703,7 @@ Ext.onReady(function() {
                             return this.value + '%';
                         }
                     },
+                    minorTickInterval: 'auto',
                     //min: 0,
                 }, {
                     top: 500,
@@ -3714,6 +3715,7 @@ Ext.onReady(function() {
                             return this.value + '%';
                         }
                     },
+                    minorTickInterval: 'auto',
                     //min: 0,
             }];
             /*
