@@ -223,6 +223,9 @@ class FundCharAuditResource(MainBaseResource):
 # Base class for both monthly and daily
 class FundReturnResource(MainBaseResource):
 
+    class Meta(MainBaseResource.Meta):
+        ordering = ['value_date']
+
     def alter_list_data_to_serialize(self, request, data):   
     
         def holding_data(holding):
@@ -809,7 +812,7 @@ class FundReturnResource(MainBaseResource):
                 .alter_list_data_to_serialize(request, data)
 
 class FundReturnDailyResource(FundReturnResource):
-    class Meta(MainBaseResource.Meta):
+    class Meta(FundReturnResource.Meta):
         queryset = FundReturnDaily.objects.all()
         
     def alter_detail_data_to_serialize(self, request, data): 

@@ -2125,9 +2125,9 @@ Ext.onReady(function() {
         
             if(perfType == 'nav') {
                 if(type === 1) {
-                    var params = '&y1=marketvaluefundcur&fields=marketvaluefundcur,weight&order_by=weight';
+                    var params = '&y1=marketvaluefundcur&fields=marketvaluefundcur,weight&order_by=-weight';
                 } else {
-                    var params = '&y1=average_weight&fields=weight&performance=true&order_by=weight';
+                    var params = '&y1=weight&fields=weight&performance=true&order_by=-weight';
                 } 
             } else {   
                 if(type === 1) {
@@ -2646,9 +2646,13 @@ Ext.onReady(function() {
                 widget.url = getUrl();
                 widget.params.date_type = Ext.getCmp('date_type_combo').getValue();
                 
-                //console.log('data table url', widget.url + '&data_type=table');
+                
+                
+                var url = widget.url + '&data_type=table&order_by=value_date';
 
-                $.getJSON(widget.url + '&data_type=table', function(data) {
+                console.log('data table url', url);
+                
+                $.getJSON(url, function(data) {
                 
                     
                     chart(obj, widget, div);
@@ -4934,6 +4938,13 @@ Ext.onReady(function() {
                 }
             }
         });
+        
+        if(widget.key === 'w18') {
+            var sortProperty = 'date';
+        } else {
+            var sortProperty = 'id';
+        }
+        console.log('ASDF', widget.key, data.columns);
 
         var tableStore = Ext.create('Ext.data.Store', {
             storeId: widget.key,
@@ -4947,7 +4958,7 @@ Ext.onReady(function() {
                 }
             },
             sorters: [ {
-                property: 'id',
+                property: sortProperty,
                 direction: 'ASC'
             } ],
         });
@@ -6022,6 +6033,8 @@ Ext.onReady(function() {
                             },
                             itemclick: {
                                 fn: function(view, record, item, index, event, opts) {
+                                
+                                    var asdf = record;
 
                                    //console.log('record');
                                    //console.log(record);
@@ -6036,7 +6049,15 @@ Ext.onReady(function() {
                                     //console.log('record.raw', record.raw);
                                     if(typeof record.raw.fund !== 'undefined' && record.raw.fund !== null && record.raw.fund !== 0) {
                                         $('#data').data('fund', record.raw.fund);
-                                        setFund(record.raw.fund);
+                                        
+                                        // for some reason record.raw.fund gets overwritten with obj.fund
+                                        // this really ugly hack solves it
+                                        if(typeof record.raw.fund === 'object') {
+                                            var fundId = record.raw.id;
+                                        } else {
+                                            var fundId = record.raw.fund;
+                                        }
+                                        setFund(fundId);
                                     }
                                     
                                     if(typeof record.raw.benchpeer != 'undefined') {

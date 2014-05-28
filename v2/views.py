@@ -11,7 +11,7 @@ import datetime
 from django.db.models import Q
 from django.utils.datastructures import SortedDict
 from decimal import Decimal
-from alpheus.calcs import cum_final
+from alpheus.calcs import *
 from datetime import date
 import calendar
 
@@ -172,8 +172,12 @@ def fund_return_form(request):
                         ytd_lst.append(Decimal(0))
                     else:
                         ytd_lst.append(row.fund_perf)
-                ytd_val = cum_final(ytd_lst, ytd_start, len(ytd_lst))
-                dic[name]['ytd'] = Decimal('%0.2f' % ytd_val)
+                        
+                dates = date_range(ytd_lst, ytd_start, 'm')
+                df = to_dataframe(ytd_lst, dates)
+                
+                ytd_val = cum_returns_final_val(df, ytd_lst)
+                dic[name]['ytd'] = Decimal('%0.2f' % ytd_val[0][0])
 
 
     # set the total of each group
