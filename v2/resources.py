@@ -234,9 +234,9 @@ class FundReturnResource(MainBaseResource):
             
         def start_date():
             if date_type == 'monthly':
-                first = FundReturnMonthly.objects.order_by('value_date').only('value_date')[0]
+                first = FundReturnMonthly.objects.filter(fund=fund).order_by('value_date').only('value_date')[0]
             else:
-                first = FundReturnDaily.objects.order_by('value_date').only('value_date')[0]
+                first = FundReturnDaily.objects.filter(fund=fund).order_by('value_date').only('value_date')[0]
             return first.value_date
             
         data_type = request.GET.get('data_type', 'graph')

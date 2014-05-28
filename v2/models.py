@@ -65,7 +65,7 @@ class AssetClass(models.Model):
         verbose_name_plural = "Asset Classes"
         
     def __unicode__(self):
-        return self.investment_category.name + ' / ' + self.asset_type.name + ' / ' + self.risk.name
+        return self.asset_type.name + ' / ' + self.risk.name
 
 
 class AssetClassRisk(models.Model):
@@ -594,7 +594,7 @@ class Fund(models.Model):
     description = models.CharField(max_length=200, db_column='Description', blank=True, null=True)
     group = models.ForeignKey(AlpheusGroup, db_column='AlpheusGroupID0', blank=True, null=True)
     currency = models.ForeignKey(Currency, related_name='fund_currency', db_column='CurrencyID', blank=True, null=True)
-    asset_class = models.ForeignKey(AssetClass, db_column='AssetClassID', blank=True, null=True)
+    asset_class = models.ForeignKey(AssetClass, db_column='AssetClassID', blank=True, null=True, limit_choices_to={'investment_category__description': 'FUND'})
     country_issue = models.ForeignKey(Country, related_name='country_i', db_column='CountryIID', blank=True, null=True, verbose_name='Country of Issuance')
     country_risk = models.ForeignKey(Country, related_name='country_ri', db_column='CountryRID', blank=True, null=True, verbose_name='Country of Risk')
     region_1 = models.ForeignKey(Region, related_name='fund_region1', db_column='Region1ID', blank=True, null=True, limit_choices_to={'region_type': 1})
