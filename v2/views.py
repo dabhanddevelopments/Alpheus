@@ -20,7 +20,7 @@ def fund_return_form(request):
     months = []
     # check if this actually works, especially with feb
     now = datetime.datetime.now()
-    now = datetime.datetime(2013, 12, 5, 6, 22, 45, 517969)
+    now = datetime.datetime(2013, 12, 5, 6, 22, 45, 517969) # @TODO: remove this later
 
     months.append(now - datetime.timedelta(days=60))
     months.append(now - datetime.timedelta(days=30))
@@ -97,7 +97,6 @@ def fund_return_form(request):
     initial = []
     dic = SortedDict()
 
-    #assert False
     for row in data:
 
         # if a fund doesn't have a group
@@ -172,12 +171,17 @@ def fund_return_form(request):
                         ytd_lst.append(Decimal(0))
                     else:
                         ytd_lst.append(row.fund_perf)
-                        
-                dates = date_range(ytd_lst, ytd_start, 'm')
-                df = to_dataframe(ytd_lst, dates)
                 
-                ytd_val = cum_returns_final_val(df, ytd_lst)
-                dic[name]['ytd'] = Decimal('%0.2f' % ytd_val[0][0])
+                if ytd_data:        
+                    dates = date_range(ytd_lst, ytd_start, 'm')
+                    df = to_dataframe(ytd_lst, dates)
+                    
+                    ytd_val = cum_returns_final_val(df, ytd_lst)
+                    ytd_val = ytd_val[0][0]
+                else:
+                    ytd_val = Decimal(0)
+                    
+                dic[name]['ytd'] = Decimal('%0.2f' % ytd_val)
 
 
     # set the total of each group
@@ -220,7 +224,6 @@ def fund_return_form(request):
 
                 initial.append(dic[row])
 
-    #assert False
     # modify the list to include the totals of each group
     counter = 1
     for group in groups:
