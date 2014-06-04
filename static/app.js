@@ -1931,7 +1931,7 @@ Ext.onReady(function() {
         
             return holdingPerformance(obj, widget, div, 'performance');
             
-        } else if(widget.key == 'w18') {
+        } else if(jQuery.inArray(widget.key, ['w18', 'w151']) !==-1 ) {
             
             //obj.scroll = true;
             //widget.size_x -= 0.5;
@@ -2567,15 +2567,15 @@ Ext.onReady(function() {
             //console.log('first yAxis', widget.yAxis);
             //console.log('first xAxis', widget.xAxis);
             
-            var qVars = new Array('metric', 'layer', 'axis', 'plot', 'rfr', 'mar', 'step', 'window', 'sec_under', 'under', 'position');  
+            var qVars = new Array('metric', 'yaxis', 'xaxis', 'layer', 'axis', 'plot', 'rfr', 'mar', 'step', 'window', 'sec_under', 'under', 'position');  
             
             // add date_type to qs
-            var dateType = Ext.getCmp('date_type_combo').getValue();
+            var dateType = Ext.getCmp( id + 'date_type_combo').getValue();
             qs = 'date_type=' + dateType + '&';
             
             // add dates to qs
-            var date_from = Ext.getCmp('stats_from_date').getValue();
-            var date_to = Ext.getCmp('stats_to_date').getValue();
+            var date_from = Ext.getCmp(id + 'from_date').getValue();
+            var date_to = Ext.getCmp(id + 'to_date').getValue();
             
             if(date_from !== null) {
                 qs += 'value_date__gte=' + moment(date_from).format('YYYY-MM-DD') + '&';
@@ -2606,66 +2606,94 @@ Ext.onReady(function() {
             
             } else {
         
-                $('<div id="' + div + '_stats_graph"></div>').appendTo("#" + div);
+                
+               if(jQuery.inArray(widget.key, ['w18']) !==-1 ) {
+               
+                    $('<div id="' + div + '_stats_graph"></div>').appendTo("#" + div);
               
-                var graphContainer = Ext.create('Ext.container.Container', {
-                    contentEl: div + '_stats_graph',
-                    title: 'Graph',
-                    width: 945,
-                    height: 640,
-                });   
-                
-                var tabPanel = Ext.getCmp(div);
-                
-                
-                if(typeof tabPanel === 'undefined') {       
-              
-                    tabPanel = Ext.create('Ext.tab.Panel', {
-                        //height: 200, //(120 * data.size_y) + (10 * data.size_y) + (10 * (data.size_y - 1)) - 20,
-                        //width:  800, //(120 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20,
-                        //layout: 'fit',
+                    var graphContainer = Ext.create('Ext.container.Container', {
+                        contentEl: div + '_stats_graph',
+                        title: 'Graph',
                         width: 945,
-                        renderTo: div,
-                        id: div,
-                        autoScroll: true,
-                    });
+                        height: 640,
+                    });   
                     
-                } else {
-                    // remove old panels
-                    for(i=0; i<=tabPanel.items.length; i++)
-                    {
-                        tabPanel.remove(tabPanel.items.getAt(0));
+                    var tabPanel = Ext.getCmp(div);
+                    
+                    
+                    if(typeof tabPanel === 'undefined') {       
+                  
+                        tabPanel = Ext.create('Ext.tab.Panel', {
+                            //height: 200, //(120 * data.size_y) + (10 * data.size_y) + (10 * (data.size_y - 1)) - 20,
+                            //width:  800, //(120 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20,
+                            //layout: 'fit',
+                            width: 945,
+                            renderTo: div,
+                            id: div,
+                            autoScroll: true,
+                        });
+                        
+                    } else {
+                        // remove old panels
+                        for(i=0; i<=tabPanel.items.length; i++)
+                        {
+                            tabPanel.remove(tabPanel.items.getAt(0));
+                        }
+                        
                     }
-                    
-                }
 
-                widget.params.title = 'Table';
-                
-                //console.log('GET URL', getUrl());
-                
-                widget.url = getUrl();
-                widget.params.date_type = Ext.getCmp('date_type_combo').getValue();
-                
-                
-                
-                var url = widget.url + '&data_type=table&order_by=value_date';
-
-                console.log('data table url', url);
-                
-                $.getJSON(url, function(data) {
-                
+                    widget.params.title = 'Table';
                     
+                    //console.log('GET URL', getUrl());
+                    
+                    widget.url = getUrl();
+                    widget.params.date_type = Ext.getCmp(id + 'date_type_combo').getValue();
+                    
+                    
+                    
+                    var url = widget.url + '&data_type=table&order_by=value_date';
+
+                    console.log('data table url', url);
+                    
+                    $.getJSON(url, function(data) {
+                    
+                        
+                        chart(obj, widget, div + '_stats_graph');
+                        
+                        var table = dataTable(data, obj, widget);
+
+                        tabPanel.add(graphContainer);                
+                        tabPanel.add(table);
+                        tabPanel.doLayout(); 
+                        tabPanel.setActiveTab(0);
+
+                        
+                    });
+                } else if(jQuery.inArray(widget.key, ['w151']) !==-1 ) {
+                
+                    $('<div id="' + div + '_w151"></div>').appendTo("#" + div);
+                
+                    var mainContainer = Ext.create('Ext.container.Container', {
+                        //contentEl: div + '_metric' + tabId,
+                        //contentEl: div + '_w151',
+                        autoFit: true,
+                        closable: true,
+                        padding: '0 5 5 5',
+                        autoScroll: true,
+                        style: {
+                            background: 'white',
+                        },
+                    }); 
+                    
+                    widget.xAxis = false;
+                    widget.yAxis = false;
+                    widget.params.zoom = false;
+                    widget.url = getUrl() + '&widget=w151';
+                    widget.params.type = 'scatter';
+                    var assdf = div + '_w151';
                     chart(obj, widget, div);
-                    
-                    var table = dataTable(data, obj, widget);
-
-                    tabPanel.add(graphContainer);                
-                    tabPanel.add(table);
-                    tabPanel.doLayout(); 
-                    tabPanel.setActiveTab(0);
-
-                    
-                });
+                
+                }
             }
         }
         
@@ -2679,8 +2707,11 @@ Ext.onReady(function() {
         
         
         
-        
-        var id = 'stats_';
+        if(jQuery.inArray(widget.key, ['w18']) !==-1 ) {
+            var id = 'stats_';
+        } else if(jQuery.inArray(widget.key, ['w151']) !==-1 ) {
+            var id = 'w151_';
+        }
         
         var dateSpan = Ext.create('Ext.form.Panel', {
             header: false,
@@ -2828,7 +2859,7 @@ Ext.onReady(function() {
         });
         var dateTypeSelect = Ext.create('Ext.form.ComboBox', {
             store: dateTypeStore,
-            id: 'date_type_combo',
+            id: id + 'date_type_combo',
             padding: 5, 
             width: 80,
             queryMode: 'local',
@@ -2884,10 +2915,12 @@ Ext.onReady(function() {
                      
                 // Underlying drop down
                 ///////////////////////
-                if(widget.key === 'w155') {
+                if(jQuery.inArray(widget.key, ['w151', 'w155']) !==-1 ) {
                     var multiSelect = true;
+                    console.log('multi select true');
                 } else {
                     var multiSelect = false;
+                    console.log('multi select false');
                 }
                 var underlyingStore = Ext.create('Ext.data.Store', {
                     fields: ['name'],
@@ -2991,7 +3024,7 @@ Ext.onReady(function() {
                         
                 }
                 
-                // add the 
+                // add the flash funds
                 if(jQuery.inArray(widget.key, ['w155', 'w156', 'w157']) !==-1 ) {
                     $.getJSON("/api/fund/?fields=name,id&estimate_required=1", function(data) {
                         
@@ -3076,10 +3109,10 @@ Ext.onReady(function() {
                 var marSelect = Ext.create('Ext.form.ComboBox', {
                     store: marRfrValues,
                     id: 'mar_combo_' + tabId,
-                    fieldLabel: 'Minimal Acceptable Return',
+                    fieldLabel: 'MAR',
                     labelAlign: 'top',
                     padding: '0 5 0 5',
-                    width: 180,
+                    width: 50,
                     queryMode: 'local',
                     listeners: {
                         'change': function(field, selectedValue) {
@@ -3098,10 +3131,10 @@ Ext.onReady(function() {
                 var rfrSelect = Ext.create('Ext.form.ComboBox', {
                     store: marRfrValues,
                     id: 'rfr_combo_' + tabId,
-                    fieldLabel: 'Risk Free Rate',
+                    fieldLabel: 'RFR',
                     labelAlign: 'top',
                     padding: '0 5 0 5',
-                    width: 180,
+                    width: 50,
                     queryMode: 'local',
                     listeners: {
                         'change': function(field, selectedValue) {
@@ -3279,7 +3312,7 @@ Ext.onReady(function() {
                 metricSelect.setValue(metricStore.getAt('0').get('id'));
                 
                 
-                // X&Y Axis Drop Down for W156
+                // X&Y Axis Drop Down for W151 & W156
                 //////////////////////////////
                 var xAxisSelect = Ext.create('Ext.form.ComboBox', {
                     store: metricStore,
@@ -3287,7 +3320,7 @@ Ext.onReady(function() {
                     fieldLabel: 'X Axis',
                     labelAlign: 'top',
                     padding: '0 5 5 5',
-                    width: 100,
+                    width: 150,
                     queryMode: 'local',
                     displayField: 'name',
                     valueField: 'id',
@@ -3308,7 +3341,7 @@ Ext.onReady(function() {
                     fieldLabel: 'Y Axis',
                     labelAlign: 'top',
                     padding: '0 5 5 5',
-                    width: 100,
+                    width: 150,
                     queryMode: 'local',
                     displayField: 'name',
                     valueField: 'id',
@@ -3471,7 +3504,7 @@ Ext.onReady(function() {
                     secUnderlyingSelect.show();
                     windowSelect.show();
                     stepSelect.show();
-                } else if(jQuery.inArray(widget.key, ['w156']) !==-1 ) {
+                } else if(jQuery.inArray(widget.key, ['w151', 'w156']) !==-1 ) {
                     xAxisSelect.show();
                     yAxisSelect.show();
                     secUnderlyingSelect.show();
@@ -3488,27 +3521,27 @@ Ext.onReady(function() {
                 var upperContainer = Ext.create('Ext.container.Container', {
                     layout:'column',
                     items: [{
-                        columnWidth: .70,
+                        columnWidth: .75,
                         border: 0,
                         layout: 'hbox',
-                        items: [yAxisSelect, metricSelect, windowSelect],
+                        items: [xAxisSelect, metricSelect, windowSelect],
                     },{
-                        columnWidth: .30,
+                        columnWidth: .25,
                         border: 0,
                         layout: 'hbox',
-                        items: [yAxisSelect, plotSelect, axisSelect],
+                        items: [plotSelect, axisSelect],
                     }],
                 });    
                 
                 var lowerContainer = Ext.create('Ext.container.Container', {
                     layout:'column',
                     items: [{
-                        columnWidth: .70,
+                        columnWidth: .75,
                         border: 0,
                         layout: 'hbox',
-                        items: [underlyingSelect, secUnderlyingSelect, stepSelect, marSelect, rfrSelect],
+                        items: [yAxisSelect, underlyingSelect, secUnderlyingSelect, stepSelect, marSelect, rfrSelect],
                     },{
-                        columnWidth: .30,
+                        columnWidth: .25,
                         border: 0,
                         layout: 'hbox',
                         items: [positionSelect, layerSelect],
@@ -3909,8 +3942,8 @@ Ext.onReady(function() {
     function chart(obj, widget, div) {
     
     
-        var chartDiv = div;
-        div = div + '_stats_graph';
+        //var chartDiv = div;
+        //div = div + '_stats_graph';
 
         //console.log('function chart started');
         //if(typeof $('#' + div).highcharts() != 'undefined') {
@@ -4008,6 +4041,8 @@ Ext.onReady(function() {
         console.log('chart call', 'http://localhost:8000' + widget.url);        
         $.getJSON(widget.url + widget.qs, function(data) {
         
+            
+        
                 
             /**
              * Experimental Highcharts plugin to implement chart.alignThreshold option.
@@ -4068,13 +4103,16 @@ Ext.onReady(function() {
         
             $.each(data, function( index, obj ) {
                 colors.push(obj.color);
-                yAxis[index]['labels'] = {
-                    formatter: function() {
-                        return this.value + obj.label;
-                    },
-                    x: -10,
-                };
-                yAxis[index]['minorTickInterval'] = 'auto';
+                
+                if(jQuery.inArray(widget.key, ['w18']) !==-1 ) {   
+                    yAxis[index]['labels'] = {
+                        formatter: function() {
+                            return this.value + obj.label;
+                        },
+                        x: -10,
+                    };
+                    yAxis[index]['minorTickInterval'] = 'auto';
+                 }
                 
                 
             });
@@ -4085,6 +4123,7 @@ Ext.onReady(function() {
                    'orange',
                 ];           
             }
+
 
             var options = {
                 colors: colors,
@@ -4105,7 +4144,7 @@ Ext.onReady(function() {
                 navigator:{
                     enabled: navigator,
 				    adaptToUpdatedData: false,
-				    series: data.objects,
+				    //series: data.objects,
 				    height: 20,
                 },
                 scrollbar: {
@@ -4120,7 +4159,7 @@ Ext.onReady(function() {
                 //    type: 'category',
                 //    categories: data.objects.columns,
                 //},
-                yAxis: yAxis,
+                //yAxis: yAxis,
                 //xAxis: xAxis,
                 tooltip: {
                     //valueSuffix: '€'
@@ -4138,6 +4177,7 @@ Ext.onReady(function() {
             };
             //console.log('data', data);
 
+            
             if(typeof widget.params.date_type != 'undefined' && widget.params.date_type == 'monthly') {
                 options['rangeSelector'] = {
                     enabled: true,
@@ -4212,13 +4252,25 @@ Ext.onReady(function() {
 
             }
             
+
+            if(jQuery.inArray(widget.key, ['w18']) !==-1 ) {            
+                console.log('YAXIS');
+                options['yAxis'] = yAxis;
+            }    
+            
+            
             if(typeof $('#' + div).highcharts() !== 'undefined') {
                 $('#' + div).highcharts().destroy();
                 delete $('#' + div);
-                $('<div id="' + div + '"></div>').appendTo("#" + chartDiv);
+                //$('<div id="' + div + '"></div>').appendTo("#" + chartDiv);
                 console.log('DESTROYING CHART');
             }
-            var chart = new Highcharts.StockChart(options);
+            
+            if(jQuery.inArray(widget.key, ['w151', 'w156']) !==-1 ) {     
+                var chart = new Highcharts.Chart(options);  
+            } else {
+                var chart = new Highcharts.StockChart(options);
+            }
             //var chart = new Highcharts.Chart(options); // cannot be used with rangeSelector options
             //console.log('CREATING NEW CHART');
            
@@ -4944,7 +4996,7 @@ Ext.onReady(function() {
         } else {
             var sortProperty = 'id';
         }
-        console.log('ASDF', widget.key, data.columns);
+        //console.log('ASDF', widget.key, data.columns);
 
         var tableStore = Ext.create('Ext.data.Store', {
             storeId: widget.key,

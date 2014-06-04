@@ -278,7 +278,8 @@ class FundReturnResource(MainBaseResource):
             and under is not False \
             and sec_under is not False \
             and yaxis is not False \
-            and xaxis is not False:
+            and xaxis is not False \
+            and widget == 'w151':
             
             date_from = start_date()
             
@@ -286,14 +287,16 @@ class FundReturnResource(MainBaseResource):
             axis = [yaxis, xaxis]
             
             
+            series = []
+            
             if sec_under == 'benchpeer':
                 lst2 = [row.data['bench_perf'] for row in data['objects']]
                 
             elif sec_under[:5] == 'metric': 
-                lst2 = lst_vals[unders[i][6:]]
+                lst2 = lst_vals[sec_under[6:]]
                 
             elif sec_under.isdigit():
-                lst2 = holding_data(unders[i])
+                lst2 = holding_data(sec_under)
                 #color = 'peer'
              
             else:
@@ -303,136 +306,87 @@ class FundReturnResource(MainBaseResource):
                     
             # remove any empty strings in the list that might exist
             lst2 = filter(None, lst2)
-            
-            # save prior values for other underlying metrics
-            try:
-                lst_vals2[i] = lst2
-            except:
-                lst_vals2 = []
-            
+       
             dates2 = date_range(lst2, date_from, freq)
-            df2 = to_dataframe(lst2, dates2)
+            df2 = to_dataframe(lst2, dates2) 
 
-            series = []
             
             for u in unders:
             
                 if u == 'benchpeer':
                     lst = [row.data['bench_perf'] for row in data['objects']]
-                    #color = 'green'
-                    name = data['objects'][0].data['fund__benchpeer__name']
-                    
-                elif u[:5] == 'metric': 
-                    lst = lst_vals[u[6:]]
-                    #color = 'pink'
-                    if m == "delta_cum_returns_final_val":
-	                    name = "Excess Return"
-                    if m == "tracking_error":
-	                    name = "Tracking Error"                               
-                    if m == "correlation":
-	                    name = "Correlation"
-                    if m == "alpha":
-	                    name = "Alpha"
-                    if m == "beta":
-	                    name = "Beta"
-                    if m == "r2":
-	                    name = "RSQ"
-                    if m == "mean":
-	                    name = "Average"
-                    if m == "standard_deviation":
-	                    name = "Standard Deviation"
-                    if m == "variance":
-	                    name = "Variance"
-                    if m == "max_drawdown":
-	                    name = "Maximum DrawDown"
-                    if m == "cum_returns_final":
-	                    name = "Final Value Cumulative Return"
-                    if m == "skewness":
-	                    name = "Skewness"
-                    if m == "kurtosis":
-	                    name = "Kurtosis"
-                    if m == "annualised_returns":
-	                    name = "Annualised Return"
-                    if m == "annualised_volatility":
-	                    name = "Annualised Volatility"
-                    if m == "downside_volatility":
-	                    name = "Downside Volatility"
-                    if m == "sortino_ratio":
-	                    name = "Sortino Ratio"
-                    if m == "sharpe_ratio":
-	                    name = "Sharpe Ratio"
+                    color = 'green'
+                    #name = data['objects'][0].data['fund__benchpeer__name']
+                    name = 'some benchpeer name'
 	                    
                 elif u.isdigit():
                     lst = holding_data(u)
-                    #color = 'peer'
-                    name = 'fundpeer'
+                    color = 'purple'
+                    name = 'some holding name'
                 
                 else:
                     lst = [row.data['fund_perf'] for row in data['objects']]
                     color = 'blue'
-                    name = 'fund'
+                    name = 'some fund name'
+                    #name = data['objects'][0].data['fund__name']
                     
-                # remove any empty strings in the list that might exist
-                lst = filter(None, lst)
-                
-                # save prior values for other underlying metrics
-                try:
-                    lst_vals[i] = lst
-                except:
-                    lst_vals = []
-                
-                dates = date_range(lst, date_from, freq)
-                df = to_dataframe(lst, dates)
-                
                 val = []
-                
-                
-                for m in axis:    
                     
-                    if m == "delta_cum_returns_final_val":
-                        values = delta_cum_returns_final_val(df, df2, dates, dates2)[0]
-                    if m == "tracking_error":
-                        values = tracking_error(df, df2)
-                    if m == "correlation":
-                        values = correlation(df, df2)
-                    if m == "alpha":
-                        values = alpha(df, df2)
-                    if m == "beta":
-                        values = beta(df, df2)
-                    if m == "r2":
-                        values = r2(df, df2)
-                    if m == "mean":
-                        values = mean(df)
-                    if m == "standard_deviation":
-                        values = standard_deviation(df)
-                    if m == "variance":
-                        values = variance(df)
-                    if m == "max_drawdown":
-                        values = max_drawdown(df)
-                    if m == "cum_returns_final":
-                        values = cum_returns_final_val(df, dates)
-                    if m == "skewness":
-                        values = skewness(df)
-                    if m == "kurtosis":
-                        values = kurtosis(df)
-                    if m == "annualised_returns":
-                        values = annualised_returns(df, freq)
-                    if m == "annualised_volatility":
-                        values = volatility(df, freq)
-                    if m == "downside_volatility":
-                        values = downside_volatility(df, mar, freq)
-                    if m == "sortino_ratio":
-                        values = sortino_ratio(df, freq)
-                    if m == "sharpe_ratio":
-                        values = sharpe_ratio(df, freq)
+                if lst:
+                    # remove any empty strings in the list that might exist
+                    lst = filter(None, lst)
                     
-                    val.append(float(values[0]))
+                    dates = date_range(lst, date_from, freq)
+                    df = to_dataframe(lst, dates)
+                    
+                    
+                    
+                    for m in axis:    
+                        
+                        if m == "delta_cum_returns_final_val":
+                            values = delta_cum_returns_final_val(df, df2, dates, dates2)[0]
+                        if m == "tracking_error":
+                            values = tracking_error(df, df2)
+                        if m == "correlation":
+                            values = correlation(df, df2)
+                        if m == "alpha":
+                            values = alpha(df, df2)
+                        if m == "beta":
+                            values = beta(df, df2)
+                        if m == "r2":
+                            values = r2(df, df2)
+                        if m == "mean":
+                            values = mean(df)
+                        if m == "standard_deviation":
+                            values = standard_deviation(df)
+                        if m == "variance":
+                            values = variance(df)
+                        if m == "max_drawdown":
+                            values = max_drawdown(df)
+                        if m == "cum_returns_final":
+                            values = cum_returns_final_val(df, dates)
+                        if m == "skewness":
+                            values = skewness(df)
+                        if m == "kurtosis":
+                            values = kurtosis(df)
+                        if m == "annualised_returns":
+                            values = annualised_returns(df, freq)
+                        if m == "annualised_volatility":
+                            values = volatility(df, freq)
+                        if m == "downside_volatility":
+                            values = downside_volatility(df, mar, freq)
+                        if m == "sortino_ratio":
+                            values = sortino_ratio(df, freq)
+                        if m == "sharpe_ratio":
+                            values = sharpe_ratio(df, freq)
+                        
+                        val.append(float(values[0]))
                 #assert False
                     
                 series.append({
                     'data': [val],
                     'name': name,
-                    #'color': color,
+                    'color': color,
                 })
             return series    
             

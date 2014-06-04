@@ -20,7 +20,7 @@ def fund_return_form(request):
     months = []
     # check if this actually works, especially with feb
     now = datetime.datetime.now()
-    now = datetime.datetime(2013, 12, 5, 6, 22, 45, 517969) # @TODO: remove this later
+    #now = datetime.datetime(2013, 12, 5, 6, 22, 45, 517969) # @TODO: remove this later
 
     months.append(now - datetime.timedelta(days=60))
     months.append(now - datetime.timedelta(days=30))
