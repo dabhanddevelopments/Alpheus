@@ -1932,18 +1932,18 @@ Ext.onReady(function() {
         
             return returnHistogram(obj, widget, div);
 
+        } else if(widget.key == 'w25') {
 
+            w25(obj, div);                     
 
         } else if(widget.key == 'w12') {
            
-                var fields = '&fields=client__name,size,avg_cost_price,market_value';
+            var fields = '&fields=client__name,size,avg_cost_price,market_value';
 
-                $.getJSON("/api/clientposition/?&fund=" + obj.fund.id + '&client=' + id + '&column_width=100,100&data_type=table' + fields, function(data) {
-                
-                    console.log('CL TRANS', "/api/clienttransaction/?&fund=" + obj.fund.id + '&client=' + id + '&column_width=100,100&data_type=table' + fields);
-
-                    return dataTable(data, obj, widget, div);
-                });            
+            $.getJSON("/api/clientposition/?&fund=" + obj.fund.id + '&column_width=100,100&data_type=table' + fields, function(data) {
+            
+                return dataTable(data, obj, widget, div);
+            });            
         
         } else if(widget.key == 'w2') {
         
@@ -2048,6 +2048,60 @@ Ext.onReady(function() {
         }
     }
     
+    function w25(obj, div) {
+    
+        console.log('w25');
+    
+        $.getJSON("/api/nav-reconciliation/?fund=" + obj.fund.id, function(data) {
+                        
+            var myData = [[71.72, 0.02,  0.03,  '123.34']];
+            var store = Ext.create('Ext.data.ArrayStore', {
+                //fields: ['market_value', 'size', 'nav', 'shares'],
+                fields: [
+                   {name: 'market_value',   type: 'float'},
+                   {name: 'size',           type: 'float'},
+                   {name: 'nav',            type: 'float'},
+                   {name: 'shares',         type: 'float'},
+                ],
+                data: data,
+            });
+            
+            console.log('data.rows', data.rows);
+
+            // create the Grid
+            var grid = Ext.create('Ext.grid.Panel', {
+                store: store,
+                columnLines: true,
+                columns: [{
+                    text: 'Valuation from Clients',
+                    columns: [{
+                        text: 'Euro NAV',
+                        dataIndex: 'market_value',
+                        renderer: Ext.util.Format.numberRenderer('0,000.00/i'),
+                    }, {
+                        text: 'No. of Units',
+                        dataIndex: 'size',
+                        renderer: Ext.util.Format.numberRenderer('0,000.00/i'),
+                    }],
+                },{
+                    text: '',
+                },{
+                    text: 'Valuation from Funds',
+                    columns: [{
+                        text: 'Euro NAV',
+                        dataIndex: 'nav',
+                        renderer: Ext.util.Format.numberRenderer('0,000.00/i'),
+                    }, {
+                        text: 'No. of Units',
+                        dataIndex: 'shares',
+                        renderer: Ext.util.Format.numberRenderer('0,000.00/i'),
+                    }],
+                }],
+                renderTo: div,
+            });
+        });  
+    
+    }
     
     function w23(obj, widget, div) {
     
@@ -5146,6 +5200,7 @@ console.log('WIDGET', widget);
             }
         }
 
+        console.log('data.columns', data.columns);
         if(typeof data.columns[1]['summaryType'] != 'undefined') {
             data.columns[0]['summaryRenderer'] = function(v, params, data){ return 'Total'};
         }

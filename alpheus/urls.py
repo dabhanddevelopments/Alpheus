@@ -169,6 +169,7 @@ urlpatterns = patterns('',
     #url(r'^api/fund-grossasset6/$', fund.grossasset6),
     
     url(r'^api/sub-red/$', sub_red),
+    url(r'^api/nav-reconciliation/$', nav_reconciliation),
 
     url(r'admin/', include(admin.site.urls)),
     (r'^grappelli/', include('grappelli.urls')),

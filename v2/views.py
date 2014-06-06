@@ -26,7 +26,7 @@ def sub_red(request):
     year = int(request.GET.get('year', datetime.today().year))
     month = int(request.GET.get('month', datetime.today().month))
     
-    if month and year:
+    if fund and month and year:
     
         ct = ClientTransaction.objects.filter(fund=fund, \
                     value_date__year=year, value_date__month=month)
@@ -97,7 +97,36 @@ def sub_red(request):
             'rows': lis
         }
         return HttpResponse(json.dumps(data), mimetype="application/json")      
+  
+  
+def nav_reconciliation(request):
+
+    fund = request.GET.get('fund', False) 
+    
+    if fund:
         
+        c = ClientPosition.objects.filter(fund=fund) \
+                    .aggregate(Sum('market_value'), Sum('size'))   
+        f = FundReturnMonthly.objects.filter(fund=fund) \
+                    .aggregate(Sum('shares'), Sum('nav')) 
+          
+        if c['market_value__sum'] is None:
+            c['market_value__sum'] = 0
+        if c['size__sum'] is None:
+            c['size__sum'] = 0
+        if f['nav__sum'] is None:
+            f['nav__sum'] = 0
+        if f['shares__sum'] is None:
+            f['shares__sum'] = 0
+         
+        data = [[
+            float("%.2f" % c['market_value__sum']),
+            float("%.2f" % c['size__sum']),
+            float("%.2f" % f['nav__sum']),
+            float("%.2f" % f['shares__sum']),
+        ]]      
+        return HttpResponse(json.dumps(data), mimetype="application/json") 
+              
 
 def fund_return_form(request):
 
