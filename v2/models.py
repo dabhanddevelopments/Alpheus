@@ -464,6 +464,7 @@ class Region(models.Model):
 #        return self.filename
 
 
+
 class ClientPosition(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     #custodian = models.ForeignKey(Custodian, blank=True, null=True)

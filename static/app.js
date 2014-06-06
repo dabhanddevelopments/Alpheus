@@ -2640,7 +2640,7 @@ Ext.onReady(function() {
         function getUrl() {
         
         
-            var metricLength = Ext.getCmp('metric_panel').items.items.length;
+            var metricLength = Ext.getCmp(id + 'metric_panel').items.items.length;
             var axis = [];
             var xAxisvals = [];
             
