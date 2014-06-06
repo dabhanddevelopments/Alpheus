@@ -27,6 +27,7 @@ DATA_TYPE_GRAPH = 'graph'
 DATA_TYPE_TOTAL = 'total'
 DATA_TYPE_COMPACT = 'compact'
 DATA_TYPE_LIST = 'list'
+DATA_TYPE_TABLE = 'table'
 
 # Base Model Resource
 class MainBaseResource(SpecifiedFields):
@@ -358,6 +359,8 @@ class MainBaseResource(SpecifiedFields):
 
 
     def alter_list_data_to_serialize(self, request, data):
+    
+        fields = request.GET.get('fields', [])
 
         if request.GET.get('data_type', False) == DATA_TYPE_YEAR:
             import calendar
@@ -453,6 +456,13 @@ class MainBaseResource(SpecifiedFields):
             return {
                 'columns': self.set_columns(request, columns),
                 'rows': months,
+            }
+            
+        elif self.data_type == DATA_TYPE_TABLE:
+        
+            return {
+                'columns': self.set_columns(request, fields.split(',')),
+                'rows': data['objects'],
             }
 
         elif self.data_type == DATA_TYPE_GRAPH:

@@ -1931,12 +1931,21 @@ Ext.onReady(function() {
         if(widget.key == 'return_histogram') {
         
             return returnHistogram(obj, widget, div);
-            
-            
+
+
+
+        } else if(widget.key == 'w12') {
+           
+                var fields = '&fields=client__name,size,avg_cost_price,market_value';
+
+                $.getJSON("/api/clientposition/?&fund=" + obj.fund.id + '&client=' + id + '&column_width=100,100&data_type=table' + fields, function(data) {
+                
+                    console.log('CL TRANS', "/api/clienttransaction/?&fund=" + obj.fund.id + '&client=' + id + '&column_width=100,100&data_type=table' + fields);
+
+                    return dataTable(data, obj, widget, div);
+                });            
         
         } else if(widget.key == 'w2') {
-        
-            
         
             return holdingPerformance(obj, widget, div, 'performance');
             
@@ -5013,14 +5022,20 @@ console.log('WIDGET', widget);
     function dataTable(data, obj, widget, div) {
 
         var hideHeaders = false;
-        if(typeof widget.params.column_header !== 'undefined' && widget.params.column_header == 'false'){
-            hideHeaders = true;
-        }
-        
         var title = false;
-        if(typeof widget.params.title !== 'undefined'){
-            title = widget.params.title;
+        
+        if(typeof widget.params !== 'undefined') {
+        
+            if(typeof widget.params.column_header !== 'undefined' && widget.params.column_header == 'false'){
+                hideHeaders = true;
+            }
+            
+            if(typeof widget.params.title !== 'undefined'){
+                title = widget.params.title;
+            }  
+            
         }
+
         
         var renderTo = false;
         if(typeof div !== 'undefined'){
@@ -5065,7 +5080,7 @@ console.log('WIDGET', widget);
             } else {
                 row = data.columns[i].dataIndex;
                 
-                if(row != 'year' && row != 'date') {
+                if(row != 'year' && row != 'date' && row != 'client__name') {
                     
                     data.columns[i]['renderer'] = function(val) {
                     
@@ -5156,10 +5171,14 @@ console.log('WIDGET', widget);
         
         if(widget.key === 'w18') {
             var sortProperty = 'date';
+        } else if(widget.key === 'w12') {
+            var sortProperty = 'client__name';
         } else {
             var sortProperty = 'id';
         }
-        //console.log('ASDF', widget.key, data.columns);
+        
+        
+        console.log('FIELDS', fields, data);
 
         var tableStore = Ext.create('Ext.data.Store', {
             storeId: widget.key,
@@ -5177,6 +5196,37 @@ console.log('WIDGET', widget);
                 direction: 'ASC'
             } ],
         });
+        
+        if(widget.window.key == 'w12') {
+    
+            Ext.create('Ext.form.Panel', {
+                bodyPadding: 5,
+                flex: 1,
+                border: 0,
+                height: 30,
+                items: [{
+                    xtype: 'fieldcontainer',
+                    fieldLabel: 'Show Historic',
+                    defaultType: 'checkboxfield',
+                    items: [{
+                        name: 'size',
+                        inputValue: '0',
+                        id: 'size_checkbox',
+                        handler: function (field, value) { 
+                            if(value) {
+                                tableStore.filter([
+                                    {filterFn: function(item) { return item.get("size") > 0; }}
+                                ]);
+                            } else {
+                                tableStore.clearFilter();
+                            }
+                        }
+                    }]
+                }],
+                renderTo: div + 'top',
+            });        
+        
+        }
 
         // for innergrids
         if(widget.type == 'data_table_sub') {
@@ -5318,15 +5368,6 @@ console.log('WIDGET', widget);
                     lineBarChart(widget);
                 });
 
-
-            } else if(widget.window.key == 'w12' || widget.window.key == 'w12b') {
-
-                var fields = '&fields=first_name,last_name,no_of_units,base_nav,pending_nav';
-
-                $.getJSON("/api/client/?&fund=" + obj.fund.id + '&client=' + id + '&column_width=100,100' + fields, function(w12) {
-
-                    displayInnerGrid(widget, w12, id);
-                });
             }
 
             if(typeof $('#data').data('year') == 'undefined' || $('#data').data('year') === false) {
@@ -5347,8 +5388,9 @@ console.log('WIDGET', widget);
                     displayInnerGrid(widget, widget_data, id, false, 150);
                 });
             }
-            if(widget.window.key == 'w12b') {
-                $.getJSON('/api/holding/?client=' + id + '&distinct=true&total=true&fields=name,currency__name,commit,drawdown,various,residual_commit,distribution,valuation,total_value,proceed,irr', function(widget_data) {
+            if(widget.window.key == 'w12') {
+                var fields = '&shares,nav_per_share,nav,buy_sell,value_date';
+                $.getJSON('/api/clienttransaction/?fund=' + fund + '&client=' + id + '&data_type=table' + fields, function(widget_data) {
                     displayInnerGrid(widget, widget_data, id, false, 150);
                 });
             }
