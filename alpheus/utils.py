@@ -16,7 +16,6 @@ class JsonResponse(HttpResponse):
             for index, row in enumerate(data['rows']):
                 for key, val in row.items():
                     if isinstance(val, Decimal) or isinstance(val, float):
-                        assert False
                         data['rows'][index][key] = str(Decimal("%.2f" % val))
         except:
             pass
@@ -34,12 +33,10 @@ def set_columns(request, column_names):
     columns = []
     for key, column in enumerate(column_names):
     
-        
         if column == 'year':
             sortable = True
         else:
             sortable = False
-
 
         try:
             dic = {
@@ -61,9 +58,9 @@ def set_columns(request, column_names):
             dic['tdCls'] = 'horizonal-border-column'
 
         if key == 0:
-            dic['width'] = column_width[0]
+            dic['width'] = int(column_width[0])
         else:
-            dic['width'] = column_width[1]
+            dic['width'] = int(column_width[1])
             dic['align'] = align
         columns.append(dic)
 

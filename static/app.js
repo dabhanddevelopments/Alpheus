@@ -1176,41 +1176,43 @@ Ext.onReady(function() {
 
             if(typeof Ext.getCmp('grid' + tabId) == 'undefined') {
 
-            fields = [];
-            for(i=0; i < data.columns.length; i++) {
-                fields[i] = data.columns[i].dataIndex;
+                fields = [];
+                for(i=0; i < data.columns.length; i++) {
+                    fields[i] = data.columns[i].dataIndex;
+                }
+
+                Ext.create('Ext.data.Store', {
+                    storeId: 'store' + tabId,
+                    fields: fields,
+                    data: data,
+                    proxy: {
+                        type: 'memory',
+                        reader: {
+                            type: 'json',
+                            root: 'rows'
+                        }
+                    },
+                });
+                return Ext.create('Ext.grid.Panel', {
+                    store: Ext.data.StoreManager.lookup('store' + tabId),
+                    columns: data.columns,
+                    id: 'grid' + tabId,
+                    border: false,
+                    flex: flex,
+                    forceFit: true,
+                    layout:'fit',
+                    margin: "0 0 20 0",
+
+                    //height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 20,
+                    //width:  (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 20,
+                   // renderTo: tabId,
+                });
             }
-
-            Ext.create('Ext.data.Store', {
-                storeId: 'store' + tabId,
-                fields: fields,
-                data: data,
-                proxy: {
-                    type: 'memory',
-                    reader: {
-                        type: 'json',
-                        root: 'rows'
-                    }
-                },
-            });
-            return Ext.create('Ext.grid.Panel', {
-                store: Ext.data.StoreManager.lookup('store' + tabId),
-                columns: data.columns,
-                id: 'grid' + tabId,
-                border: false,
-                flex: flex,
-                forceFit: true,
-                layout:'fit',
-                margin: "0 0 20 0",
-
-                //height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 20,
-                //width:  (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 20,
-               // renderTo: tabId,
-            });
-        }
         }
 
         //for w23
+        
+        /*
         function appendGridToSubRedTab(tabId) {
            var date = tabId.split("-");
            if (typeof date[1] == 'undefined') {
@@ -1218,22 +1220,21 @@ Ext.onReady(function() {
                 date[0] = tabId;
                 tabId = tabId + '-1';
            }
-           $.getJSON('/api/fund-subredtable/?fund=' + obj.fund.id + '&year=' + date[0] + '&month='  + date[1] + '&column_width=80,80', function(data1) {
+           $.getJSON('/api/clientposition/?fund=' + obj.fund.id + '&year=' + date[0] + '&month='  + date[1] + '&column_width=80,80&widget=w23', function(data1) {
                 tab = Ext.getCmp(tabId);
                 var table = createGrid(tabId, data1, 0);
                 tab.add(table);
 
-                var fields = "&fields=client__first_name,client__last_name,sub_red_switch,no_of_units,sub_red_switch,sub_red_euro_nav,percent_released,trade_date,instruction_date";
+                var fields = "&fields=client__name,buy_sell,shares,nav_per_share,nav";
 
-                $.getJSON('/api/subscription-redemption/?fund=' + obj.fund.id + '&trade_date__year=' + date[0] + '&trade_date__month='  + date[1] + '&column_width=100,100' + fields, function(data2) {
+                $.getJSON('/api/clienttransaction/?fund=' + obj.fund.id + '&value_date__year=' + date[0] + '&value_date__month='  + date[1] + '&column_width=100,100' + fields, function(data2) {
                     tab = Ext.getCmp(tabId);
                     var table = createGrid('client' + tabId, data2, 1);
                     tab.add(table);
                 });
            });
-
-
         }
+        */
 
         //for w13
         function appendGridToGrossAssetTab(tab, year) {
@@ -1561,7 +1562,7 @@ Ext.onReady(function() {
 
         } else if (data.window.key == 'w23') {
 
-
+/*
             this_year = new Date().getFullYear();
 
             parents = [];
@@ -1601,9 +1602,16 @@ Ext.onReady(function() {
            //console.log("whatever");
 
             // div for tabs
+
+
+        
             var tab_div = 'tab-' + data.window.key + '-' + window_id;
             $('<div id="' + tab_div + '"></div>').appendTo('#' + window_id);
 
+
+        
+        console.log('window_id', window_id);
+        
             var tp = new Ext.TabPanel({
                 renderTo: tab_div,
                 id: 'w23-tabs',
@@ -1624,6 +1632,7 @@ Ext.onReady(function() {
             appendGridToSubRedTab(this_year + '-1');
             return widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
 
+*/
 
         } if(data.window.key == 'w13') {
 
@@ -2023,8 +2032,156 @@ Ext.onReady(function() {
 
             return euroPercentTabTable(obj, widget, div);
 
+        } else if(widget.key == 'w23') {
+
+            return w23(obj, widget, div);
 
         }
+    }
+    
+    
+    function w23(obj, widget, div) {
+    
+        function createGrid(tabId, data,flex) {
+        
+            if(typeof Ext.getCmp('grid' + tabId) == 'undefined') {
+
+                fields = [];
+                for(i=0; i < data.columns.length; i++) {
+                    fields[i] = data.columns[i].dataIndex;
+                }
+
+                Ext.create('Ext.data.Store', {
+                    storeId: 'store' + tabId,
+                    fields: fields,
+                    data: data,
+                    proxy: {
+                        type: 'memory',
+                        reader: {
+                            type: 'json',
+                            root: 'rows'
+                        }
+                    },
+                });
+                return Ext.create('Ext.grid.Panel', {
+                    store: Ext.data.StoreManager.lookup('store' + tabId),
+                    columns: data.columns,
+                    id: 'grid' + tabId,
+                    border: false,
+                    flex: true,
+                    //forceFit: true,
+                    layout:'fit',
+                    margin: "0 0 20 0",
+                    //height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 20,
+                    //width:  (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 20,
+                   // renderTo: tabId,
+                });
+            }
+        }
+    
+   
+        function appendGridToSubRedTab(tabId) {
+    
+               var date = tabId.split("-");
+               if (typeof date[1] == 'undefined') {
+                    date[1] = 1;
+                    date[0] = tabId;
+                    tabId = tabId + '-1';
+               }
+               $.getJSON('/api/sub-red/?fund=' + obj.fund.id + '&year=' + date[0] + '&month='  + date[1] + '&column_width=250,80', function(data1) {
+                    tab = Ext.getCmp(tabId);
+                    var table = createGrid(tabId, data1, 0);
+                    tab.add(table);
+
+                    var fields = "&fields=client__name,buy_sell,shares,nav_per_share,nav";
+
+                    $.getJSON('/api/clienttransaction/?fund=' + obj.fund.id + '&value_date__year=' + date[0] + '&value_date__month='  + date[1] + '&column_width=100,100' + fields, function(data2) {
+                        tab = Ext.getCmp(tabId);
+                        //console.log('data2', data2, '/api/clienttransaction/?fund=' + obj.fund.id + '&value_date__year=' + date[0] + '&value_date__month='  + date[1] + '&column_width=100,100' + fields);
+                        if(data2.length > 0) {
+                            var table = createGrid('client' + tabId, data2, 1);
+                            tab.add(table);
+                        }
+                    });
+               });    
+        }
+        
+        
+
+        this_year = new Date().getFullYear();
+
+        parents = [];
+        items = [];
+        children = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        for(i=this_year; i>2002; i--) {
+            parents.push(i);
+        }
+         
+       //console.log(parents);
+        for(i=0; i<parents.length; i++) {
+
+            childItems = [];
+
+            for(var p=0; p<children.length; p++) {
+
+                childItems.push({
+                    id: parents[i] + '-' + (1 + p),
+                    title: children[p],
+                    layout:  {type : 'vbox', align : 'stretch' }
+                });
+            }
+           
+            items.push({
+                xtype: 'tabpanel',
+                title: parents[i],
+                id: 'w23-parent-' + parents[i],
+                activeTab: 0,
+                items: childItems,
+                listeners: {
+                    'tabchange': function(tabPanel, tab){
+                   //console.log('APPENDING FROM CHILD TAB ' + tab.id);
+                    appendGridToSubRedTab(tab.id);
+                    }
+                }
+            });
+             
+        }
+       
+        
+       //console.log("whatever");
+
+        // div for tabs
+
+
+    
+        //var tab_div = 'tab-' + widget.key + '-' + window_id;
+        //$('<div id="' + tab_div + '"></div>').appendTo('#' + window_id);
+
+
+    
+         //console.log('window_id', window_id);
+  
+        var tp = new Ext.TabPanel({
+            renderTo: div,
+            id: 'w23-tabs',
+            //height: 500,
+            //width:  (120 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20,
+            activeTab: 0,
+            items: items,
+            layout: 'fit',
+            listeners: {
+                'tabchange': function(tabPanel, tab){
+                    var id = tab.id.split("-");
+                    //console.log('APPENDING FROM PARENT TAB ' + id[2]);
+                    appendGridToSubRedTab(id[2]);
+                }
+            }
+        });
+        // set the default tab to January of this year
+        appendGridToSubRedTab(this_year + '-1');
+        //return widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
+
+    
     }
 
     
@@ -2488,8 +2645,8 @@ Ext.onReady(function() {
             var xAxisvals = [];
             
             for(i=0; i<=metricLength - 1; i++) {
-                var pos = Ext.getCmp('position_combo_' + (i + 1));
-                var ax = Ext.getCmp('axis_combo_' + (i + 1));
+                var pos = Ext.getCmp(id + 'position_combo_' + (i + 1));
+                var ax = Ext.getCmp(id + 'axis_combo_' + (i + 1));
                 axis[i] = {
                    'position': pos.getValue(),
                    'opposite': ax.getValue(),
@@ -2588,7 +2745,7 @@ Ext.onReady(function() {
             
                 for(m=0; m<metricLength; m++) {
                 
-                    val = Ext.getCmp(qVars[i] + '_combo_' + (m + 1)).getValue();
+                    val = Ext.getCmp(id + qVars[i] + '_combo_' + (m + 1)).getValue();
                     qs +=  val + ',';
                 }
                 qs = qs.slice(0, -1); // remove last comma
@@ -2905,7 +3062,8 @@ Ext.onReady(function() {
                     metrics[i] = i + 1;
                 }
                 
-                $('<div id="' + div + '_metric' + tabId + '"></div>').appendTo("#" + div);
+                console.log('ID', id);
+                $('<div id="' + div + id + '_metric' + tabId + '"></div>').appendTo("#" + div);
                 
                 var firstRun = true;
                 
@@ -2928,11 +3086,11 @@ Ext.onReady(function() {
                         {"id": "fund", "name": obj.fund.name},
                         {"id": "benchpeer", "name": obj.fund.benchpeer.name},
                     ],
-                    id: 'under_store_' + tabId,
+                    id: id + 'under_store_' + tabId,
                 });
                 var underlyingSelect = Ext.create('Ext.form.ComboBox', {
                     store: underlyingStore,
-                    id: 'under_combo_' + tabId,
+                    id: id + 'under_combo_' + tabId,
                     //contentEl: div + '_metric' + tabId,
                     multiSelect: multiSelect,
                     editable: false, 
@@ -2967,11 +3125,11 @@ Ext.onReady(function() {
                         {"id": "fund", "name": obj.fund.name},
                         {"id": "benchpeer", "name": obj.fund.benchpeer},
                     ],
-                    id: 'sec_under_store_' + tabId,
+                    id: id + 'sec_under_store_' + tabId,
                 });
                 var secUnderlyingSelect = Ext.create('Ext.form.ComboBox', {
                     store: underlyingStore,
-                    id: 'sec_under_combo_' + tabId,
+                    id: id + 'sec_under_combo_' + tabId,
                     editable: false, 
                     fieldLabel: 'Second Underlying',
                     labelAlign: 'top',
@@ -3059,7 +3217,7 @@ Ext.onReady(function() {
                 console.log('dateType2', dateType);
                 var windowSelect = Ext.create('Ext.form.ComboBox', {
                     store: windowStepValues,
-                    id: 'window_combo_' + tabId,
+                    id: id + 'window_combo_' + tabId,
                     fieldLabel: 'Window',
                     labelAlign: 'top',
                     padding: '0 5 0 5',
@@ -3083,7 +3241,7 @@ Ext.onReady(function() {
                 //////////////////////
                 var stepSelect = Ext.create('Ext.form.ComboBox', {
                     store: windowStepValues,
-                    id: 'step_combo_' + tabId,
+                    id: id + 'step_combo_' + tabId,
                     fieldLabel: 'Step',
                     labelAlign: 'top',
                     padding: '0 5 0 5',
@@ -3108,7 +3266,7 @@ Ext.onReady(function() {
                 //////////////////////
                 var marSelect = Ext.create('Ext.form.ComboBox', {
                     store: marRfrValues,
-                    id: 'mar_combo_' + tabId,
+                    id: id + 'mar_combo_' + tabId,
                     fieldLabel: 'MAR',
                     labelAlign: 'top',
                     padding: '0 5 0 5',
@@ -3130,7 +3288,7 @@ Ext.onReady(function() {
                 //////////////////////
                 var rfrSelect = Ext.create('Ext.form.ComboBox', {
                     store: marRfrValues,
-                    id: 'rfr_combo_' + tabId,
+                    id: id + 'rfr_combo_' + tabId,
                     fieldLabel: 'RFR',
                     labelAlign: 'top',
                     padding: '0 5 0 5',
@@ -3233,10 +3391,11 @@ Ext.onReady(function() {
                 var metricStore = Ext.create('Ext.data.Store', {
                     fields: ['name'],
                     data: metricData,
+                    id: id + 'metric_store_' + tabId,
                 });
                 var metricSelect = Ext.create('Ext.form.ComboBox', {
                     store: metricStore,
-                    id: 'metric_combo_' + tabId,
+                    id: id + 'metric_combo_' + tabId,
                     editable: false, 
                     fieldLabel: 'Metric',
                     labelAlign: 'top',
@@ -3316,7 +3475,7 @@ Ext.onReady(function() {
                 //////////////////////////////
                 var xAxisSelect = Ext.create('Ext.form.ComboBox', {
                     store: metricStore,
-                    id: 'xaxis_combo_' + tabId,
+                    id: id + 'xaxis_combo_' + tabId,
                     fieldLabel: 'X Axis',
                     labelAlign: 'top',
                     padding: '0 5 5 5',
@@ -3337,7 +3496,7 @@ Ext.onReady(function() {
                 
                 var yAxisSelect = Ext.create('Ext.form.ComboBox', {
                     store: metricStore,
-                    id: 'yaxis_combo_' + tabId,
+                    id: id + 'yaxis_combo_' + tabId,
                     fieldLabel: 'Y Axis',
                     labelAlign: 'top',
                     padding: '0 5 5 5',
@@ -3370,11 +3529,11 @@ Ext.onReady(function() {
                         {"id": "column", "name": "Bar"},
                         {"id": "area", "name": "Area"},
                     ],
-                    id: 'plot_store_' + tabId,
+                    id: id + 'plot_store_' + tabId,
                 });
                 var plotSelect = Ext.create('Ext.form.ComboBox', {
                     store: plotStore,
-                    id: 'plot_combo_' + tabId,
+                    id: id + 'plot_combo_' + tabId,
                     fieldLabel: 'Plot',
                     labelAlign: 'top',
                     padding: '0 5 5 5',
@@ -3404,11 +3563,11 @@ Ext.onReady(function() {
                         {"id": "left", "name": "Left"},
                         {"id": "right", "name": "Right"},
                     ],
-                    id: 'axis_store_' + tabId,
+                    id: id + 'axis_store_' + tabId,
                 });
                 var axisSelect = Ext.create('Ext.form.ComboBox', {
                     store: axisStore,
-                    id: 'axis_combo_' + tabId,
+                    id: id + 'axis_combo_' + tabId,
                     fieldLabel: 'Axis',
                     labelAlign: 'top',
                     padding: '0 5 5 5',
@@ -3437,7 +3596,7 @@ Ext.onReady(function() {
                 var positionValues = new Array(1, 2, 3, 4, 5);
                 var positionSelect = Ext.create('Ext.form.ComboBox', {
                     store: positionValues,
-                    id: 'position_combo_' + tabId,
+                    id: id + 'position_combo_' + tabId,
                     fieldLabel: 'Position',
                     labelAlign: 'top',
                     padding: '0 5 0 5',
@@ -3469,12 +3628,12 @@ Ext.onReady(function() {
                         {"id": '2', "name": '4'},
                         {"id": '1', "name": '5'},
                     ],
-                    id: 'layer_store_' + tabId,
+                    id: id + 'layer_store_' + tabId,
                 });
                 var layerValues = new Array(1, 2, 3, 4, 5);
                 var layerSelect = Ext.create('Ext.form.ComboBox', {
                     store: layerStore,
-                    id: 'layer_combo_' + tabId,
+                    id: id + 'layer_combo_' + tabId,
                     fieldLabel: 'Layer',
                     labelAlign: 'top',
                     padding: '0 5 0 5',
@@ -3547,11 +3706,13 @@ Ext.onReady(function() {
                         items: [positionSelect, layerSelect],
                     }],
                 });   
+                
+                console.log('ID2', id);
                 var mainContainer = Ext.create('Ext.container.Container', {
-                    contentEl: div + '_metric' + tabId,
+                    contentEl: div + id + '_metric' + tabId,
                     autoFit: true,
                     title: 'Metric ' + tabId,
-                    id: 'metric_' + tabId,
+                    id: id + 'metric_' + tabId,
                     closable: true,
                     padding: '0 5 5 5',
                     autoScroll: true,
@@ -3579,7 +3740,7 @@ Ext.onReady(function() {
         });
         
         var metricPanel = Ext.create('Ext.tab.Panel', {
-            id: 'metric_panel',
+            id: id + 'metric_panel',
         });
         
         var SubmitButtonContainer = Ext.create('Ext.container.Container', {
@@ -4418,7 +4579,7 @@ Ext.onReady(function() {
 
         plugins = [];
         selModel = [];
-        if(widget.window.key == 'w10' && $('#data').data('classification') == 'eof') {
+        if(typeof widget.window !== 'undefined' && widget.window.key == 'w10' && $('#data').data('classification') == 'eof') {
             plugins = [{
                 ptype: 'rowexpander',
                 rowBodyTpl: [
@@ -4430,6 +4591,8 @@ Ext.onReady(function() {
                 selType: 'cellmodel'
             }
         }
+
+console.log('WIDGET', widget);
 
         var euroGrid = Ext.create('Ext.grid.Panel', {
             title: widget.params.title,
@@ -4512,7 +4675,7 @@ Ext.onReady(function() {
 
         });
 
-        if(widget.window.key == 'w10' && $('#data').data('classification') == 'eof') {
+        if(typeof widget.window !== 'undefined' && widget.window.key == 'w10' && $('#data').data('classification') == 'eof') {
 
             euroGrid.view.on('expandBody', function (rowNode, record, expandRow, eOpts) {
 

@@ -3,7 +3,7 @@ from alpheus.base_resources import MainBaseResource
 from tastypie.resources import Resource, ModelResource
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from v2.models import *
-from alpheus.utils import cumulative_return
+from alpheus.utils import cumulative_return, JsonResponse
 from alpheus.calcs import *
 from datetime import datetime, timedelta
 import decimal
@@ -13,6 +13,7 @@ from django.utils.datastructures import SortedDict
 from operator import itemgetter
 from django.db.models import Sum
 from random import randint
+
 
 class AdministratorResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
@@ -110,15 +111,16 @@ class RegionResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = Region.objects.all()
 
-class ClientPositionAuditResource(MainBaseResource):
+class ClientPositionResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
-        queryset = ClientPositionAudit.objects.all()
+        queryset = ClientPosition.objects.all()
+        
 
 class ClientResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = Client.objects.all()
 
-class ClientTransactionsResource(MainBaseResource):
+class ClientTransactionResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = ClientTransaction.objects.all()
 

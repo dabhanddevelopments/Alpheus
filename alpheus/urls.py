@@ -68,7 +68,8 @@ api.register(HoldingWarrantResource())
 api.register(HoldingPositionDailyResource())
 api.register(PositionMonthlyResource())
 api.register(TradeResource())
-
+api.register(ClientPositionResource())
+api.register(ClientTransactionResource())
 
 # fund
 """
@@ -166,6 +167,8 @@ urlpatterns = patterns('',
     #url(r'^api/fund-grossasset4/$', fund.grossasset4),
     #url(r'^api/fund-grossasset5/$', fund.grossasset5),
     #url(r'^api/fund-grossasset6/$', fund.grossasset6),
+    
+    url(r'^api/sub-red/$', sub_red),
 
     url(r'admin/', include(admin.site.urls)),
     (r'^grappelli/', include('grappelli.urls')),

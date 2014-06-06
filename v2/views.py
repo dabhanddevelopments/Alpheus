@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.forms.formsets import formset_factory
 from django.shortcuts import render_to_response
 from v2.forms import  FundMonthlyReturnForm
-from v2.models import Fund, FundReturnMonthly, AlpheusGroup
+from v2.models import *
 import datetime
 from django.db.models import Q
 from django.utils.datastructures import SortedDict
@@ -14,6 +14,90 @@ from decimal import Decimal
 from alpheus.calcs import *
 from datetime import date
 import calendar
+from datetime import datetime
+from django.db.models import Sum
+from alpheus.utils import set_columns
+import json
+from django.http import HttpResponse
+
+def sub_red(request):
+
+    fund = request.GET.get('fund', False) 
+    year = int(request.GET.get('year', datetime.today().year))
+    month = int(request.GET.get('month', datetime.today().month))
+    
+    if month and year:
+    
+        ct = ClientTransaction.objects.filter(fund=fund, \
+                    value_date__year=year, value_date__month=month)
+                    
+                    
+        subscription = ct.filter(buy_sell='b').aggregate(Sum('nav'))['nav__sum']
+        
+        if subscription == None:
+            subscription = 0
+            
+        redemption  = ct.filter(buy_sell='s').aggregate(Sum('nav'))['nav__sum']
+        
+        if redemption == None:
+            redemption = 0
+            
+        net_movement = ct.aggregate(Sum('nav'))['nav__sum']
+        
+        if net_movement == None:
+            net_movement = 0
+        
+        cp = ClientPosition.objects.filter(fund=fund, \
+                    value_date__year=year, value_date__month=month) \
+                    .aggregate(Sum('market_value'))
+                    
+        gross_asset = cp['market_value__sum']
+        
+        if gross_asset == None:
+            gross_asset = 0
+        
+        # change the date to the prior month
+        if month == 1:
+            year -= year
+            month = 12
+        else:
+            month - 1
+            
+        cp = ClientPosition.objects.filter(fund=fund, \
+                    value_date__year=year, value_date__month=month) \
+                    .aggregate(Sum('market_value'))
+        
+        prev_nav = cp['market_value__sum']
+                    
+        if prev_nav == None:
+            prev_nav = 0
+                        
+        lis = [{
+                'summary': 'Previous NAV',
+                'euro': prev_nav,
+            }, {
+                'summary': 'Subscription Amount',
+                'euro': subscription,
+            }, {
+                'summary': 'Redemption Amount',
+                'euro': redemption,
+            }, {
+                'summary': 'Net Movements',
+                'euro': net_movement,
+            }, {
+                'summary': 'Gross Assets After Subs Reds ',
+                'euro': gross_asset,
+            }
+
+        ]
+
+        columns = ['summary','euro']
+        data = {
+            'columns': set_columns(request, columns),
+            'rows': lis
+        }
+        return HttpResponse(json.dumps(data), mimetype="application/json")      
+        
 
 def fund_return_form(request):
 
