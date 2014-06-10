@@ -200,7 +200,7 @@ class PageWindowResource(StandardBaseResource):
     class Meta(MainBaseResource.Meta):
         # what's this?
         authorization = UserObjectsOnlyAuthorization()
-        queryset = PageWindow.objects.select_related('window').all()
+        queryset = PageWindow.objects.select_related('window', 'page', 'user').all()
         #allowed_methods = ['get', 'post', 'put', 'delete', 'patch']
         always_return_data = True
 

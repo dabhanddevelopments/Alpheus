@@ -1171,6 +1171,7 @@ Ext.onReady(function() {
             obj.fund = $('#data').data('fund_obj');
         }
         
+        
         // for w18
         function createGrid(tabId, data,flex) {
 
@@ -1684,12 +1685,13 @@ Ext.onReady(function() {
         var window_id = 'page_' + page + '_' + data.window.id;
         $('<div id="' + window_id + '"></div>').appendTo('body');
 
-        if(data.window.key == 'w55') {
+        //if(data.window.key == 'w55') {
+        //
+        //    investmentNAV(window_id, 'fund');
+        //    return widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
 
-            investmentNAV(window_id, 'fund');
-            return widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
-
-        } else if(data.window.key == 'w46') {
+        //} else 
+        if(data.window.key == 'w46') {
 
             investmentNAV(window_id, 'client');
         } else if(data.window.key == 'w68') { // alpheus funds
@@ -1722,6 +1724,8 @@ Ext.onReady(function() {
                     var widget_id = 'page_' + page + '_win_' + data.window.id + '_widget_' + widgets[x].id;
                     $('<div id="' + widget_id + 'top"></div>').appendTo('#' + window_id);
                     $('<div id="' + widget_id + '"></div>').appendTo('#' + window_id);
+                    
+                    $('#data').data('window_id', window_id);
 
                     var panel = createWidget(obj, widgets[x], widget_id);
 
@@ -1771,7 +1775,7 @@ Ext.onReady(function() {
         title = title.replace('MONTH', moment(date).format('MMM'));
 
         // Sets the fund name to the window title
-        if(typeof  $('#data').data('fund_obj').name !== 'undefined') {
+        if(typeof  $('#data').data('fund_obj') !== 'undefined' && typeof $('#data').data('fund_obj').name !== 'undefined') {
             title = title.replace('FUND_NAME', $('#data').data('fund_obj').name);
         }
         
@@ -1928,9 +1932,16 @@ Ext.onReady(function() {
            }
         }
         
+        
+        console.log('WIDGET KEY', widget.key);
+        
         if(widget.key == 'return_histogram') {
         
             return returnHistogram(obj, widget, div);
+            
+        } else if(widget.key == 'w55') {
+
+            w55(obj, widget, div);                     
 
         } else if(widget.key == 'w25') {
 
@@ -2050,13 +2061,9 @@ Ext.onReady(function() {
     
     function w25(obj, div) {
     
-        console.log('w25');
-    
         $.getJSON("/api/nav-reconciliation/?fund=" + obj.fund.id, function(data) {
                         
-            var myData = [[71.72, 0.02,  0.03,  '123.34']];
             var store = Ext.create('Ext.data.ArrayStore', {
-                //fields: ['market_value', 'size', 'nav', 'shares'],
                 fields: [
                    {name: 'market_value',   type: 'float'},
                    {name: 'size',           type: 'float'},
@@ -2066,9 +2073,6 @@ Ext.onReady(function() {
                 data: data,
             });
             
-            console.log('data.rows', data.rows);
-
-            // create the Grid
             var grid = Ext.create('Ext.grid.Panel', {
                 store: store,
                 columnLines: true,
@@ -2102,6 +2106,99 @@ Ext.onReady(function() {
         });  
     
     }
+    
+    
+   function w55(obj, widget, div) {
+   
+        function fetchHtml(year) {
+    
+           $.get('/admin/fund/performance/?year=' + year, function( html ) {
+
+                $('#w55' + year).empty();
+                $(html).appendTo('#w55' + year);
+                selectedYear = year;
+           });    
+        }
+        
+        years = [];
+        items = [];
+        selectedYear = new Date().getFullYear();
+        for(i=this_year; i>2002; i--) {
+            years.push(i);
+        }
+         
+        window_id = $('#data').data('window_id');
+        for(i=0; i<parents.length; i++) {
+            
+            $('<div id="w55' + years[i] + '"></div>').appendTo("#" + window_id);
+            
+            items.push({
+                xtype: 'tabpanel',
+                title: years[i],
+                id: 'w55-tabs' + years[i],
+                autoScroll: true,
+                contentEl: 'w55' + years[i],
+            });
+        }
+  
+        var tabPanel = new Ext.TabPanel({
+            //renderTo: div,
+            id: 'w55-tabs',
+            activeTab: 0,
+            items: items,
+            header: false,
+            autoFit: true,
+            height: widget.height - 10,
+            width: widget.width + 5,
+            listeners: {
+                'tabchange': function(tabPanel, tab){
+                    fetchHtml(tab.title);
+                }
+            }
+        });
+
+        var print_methods = ['Year', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        Ext.create('Ext.container.Container', {
+            layout: {
+                type: 'vbox'
+            },
+            header: false,
+            renderTo: div,
+            height: widget.height + 70,
+            width: widget.width + 5,
+            header: false,
+            items: [tabPanel, {
+                xtype: 'container',
+                layout: {
+                    type: 'hbox'
+                },
+                padding: 5,
+                items: [{
+                    xtype: 'combobox',
+                    text: 'Print',
+                    fieldLabel: 'Print method',
+                    store: print_methods,
+                    queryMode: 'local',
+                    id: 'w55combo',
+                    margin: '0 10 0 0',
+                    value: 'Year',
+                },{                    
+                    xtype: 'button',
+                    text: 'Print',
+                    handler : function() {
+                        var date = Ext.getCmp('w55combo').getValue();
+                        var url = '/admin/fund/performance/?year=' + selectedYear + '&print=true&date=' + date;
+                        window.open(url, 'performance-print','height=' + screen.height + ',width=' + screen.width + ',resizable=no,scrollbars=yes,toolbar=no,menubar=no,location=yes')
+                    },
+                }],
+            }],
+        });
+        
+        fetchHtml(selectedYear);
+    }
+
+    
     
     function w23(obj, widget, div) {
     
@@ -4506,8 +4603,9 @@ Ext.onReady(function() {
 
         var fund = $('#data').data('fund');
 
-
-        var title = 'Alpheus / MONTH YEAR / Historical Performance';
+        
+        var title = 'FUND_NAME / MONTH YEAR / Historical Performance';
+        title = title.replace('FUND_NAME', $('#data').data('fund_obj').name);
         title = title.replace('YEAR', moment(new Date(year)).format("YYYY"))
         title = title.replace('MONTH', moment(new Date(year, month - 1)).format("MMMM"))
 
@@ -5112,6 +5210,7 @@ console.log('WIDGET', widget);
         // for nested header columns as well
         //console.log('data.columns', data.columns);
         fields = [];
+        console.log('data table widget key', widget.key);
         for(i=0; i < data.columns.length; i++) {
             if(typeof data.columns[i].columns != 'undefined') {
             
@@ -5254,6 +5353,9 @@ console.log('WIDGET', widget);
         
         if(widget.window.key == 'w12') {
     
+            tableStore.filter([
+                {filterFn: function(item) { return item.get("size") > 0; }}
+            ]);
             Ext.create('Ext.form.Panel', {
                 bodyPadding: 5,
                 flex: 1,
@@ -5268,7 +5370,7 @@ console.log('WIDGET', widget);
                         inputValue: '0',
                         id: 'size_checkbox',
                         handler: function (field, value) { 
-                            if(value) {
+                            if(!value) {
                                 tableStore.filter([
                                     {filterFn: function(item) { return item.get("size") > 0; }}
                                 ]);
@@ -6185,7 +6287,7 @@ console.log('WIDGET', widget);
                         name: data.sec_bench__name,
                     },
                 };
-                
+                console.log('SETTING FUND');
                 $('#data').data("fund_obj", fund);
             }
         });
@@ -6348,7 +6450,7 @@ console.log('WIDGET', widget);
                                 
                                     var asdf = record;
 
-                                   //console.log('record');
+                                   console.log('ITEM CLICKED');
                                    //console.log(record);
 
                                     // Expand & collapse node on single click

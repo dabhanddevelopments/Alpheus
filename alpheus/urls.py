@@ -130,6 +130,7 @@ urlpatterns = patterns('',
     #(r'^asdf$', lambda r: HttpResponse("<html><script> window.close(); </script></html>", mimetype="text/html")),
     url(r'^$', index, name='index'),
     url(r'^admin/fund/returnestimate/$', fund_return_form, name='fund_return'),
+    url(r'^admin/fund/performance/$', performance_by_fund, name='performance_by_fund'),
     #url(r'^admin/fundmonthly/$', TemplateView.as_view(template_name='admin/fundmonthly.html')),
 
     #url(r'^api/holding-performance-benchmark/$', holding.performancebenchmark),

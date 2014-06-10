@@ -19,6 +19,7 @@ from django.db.models import Sum
 from alpheus.utils import set_columns
 import json
 from django.http import HttpResponse
+from operator import itemgetter
 
 def sub_red(request):
 
@@ -126,8 +127,324 @@ def nav_reconciliation(request):
             float("%.2f" % f['shares__sum']),
         ]]      
         return HttpResponse(json.dumps(data), mimetype="application/json") 
-              
+    
+def performance_by_fund(request):
 
+    year = request.GET.get('year', False)
+    date = request.GET.get('date', 'Year')
+    print_version = request.GET.get('print', 'false')
+
+    if year:
+
+        
+        months = []
+        data = []
+        alpheus_total = []
+        alpheus_total = {}
+        
+        # list of months: jan, feb, mar...
+        for i in range(1,13):
+            months.append(calendar.month_abbr[i].lower())
+         
+         
+        # get the months for the alpheus fund 
+        alpheus = FundReturnMonthly.objects.filter(fund__id=1, \
+            value_date__year=year).only('nav', 'ytd', 
+            'fund__benchpeer__name', 'fund__sec_bench__name') \
+            .order_by('value_date')
+           
+        # default values for alpheus 
+        for m in months:
+        
+            alpheus_total[m] = {
+                'val': '-%', 
+                'col': 'black',
+                'b_val': '-%', 
+                'b_col': 'black',
+                'sb_val': '-%', 
+                'sb_col': 'black'
+            }   
+                
+        # loop through them and set the month values,
+        # the ytd, names etc are set by the last value
+        for a in alpheus:
+        
+            month = calendar.month_abbr[a.value_date.month].lower()
+            
+            if month in months:
+            
+                try:
+                    bench_name = a.fund.benchpeer.name
+                except AttributeError:
+                    bench_name = 'N/A'
+                    
+                try:
+                    sec_bench_name = a.fund.sec_bench.name
+                except AttributeError:
+                    sec_bench_name = 'N/A'
+                    
+                if a.fund_perf < 0:
+                    fund_color = 'red'
+                else:
+                    fund_color = 'blue'
+                    
+                if a.bench_perf < 0:
+                    bench_color = 'red'
+                else:
+                    bench_color = 'blue'
+                    
+                    
+                if a.ytd < 0:
+                    ytd_color = 'red'
+                else:
+                    ytd_color = 'blue'
+                    
+                if a.bench_ytd < 0:
+                    bench_color = 'red'
+                else:
+                    bench_color = 'blue'
+                    
+                if a.sec_bench_ytd < 0:
+                    sec_bench_color = 'red'
+                else:
+                    sec_bench_color = 'blue'
+
+        
+                try:
+                    fund_perf = str("%.2f" % a.fund_perf) + '%'
+                except TypeError:
+                    fund_perf = '-%'
+                    
+                try:
+                    bench_perf = str("%.2f" % a.bench_perf) + '%'
+                except TypeError:
+                    bench_perf = '-%'
+                    
+                try:
+                    sec_bench_perf = str("%.2f" % a.sec_bench) + '%'    
+                except TypeError:
+                    sec_bench_perf = '-%'
+           
+        
+                alpheus_total[month] = {
+                    'val': fund_perf, 
+                    'col': fund_color,
+                    'b_val': bench_perf, 
+                    'b_col': bench_color,
+                    'sb_val': sec_bench_perf, 
+                    'sb_col': sec_bench_color
+                }
+        
+                ytd = a.ytd
+                bench_ytd = a.bench_ytd
+                sec_bench_ytd = a.sec_bench_ytd
+                weight = '100%'
+        
+        if len(alpheus) == 0:
+            weight = 'N/A'
+            ytd = 0
+            bench_ytd = 0
+            sec_bench_ytd = 0
+            ytd_color = 'black'
+            bench_color = 'black'
+            sec_bench_color = 'black'
+            bench_name = 'N/A'
+            sec_bench_name = 'N/A'
+            
+        #alpheus_total.append(alpheus_months)        
+        #alpheus_total.append({
+        try:
+            alpheus_total['ytd'] = {'val': str("%.2f" % ytd) + '%', 'col': ytd_color}
+        except TypeError:
+            alpheus_total['ytd'] = {'val': str("%.2f" % 0) + '%', 'col': 'black'}
+            
+        alpheus_total['weight'] = {'val': weight, 'col': 'blue'}
+        
+        try:
+            alpheus_total['bench_name'] = bench_name
+        except TypeError:
+            alpheus_total['bench_name'] = 'N/A' 
+            
+        try:
+            alpheus_total['sec_bench_name'] = sec_bench_name
+        except TypeError:
+            alpheus_total['sec_bench_name'] = 'N/A'
+            
+        try:
+            alpheus_total['bench_ytd'] = {
+                'val': str("%.2f" % bench_ytd) + '%', 
+                'col': bench_color
+            }
+        except TypeError:
+            alpheus_total['bench_ytd'] = {
+                'val': str("%.2f" % 0) + '%', 
+                'col': 'black'
+            }
+            
+        try:
+            alpheus_total['bench_ytd'] = {
+                'val': str("%.2f" % sec_bench_ytd) + '%', 
+                'col': sec_bench_color
+            }
+        except TypeError:
+            alpheus_total['sec_bench_ytd'] = {
+                'val': str("%.2f" % 0) + '%', 
+                'col': 'black'
+            }
+        
+    
+        # get the groups and their order
+        groups = AlpheusGroup.objects.all().order_by('pk')
+                    
+        # the rest of the groups
+        for group in groups:
+        
+            group_data = []
+            
+            try:
+            
+                # get the latest value of the year
+                latest = FundReturnMonthly.objects.filter(fund__group=group, \
+                             fund__estimate_required=True, value_date__year=year) \
+                             .order_by('-value_date').only('value_date')[0]
+                
+                # get the values for the latest month
+                returns = FundReturnMonthly.objects.filter(fund__group=group, \
+                   fund__estimate_required=True, value_date=latest.value_date) \
+                   .only('fund__id', 'fund__name', 'nav', 'ytd',
+                            'bench_ytd', 'fund__benchpeer__name')
+                   
+            except IndexError:
+                continue
+                
+            try:             
+                # get the NAV for the alpheus fund's latest month
+                alpheus = FundReturnMonthly.objects.filter(fund__id=1, \
+                                value_date=latest.value_date).only('nav')[0]
+                alpheus_nav = alpheus.nav
+            except IndexError:
+                alpheus_nav = 0
+               
+
+                            
+            fund_order = []
+            
+            for r in returns:
+                
+                # calculate the weight from the two NAV values
+                try:
+                    weight = ((r.nav / alpheus_nav) * 100),
+                    weight = str("%.2f" % weight) + '%'
+                except:
+                    weight = 'N/A'
+                  
+                # some funds don't have a benchmark
+                try:
+                    bench_name = r.fund.benchpeer.name
+                except AttributeError:
+                    bench_name = 'N/A'
+                    
+                if r.ytd < 0:
+                    ytd_color = 'red'
+                else:
+                    ytd_color = 'blue'
+                    
+                if r.bench_ytd < 0:
+                    bench_color = 'red'
+                else:
+                    bench_color = 'blue'
+                    
+                if weight < 0:
+                    weight_color = 'red'
+                else:
+                    weight_color = 'blue'
+                    
+                try:
+                    fund_order.append({
+                        'fund_id': r.fund.id,
+                        'fund_name': r.fund.name,
+                        'ytd': {'val': str("%.2f" % r.ytd) + '%', 'col': ytd_color},
+                        'weight': {'val': weight, 'col': weight_color},
+                        'bench_name': bench_name,
+                        'bench_ytd': {'val': str("%.2f" % r.bench_ytd) + '%', 'col': bench_color},
+                    })
+                except TypeError:
+                    pass
+            
+            bench = {}
+            
+            # sort the fund ids by weight
+            sorted_funds = sorted(fund_order, key=itemgetter('weight'), reverse=True) 
+            
+            for sort in sorted_funds:
+            
+                # get the fund performance for the whole year
+                returns = FundReturnMonthly.objects.filter(fund__id=sort['fund_id'], \
+                      value_date__year=year) \
+                      .only('fund_perf', 'estimation', 'bench_perf')
+                      
+                # fill dict with default values that we later over write
+                for m in months:
+                
+                    sort[m] = {
+                        'val': '-%', 
+                        'col': 'black',
+                        'b_val': '-%', 
+                        'b_col': 'black'
+                    }              
+                
+                # appending the fund performance for each month of this year
+                for r in returns:
+                
+                    month = calendar.month_abbr[r.value_date.month].lower()
+                    
+                    if month in months:
+                    
+                        if r.fund_perf < 0:
+                            fund_color = 'red'
+                        else:
+                            fund_color = 'blue'
+                            
+                        if r.bench_perf < 0:
+                            bench_color = 'red'
+                        else:
+                            bench_color = 'blue'
+                            
+                        fund_perf = str("%.2f" % r.fund_perf) + '%'
+                        bench_perf = str("%.2f" % r.bench_perf) + '%'
+                        
+                        if r.estimation == 1:
+                            fund_perf += ' e'   
+                        
+                    #group_data.append({month: perf})
+                    sort[month] = {
+                        'val': fund_perf, 
+                        'col': fund_color,
+                        'b_val': bench_perf, 
+                        'b_col': bench_color
+                    }
+                    
+                group_data.append(sort)
+            
+            data.append({
+                'group': group.name,
+                'data': group_data,
+            })
+        #return HttpResponse(json.dumps(data, indent=4), mimetype="application/json") 
+        #assert False
+        
+        return render_to_response('admin/performance_by_fund.html', {
+                'data': data,
+                'date': date,
+                'print': print_version,
+                'a': alpheus_total,
+            },
+            context_instance=RequestContext(request)
+        )
+    else:
+    
+        return HttpResponse('No year paramater passed')
+        
 def fund_return_form(request):
 
     months = []
@@ -177,9 +494,6 @@ def fund_return_form(request):
         fund__estimate_required=True, value_date__gte=months[0]).\
         order_by('fund__name', 'value_date')
 
-    for asdf in data:
-        print asdf.fund.name
-        
     # set the total nav of all funds
     total = {
         'name': 'Alpheus',
