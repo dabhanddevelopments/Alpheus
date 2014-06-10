@@ -282,7 +282,7 @@ def performance_by_fund(request):
             }
             
         try:
-            alpheus_total['bench_ytd'] = {
+            alpheus_total['sec_bench_ytd'] = {
                 'val': str("%.2f" % sec_bench_ytd) + '%', 
                 'col': sec_bench_color
             }

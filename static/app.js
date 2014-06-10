@@ -2177,7 +2177,6 @@ Ext.onReady(function() {
                 items: [{
                     xtype: 'combobox',
                     text: 'Print',
-                    fieldLabel: 'Print method',
                     store: print_methods,
                     queryMode: 'local',
                     id: 'w55combo',
