@@ -1,0 +1,145 @@
+{% extends "admin/base_basic.html" %}
+
+{% block title %}Performance by Fund | Alpheus{% endblock %}
+
+{% block content %}
+
+<style>
+    .red {
+      color: red;
+    }
+
+    .blue {
+      color: blue;
+    }
+</style>
+
+<script type="text/javascript">
+
+</script>
+
+<div width="400">
+<div class="datagrid">
+    <table>
+      <thead>
+        <tr>
+            <th></th>
+            {% if date == "Year" or date == "Jan"  %}<th>Jan</th>{% endif %}
+            {% if date == "Year" or date == "Feb"  %}<th>Feb</th>{% endif %}
+            {% if date == "Year" or date == "Mar"  %}<th>Mar</th>{% endif %}
+            {% if date == "Year" or date == "Apr"  %}<th>Apr</th>{% endif %}
+            {% if date == "Year" or date == "May"  %}<th>May</th>{% endif %}
+            {% if date == "Year" or date == "Jun"  %}<th>Jun</th>{% endif %}
+            {% if date == "Year" or date == "Jul"  %}<th>Jul</th>{% endif %}
+            {% if date == "Year" or date == "Aug"  %}<th>Aug</th>{% endif %}
+            {% if date == "Year" or date == "Sep"  %}<th>Sep</th>{% endif %}
+            {% if date == "Year" or date == "Oct"  %}<th>Oct</th>{% endif %}
+            {% if date == "Year" or date == "Nov"  %}<th>Nov</th>{% endif %}
+            {% if date == "Year" or date == "Dec"  %}<th>Dec</th>{% endif %}
+            <th>YTD</th>
+            <th>Weight</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td><h3>Alpheus</h3></td>
+            {% if date == "Year" or date == "Jan" %}<td><div class="{{ a.jan.col }}">{{ a.jan.val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Feb" %}<td><div class="{{ a.feb.col }}">{{ a.feb.val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Mar" %}<td><div class="{{ a.mar.col }}">{{ a.mar.val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Apr" %}<td><div class="{{ a.apr.col }}">{{ a.apr.val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "May" %}<td><div class="{{ a.may.col }}">{{ a.may.val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Jun" %}<td><div class="{{ a.jun.col }}">{{ a.jun.val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Jul" %}<td><div class="{{ a.jul.col }}">{{ a.jul.val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Aug" %}<td><div class="{{ a.aug.col }}">{{ a.aug.val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Sep" %}<td><div class="{{ a.sep.col }}">{{ a.sep.val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Oct" %}<td><div class="{{ a.oct.col }}">{{ a.oct.val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Nov" %}<td><div class="{{ a.nov.col }}">{{ a.nov.val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Dec" %}<td><div class="{{ a.dec.col }}">{{ a.dec.val }}</div></td>{% endif %}
+            <td><div class="{{ a.ytd.col }}">{{ a.ytd.val }}</td>
+            <td><div class="{{ a.weight.col }}">{{ a.weight.val }}</td>
+        </tr>
+        <tr class="alt">
+            <td><h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ a.bench_name }}</h5></td>
+            {% if date == "Year" or date == "Jan" %}<td><div class="{{ a.jan.b_col }}">{{ a.jan.b_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Feb" %}<td><div class="{{ a.feb.b_col }}">{{ a.feb.b_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Mar" %}<td><div class="{{ a.mar.b_col }}">{{ a.mar.b_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Apr" %}<td><div class="{{ a.apr.b_col }}">{{ a.apr.b_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "May" %}<td><div class="{{ a.may.b_col }}">{{ a.may.b_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Jun" %}<td><div class="{{ a.jun.b_col }}">{{ a.jun.b_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Jul" %}<td><div class="{{ a.jul.b_col }}">{{ a.jul.b_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Aug" %}<td><div class="{{ a.aug.b_col }}">{{ a.aug.b_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Sep" %}<td><div class="{{ a.sep.b_col }}">{{ a.sep.b_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Oct" %}<td><div class="{{ a.oct.b_col }}">{{ a.oct.b_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Nov" %}<td><div class="{{ a.nov.b_col }}">{{ a.nov.b_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Dec" %}<td><div class="{{ a.dec.b_col }}">{{ a.dec.b_val }}</div></td>{% endif %}
+            <td><div class="{{ a.bench_ytd.col }}">{{ a.bench_ytd.val }}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ a.sec_bench_name }}</h5></td>
+            {% if date == "Year" or date == "Jan" %}<td><div class="{{ a.jan.sb_col }}">{{ a.jan.sb_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Feb" %}<td><div class="{{ a.feb.sb_col }}">{{ a.feb.sb_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Mar" %}<td><div class="{{ a.mar.sb_col }}">{{ a.mar.sb_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Apr" %}<td><div class="{{ a.apr.sb_col }}">{{ a.apr.sb_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "May" %}<td><div class="{{ a.may.sb_col }}">{{ a.may.sb_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Jun" %}<td><div class="{{ a.jun.sb_col }}">{{ a.jun.sb_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Jul" %}<td><div class="{{ a.jul.sb_col }}">{{ a.jul.sb_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Aug" %}<td><div class="{{ a.aug.sb_col }}">{{ a.aug.sb_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Sep" %}<td><div class="{{ a.sep.sb_col }}">{{ a.sep.sb_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Oct" %}<td><div class="{{ a.oct.sb_col }}">{{ a.oct.sb_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Nov" %}<td><div class="{{ a.nov.sb_col }}">{{ a.nov.sb_val }}</div></td>{% endif %}
+            {% if date == "Year" or date == "Dec" %}<td><div class="{{ a.dec.sb_col }}">{{ a.dec.sb_val }}</div></td>{% endif %}
+            <td><div class="{{ a.sec_bench_ytd.col }}">{{ a.sec_bench_ytd.val }}</td>
+            <td></td>
+        </tr>
+                
+                
+        {% for row in data %}
+        <tr>
+            <td colspan="15"><h3>{{ row.group }}</h3></td>
+        </tr>   
+            {% for d in row.data %}
+                <tr class="alt">
+                    <td><h4>&nbsp;&nbsp;&nbsp;&nbsp;{{ d.fund_name }}</h4></td>
+                    {% if date == "Year" or date == "Jan" %}<td><div class="{{ d.jan.col }}">{{ d.jan.val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Feb" %}<td><div class="{{ d.feb.col }}">{{ d.feb.val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Mar" %}<td><div class="{{ d.mar.col }}">{{ d.mar.val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Apr" %}<td><div class="{{ d.apr.col }}">{{ d.apr.val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "May" %}<td><div class="{{ d.may.col }}">{{ d.may.val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Jun" %}<td><div class="{{ d.jun.col }}">{{ d.jun.val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Jul" %}<td><div class="{{ d.jul.col }}">{{ d.jul.val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Aug" %}<td><div class="{{ d.aug.col }}">{{ d.aug.val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Sep" %}<td><div class="{{ d.sep.col }}">{{ d.sep.val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Oct" %}<td><div class="{{ d.oct.col }}">{{ d.oct.val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Nov" %}<td><div class="{{ d.nov.col }}">{{ d.nov.val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Dec" %}<td><div class="{{ d.dec.col }}">{{ d.dec.val }}</div></td>{% endif %}
+                    <td><div class="{{ d.ytd.col }}">{{ d.ytd.val }}</td>
+                    <td><div class="{{ d.weight.col }}">{{ d.weight.val }}</td>
+                </tr>
+                <tr>
+                    <td><h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ d.bench_name }}</h5></td>
+                    {% if date == "Year" or date == "Jan" %}<td><div class="{{ d.jan.b_col }}">{{ d.jan.b_val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Feb" %}<td><div class="{{ d.feb.b_col }}">{{ d.feb.b_val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Mar" %}<td><div class="{{ d.mar.b_col }}">{{ d.mar.b_val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Apr" %}<td><div class="{{ d.apr.b_col }}">{{ d.apr.b_val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "May" %}<td><div class="{{ d.may.b_col }}">{{ d.may.b_val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Jun" %}<td><div class="{{ d.jun.b_col }}">{{ d.jun.b_val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Jul" %}<td><div class="{{ d.jul.b_col }}">{{ d.jul.b_val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Aug" %}<td><div class="{{ d.aug.b_col }}">{{ d.aug.b_val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Sep" %}<td><div class="{{ d.sep.b_col }}">{{ d.sep.b_val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Oct" %}<td><div class="{{ d.oct.b_col }}">{{ d.oct.b_val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Nov" %}<td><div class="{{ d.nov.b_col }}">{{ d.nov.b_val }}</div></td>{% endif %}
+                    {% if date == "Year" or date == "Dec" %}<td><div class="{{ d.dec.b_col }}">{{ d.dec.b_val }}</div></td>{% endif %}
+                    <td><div class="{{ d.bench_ytd.col }}">{{ d.bench_ytd.val }}</td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+                
+            </tbody>    
+    </table>
+</div>
+</div>
+
+{% endblock %}
+
