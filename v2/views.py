@@ -12,14 +12,14 @@ from django.db.models import Q
 from django.utils.datastructures import SortedDict
 from decimal import Decimal
 from alpheus.calcs import *
-from datetime import date
 import calendar
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from django.db.models import Sum
 from alpheus.utils import set_columns
 import json
 from django.http import HttpResponse
 from operator import itemgetter
+from django.db.models import Q
 
 def sub_red(request):
 
@@ -127,7 +127,21 @@ def nav_reconciliation(request):
             float("%.2f" % f['shares__sum']),
         ]]      
         return HttpResponse(json.dumps(data), mimetype="application/json") 
+ 
+def currency_position(request):
+
+    #try:
+    fund = Fund.objects.get(id=fund).only('daily_data', 'currency')
     
+    if fund.daily_data:
+        positions = PositionDaily.filter(~Q(id = fund.currency)) \
+                    .aggregate(Sum('marketvaluelcl')) 
+    else:
+        positions = PositionMonthly.filter(fund=fund).only('')
+    
+    return HttpResponse(json.dumps(data, indent=4), mimetype="application/json") 
+
+   
 def performance_by_fund(request):
 
     year = request.GET.get('year', False)
@@ -449,11 +463,11 @@ def fund_return_form(request):
 
     months = []
     # check if this actually works, especially with feb
-    now = datetime.datetime.now()
-    #now = datetime.datetime(2013, 12, 5, 6, 22, 45, 517969) # @TODO: remove this later
+    #now = datetime.now()
+    now = datetime(2013, 12, 5, 6, 22, 45, 517969) # @TODO: remove this later
 
-    months.append(now - datetime.timedelta(days=60))
-    months.append(now - datetime.timedelta(days=30))
+    months.append(now - timedelta(days=60))
+    months.append(now - timedelta(days=30))
     months.append(now)
 
 
