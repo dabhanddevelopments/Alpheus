@@ -2130,7 +2130,7 @@ Ext.onReady(function() {
         }
          
         window_id = $('#data').data('window_id');
-        for(i=0; i<parents.length; i++) {
+        for(i=0; i<years.length; i++) {
             
             $('<div id="w55' + years[i] + '"></div>').appendTo("#" + window_id);
             
