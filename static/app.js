@@ -2124,6 +2124,7 @@ Ext.onReady(function() {
         items = [];
         this_year = new Date().getFullYear();
         selectedYear = this_year;
+        
         for(i=this_year; i>2002; i--) {
             years.push(i);
         }
