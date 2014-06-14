@@ -1395,7 +1395,7 @@ Ext.onReady(function() {
                     widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id, true);
                     html = '<div> <table class="html_table">' +
                     '<tr><th>Fund Name</th><td>'+ summary.name + '</td><th>Fund Manager</th><td>'+ summary.manager__name + '</td></tr>' +
-                    '<tr><th>Benchmark</th><td>' + summary.benchpeer__name + '</td><th>Launch Date</th><td>' + moment(summary.launch_date).format('YYYY-MM-DD') + '</td></tr>' +
+                    '<tr><th>Benchmark</th><td>' + summary.benchpeer__name + '</td><th>Launch Date</th><td>' + moment(summary.launch_date).format('DD-MMM-YY') + '</td></tr>' +
                     '<tr><th>Currency</th><td>'+ summary.currency__name + '</td></tr>' +
                     '</table><table class="html_table">' +
                     '<tr><th>Description</th><td>'+ summary.description + '</td></tr>' +
@@ -1423,7 +1423,7 @@ Ext.onReady(function() {
                         html += '</table><table class="html_table">' +
                         '<tr><td colspan="2"><h3>User Defined Peers Section</h3></td></tr>';
                        
-                       $.getJSON('/api/fundpeer/?user=1&fields=benchpeer__name,benchpeer__formula&fund=' + obj.fund.id + '&user=' + $('#data').data('userId'), function(peer) {
+                       $.getJSON('/api/fundpeer/?fields=benchpeer__name,benchpeer__formula&fund=' + obj.fund.id + '&user=' + $('#data').data('userId'), function(peer) {
                        
                             for(i=0; i<peer.length; i++) {
                                 html += '<tr><th>' + peer[i].benchpeer__name + '</th><td>'+ peer[i].benchpeer__formula + '</td></tr>';
@@ -2368,11 +2368,11 @@ Ext.onReady(function() {
                             select: function(combo, record, index) {
                                 url = getReturnHistogramUrl(Ext.getCmp('hist').value);
                                 //console.log('new from date', record);
-                                from = moment(record).format('YYYY-MM-DD');
+                                from = moment(record).format('DD-MMM-YY');
                                 to = Ext.getCmp(id + 'to_date').getValue();
                                 console.log('date from', url);
                                 //console.log('old to date', to);
-                                to = moment(to).format('YYYY-MM-DD');
+                                to = moment(to).format('DD-MMM-YY');
                                 $.getJSON(url + '&value_date__gte=' + from + '&value_date__lte=' + to, function(new_data) {
                                 
                                     var chart = $('#data').data('chart-' + div);
@@ -2397,11 +2397,11 @@ Ext.onReady(function() {
                         listeners: {
                             select: function(combo, record, index) {
                                 url = getReturnHistogramUrl(Ext.getCmp('dateTypeHistogram').value);
-                                to = moment(record).format('YYYY-MM-DD');
+                                to = moment(record).format('DD-MMM-YY');
                                 from = Ext.getCmp(id + 'from_date').getValue();
                                 
                                 if(from) {
-                                    from = moment(from).format('YYYY-MM-DD');
+                                    from = moment(from).format('DD-MMM-YY');
                                     
                                     $.getJSON(url + '&value_date__gte=' + from + '&value_date__lte=' + to, function(new_data) {
                                     
@@ -2597,7 +2597,7 @@ Ext.onReady(function() {
         var button1m = Ext.create('Ext.Button', {
             text: '1m',
             handler: function() {
-                var date = moment().subtract('months', 1).format("YYYY-MM-DD");
+                var date = moment().subtract('months', 1).format("DD-MMM-YY");
                 $.getJSON(url + '&value_date__gte=' + date, function(new_data) {
                     chart.series[0].setData(new_data.data);
                     chart.redraw();
@@ -2608,7 +2608,7 @@ Ext.onReady(function() {
         var button3m = Ext.create('Ext.Button', {
             text: '3m',
             handler: function() {
-                var date = moment().subtract('months', 3).format("YYYY-MM-DD");
+                var date = moment().subtract('months', 3).format("DD-MMM-YY");
                 $.getJSON(url + '&value_date__gte=' + date, function(new_data) {
                     //console.log('3m filter', url + '&value_date__gte=' + date);
                     chart.series[0].setData(new_data.data);
@@ -2620,7 +2620,7 @@ Ext.onReady(function() {
         var button6m = Ext.create('Ext.Button', {
             text: '6m',
             handler: function() {
-                var date = moment().subtract('months', 6).format("YYYY-MM-DD");
+                var date = moment().subtract('months', 6).format("DD-MMM-YY");
                 $.getJSON(url + '&value_date__gte=' + date, function(new_data) {
                     chart.series[0].setData(new_data.data);
                     chart.redraw();
@@ -2631,7 +2631,7 @@ Ext.onReady(function() {
         var button1y = Ext.create('Ext.Button', {
             text: '1y',
             handler: function() {
-                var date = moment().subtract('year', 1).format("YYYY-MM-DD");
+                var date = moment().subtract('year', 1).format("DD-MMM-YY");
                 $.getJSON(url + '&value_date__gte=' + date, function(new_data) {
                     chart.series[0].setData(new_data.data);
                     chart.redraw();
@@ -2642,7 +2642,7 @@ Ext.onReady(function() {
         var buttonYtd = Ext.create('Ext.Button', {
             text: 'YTD',
             handler: function() {
-                var date = moment().startOf('year').format("YYYY-MM-DD"); 
+                var date = moment().startOf('year').format("DD-MMM-YY"); 
                 $.getJSON(url + '&value_date__gte=' + date, function(new_data) {
                     chart.series[0].setData(new_data.data);
                     chart.redraw();
@@ -2896,9 +2896,9 @@ Ext.onReady(function() {
             var date_to = Ext.getCmp(id + 'to_date').getValue();
             
             if(date_from !== null) {
-                qs += 'value_date__gte=' + moment(date_from).format('YYYY-MM-DD') + '&';
+                qs += 'value_date__gte=' + moment(date_from).format('DD-MMM-YY') + '&';
             }
-            qs += 'value_date__lte=' + moment(date_to).format('YYYY-MM-DD') + '&';
+            qs += 'value_date__lte=' + moment(date_to).format('DD-MMM-YY') + '&';
             
             for(i=0; i<qVars.length; i++) {
             
@@ -3051,11 +3051,11 @@ Ext.onReady(function() {
                             select: function(combo, record, index) {
                                 url = getReturnHistogramUrl(Ext.getCmp('hist').value);
                                 //console.log('new from date', record);
-                                from = moment(record).format('YYYY-MM-DD');
+                                from = moment(record).format('DD-MMM-YY');
                                 to = Ext.getCmp(id + 'to_date').getValue();
                                 console.log('date from', url);
                                 //console.log('old to date', to);
-                                to = moment(to).format('YYYY-MM-DD');
+                                to = moment(to).format('DD-MMM-YY');
                                 $.getJSON(url + '&value_date__gte=' + from + '&value_date__lte=' + to, function(new_data) {
                                 
                                     var chart = $('#data').data('chart-' + div);
@@ -3080,11 +3080,11 @@ Ext.onReady(function() {
                         listeners: {
                             select: function(combo, record, index) {
                                 url = getReturnHistogramUrl(Ext.getCmp('dateTypeHistogram').value);
-                                to = moment(record).format('YYYY-MM-DD');
+                                to = moment(record).format('DD-MMM-YY');
                                 from = Ext.getCmp(id + 'from_date').getValue();
                                 
                                 if(from) {
-                                    from = moment(from).format('YYYY-MM-DD');
+                                    from = moment(from).format('DD-MMM-YY');
                                     
                                     $.getJSON(url + '&value_date__gte=' + from + '&value_date__lte=' + to, function(new_data) {
                                     
@@ -3111,7 +3111,7 @@ Ext.onReady(function() {
         var button1m = Ext.create('Ext.Button', {
             text: '1m',
             handler: function() {
-                var date = moment().subtract('months', 1).format("YYYY-MM-DD");
+                var date = moment().subtract('months', 1).format("DD-MMM-YY");
                 dateSpanTo.setValue(date);
             }
         });
@@ -3119,7 +3119,7 @@ Ext.onReady(function() {
         var button3m = Ext.create('Ext.Button', {
             text: '3m',
             handler: function() {
-                var date = moment().subtract('months', 3).format("YYYY-MM-DD");
+                var date = moment().subtract('months', 3).format("DD-MMM-YY");
                 dateSpanTo.setValue(date);
             }
         });
@@ -3127,7 +3127,7 @@ Ext.onReady(function() {
         var button6m = Ext.create('Ext.Button', {
             text: '6m',
             handler: function() {
-                var date = moment().subtract('months', 6).format("YYYY-MM-DD");
+                var date = moment().subtract('months', 6).format("DD-MMM-YY");
                 dateSpanTo.setValue(date);
             }
         });            
@@ -3135,7 +3135,7 @@ Ext.onReady(function() {
         var button1y = Ext.create('Ext.Button', {
             text: '1y',
             handler: function() {
-                var date = moment().subtract('year', 1).format("YYYY-MM-DD");
+                var date = moment().subtract('year', 1).format("DD-MMM-YY");
                 dateSpanTo.setValue(date);
             }
         });
@@ -3143,7 +3143,7 @@ Ext.onReady(function() {
         var buttonYtd = Ext.create('Ext.Button', {
             text: 'YTD',
             handler: function() {
-                var date = moment().startOf('year').format("YYYY-MM-DD"); 
+                var date = moment().startOf('year').format("DD-MMM-YY"); 
                 dateSpanTo.setValue(date);
             }
         });
@@ -3151,7 +3151,7 @@ Ext.onReady(function() {
         var buttonAll = Ext.create('Ext.Button', {
             text: 'All',
             handler: function() {
-                var date = moment().subtract('year', 20).format("YYYY-MM-DD");
+                var date = moment().subtract('year', 20).format("DD-MMM-YY");
                 dateSpanTo.setValue(date);
             }
         });
@@ -5241,7 +5241,7 @@ console.log('WIDGET', widget);
                         format_val = val.replace('e', '');
                         
                         if(widget.window.key == 'w6') {
-                            number = Ext.util.Format.currency(format_val, '&euro;');
+                            number = Ext.util.Format.number(format_val, '0,000');
                             if(val.search('e') !== -1) {
                                 number = number + 'e';
                             }
@@ -5459,7 +5459,7 @@ console.log('WIDGET', widget);
                         
                             if(year.substr(0, 5) !== 'bench') {
 
-                                $.getJSON("api/fundreturnmonthly/?align=center&data_type=year&date=value_date&extra_fields=bench_ytd&fund=" + obj.fund.id + "&fields=estimation&value=bench_perf&value_date__year=" + year, function(w1) {
+                                $.getJSON("api/fundreturnmonthly/?align=center&data_type=year&date=value_date&extra_fields=bench_ytd&fund=" + obj.fund.id + "&column_width=80,50&fields=estimation&value=bench_perf&value_date__year=" + year, function(w1) {
                                     
                                     tableStore.load();
                                     
@@ -5473,7 +5473,7 @@ console.log('WIDGET', widget);
                                         }
                                     } else {
                                         w1.rows[0]['id'] = id + 1;
-                                        w1.rows[0]['year'] = 'Bench';
+                                        w1.rows[0]['year'] = 'Benchmark';
                                         w1.rows[0]['ytd'] = w1.rows[0]['bench_ytd'];
                                         console.log('w1', w1.rows[0]);
                                         data.rows.push(w1.rows[0]);
@@ -6517,7 +6517,7 @@ console.log('WIDGET', widget);
                                     } else if(page_id == 101) {
                                         popup('fund', 'classification');
                                     } else if(page_id == 219) {
-                                        popup('fund', 'returnestimate', 1000, 800);
+                                        popup('fund', 'returnestimate', 500, 800);
                                     } else if(page_id == 220) {
                                         popup('v2', 'fundstyle');
                                     } else if(page_id == 221) {

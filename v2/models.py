@@ -694,7 +694,7 @@ class FundReturnMonthly(models.Model):
     ytd = models.DecimalField(decimal_places=6, max_digits=18, db_column='FundYTDReturn', blank=True, null=True)
     bench_perf = models.DecimalField(decimal_places=6, max_digits=18, db_column='BenchMonthlyReturn', blank=True, null=True)
     bench_ytd = models.DecimalField(decimal_places=6, max_digits=18, db_column='BenchYTDReturn', blank=True, null=True)
-    estimation = models.CharField(max_length=1, db_column='Flag', blank=True, null=True)
+    estimation = models.NullBooleanField(db_column='Flag', blank=True, null=True)
     sec_bench = models.DecimalField(decimal_places=6, max_digits=18, db_column='SecBenchMonthlyReturn', blank=True, null=True)
     sec_bench_ytd = models.DecimalField(decimal_places=6, max_digits=18, db_column='SecBenchYTDReturn', blank=True, null=True)
 

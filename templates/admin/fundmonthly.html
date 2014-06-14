@@ -1,4 +1,4 @@
-{% extends "admin/admin/change_form.html" %}
+{% extends "admin/base_basic.html" %}
 
 <!-- LOADING -->
 {% load url from future %}
@@ -9,26 +9,6 @@
 {% block page-tools %}{% endblock %}
 
 {% block title %}Fund Return Estimates | Alpheus{% endblock %}
-
-
-<!-- JAVASCRIPTS -->
-{% block javascripts %}
-    {{ block.super }}
-{% endblock %}
-
-<!-- BREADCRUMBS -->
-{% block breadcrumbs %}
-    {% if not is_popup %}
-        <ul>
-            <li>{% if has_change_permission %}<a href="../">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %}</li>
-            <li>{% if add %}{% trans "Add" %} {{ opts.verbose_name }}{% else %}{{ original|truncatewords:"18" }}{% endif %}</li>
-        </ul>
-    {% endif %}
-{% endblock %}
-
-
-<!-- OBJECT TOOLS -->
-{% block object-tools %}{% endblock %}
 
 {% block content %}
 
@@ -42,43 +22,80 @@
     .row2 {
         background-color: #CCE0F2;
     }
+/* Basic Grey */
+
+.form input[type="text"], .form input[type="email"], .form textarea,.form select{
+    border: 1px solid #DADADA;
+    color: #888;
+    height: 24px;
+    margin-bottom: 16px;
+    margin-right: 6px;
+    margin-top: 2px;
+    outline: 0 none;
+    padding: 3px 3px 3px 5px;
+}
+.form select {
+    appearance:none;
+    -webkit-appearance:none; 
+    -moz-appearance: none;
+    text-indent: 0.01px;
+    text-overflow: '';
+    width: 72%;
+    height: 30px;
+}
+.form .submit {
+    background: green;
+    border: none;
+    padding: 10px 25px 10px 25px;
+    color: #fff;
+    float: right;
+}
+.form .cancel {
+    background: #E48F8F;
+    border: none;
+    padding: 10px 25px 10px 25px;
+    color: #fff;
+    float: left;
+}
 </style>
 
  
-<form action="/admin/fund/returnestimate/" method="post">{% csrf_token %}
-        {{ formset.non_form_errors.as_ul }}
-        <table id="formset" class="form">
-        {% for form in form.forms %}
-          {% if forloop.first %}
-          <thead>
-            <tr>
-                <th></th>
-                {% for month in months %}
-                    <th colspan="2">{{ month|date:"M-y" }}</th>
+<div width="400">
+    <div class="datagrid"> 
+        <form action="/admin/fund/returnestimate/" method="post" class="form">{% csrf_token %}
+                {{ formset.non_form_errors.as_ul }}
+                <table id="formset" class="form">
+                  <thead>
+                    <tr>
+                        <th></th>
+                        <th>{{ month1|date:"M-y" }}<br>Returns</th>
+                        <th>{{ month2|date:"M-y" }}<br>Returns</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                        
+                {% for form in form.forms %}
+                    {% if form.initial.group %}
+                    <tr>
+                        <td colspan="15"><h3>{{ form.name }}</h3></td>
+                    </tr> 
+                    {% else %}  
+                    <tr class="{% cycle row1,row2 %}">
+                        {{ form.fund }}{{ form.pk1 }}{{ form.pk2 }}
+                        <td><h4>&nbsp;&nbsp;&nbsp;&nbsp;{{ form.name }}</h4></td>
+                        <td>{% if form.initial.input1 %}{{ form.return1 }}{% else %}{{ form.initial.return1|floatformat:2|intcomma }}%{% endif %}{% if form.initial.estimation1 %} e{% endif %}</td>
+                        <td>{% if form.initial.input2 %}{{ form.return2 }}{% else %}{{ form.initial.return2|floatformat:2|intcomma }}%{% endif %}{% if form.initial.estimation2 %} e{% endif %}</td>
+                    </tr>
+                    {% endif %}
                 {% endfor %}
-                <th></th>
-            </tr>
-            <tr>
-                <th></th><th>NAV</th><th>Weight</th><th>Return</th><th>NAV</th><th>Return</th><th>NAV</th><th>Ytd</th>
-            </tr>
-          </thead>
-          {% endif %}
-          
-          <tr class="{% if form.initial.total %}total{% else %}{% cycle row1,row2 %}{% endif %}">
-            <td>{{ form.pk }}{{ form.estimation2 }}{{ form.estimation3 }}{{ form.name }}</td>
-            <td>{{ form.nav1|floatformat:2 }}</td><td>{{ form.weight|floatformat:2 }}%</td>
-            <td>{% if form.initial.estimation2 %}{{ form.return2 }}{% else %}{{ form.initial.return2|floatformat:2|intcomma }}%{% endif %}</td>
-            <td>{{ form.initial.nav2|floatformat:2|intcomma }}</td>
-            <td>{% if form.initial.estimation3 %}{{ form.return3 }}{% else %}{{ form.initial.return3|floatformat:2|intcomma }}%{% endif %}</td>
-            <td>{{ form.initial.nav3|floatformat:2|intcomma }}</td>
-            <td>{{ form.initial.ytd }}</td>
-          </tr>
-        {% endfor %}
-        </table>
-        {{ form.management_form }}
-        <input type="submit" value="Reset" onClick="document.location.reload(true); return false; ">
-        <input type="submit" value="Update" />
-</form>
-
+                        
+                    </tbody>    
+                </table>
+                {{ form.management_form }}
+                <input type="submit" value="Update" class="submit" />
+                <input type="submit" value="Reset" onClick="document.location.reload(true); return false; " class="cancel">
+        </form>
+    </div>
+</div>
 {% endblock %}
 

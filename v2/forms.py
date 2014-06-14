@@ -1,5 +1,5 @@
 from django import forms
-from django.forms.widgets import HiddenInput
+from django.forms.widgets import HiddenInput, TextInput
 
 from django.utils.safestring import mark_safe
 
@@ -8,17 +8,13 @@ class PlainTextWidget(forms.Widget):
        return mark_safe("%s" %(value))
    
 class FundMonthlyReturnForm(forms.Form):
-    pk = forms.IntegerField(widget=HiddenInput, required=False)
+    pk1 = forms.IntegerField(widget=HiddenInput, required=False)
+    pk2 = forms.IntegerField(widget=HiddenInput, required=False)
+    fund = forms.IntegerField(widget=HiddenInput, required=False)
     name = forms.CharField(widget=PlainTextWidget, required=False)
-    nav1 = forms.DecimalField(widget=PlainTextWidget, decimal_places=2, required=False)
-    weight = forms.DecimalField(widget=PlainTextWidget, decimal_places=2, required=False)
-    nav2 = forms.DecimalField(decimal_places=2, required=False)
-    return2 = forms.DecimalField(decimal_places=2, required=False)
-    nav3 = forms.DecimalField(decimal_places=2, required=False)
-    return3 = forms.DecimalField(decimal_places=2, required=False)
-    ytd = forms.DecimalField(widget=PlainTextWidget, decimal_places=2, required=False)
+    return1 = forms.DecimalField(widget=TextInput(attrs={'size':'2'}), decimal_places=2, required=False)
+    return2 = forms.DecimalField(widget=TextInput(attrs={'size':'2'}), decimal_places=2, required=False)
+    estimation1 = forms.BooleanField(widget=HiddenInput, required=False)
     estimation2 = forms.BooleanField(widget=HiddenInput, required=False)
-    estimation3 = forms.BooleanField(widget=HiddenInput, required=False)
-    #flag = forms.BooleanField(widget=HiddenInput)
-    total = forms.BooleanField(widget=HiddenInput, required=False)
+    group = forms.BooleanField(widget=HiddenInput, required=False)
     
