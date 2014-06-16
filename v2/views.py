@@ -512,7 +512,6 @@ def fund_return_form(request):
                         returns.value_date = months[i - 1]
                         returns.fund_perf = estimation
                         returns.estimation = True
-                        #assert False
                         returns.save()
 
             return HttpResponseRedirect('/admin/fund/returnestimate/')
@@ -573,9 +572,6 @@ def fund_return_form(request):
             except:
                 pass
 
-            if fund.id == 56:
-                assert False
-                                
             try:
                 fund_row['return1'] = returns[0].fund_perf
                 fund_row['estimation1'] = returns[0].estimation 
