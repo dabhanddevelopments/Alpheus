@@ -465,8 +465,8 @@ def fund_return_form(request):
     months = []
     prior_months = []
     # check if this actually works, especially with feb
-    #now = datetime.now()
-    now = datetime(2011, 12, 5, 6, 22, 45, 517969) # @TODO: remove this later
+    now = datetime.now()
+    #now = datetime(2011, 12, 5, 6, 22, 45, 517969) # @TODO: remove this later
 
     # make the 'now' date the last day of the month
     now = datetime(now.year, now.month, calendar.monthrange(now.year, now.month)[1])
