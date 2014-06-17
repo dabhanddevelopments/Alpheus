@@ -511,6 +511,7 @@ def fund_return_form(request):
                         returns.fund = Fund.objects.get(pk=fund)
                         returns.value_date = months[i - 1]
                         returns.fund_perf = estimation
+                        returns.shares = returns.nav / prior_returns.shares 
                         returns.estimation = True
                         returns.save()
 

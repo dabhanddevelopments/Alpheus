@@ -1392,10 +1392,16 @@ Ext.onReady(function() {
               var fields = 'name,manager__name,description,custodian__name,administrator__name,currency__name,auditor__name,benchpeer__name,asset_class__risk__name,country_risk__name,region_1__name&summary=true';
               $.getJSON('/api/fund/' + obj.fund.id + '/?fields=' + fields, function(summary) {
 
+console.log('summary', summary);
+                    if(summary.launch_date == false) {
+                        var launchDate = '';
+                    } else {
+                        var launchDate = moment(summary.launch_date).format('DD-MMM-YY');
+                    }
                     widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id, true);
                     html = '<div> <table class="html_table">' +
                     '<tr><th>Fund Name</th><td>'+ summary.name + '</td><th>Fund Manager</th><td>'+ summary.manager__name + '</td></tr>' +
-                    '<tr><th>Benchmark</th><td>' + summary.benchpeer__name + '</td><th>Launch Date</th><td>' + moment(summary.launch_date).format('DD-MMM-YY') + '</td></tr>' +
+                    '<tr><th>Benchmark</th><td>' + summary.benchpeer__name + '</td><th>Launch Date</th><td>' + launchDate + '</td></tr>' +
                     '<tr><th>Currency</th><td>'+ summary.currency__name + '</td></tr>' +
                     '</table><table class="html_table">' +
                     '<tr><th>Description</th><td>'+ summary.description + '</td></tr>' +
@@ -2368,11 +2374,11 @@ Ext.onReady(function() {
                             select: function(combo, record, index) {
                                 url = getReturnHistogramUrl(Ext.getCmp('hist').value);
                                 //console.log('new from date', record);
-                                from = moment(record).format('DD-MMM-YY');
+                                from = moment(record).format('YYYY-MM-DD');
                                 to = Ext.getCmp(id + 'to_date').getValue();
                                 console.log('date from', url);
                                 //console.log('old to date', to);
-                                to = moment(to).format('DD-MMM-YY');
+                                to = moment(to).format('YYYY-MM-DD');
                                 $.getJSON(url + '&value_date__gte=' + from + '&value_date__lte=' + to, function(new_data) {
                                 
                                     var chart = $('#data').data('chart-' + div);
@@ -2397,15 +2403,15 @@ Ext.onReady(function() {
                         listeners: {
                             select: function(combo, record, index) {
                                 url = getReturnHistogramUrl(Ext.getCmp('dateTypeHistogram').value);
-                                to = moment(record).format('DD-MMM-YY');
+                                to = moment(record).format('YYYY-MM-DD');
                                 from = Ext.getCmp(id + 'from_date').getValue();
                                 
                                 if(from) {
-                                    from = moment(from).format('DD-MMM-YY');
+                                    from = moment(from).format('YYYY-MM-DD');
                                     
                                     $.getJSON(url + '&value_date__gte=' + from + '&value_date__lte=' + to, function(new_data) {
                                     
-                                        console.log('date to', url + '&value_date__gte=' + from + '&value_date__lte=' + to);
+                                        //console.log('date to', url + '&value_date__gte=' + from + '&value_date__lte=' + to);
                                         var chart = $('#data').data('chart-' + div);
                                         try {
                                            chart.series[0].setData(new_data[0].data);
@@ -2438,7 +2444,7 @@ Ext.onReady(function() {
             var title1 = 'NAV';
             var title2 = 'Weight';
         }
-    
+        
         function getUrl(type) {
         
             if(perfType == 'nav') {
@@ -2490,6 +2496,44 @@ Ext.onReady(function() {
                             }
                         };
                     }
+                            
+                    // remove series and add percent
+                    if(jQuery.inArray(widget.key, ['w2']) !== -1) {
+                        options.tooltip = {
+                            //valueSuffix: ' %',
+                            formatter: function() {
+                                return this.key + ' ' + Highcharts.numberFormat(this.y) + ' %';
+                            },
+                        };
+                    }
+                    
+                    
+                    // always display million on y axis
+                    if(jQuery.inArray(widget.key, ['holding_nav']) !== -1) {
+                    
+                        if(type == 1) {
+                            var suffix = '';
+                        } else {
+                            var suffix = ' %';
+                        }
+                                   
+                        options.yAxis.labels = {
+                            formatter: function () {
+                                if(type == 1) {
+                                     return Highcharts.numberFormat(this.value / 1000000) + 'M';
+                                } else {
+                                     return this.value + '%';
+                                }
+                               
+                            }
+                        };
+                        options.tooltip = {
+                            formatter: function() {
+                                return this.key + ' ' + Highcharts.numberFormat(this.y) + suffix;
+                            },
+                        };
+                    }
+                    
                     options.series = [new_data[0]];
                    // options.yAxis.max = maxVal;
                    // options.yAxis.min = minVal;
@@ -2597,7 +2641,7 @@ Ext.onReady(function() {
         var button1m = Ext.create('Ext.Button', {
             text: '1m',
             handler: function() {
-                var date = moment().subtract('months', 1).format("DD-MMM-YY");
+                var date = moment().subtract('months', 1).format("YYYY-MM-DD");
                 $.getJSON(url + '&value_date__gte=' + date, function(new_data) {
                     chart.series[0].setData(new_data.data);
                     chart.redraw();
@@ -2608,7 +2652,7 @@ Ext.onReady(function() {
         var button3m = Ext.create('Ext.Button', {
             text: '3m',
             handler: function() {
-                var date = moment().subtract('months', 3).format("DD-MMM-YY");
+                var date = moment().subtract('months', 3).format("YYYY-MM-DD");
                 $.getJSON(url + '&value_date__gte=' + date, function(new_data) {
                     //console.log('3m filter', url + '&value_date__gte=' + date);
                     chart.series[0].setData(new_data.data);
@@ -2620,7 +2664,7 @@ Ext.onReady(function() {
         var button6m = Ext.create('Ext.Button', {
             text: '6m',
             handler: function() {
-                var date = moment().subtract('months', 6).format("DD-MMM-YY");
+                var date = moment().subtract('months', 6).format("YYYY-MM-DD");
                 $.getJSON(url + '&value_date__gte=' + date, function(new_data) {
                     chart.series[0].setData(new_data.data);
                     chart.redraw();
@@ -2631,7 +2675,7 @@ Ext.onReady(function() {
         var button1y = Ext.create('Ext.Button', {
             text: '1y',
             handler: function() {
-                var date = moment().subtract('year', 1).format("DD-MMM-YY");
+                var date = moment().subtract('year', 1).format("YYYY-MM-DD");
                 $.getJSON(url + '&value_date__gte=' + date, function(new_data) {
                     chart.series[0].setData(new_data.data);
                     chart.redraw();
@@ -2642,7 +2686,7 @@ Ext.onReady(function() {
         var buttonYtd = Ext.create('Ext.Button', {
             text: 'YTD',
             handler: function() {
-                var date = moment().startOf('year').format("DD-MMM-YY"); 
+                var date = moment().startOf('year').format("YYYY-MM-DD"); 
                 $.getJSON(url + '&value_date__gte=' + date, function(new_data) {
                     chart.series[0].setData(new_data.data);
                     chart.redraw();
@@ -2896,9 +2940,9 @@ Ext.onReady(function() {
             var date_to = Ext.getCmp(id + 'to_date').getValue();
             
             if(date_from !== null) {
-                qs += 'value_date__gte=' + moment(date_from).format('DD-MMM-YY') + '&';
+                qs += 'value_date__gte=' + moment(date_from).format('YYYY-MM-DD') + '&';
             }
-            qs += 'value_date__lte=' + moment(date_to).format('DD-MMM-YY') + '&';
+            qs += 'value_date__lte=' + moment(date_to).format('YYYY-MM-DD') + '&';
             
             for(i=0; i<qVars.length; i++) {
             
@@ -3051,11 +3095,11 @@ Ext.onReady(function() {
                             select: function(combo, record, index) {
                                 url = getReturnHistogramUrl(Ext.getCmp('hist').value);
                                 //console.log('new from date', record);
-                                from = moment(record).format('DD-MMM-YY');
+                                from = moment(record).format('YYYY-MM-DD');
                                 to = Ext.getCmp(id + 'to_date').getValue();
-                                console.log('date from', url);
+                                //console.log('date from', url);
                                 //console.log('old to date', to);
-                                to = moment(to).format('DD-MMM-YY');
+                                to = moment(to).format('YYYY-MM-DD');
                                 $.getJSON(url + '&value_date__gte=' + from + '&value_date__lte=' + to, function(new_data) {
                                 
                                     var chart = $('#data').data('chart-' + div);
@@ -3080,11 +3124,11 @@ Ext.onReady(function() {
                         listeners: {
                             select: function(combo, record, index) {
                                 url = getReturnHistogramUrl(Ext.getCmp('dateTypeHistogram').value);
-                                to = moment(record).format('DD-MMM-YY');
+                                to = moment(record).format('YYYY-MM-DD');
                                 from = Ext.getCmp(id + 'from_date').getValue();
                                 
                                 if(from) {
-                                    from = moment(from).format('DD-MMM-YY');
+                                    from = moment(from).format('YYYY-MM-DD');
                                     
                                     $.getJSON(url + '&value_date__gte=' + from + '&value_date__lte=' + to, function(new_data) {
                                     
@@ -3111,7 +3155,7 @@ Ext.onReady(function() {
         var button1m = Ext.create('Ext.Button', {
             text: '1m',
             handler: function() {
-                var date = moment().subtract('months', 1).format("DD-MMM-YY");
+                var date = moment().subtract('months', 1).format("YYYY-MM-DD");
                 dateSpanTo.setValue(date);
             }
         });
@@ -3119,7 +3163,7 @@ Ext.onReady(function() {
         var button3m = Ext.create('Ext.Button', {
             text: '3m',
             handler: function() {
-                var date = moment().subtract('months', 3).format("DD-MMM-YY");
+                var date = moment().subtract('months', 3).format("YYYY-MM-DD");
                 dateSpanTo.setValue(date);
             }
         });
@@ -3127,7 +3171,7 @@ Ext.onReady(function() {
         var button6m = Ext.create('Ext.Button', {
             text: '6m',
             handler: function() {
-                var date = moment().subtract('months', 6).format("DD-MMM-YY");
+                var date = moment().subtract('months', 6).format("YYYY-MM-DD");
                 dateSpanTo.setValue(date);
             }
         });            
@@ -3135,7 +3179,7 @@ Ext.onReady(function() {
         var button1y = Ext.create('Ext.Button', {
             text: '1y',
             handler: function() {
-                var date = moment().subtract('year', 1).format("DD-MMM-YY");
+                var date = moment().subtract('year', 1).format("YYYY-MM-DD");
                 dateSpanTo.setValue(date);
             }
         });
@@ -3143,7 +3187,7 @@ Ext.onReady(function() {
         var buttonYtd = Ext.create('Ext.Button', {
             text: 'YTD',
             handler: function() {
-                var date = moment().startOf('year').format("DD-MMM-YY"); 
+                var date = moment().startOf('year').format("YYYY-MM-DD"); 
                 dateSpanTo.setValue(date);
             }
         });
@@ -3151,7 +3195,7 @@ Ext.onReady(function() {
         var buttonAll = Ext.create('Ext.Button', {
             text: 'All',
             handler: function() {
-                var date = moment().subtract('year', 20).format("DD-MMM-YY");
+                var date = moment().subtract('year', 20).format("YYYY-MM-DD");
                 dateSpanTo.setValue(date);
             }
         });
@@ -4253,6 +4297,12 @@ Ext.onReady(function() {
             
             series: series,
         };
+        
+        if(jQuery.inArray(widget.key, ['w16']) !== -1) {
+            options.tooltip = {
+                valueSuffix: ' %',
+            };
+        }
         var chart = new Highcharts.StockChart(options);
 
 
@@ -5034,7 +5084,7 @@ console.log('WIDGET', widget);
 
         $.getJSON(widget.url + widget.qs, function(data) {
         
-            console.log('bar chart data', data.data)
+            //console.log('bar chart data', data.data)
         
             var title = false;
             if(typeof widget.params.title != 'undefined' && widget.params.title == "true") {
@@ -5060,7 +5110,10 @@ console.log('WIDGET', widget);
             if(typeof widget.params.scrollbar != 'undefined' && widget.params.scrollbar == "true") {
                 scrollbar = true;
             }
-           //console.log(labels);
+            
+            
+
+                   //console.log(labels);
 
             var options = {
                 chart: {
@@ -5113,6 +5166,7 @@ console.log('WIDGET', widget);
                         fontFamily: 'Verdana, sans-serif'
                     },
                     formatter: function() {
+                    
                         if(this.value.length > 20) {
                             return this.value.substr(0, 20) + '...';
                         } else {
@@ -5122,6 +5176,8 @@ console.log('WIDGET', widget);
                 }
                 options.xAxis.labels = labels;
             }
+            
+
 
            //console.log(widget.window.key);
             // vertical fund performance line over bar graph

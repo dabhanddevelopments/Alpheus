@@ -173,7 +173,7 @@ class FundPositionAuditResource(MainBaseResource):
 """
 
 class FundResource(MainBaseResource):
-    benchpeer = fields.ForeignKey(BenchPeer, "benchpeer")
+    benchpeer = fields.ForeignKey(BenchPeer, "benchpeer", null=True)
     
     class Meta(MainBaseResource.Meta):
         queryset = Fund.objects.all()
@@ -184,29 +184,40 @@ class FundResource(MainBaseResource):
         # W15 - Fund Summary
         if request.GET.get('summary', False):
         
+            # if we have daily data we use that...
             try:
                 first = FundReturnDaily.objects.filter(fund=data.data['id']) \
                     .only('value_date', 'nav').order_by('value_date')[0]
             except IndexError:
+                # ...if not, monthly
                 try:
                     first = FundReturnMonthly.objects.filter(fund=data.data['id']) \
                         .only('value_date', 'nav').order_by('value_date')[0]
                 except IndexError:
-                    return
+                    pass
                
             try: 
                 last = FundReturnDaily.objects.filter(fund=data.data['id']) \
                     .only('value_date', 'nav').order_by('-value_date')[0]
             except IndexError:
-                last = FundReturnMonthly.objects.filter(fund=data.data['id']) \
-                   .only('value_date', 'nav').order_by('-value_date')[0]
-                
+                try:
+                    last = FundReturnMonthly.objects.filter(fund=data.data['id']) \
+                       .only('value_date', 'nav').order_by('-value_date')[0]
+                except IndexError:
+                    pass
+                    
             flows = FundReturnMonthly.objects.aggregate(Sum('inflow'), Sum('outflow'))
             
-            data.data['launch_date'] = first.value_date
-            data.data['start_nav'] = first.nav
-            data.data['end_nav'] = last.nav
-            data.data['net_flow'] = flows['inflow__sum'] + flows['outflow__sum']
+            try:
+                data.data['launch_date'] = first.value_date
+                data.data['start_nav'] = first.nav
+                data.data['end_nav'] = last.nav
+                data.data['net_flow'] = flows['inflow__sum'] + flows['outflow__sum']
+            except:
+                data.data['launch_date'] = False
+                data.data['start_nav'] = 0
+                data.data['end_nav'] = 0
+                data.data['net_flow'] = 0
                 
         return super(FundResource, self) \
                 .alter_detail_data_to_serialize(request, data)
