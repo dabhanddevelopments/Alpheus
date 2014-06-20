@@ -357,7 +357,10 @@ class FundReturnResource(MainBaseResource):
                     for m in axis:    
                         
                         if m == "delta_cum_returns_final_val":
+                            #assert False
                             values = delta_cum_returns_final_val(df, df2, dates, dates2)[0]
+                        else:
+                            assert False
                         if m == "tracking_error":
                             values = tracking_error(df, df2)
                         if m == "correlation":
@@ -672,15 +675,25 @@ class FundReturnResource(MainBaseResource):
             dates = date_range(lst, date_from, freq)
             df = to_dataframe(lst, dates)
             
+            from calcs import hist
             #change to hist
             if lst:
-                hist = histogram(df)
+                h = hist(df)
             else:
-                hist = np.histogram(lst, bins=18, range=(-10,8), density=False)
+                h = np.histogram(lst, bins=18, range=(-10,8), density=False)
             
             #assert False
-            values = [int(row) for row in hist[0]]
-            keys = [row for row in hist[1]]
+            values = [int(row) for row in h[0]]
+            keys = []
+            last_val = 0
+            for i, row in enumerate(h[1]):
+            
+                try:
+                    to = h[1][i + 1]
+                    last_val = to
+                except IndexError:
+                    to = last_val
+                keys.append(str(row) + ' to ' + str(to))
                 
             data = {
                 'data': values,
