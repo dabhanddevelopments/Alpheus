@@ -538,7 +538,30 @@ def roll_adjr2(series1, series2, window, f=12):
     return roll_adjr2
     
 #W22 - return histogram
-def histogram(series):
-    hist = np.histogram(series,range=(math.floor(series.min()),math.ceil(series.max())),bins = math.ceil(series.max())-math.floor(series.min()))
+def hist2(ser):
+    hist = np.histogram(ser, bins=20, range=(-10,10))
     return hist
+    
+def hist (series):
+   BinLenArray = np.array([0.5,1,2,5,10,20])
+   min_bins = 10
+   avg_Bins = 20
+   max_bins = 30
+   idx = 1
+     
+   Bins = math.ceil(series.max())-math.floor(series.min())
+   max_abs = abs(series.max())
+   min_abs = abs(series.min())
+   a = math.ceil(np.array((max_abs, min_abs)).max())
   
+   if Bins < min_bins:
+       idx = np.argmin(np.abs(2*a/avg_Bins - BinLenArray))
+       Final_bins=2*a/BinLenArray[idx]
+   elif Bins > max_bins:
+       idx = np.argmin(np.abs(2*a/avg_Bins - BinLenArray))
+       Final_bins=math.ceil(2*a/BinLenArray[idx])
+   else:
+       Final_bins = Bins
+      
+   return np.histogram(series,range = (-Final_bins*BinLenArray[idx]/2,Final_bins*BinLenArray[idx]/2),bins = Final_bins) 
+   
