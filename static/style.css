@@ -473,36 +473,26 @@ article:not(:last-child),
     }
 
 .html_table {
-    width: 99%;
+    width: 80%;
     font-size: 10px;
-    border-spacing: 7px;
+    border-spacing: 10px;
     text-align: left; 
     float: left;
-    margin-left:4px;
-    margin-top: 10px;
-    background-color: #white;
+    margin-left:50px;
+    margin-bottom: 10px;
+    background-color: #5587C1;
 }
 
 .html_table th {
-    width: 215px;
-    color: gray;
-    font-size: 11px;
-    text-align: right;
+    width: 100px;
 }
 
 .html_table td {
-    color: #01017d;
-    font-size: 12px;
-    font-weight:bold;
+    color: white;
 }
 
 .html_table h3 {
     color: black;
-    font-size: 13px;
-    font-weight: bold;
-    text-align: right;
-    width: 215px;
-    text-decoration: underline;
 }
 
 
@@ -513,18 +503,18 @@ table.month_table{
 
 table.month_table{
     border-collapse: seperate;
-    border-spacing: 11px;
+    border-spacing: 2px;
 }
 
 table.month_table th {
-    color: #01017d;
-    font-size: 13px;
+    color: #1803A1;
+    font-size: 12px;
     padding: 4px;
 }
 
 table.month_table td {
-    background-color: #ffffff;
-    border: 2px solid #01017d;
+    background-color: #DEDCDA;
+    border: 1px solid gray;
     width: 65px;
     height: 40px;
 }
@@ -532,18 +522,18 @@ table.month_table td {
 .month_table_day {
   position: relative;
   top: -10px;
-  left:4px;
-  font-size: 9px;
+  left:5px;
+  font-size: 10px;
 }
 
 .month_table_val {
   position: relative;
   top: 0px;
-  left: 6px;
+  left: 8px;
 }
 
 .month_table_val a {
-  font-size: 10px;
+  font-size: 12px;
   text-decoration: none;
   font-weight: bold;
 }
@@ -689,4 +679,3 @@ table.month_table td {
         text-align:center;
         margin-top:40%;     
     }
-
