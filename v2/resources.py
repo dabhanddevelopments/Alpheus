@@ -357,10 +357,7 @@ class FundReturnResource(MainBaseResource):
                     for m in axis:    
                         
                         if m == "delta_cum_returns_final_val":
-                            #assert False
                             values = delta_cum_returns_final_val(df, df2, dates, dates2)[0]
-                        else:
-                            assert False
                         if m == "tracking_error":
                             values = tracking_error(df, df2)
                         if m == "correlation":
@@ -632,6 +629,17 @@ class FundReturnResource(MainBaseResource):
                     ])
                     #assert False
                     
+                    if widget == 'w16':
+                        if i == 0:
+                            name = data['objects'][0].data['fund__name']
+                        elif i == 1:
+                            name = data['objects'][0].data['benchperf__name']
+                            if name == '':
+                                name = 'N/A'
+                        else:
+                            name = 'Relative Return' 
+                    
+                    
                     series.append({
                         'data': values,
                         'name': name,
@@ -703,7 +711,7 @@ class FundReturnResource(MainBaseResource):
             return data
             
             
-        # W16 - cumulative return
+        # W16 - cumulative return - NOT USED. TO BE DELETED
         y1 = request.GET.get('y1', False)
 
         if y1 != False:
@@ -903,6 +911,8 @@ class PositionMonthlyResource(MainBaseResource):
         # and the weight of the prior month to calculate the average weight
         if performance and year and month and fund:
         
+            # @TODO: look at the last HoldingMonthly, and use that if not exist (client side)
+            
             hm = HoldingMonthly.objects.filter(
                 value_date__year=year, value_date__month=month). \
                 select_related('holding').only('holding__name', 'performance')
@@ -924,6 +934,7 @@ class PositionMonthlyResource(MainBaseResource):
             new_data = {}
             
             # set the average weight for the current month
+            """
             for i, p in enumerate(pos):
                 for h in hm:
                     if p.data['holding__name'] == h.holding.name:
@@ -941,7 +952,10 @@ class PositionMonthlyResource(MainBaseResource):
                                 'holding__name': p.data['holding__name'],
                                 'weight': p.data['weight'],
                             }
-                            
+            """               
+            
+            # @TODO: 
+                         
             # update the average weight for prior months (if exists)
             for i, p in enumerate(pos):
                 for pp in prior_pos:
@@ -949,11 +963,22 @@ class PositionMonthlyResource(MainBaseResource):
                         if p.data['holding__name'] == h.holding.name and pp.holding.name == h.holding.name:
                         
                             name = h.holding.name
+                            average_weight = (p.data['weight'] + pp.weight) / 2 / 100
                             
-                            if pp.weight > 0:
-                                average_weight = (p.data['weight'] + pp.weight) / 2 / 100
-                        
-                                new_data[name]['average_weight'] = average_weight
+                            if average_weight >= 0:
+                                new_data[name] = {
+                                    'weighted_perf': (p.data['weight'] * h.performance) / 100,
+                                    'average_weight': average_weight, 
+                                    'performance': h.performance,
+                                    'holding__name': p.data['holding__name'],
+                                    'weight': p.data['weight'],
+                                }
+                                #average_weight = (p.data['weight'] + pp.weight) / 2 / 100
+                                #weighted_perf = (average_weight * h.performance)
+                                
+                                #new_data[name]['average_weight'] = average_weight
+                                #new_data[name]['weighted_perf'] = weighted_perf
+                                
                                 
             # convert dictionary to a list of dictionaries
             sorted_data = []

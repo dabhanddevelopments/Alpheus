@@ -612,6 +612,7 @@ class Fund(models.Model):
     estimate_required = models.NullBooleanField(max_length=1, db_column='FlashFlag', default=False)
     estimate = models.NullBooleanField(db_column='EstimateFlag', default=False)
     daily_data = models.NullBooleanField(db_column='DailyData', default=False)
+    end_date = models.DateTimeField(db_column='EndDate', blank=True, null=True)
     
 
     class Meta:

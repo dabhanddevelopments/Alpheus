@@ -18,6 +18,8 @@
     padding: 3px 3px;
 }
 
+.datagrid tr { line-height: 10px; }
+
 .datagrid table thead th {
     background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #006699), color-stop(1, #00557F) );
     background: -moz-linear-gradient( center top, #006699 5%, #00557F 100% );

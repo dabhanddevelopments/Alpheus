@@ -58,6 +58,7 @@
             <td><div class="{{ a.ytd.col }}">{{ a.ytd.val }}</td>
             <td><div class="{{ a.weight.col }}">{{ a.weight.val }}</td>
         </tr>
+        {% if a.bench_name %}
         <tr class="alt">
             <td><h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ a.bench_name }}</h5></td>
             {% if date == "Year" or date == "Jan" %}<td><div class="{{ a.jan.b_col }}">{{ a.jan.b_val }}</div></td>{% endif %}
@@ -75,6 +76,7 @@
             <td><div class="{{ a.bench_ytd.col }}">{{ a.bench_ytd.val }}</td>
             <td></td>
         </tr>
+        {% endif %}
         <tr>
             <td><h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ a.sec_bench_name }}</h5></td>
             {% if date == "Year" or date == "Jan" %}<td><div class="{{ a.jan.sb_col }}">{{ a.jan.sb_val }}</div></td>{% endif %}
@@ -116,6 +118,7 @@
                     <td><div class="{{ d.ytd.col }}">{{ d.ytd.val }}</td>
                     <td><div class="{{ d.weight.col }}">{{ d.weight.val }}</td>
                 </tr>
+                {% if a.bench_name %}
                 <tr>
                     <td><h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ d.bench_name }}</h5></td>
                     {% if date == "Year" or date == "Jan" %}<td><div class="{{ d.jan.b_col }}">{{ d.jan.b_val }}</div></td>{% endif %}
@@ -133,6 +136,7 @@
                     <td><div class="{{ d.bench_ytd.col }}">{{ d.bench_ytd.val }}</td>
                     <td></td>
                 </tr>
+                {% endif %}
             {% endfor %}
         {% endfor %}
                 

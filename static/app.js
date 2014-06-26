@@ -1946,7 +1946,7 @@ console.log('summary', summary);
             return returnHistogram(obj, widget, div);
             
         } else if(widget.key == 'w55') {
-
+    
             w55(obj, widget, div);                     
 
         } else if(widget.key == 'w25') {
@@ -1999,37 +1999,7 @@ console.log('summary', summary);
 
         } else if(widget.key == 'w16') {
         
-            widget.yAxis = [{
-                title: {
-                    text: 'Cumulative Return',
-                },
-                height: 350,
-                opposite: false,
-            }, {
-                title: {
-                    text: 'Benchmark',
-                },
-                height: 350,
-                opposite: false,
-            },{
-                title: {
-                    text: 'Delta Cumulative Return',
-                },
-                height: 300,
-                top: 400,
-                opposite: false,
-            }, {
-                title: {
-                    text: 'Delta Benchmark',
-                },
-                height: 300,
-                top: 400,
-                opposite: false,
-            }];
-
-            widget.url = "/api/fundreturnmonthly/?date_type=monthly&axis=left,left,left,left&metric=cumulative,cumulative,delta,delta&layer=1,1,2,2&plot=line,line,line,line&rfr=0,0,0,0&mar=0,0,0,0&step=1,21,21,21&window=12,12,12,12&sec_under=fund,fund,fund,fund&under=fund,benchpeer,fund,benchpeer&position=1,1,2,2&fund=" + obj.fund.id + "&fields=fund_perf,bench_perf";
-            return chart(obj, widget, div);
-
+            w16(obj, widget, div);
 
         } else if(widget.type == 'w152') {
 
@@ -2083,6 +2053,94 @@ console.log('summary', summary);
             return w23(obj, widget, div);
 
         }
+    }
+    
+    function w16(obj, widget, div) {
+    
+        function getUrl() {
+            return "/api/fundreturnmonthly/?date_type=monthly&axis=left,left,left&metric=cumulative,cumulative,delta&layer=1,1,2&plot=line,line,line&rfr=0,0,0&mar=0,0,0&step=1,21,21&window=12,12,12&sec_under=fund,fund,fund&under=fund,benchpeer,fund&position=1,1,2&fund=" + obj.fund.id + "&fields=fund_perf,bench_perf,fund__name,benchperf__name&widget=w16";
+        }
+
+        widget.yAxis = [{
+            height: 350,
+            opposite: false,
+            labels: {
+                formatter: function() {
+                   return this.value + '%';
+                }
+           },
+        }, {
+            height: 350,
+            opposite: false,
+            labels: {
+                formatter: function() {
+                   return this.value + '%';
+                }
+           },
+        },{
+            height: 300,
+            top: 400,
+            opposite: false,
+            labels: {
+                formatter: function() {
+                   return this.value + '%';
+                }
+           },
+        }];
+        widget.params.rangeSelector = false;
+        
+        widget.url = getUrl();
+        
+        $.getJSON(getUrl(), function(data) {
+            console.log('W16 DATA', data);
+            var options = {
+                chart: {
+                    alignThresholds: true,
+                    type: 'line',
+                    marginRight: 25,
+                    //marginBottom: 25,
+                    spacingBottom: -20,
+                    size: '100%',
+                    renderTo: div,
+                    width: widget.width,
+                    height: widget.height,
+                },
+                credits: {
+                    enabled: false
+                },
+                yAxis: [{
+                    height: 350,
+                    opposite: false,
+                    labels: {
+                        formatter: function() {
+                           return this.value + '%';
+                        }
+                   },
+                }, {
+                    height: 350,
+                    opposite: false,
+                    labels: {
+                        formatter: function() {
+                           return this.value + '%';
+                        }
+                   },
+                },{
+                    height: 300,
+                    top: 400,
+                    opposite: false,
+                    labels: {
+                        formatter: function() {
+                           return this.value + '%';
+                        }
+                   },
+                }],
+                series: data,
+            };
+            var chart = new Highcharts.StockChart(options);
+            baseParameters(chart, widget, div, getUrl);
+            Ext.getCmp(widget.key + 'datetype_combo').hide();   
+        });
+        //chart(obj, widget, div, getUrl); 
     }
     
     function w25(obj, div) {
@@ -2194,7 +2252,7 @@ console.log('summary', summary);
             header: false,
             renderTo: div,
             height: widget.height + 70,
-            width: widget.width + 5,
+            width: widget.width + 20,
             header: false,
             items: [tabPanel, {
                 xtype: 'container',
@@ -2579,9 +2637,126 @@ console.log('summary', summary);
     }
     
     
-  
-    function dateTypeSelector(id, chart, urlFunc) {
+    function baseParameters(chart, widget, div, url) {
+    
+        function updateGraph(completeUrl) {
+            $.getJSON(completeUrl, function(new_data) {
+                if(typeof new_data.length === 'undefined') {
+                    chart.series[0].setData(new_data.data);
+                    chart.redraw(); 
+                } else {
+                    $.each(new_data, function(key, val) {
+                        chart.series[key].setData(val.data);
+                        chart.redraw();
+                    });
+                }
+            });    
+        }
+    
+        var id = widget.key;
 
+        var button1m = Ext.create('Ext.Button', {
+            text: '1m',
+            handler: function() {
+                var date = moment().subtract('months', 1).format("YYYY-MM-DD");
+                updateGraph(url() + '&value_date__gte=' + date);
+            }
+        });
+        
+        var button3m = Ext.create('Ext.Button', {
+            text: '3m',
+            handler: function() {
+                var date = moment().subtract('months', 3).format("YYYY-MM-DD");
+                updateGraph(url() + '&value_date__gte=' + date);
+            }
+        });
+        
+        var button6m = Ext.create('Ext.Button', {
+            text: '6m',
+            handler: function() {
+                var date = moment().subtract('months', 6).format("YYYY-MM-DD");
+                updateGraph(url() + '&value_date__gte=' + date);
+            }
+        });            
+
+        var button1y = Ext.create('Ext.Button', {
+            text: '1y',
+            handler: function() {
+                var date = moment().subtract('year', 1).format("YYYY-MM-DD");
+                updateGraph(url() + '&value_date__gte=' + date);
+            }
+        });
+        
+        var buttonYtd = Ext.create('Ext.Button', {
+            text: 'YTD',
+            handler: function() {
+                var date = moment().startOf('year').format("YYYY-MM-DD"); 
+                updateGraph(url() + '&value_date__gte=' + date);
+            }
+        });
+        
+        var buttonAll = Ext.create('Ext.Button', {
+            text: 'All',
+            handler: function() {
+                updateGraph(url());
+            }
+        });
+
+
+        var buttonContainer = Ext.create('Ext.container.Container', {
+            padding: 5,
+            items: [button1m, button3m, button6m, button1y, buttonYtd, buttonAll],
+        });
+    
+        var dateSpan = Ext.create('Ext.form.Panel', {
+            header: false,
+            border: false,
+            width: widget.width,
+            bodyPadding: 5,
+            items: [
+            {
+                xtype: 'fieldcontainer',
+                layout: 'hbox',
+                items: [
+                    {
+                        xtype: 'datefield',
+                        id: id + 'from_date',
+                        width: 90,
+                        maxValue: new Date(),  // limited to the current date or prior
+                        listeners: {
+                            select: function(combo, record, index) {
+                                from = moment(record).format('YYYY-MM-DD');
+                                to = Ext.getCmp(id + 'to_date').getValue();
+                                to = moment(to).format('YYYY-MM-DD');
+                                updateGraph(url() + '&value_date__gte=' + from + '&value_date__lte=' + to);
+                            }
+                        },                  
+                    }, {
+                        xtype: 'splitter'
+                    }, {
+                        xtype: 'datefield',
+                        id: id + 'to_date',
+                        width: 90,
+                        value: new Date(),  // defaults to today
+                        maxValue: new Date(),  // limited to the current date or prior
+                        listeners: {
+                            select: function(combo, record, index) {
+                                to = moment(record).format('YYYY-MM-DD');
+                                from = Ext.getCmp(id + 'from_date').getValue();
+                                
+                                if(from) {
+                                    from = moment(from).format('YYYY-MM-DD');
+                                    updateGraph(url() + '&value_date__gte=' + from + '&value_date__lte=' + to);
+                                }
+                            }
+                        }, 
+                    }
+                ]
+             }
+             ]
+        });
+
+        // Date Type Selector (Monthly/Daily)
         var dateTypeStore = Ext.create('Ext.data.Store', {
             fields: ['name'],
             data : [
@@ -2601,14 +2776,9 @@ console.log('summary', summary);
             listeners: {
                 'change': function(field, selectedValue) {
                    dateType = selectedValue;
-                    $.getJSON(urlFunc(dateType), function(new_data) {
-                        chart.series[0].setData(new_data.data);
-                        chart.redraw();
-                        //console.log(dateType, new_data);
-                        //console.log('date select', getUrl(dateType));
-                        Ext.getCmp(id + 'from_date').setValue();
-                        Ext.getCmp(id + 'to_date').setValue(new Date());
-                    });
+                   updateGraph(url());
+                    Ext.getCmp(id + 'from_date').setValue();
+                    Ext.getCmp(id + 'to_date').setValue(new Date());
                 }
             }
         });
@@ -2616,7 +2786,17 @@ console.log('summary', summary);
         // Set default value for drop down
         dateTypeSelect.setValue(dateTypeStore.getAt('0').get('id'));
         
-        return dateTypeSelect;
+        // Base Parameter Container
+        var upperContainer = Ext.create('Ext.container.Container', {
+            renderTo: div + 'top',
+            autoFit: true,
+            layout: 'hbox',
+            style: {
+                background: 'white',
+            },
+            items: [buttonContainer, dateTypeSelect, dateSpan],
+        });
+        
     }
 
     
@@ -2627,11 +2807,14 @@ console.log('summary', summary);
     
     function returnHistogram(obj, widget, div) {
     
-        var id = "hist_";
+        var id = widget.key;
     
-        function getUrl(type) {
-            if(typeof type === 'undefined') {
-                var type = Ext.getCmp(id + 'datetype_combo').getValue();
+        function getUrl() {
+            var dateType = Ext.getCmp(widget.key + 'datetype_combo');
+            if(typeof dateType !== 'undefined') {
+                var type = dateType.getValue();
+            } else {
+                var type = 'monthly';
             }
             return getReturnHistogramUrl(type);
         }
@@ -2680,191 +2863,14 @@ console.log('summary', summary);
 	        };
 	        var chart = new Highcharts.Chart(options);
 	        
-	        $('#data').data('chart-' + div, chart);
-	        
-        var url = getUrl('daily');
-
-        var button1m = Ext.create('Ext.Button', {
-            text: '1m',
-            handler: function() {
-                var date = moment().subtract('months', 1).format("YYYY-MM-DD");
-                $.getJSON(getUrl() + '&value_date__gte=' + date, function(new_data) {
-                    chart.series[0].setData(new_data.data);
-                    chart.redraw();
-                });
-            }
-        });
-        
-        var button3m = Ext.create('Ext.Button', {
-            text: '3m',
-            handler: function() {
-                var date = moment().subtract('months', 3).format("YYYY-MM-DD");
-                $.getJSON(getUrl() + '&value_date__gte=' + date, function(new_data) {
-                    //console.log('3m filter', url + '&value_date__gte=' + date);
-                    chart.series[0].setData(new_data.data);
-                    chart.redraw();
-                });
-            }
-        });
-        
-        var button6m = Ext.create('Ext.Button', {
-            text: '6m',
-            handler: function() {
-                var date = moment().subtract('months', 6).format("YYYY-MM-DD");
-                $.getJSON(getUrl() + '&value_date__gte=' + date, function(new_data) {
-                    chart.series[0].setData(new_data.data);
-                    chart.redraw();
-                });
-            }
-        });            
-
-        var button1y = Ext.create('Ext.Button', {
-            text: '1y',
-            handler: function() {
-                var date = moment().subtract('year', 1).format("YYYY-MM-DD");
-                $.getJSON(getUrl() + '&value_date__gte=' + date, function(new_data) {
-                    chart.series[0].setData(new_data.data);
-                    chart.redraw();
-                });
-            }
-        });
-        
-        var buttonYtd = Ext.create('Ext.Button', {
-            text: 'YTD',
-            handler: function() {
-                var date = moment().startOf('year').format("YYYY-MM-DD"); 
-                $.getJSON(getUrl() + '&value_date__gte=' + date, function(new_data) {
-                    chart.series[0].setData(new_data.data);
-                    chart.redraw();
-                });
-            }
-        });
-        
-        var buttonAll = Ext.create('Ext.Button', {
-            text: 'All',
-            handler: function() {
-                $.getJSON(getUrl(), function(new_data) {
-                    chart.series[0].setData(new_data.data);
-                    chart.redraw();
-                });
-            }
-        });
-
-
-        var buttonContainer = Ext.create('Ext.container.Container', {
-            padding: 5,
-            items: [button1m, button3m, button6m, button1y, buttonYtd, buttonAll],
-        });
-        
-       function updateFrom() {
-        
-            url = getReturnHistogramUrl(Ext.getCmp('hist').value);
-            //console.log('new from date', record);
-            from = moment(record).format('YYYY-MM-DD');
-            to = Ext.getCmp(id + 'to_date').getValue();
-            console.log('date from2', url);
-            //console.log('old to date', to);
-            to = moment(to).format('YYYY-MM-DD');
-            $.getJSON(url + '&value_date__gte=' + from + '&value_date__lte=' + to, function(new_data) {
-            
-                var chart = $('#data').data('chart-' + div);
-                try {
-                   chart.series[0].setData(new_data[0].data);
-                } catch(err) {
-                    chart.series[0].setData(new_data.data);
-                }
-                chart.redraw();
-            });
-        }
-        
-        function updateTo() {
-        
-            url = getReturnHistogramUrl(Ext.getCmp('dateTypeHistogram').value);
-            to = moment(record).format('YYYY-MM-DD');
-            from = Ext.getCmp(id + 'from_date').getValue();
-            
-            if(from) {
-                from = moment(from).format('YYYY-MM-DD');
+	        console.log('CHART1 ', chart);
+            baseParameters(chart, widget, div, getUrl);            
                 
-                $.getJSON(url + '&value_date__gte=' + from + '&value_date__lte=' + to, function(new_data) {
-                
-                    //console.log('date to', url + '&value_date__gte=' + from + '&value_date__lte=' + to);
-                    var chart = $('#data').data('chart-' + div);
-                    try {
-                       chart.series[0].setData(new_data[0].data);
-                    } catch(err) {
-                        chart.series[0].setData(new_data.data);
-                    }
-                    chart.redraw();
-                });
-            }
-        
-        }
-    
-        var dateSpan = Ext.create('Ext.form.Panel', {
-            header: false,
-            border: false,
-            width: widget.width,
-            bodyPadding: 5,
-            items: [
-            {
-                xtype: 'fieldcontainer',
-                layout: 'hbox',
-                items: [
-                    {
-                        xtype: 'datefield',
-                        id: id + 'from_date',
-                        width: 90,
-                        //name: 'from_date',
-                        maxValue: new Date(),  // limited to the current date or prior
-                        listeners: {
-                            select: function(combo, record, index) {
-                                updateFrom();
-                            }
-                        },                  
-                    }, {
-                        xtype: 'splitter'
-                    }, {
-                        xtype: 'datefield',
-                        id: id + 'to_date',
-                        width: 90,
-                        //name: 'to_date',
-                        value: new Date(),  // defaults to today
-                        maxValue: new Date(),  // limited to the current date or prior
-                        listeners: {
-                            select: function(combo, record, index) {
-                                updateTo();
-                            }
-                        }, 
-                    }
-                ]
-             }
-             ]
-        });
-
-            //var buttonContainer = dateFilters(chart, getUrl('monthly'));
-            //var dateSpan = dateSpanPicker('hist_', div, widget);    
-            var dateTypeSelect = dateTypeSelector('hist_', chart, getUrl);
-            
-            
             // check if it has daily data, if not we don't display the data type drop down menu            
             $.getJSON("/api/fundreturndaily/?fields=id&fund=" + obj.fund.id, function(data) {
                 if(data.length === 0) {
-                    items = [buttonContainer, dateSpan];
-                } else {
-                    items = [buttonContainer, dateTypeSelect, dateSpan];
+                    Ext.getCmp(widget.key + 'datetype_combo').hide();
                 }
-
-                var upperContainer = Ext.create('Ext.container.Container', {
-                    renderTo: div + 'top',
-                    autoFit: true,
-                    layout: 'hbox',
-                    style: {
-                        background: 'white',
-                    },
-                    items: items,
-                });
-                
             });    
 	    });
     
@@ -4341,7 +4347,7 @@ console.log('summary', summary);
 
 
 
-    function chart(obj, widget, div) {
+    function chart(obj, widget, div, url) {
     
     
         //var chartDiv = div;
@@ -4404,9 +4410,6 @@ console.log('summary', summary);
         }
 
 
-        //console.log('widget yAxis', yAxis);
-        //console.log('widget xAxis', xAxis);
-
         var labels = true;
         if(typeof widget.params.labels != 'undefined' && widget.params.labels == 'false') {
             labels = false;
@@ -4428,7 +4431,7 @@ console.log('summary', summary);
         }
 
         var rangeSelector = true;
-        if(typeof widget.params.rangeSelector != 'undefined' && widget.params.rangeSelector == 'false') {
+        if(typeof widget.params.rangeSelector != 'undefined' && (widget.params.rangeSelector == 'false' || widget.params.rangeSelector == false)) {
             rangeSelector = false;
         }
         
@@ -4440,10 +4443,10 @@ console.log('summary', summary);
         console.log('yAxis', yAxis);
         console.log('xAxis', xAxis);
         
-        console.log('chart call', 'http://localhost:8000' + widget.url);        
+        console.log('chart call', 'http://localhost:8000' + widget.url + widget.qs);        
         $.getJSON(widget.url + widget.qs, function(data) {
         
-            
+            console.log('DATA', data);
         
                 
             /**
@@ -4579,8 +4582,11 @@ console.log('summary', summary);
             };
             //console.log('data', data);
 
-            
-            if(typeof widget.params.date_type != 'undefined' && widget.params.date_type == 'monthly') {
+            if(!rangeSelector) {
+                options['rangeSelector'] = {
+                    enabled: false,
+                }
+            } else if(typeof widget.params.date_type != 'undefined' && widget.params.date_type == 'monthly') {
                 options['rangeSelector'] = {
                     enabled: true,
 			        buttons: [{
@@ -4675,7 +4681,13 @@ console.log('summary', summary);
             }
             //var chart = new Highcharts.Chart(options); // cannot be used with rangeSelector options
             //console.log('CREATING NEW CHART');
-           
+            
+            if(jQuery.inArray(widget.key, ['w16']) !==-1 ) { 
+                baseParameters(chart, widget, div, url);
+                console.log('CHART', chart);
+                Ext.getCmp(widget.key + 'datetype_combo').hide();    
+            }
+            //$('#data').data(widget.key + '-chart', chart);
         });
     }
  

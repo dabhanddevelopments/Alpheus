@@ -142,7 +142,8 @@ def currency_position(request):
     
     return HttpResponse(json.dumps(data, indent=4), mimetype="application/json") 
 
-   
+
+# W55   
 def performance_by_fund(request):
 
     year = request.GET.get('year', False)
@@ -167,19 +168,7 @@ def performance_by_fund(request):
             value_date__year=year).only('nav', 'ytd', 
             'fund__benchpeer__name', 'fund__sec_bench__name') \
             .order_by('value_date')
-           
-        # default values for alpheus 
-        for m in months:
-        
-            alpheus_total[m] = {
-                'val': '-%', 
-                'col': 'black',
-                'b_val': '-%', 
-                'b_col': 'black',
-                'sb_val': '-%', 
-                'sb_col': 'black'
-            }   
-                
+             
         # loop through them and set the month values,
         # the ytd, names etc are set by the last value
         for a in alpheus:
@@ -191,7 +180,7 @@ def performance_by_fund(request):
                 try:
                     bench_name = a.fund.benchpeer.name
                 except AttributeError:
-                    bench_name = 'N/A'
+                    bench_name = False
                     
                 try:
                     sec_bench_name = a.fund.sec_bench.name
@@ -263,7 +252,7 @@ def performance_by_fund(request):
             ytd_color = 'black'
             bench_color = 'black'
             sec_bench_color = 'black'
-            bench_name = 'N/A'
+            bench_name = False
             sec_bench_name = 'N/A'
             
         #alpheus_total.append(alpheus_months)        
@@ -278,12 +267,12 @@ def performance_by_fund(request):
         try:
             alpheus_total['bench_name'] = bench_name
         except TypeError:
-            alpheus_total['bench_name'] = 'N/A' 
+            alpheus_total['bench_name'] = False
             
         try:
             alpheus_total['sec_bench_name'] = sec_bench_name
         except TypeError:
-            alpheus_total['sec_bench_name'] = 'N/A'
+            alpheus_total['sec_bench_name'] = False
             
         try:
             alpheus_total['bench_ytd'] = {
@@ -357,7 +346,7 @@ def performance_by_fund(request):
                 try:
                     bench_name = r.fund.benchpeer.name
                 except AttributeError:
-                    bench_name = 'N/A'
+                    bench_name = False
                     
                 if r.ytd < 0:
                     ytd_color = 'red'
@@ -397,16 +386,6 @@ def performance_by_fund(request):
                 returns = FundReturnMonthly.objects.filter(fund__id=sort['fund_id'], \
                       value_date__year=year) \
                       .only('fund_perf', 'estimation', 'bench_perf')
-                      
-                # fill dict with default values that we later over write
-                for m in months:
-                
-                    sort[m] = {
-                        'val': '-%', 
-                        'col': 'black',
-                        'b_val': '-%', 
-                        'b_col': 'black'
-                    }              
                 
                 # appending the fund performance for each month of this year
                 for r in returns:
@@ -425,8 +404,17 @@ def performance_by_fund(request):
                         else:
                             bench_color = 'blue'
                             
-                        fund_perf = str("%.2f" % r.fund_perf) + '%'
-                        bench_perf = str("%.2f" % r.bench_perf) + '%'
+                        if r.fund_perf == None:
+                            fund_perf = '-'
+                            fund_color = 'black'
+                        else:
+                            fund_perf = str("%.2f" % r.fund_perf) + '%'
+                            
+                        if r.bench_perf == None:
+                            bench_perf = '-'
+                            bench_color = 'black'
+                        else:
+                            bench_perf = str("%.2f" % r.bench_perf) + '%'
                         
                         if r.estimation == 1:
                             fund_perf += ' e'   
@@ -466,7 +454,7 @@ def fund_return_form(request):
     prior_months = []
     # check if this actually works, especially with feb
     now = datetime.now()
-    #now = datetime(2011, 12, 5, 6, 22, 45, 517969) # @TODO: remove this later
+    now = datetime(2013, 12, 5, 6, 22, 45, 517969) # @TODO: remove this later
 
     # make the 'now' date the last day of the month
     now = datetime(now.year, now.month, calendar.monthrange(now.year, now.month)[1])
@@ -503,15 +491,20 @@ def fund_return_form(request):
                                 fund__estimate_required=True,
                             ).only('nav')
                             prior_nav = prior_returns.nav
+                            prior_shares = prior_returns.shares 
                         except:
                             prior_nav = 0
+                            prior_shares = 0
                             
                         returns.nav = prior_nav + \
                             (prior_nav * estimation / 100) 
                         returns.fund = Fund.objects.get(pk=fund)
                         returns.value_date = months[i - 1]
                         returns.fund_perf = estimation
-                        returns.shares = returns.nav / prior_returns.shares 
+                        try:
+                            returns.shares = returns.nav / prior_shares
+                        except:
+                            returns.shares = 0
                         returns.estimation = True
                         returns.save()
 
@@ -552,8 +545,8 @@ def fund_return_form(request):
     })
     for group in group_data:
     
-        funds = Fund.objects.filter(group=group, estimate_required=True) \
-                                        .order_by('name').only('id', 'name')
+        funds = Fund.objects.filter(group=group, estimate_required=True,  
+                        end_date=None).order_by('name').only('id', 'name')
         if funds:    
             data.append({
                 'name': group.name,
