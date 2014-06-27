@@ -1079,11 +1079,15 @@ class PositionMonthlyResource(MainBaseResource):
                                 weight = p.data['weight']
                             except KeyError:
                                 weight = 0
+                            try:
+                                marketvaluefundcur = p.data['marketvaluefundcur']
+                            except KeyError:
+                                marketvaluefundcur = 0
                             else:
                                 new_data[name] = {
-                                    'marketvaluefundcur': p.data['marketvaluefundcur'],
+                                    'marketvaluefundcur':marketvaluefundcur,
                                     'holding__name': p.data['holding__name'],
-                                    'weight': p.data['weight'],
+                                    'weight': weight,
                                 }
                                 
                                 
