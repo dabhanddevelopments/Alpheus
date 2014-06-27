@@ -633,9 +633,15 @@ class FundReturnResource(MainBaseResource):
                         if i == 0:
                             name = data['objects'][0].data['fund__name']
                         elif i == 1:
-                            name = data['objects'][0].data['fund__benchpeer__name']
                             if name == '':
                                 name = 'N/A'
+                            else:
+                                try:
+                                    name = data['objects'][0].data['fund__benchpeer__name']
+                                except:
+                                    name = 'N/A'
+                            
+                                
                         else:
                             name = 'Relative Return' 
                     
