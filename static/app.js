@@ -2420,7 +2420,7 @@ console.log('summary', summary);
                 if(type === 1) {
                     var params = '&y1=performance&fields=weight,holding,holding__name&performance=true';
                 } else {
-                    var params = '&y1=weighted_&fields=weight,holding,holding__name&performance=true';
+                    var params = '&y1=weighted_perf&fields=weight,holding,holding__name&performance=true';
                 }
             }
             var url = '/api/positionmonthly/?title=holding__name&data_type=graph&value_date__year=' + year + '&value_date__month=' + (month  + 1) + '&fund=' + obj.fund.id + params;
