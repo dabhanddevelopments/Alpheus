@@ -2058,47 +2058,15 @@ console.log('summary', summary);
     function w16(obj, widget, div) {
     
         function getUrl() {
-            return "/api/fundreturnmonthly/?date_type=monthly&axis=left,left,left&metric=cumulative,cumulative,delta&layer=1,1,2&plot=line,line,line&rfr=0,0,0&mar=0,0,0&step=1,21,21&window=12,12,12&sec_under=fund,fund,fund&under=fund,benchpeer,fund&position=1,1,2&fund=" + obj.fund.id + "&fields=fund_perf,bench_perf,fund__name,benchperf__name&widget=w16";
+            return "/api/fundreturnmonthly/?date_type=monthly&axis=left,left,left&metric=cumulative,cumulative,delta&layer=1,1,2&plot=line,line,line&rfr=0,0,0&mar=0,0,0&step=1,21,21&window=12,12,12&sec_under=fund,fund,benchpeer&under=fund,benchpeer,fund&position=1,1,2&fund=" + obj.fund.id + "&fields=fund_perf,bench_perf,fund__name,benchperf__name&widget=w16";
         }
-
-        widget.yAxis = [{
-            height: 350,
-            opposite: false,
-            labels: {
-                formatter: function() {
-                   return this.value + '%';
-                }
-           },
-        }, {
-            height: 350,
-            opposite: false,
-            labels: {
-                formatter: function() {
-                   return this.value + '%';
-                }
-           },
-        },{
-            height: 300,
-            top: 400,
-            opposite: false,
-            labels: {
-                formatter: function() {
-                   return this.value + '%';
-                }
-           },
-        }];
-        widget.params.rangeSelector = false;
-        
-        widget.url = getUrl();
         
         $.getJSON(getUrl(), function(data) {
-            console.log('W16 DATA', data);
             var options = {
                 chart: {
                     alignThresholds: true,
                     type: 'line',
                     marginRight: 25,
-                    //marginBottom: 25,
                     spacingBottom: -20,
                     size: '100%',
                     renderTo: div,
@@ -2108,39 +2076,30 @@ console.log('summary', summary);
                 credits: {
                     enabled: false
                 },
+                tooltip: {
+                    valueSuffix: ' %',
+                },
                 yAxis: [{
                     height: 350,
                     opposite: false,
-                    labels: {
-                        formatter: function() {
-                           return this.value + '%';
-                        }
-                   },
                 }, {
                     height: 350,
                     opposite: false,
-                    labels: {
-                        formatter: function() {
-                           return this.value + '%';
-                        }
-                   },
                 },{
                     height: 300,
                     top: 400,
                     opposite: false,
-                    labels: {
-                        formatter: function() {
-                           return this.value + '%';
-                        }
-                   },
                 }],
+                rangeSelector: false,
                 series: data,
             };
             var chart = new Highcharts.StockChart(options);
             baseParameters(chart, widget, div, getUrl);
             Ext.getCmp(widget.key + 'datetype_combo').hide();   
         });
-        //chart(obj, widget, div, getUrl); 
+        
+        // calling chart here does not work for some unexplainable reason
+        //chart(obj, widget, div, getUrl()); 
     }
     
     function w25(obj, div) {
@@ -2437,30 +2396,35 @@ console.log('summary', summary);
     // W2 - Holding Performance Bar & W7 - Holding NAV Bar
     function holdingPerformance(obj, widget, div, perfType) {
     
+        // w7
         if(perfType != 'nav') {
             var title1 = 'Performance';
             var title2 = 'Weighted Performance';
+        // w2
         } else {
             var title1 = 'NAV';
             var title2 = 'Weight';
         }
         
-        function getUrl(type) {
+        function getUrl(type, year, month) {
         
+            // w7
             if(perfType == 'nav') {
                 if(type === 1) {
                     var params = '&y1=marketvaluefundcur&order_by=-weight';
                 } else {
                     var params = '&y1=weight&fields=weight&order_by=-weight';
                 } 
+            // w2
             } else {   
                 if(type === 1) {
                     var params = '&y1=performance&fields=weight&performance=true';
                 } else {
-                    var params = '&y1=weighted_perf&fields=weight&performance=true';
+                    var params = '&y1=weighted_&fields=weight&performance=true';
                 }
             }
-            var url = '/api/positionmonthly/?title=holding__name&data_type=graph&value_date__year=' + year + '&value_date__month=' + month + '&fund=' + obj.fund.id + params;
+            var url = '/api/positionmonthly/?title=holding__name&data_type=graph&value_date__year=' + year + '&value_date__month=' + (month  + 1) + '&fund=' + obj.fund.id + params;
+            console.log('w2 & w7 url', url);
             return url;
         }
         
@@ -2470,8 +2434,8 @@ console.log('summary', summary);
             year = moment(record).format('YYYY');
             month = from = moment(record).format('MM');
             
-            console.log('update chart w2', getUrl(type));
-            $.getJSON(getUrl(type), function(new_data) {
+            console.log('update chart w2', getUrl(type, year, month));
+            $.getJSON(getUrl(type, year, month), function(new_data) {
 
                 var options = $('#data').data('chart-options-' + div + '_tab' + type); 
                 
@@ -2550,90 +2514,95 @@ console.log('summary', summary);
                // });
            });
         }
-                
-        var year = moment().year();
-        var month = moment().month();
+        
+        // get the date of the latest value
+        $.getJSON('/api/positionmonthly/?limit=1&order_by=-value_date&fields=value_date', function(latest) {
+            
+            //var year = moment().year();
+            //var month = moment().month();
+            var year = moment(latest[0].value_date).year();
+            var month = moment(latest[0].value_date).month();
 
-        widget.params.labels = 'rotated';
-        widget.params.legend = 'false';
+            widget.params.labels = 'rotated';
+            widget.params.legend = 'false';
 
-        $('<div id="' + div + '_tab1"></div>').appendTo("#" + div);
-        $('<div id="' + div + '_tab2"></div>').appendTo("#" + div);
-        
-        widget.height -= 70; // compensate for date picker
-        
-        
-        widget.qs = '';
-        widget.url = getUrl(1);
-        console.log('url1', widget.url);
-        
-        barChart(obj, widget, div + '_tab1');
-        
-        widget.url = getUrl(2);
-        
-        console.log('url2', widget.url);
-        
-        barChart(obj, widget, div + '_tab2');
-        
-        var data = widget;
-        var tabPanel = Ext.create('Ext.tab.Panel', {
-            height: widget.height + 70,
-            width:  widget.width + 10,
-            activeTab: 0,
-            border: false,
-            items: [
-                {
-                    title: title1,
-                    bodyPadding: 10,
-                    //border: false,
-                    //id: div + '_tab1',
-                    items: [
-                        {
-                            xtype: 'monthfield',
-                            submitFormat: 'Y-m-d',
-                            name: 'month',
-                            format: 'F, Y',
-                            value: new Date(),
-                            listeners: {
-                                select: function(combo, record, index) {
-                                    updateChart(record, 1);
-                                }
-                            },
-                        }, {
-                            xtype: 'container',
-                            contentEl: div + '_tab1',
-                        }
-                    ],
-                },
-                {
-                    title: title2,
-                    //id: div + '_tab2',
-                    bodyPadding: 10,
-                    items: [
-                        {
-                            xtype: 'monthfield',
-                            submitFormat: 'Y-m-d',
-                            name: 'month',
-                            format: 'F, Y',
-                            value: new Date(),
-                            listeners: {
-                                select: function(combo, record, index) {
-                                    updateChart(record, 2);
-                                }
-                            },
-                        }, {
-                            xtype: 'container',
-                            contentEl: div + '_tab2',
-                        }
-                    ],
-                },
-            ],
-            renderTo: div,
-        });
-        
-        tabPanel.setActiveTab(1);
-        tabPanel.setActiveTab(0);
-        
+            $('<div id="' + div + '_tab1"></div>').appendTo("#" + div);
+            $('<div id="' + div + '_tab2"></div>').appendTo("#" + div);
+            
+            widget.height -= 70; // compensate for date picker
+            
+            
+            widget.qs = '';
+            widget.url = getUrl(1, year, month);
+            console.log('url1', widget.url);
+            
+            barChart(obj, widget, div + '_tab1');
+            
+            widget.url = getUrl(2, year, month);
+            
+            console.log('url2', widget.url);
+            
+            barChart(obj, widget, div + '_tab2');
+            
+            var data = widget;
+            var tabPanel = Ext.create('Ext.tab.Panel', {
+                height: widget.height + 70,
+                width:  widget.width + 10,
+                activeTab: 0,
+                border: false,
+                items: [
+                    {
+                        title: title1,
+                        bodyPadding: 10,
+                        //border: false,
+                        //id: div + '_tab1',
+                        items: [
+                            {
+                                xtype: 'monthfield',
+                                submitFormat: 'Y-m-d',
+                                name: 'month',
+                                format: 'F, Y',
+                                value: new Date(year, month),
+                                listeners: {
+                                    select: function(combo, record, index) {
+                                        updateChart(record, 1);
+                                    }
+                                },
+                            }, {
+                                xtype: 'container',
+                                contentEl: div + '_tab1',
+                            }
+                        ],
+                    },
+                    {
+                        title: title2,
+                        //id: div + '_tab2',
+                        bodyPadding: 10,
+                        items: [
+                            {
+                                xtype: 'monthfield',
+                                submitFormat: 'Y-m-d',
+                                name: 'month',
+                                format: 'F, Y',
+                                value: new Date(year, month),
+                                listeners: {
+                                    select: function(combo, record, index) {
+                                        updateChart(record, 2);
+                                    }
+                                },
+                            }, {
+                                xtype: 'container',
+                                contentEl: div + '_tab2',
+                            }
+                        ],
+                    },
+                ],
+                renderTo: div,
+            });
+            
+            tabPanel.setActiveTab(1);
+            tabPanel.setActiveTab(0);
+        });   
     }
     
     
@@ -4682,11 +4651,6 @@ console.log('summary', summary);
             //var chart = new Highcharts.Chart(options); // cannot be used with rangeSelector options
             //console.log('CREATING NEW CHART');
             
-            if(jQuery.inArray(widget.key, ['w16']) !==-1 ) { 
-                baseParameters(chart, widget, div, url);
-                console.log('CHART', chart);
-                Ext.getCmp(widget.key + 'datetype_combo').hide();    
-            }
             //$('#data').data(widget.key + '-chart', chart);
         });
     }

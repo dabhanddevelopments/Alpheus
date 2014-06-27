@@ -633,7 +633,7 @@ class FundReturnResource(MainBaseResource):
                         if i == 0:
                             name = data['objects'][0].data['fund__name']
                         elif i == 1:
-                            name = data['objects'][0].data['benchperf__name']
+                            name = data['objects'][0].data['fund__benchpeer__name']
                             if name == '':
                                 name = 'N/A'
                         else:
@@ -895,7 +895,7 @@ class PositionMonthlyResource(MainBaseResource):
     
     class Meta(MainBaseResource.Meta):
         queryset = PositionMonthly.objects.all()
-        ordering = ['weight']
+        ordering = ['weight', 'value_date']
 
 
     def alter_list_data_to_serialize(self, request, data):  
@@ -909,13 +909,17 @@ class PositionMonthlyResource(MainBaseResource):
         # W2 - Holding Performance Bar & W7 Holding NAV
         # Get performance from HoldingMonthly (only utilized in W2)
         # and the weight of the prior month to calculate the average weight
-        if performance and year and month and fund:
+        if year and month and fund:
         
-            # @TODO: look at the last HoldingMonthly, and use that if not exist (client side)
-            
             hm = HoldingMonthly.objects.filter(
                 value_date__year=year, value_date__month=month). \
-                select_related('holding').only('holding__name', 'performance')
+                select_related('holding') \
+                .only('holding__name', 'performance', 'holding__id')
+                
+            # save the return/performance in a dict for the hedge funds
+            holding_returns = {}
+            for h in hm:
+                holding_returns[h.holding.id] = h.performance
                 
             if int(month) == 1:
                 prior_year = int(year) - 1
@@ -930,6 +934,8 @@ class PositionMonthlyResource(MainBaseResource):
                 select_related('holding').only('holding__name', 'weight')
                 
             pos = data['objects']
+            position_ids = [p.data['holding'].id for p in data['objects']]
+            
             data['objects'] = [] # delete old data
             new_data = {}
             
@@ -952,7 +958,77 @@ class PositionMonthlyResource(MainBaseResource):
                                 'holding__name': p.data['holding__name'],
                                 'weight': p.data['weight'],
                             }
-            """               
+            """   
+            
+            # look up hedge fund holdings (if any)
+            # and group them together to find out the average weight
+            # totally ugly solution due to faulty db design
+            hedge_objs = HoldingHedgeFund.objects \
+                    .filter(holding__id__in=position_ids) \
+                    .only('holding__id', 'parent_fundname') 
+            hedges = {}
+            hedge_excludes = []
+            for h in hedge_objs:
+                try:
+                    hedges[h.parent_fundname]
+                except:
+                    hedges[h.parent_fundname] = []
+                hedges[h.parent_fundname].append(h.holding.id)
+                hedge_excludes.append(h.holding.id)
+             
+               
+            for name, h in hedges.iteritems():
+                #  summed weight & marketvaluefundcur of all hedge funds
+                sum_cur = PositionMonthly.objects \
+                           .filter(holding__id__in=h, value_date__year=year, 
+                                value_date__month=month) \
+                           .aggregate(Sum('marketvaluefundcur'), Sum('weight'))
+                sum_pri = PositionMonthly.objects \
+                           .filter(holding__id__in=h, value_date__year=prior_year, 
+                                value_date__month=prior_month) \
+                           .aggregate(Sum('marketvaluefundcur'), Sum('weight'))
+                if sum_cur['marketvaluefundcur__sum'] != None:
+                    try:
+                        new_data[name]
+                    except:
+                        new_data[name] = {}
+                    new_data[name]['marketvaluefundcur'] = sum_cur['marketvaluefundcur__sum']
+                if sum_cur['weight__sum'] != None:  
+                    try:
+                        new_data[name]
+                    except:
+                        new_data[name] = {}
+                    new_data[name]['weight'] = sum_cur['weight__sum']
+                performance_list = []
+                
+                # loop through each holding id
+                for h2 in h:
+                    
+                    # get weight for this holding, then sum the results
+                    # of the calcs to get the performance for w2
+                    pm_cur = PositionMonthly.objects.filter(holding__id=h2, 
+                            value_date__year=year,
+                                value_date__month=month) \
+                           .order_by('value_date') \
+                           .only('weight')[0]
+                    pm_pri = PositionMonthly.objects.filter(holding__id=h2, 
+                            value_date__year=prior_year,
+                                value_date__month=prior_month) \
+                           .order_by('value_date') \
+                           .only('weight')[0]
+                    if pm_cur.weight != None:  
+                        try:
+                            performance_list.append(
+                                (pm_cur.weight / new_data[name]['weight']) * holding_returns[h2]
+                            )
+                        except:
+                            performance_list.append(0) # or pass?
+                new_data[name]['performance'] = sum(performance_list)
+                
+                new_data[name]['average_weight'] = (pm_cur.weight + pm_pri.weight) / 2 / 100
+                new_data[name]['performance'] = new_data[name]['average_weight'] * new_data[name]['performance']
+                new_data[name]['holding__name'] = name
+                
             
             # @TODO: 
                          
@@ -962,22 +1038,46 @@ class PositionMonthlyResource(MainBaseResource):
                     for h in hm:
                         if p.data['holding__name'] == h.holding.name and pp.holding.name == h.holding.name:
                         
-                            name = h.holding.name
-                            average_weight = (p.data['weight'] + pp.weight) / 2 / 100
+                            # skip if this is a hedge fund holding
+                            if h.holding.id in hedge_excludes:
+                                continue
+                        
+                            if performance:
                             
-                            if average_weight >= 0:
+                                exclude_ids = []
+                                hedge_funds = []
+                                hf = {}
+                                for hedge in hedge_objs:
+                                    exclude_ids.append(hedge.id)
+                                    hf[parent_fundname]['weight']
+                                hedge_funds.append(hf)
+                            
+                                name = h.holding.name
+                                average_weight = (p.data['weight'] + pp.weight) / 2 / 100
+                                
+                                if average_weight >= 0:
+                                
+                                    new_data[name] = {
+                                        'weighted_perf': (p.data['weight'] * h.performance) / 100,
+                                        'average_weight': average_weight, 
+                                        'performance': h.performance,
+                                        'holding__name': p.data['holding__name'],
+                                        'weight': p.data['weight'],
+                                    }
+                                    #average_weight = (p.data['weight'] + pp.weight) / 2 / 100
+                                    #weighted_perf = (average_weight * h.performance)
+                                    
+                                    #new_data[name]['average_weight'] = average_weight
+                                    #new_data[name]['weighted_perf'] = weighted_perf
+                            else:
                                 new_data[name] = {
-                                    'weighted_perf': (p.data['weight'] * h.performance) / 100,
-                                    'average_weight': average_weight, 
-                                    'performance': h.performance,
+                                    'marketvaluefundcur': p.data['marketvaluefundcur'],
                                     'holding__name': p.data['holding__name'],
                                     'weight': p.data['weight'],
                                 }
-                                #average_weight = (p.data['weight'] + pp.weight) / 2 / 100
-                                #weighted_perf = (average_weight * h.performance)
                                 
-                                #new_data[name]['average_weight'] = average_weight
-                                #new_data[name]['weighted_perf'] = weighted_perf
+                                
+                                
                                 
                                 
             # convert dictionary to a list of dictionaries

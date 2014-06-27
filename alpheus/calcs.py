@@ -220,9 +220,9 @@ def max_drawdown(series):
 
 
 #calculate the plain sum of the return series
-def sum (series):
-    sum = series.sum(0)
-    return sum
+# renamed this function 27th of june 2014
+def sum_series (series):
+    return series.sum(0)
 
 
 #calculate the rolling sum of the returns series
