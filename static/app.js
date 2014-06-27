@@ -2411,16 +2411,16 @@ console.log('summary', summary);
             // w7
             if(perfType == 'nav') {
                 if(type === 1) {
-                    var params = '&y1=marketvaluefundcur&order_by=-weight';
+                    var params = '&y1=marketvaluefundcur&fields=holding,holding__name&order_by=-weight';
                 } else {
-                    var params = '&y1=weight&fields=weight&order_by=-weight';
+                    var params = '&y1=weight&fields=weight&fields=holding,holding__name&order_by=-weight';
                 } 
             // w2
             } else {   
                 if(type === 1) {
-                    var params = '&y1=performance&fields=weight&performance=true';
+                    var params = '&y1=performance&fields=weight,holding,holding__name&performance=true';
                 } else {
-                    var params = '&y1=weighted_&fields=weight&performance=true';
+                    var params = '&y1=weighted_&fields=weight,holding,holding__name&performance=true';
                 }
             }
             var url = '/api/positionmonthly/?title=holding__name&data_type=graph&value_date__year=' + year + '&value_date__month=' + (month  + 1) + '&fund=' + obj.fund.id + params;
