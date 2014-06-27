@@ -1075,6 +1075,10 @@ class PositionMonthlyResource(MainBaseResource):
                                     
                                     #new_data[name]['average_weight'] = average_weight
                                     #new_data[name]['weighted_perf'] = weighted_perf
+                            try:
+                                weight = p.data['weight']
+                            except KeyError:
+                                weight = 0
                             else:
                                 new_data[name] = {
                                     'marketvaluefundcur': p.data['marketvaluefundcur'],
