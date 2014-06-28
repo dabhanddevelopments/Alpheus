@@ -497,7 +497,6 @@ class MainBaseResource(SpecifiedFields):
             elif self.y1 and len(self.title):
             
                 y1 = []
-                assert False
                 for row in data['objects']:
                     y1.append({
                         'y': float(row.data[self.y1]), #@TODO: Perm fix for float bug
