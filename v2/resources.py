@@ -1036,21 +1036,22 @@ class PositionMonthlyResource(MainBaseResource):
                 new_data[name]['holding__name'] = name
                 
             
-            # @TODO: 
-                         
-            # update the average weight for prior months (if exists)
             for i, p in enumerate(pos):
-                for pp in prior_pos:
-                    for h in hm:
-                        if p.data['holding__name'] == h.holding.name and pp.holding.name == h.holding.name:
-                        
-                            # skip if this is a hedge fund holding
-                            if h.holding.id in hedge_excludes:
-                                continue
+            
+                # W2 - update the average weight for prior months (if exists)
+                if performance:
+                
+                    for pp in prior_pos:
+                        for h in hm:
+                            if p.data['holding__name'] == h.holding.name and pp.holding.name == h.holding.name:
                             
-                            name = h.holding.name
-                        
-                            if performance:
+                                # skip if this is a hedge fund holding
+                                if h.holding.id in hedge_excludes:
+                                    continue
+                                
+                                name = h.holding.name
+                            
+                            
                                 
                                 average_weight = (p.data['weight'] + pp.weight) / 2 / 100
                                 
@@ -1067,21 +1068,24 @@ class PositionMonthlyResource(MainBaseResource):
                                     #weighted_perf = (average_weight * h.performance)
                                     
                                     #new_data[name]['average_weight'] = average_weight
-                                    #new_data[name]['weighted_perf'] = weighted_perf
-                            try:
-                                weight = p.data['weight']
-                            except KeyError:
-                                weight = 0
-                            try:
-                                marketvaluefundcur = p.data['marketvaluefundcur']
-                            except KeyError:
-                                marketvaluefundcur = 0
-                            else:
-                                new_data[name] = {
-                                    'marketvaluefundcur':marketvaluefundcur,
-                                    'holding__name': p.data['holding__name'],
-                                    'weight': weight,
-                                }
+                                #new_data[name]['weighted_perf'] = weighted_perf
+                # W2
+                else:
+                    
+                    try:
+                        weight = p.data['weight']
+                    except KeyError:
+                        weight = 0
+                    try:
+                        marketvaluefundcur = p.data['marketvaluefundcur']
+                    except KeyError:
+                        marketvaluefundcur = 0
+                
+                    new_data[p.data['holding__name']] = {
+                        'marketvaluefundcur':marketvaluefundcur,
+                        'holding__name': p.data['holding__name'],
+                        'weight': weight,
+                    }
                                 
                                 
                                 
