@@ -1010,18 +1010,27 @@ class PositionMonthlyResource(MainBaseResource):
                 # loop through each holding id
                 for h2 in h:
                     
-                    # get weight for this holding, then sum the results
-                    # of the calcs to get the performance for w2
-                    pm_cur = PositionMonthly.objects.filter(holding__id=h2, 
-                            value_date__year=year,
-                                value_date__month=month) \
-                           .order_by('value_date') \
-                           .only('weight')[0]
+                    try: 
+                        # get weight for this holding, then sum the results
+                        # of the calcs to get the performance for w2
+                        pm_cur = PositionMonthly.objects.filter(holding__id=h2, 
+                                value_date__year=year,
+                                    value_date__month=month) \
+                               .order_by('value_date') \
+                               .only('weight')[0]
+                        weight_cur = pm_cur.weight
+                    except IndexError:
+                        weight_cur = 0
+                        
                     pm_pri = PositionMonthly.objects.filter(holding__id=h2, 
                             value_date__year=prior_year,
                                 value_date__month=prior_month) \
                            .order_by('value_date') \
                            .only('weight')[0]
+                        weight_pri = pm_pri.weight
+                    except IndexError:
+                        weight_pri = 0
+                        
                     if pm_cur.weight != None:  
                         try:
                             performance_list.append(
@@ -1031,7 +1040,7 @@ class PositionMonthlyResource(MainBaseResource):
                             performance_list.append(0) # or pass?
                 new_data[name]['performance'] = sum(performance_list)
                 
-                new_data[name]['average_weight'] = (pm_cur.weight + pm_pri.weight) / 2 / 100
+                new_data[name]['average_weight'] = (weight_cur + weight_pri) / 2 / 100
                 new_data[name]['performance'] = new_data[name]['average_weight'] * new_data[name]['performance']
                 new_data[name]['holding__name'] = name
                 
