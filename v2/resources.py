@@ -1081,7 +1081,7 @@ class PositionMonthlyResource(MainBaseResource):
                 # W2
                 else:
                     # skip if this is a hedge fund holding
-                    if p.data['holding__id'] in hedge_excludes:
+                    if p.data['holding'].id in hedge_excludes:
                         continue
                     
                     try:
