@@ -906,7 +906,6 @@ class PositionMonthlyResource(MainBaseResource):
 
     def alter_list_data_to_serialize(self, request, data):  
     
-    
         fund = request.GET.get('fund', False)
         year = request.GET.get('value_date__year', False)
         month = request.GET.get('value_date__month', False)
@@ -1045,7 +1044,7 @@ class PositionMonthlyResource(MainBaseResource):
                 new_data[name]['weighted_perf'] = new_data[name]['average_weight'] * new_data[name]['performance']
                 new_data[name]['holding__name'] = name
                 
-            
+
             for i, p in enumerate(pos):
             
                 # W2 - update the average weight for prior months (if exists)
@@ -1081,6 +1080,9 @@ class PositionMonthlyResource(MainBaseResource):
                                 #new_data[name]['weighted_perf'] = weighted_perf
                 # W2
                 else:
+                    # skip if this is a hedge fund holding
+                    if p.data['holding__id'] in hedge_excludes:
+                        continue
                     
                     try:
                         weight = p.data['weight']
