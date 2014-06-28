@@ -1047,18 +1047,11 @@ class PositionMonthlyResource(MainBaseResource):
                             # skip if this is a hedge fund holding
                             if h.holding.id in hedge_excludes:
                                 continue
+                            
+                            name = h.holding.name
                         
                             if performance:
-                            
-                                exclude_ids = []
-                                hedge_funds = []
-                                hf = {}
-                                for hedge in hedge_objs:
-                                    exclude_ids.append(hedge.id)
-                                    hf[parent_fundname]['weight']
-                                hedge_funds.append(hf)
-                            
-                                name = h.holding.name
+                                
                                 average_weight = (p.data['weight'] + pp.weight) / 2 / 100
                                 
                                 if average_weight >= 0:
@@ -1100,7 +1093,10 @@ class PositionMonthlyResource(MainBaseResource):
                 sorted_data.append(new)
              
             # sort by average weight
-            new_data = sorted(sorted_data, key=itemgetter('average_weight')) 
+            if performance:
+                new_data = sorted(sorted_data, key=itemgetter('average_weight')) 
+            else:
+                new_data = sorted(sorted_data, key=itemgetter('weight')) 
             
             # insert new data
             for new in new_data:
