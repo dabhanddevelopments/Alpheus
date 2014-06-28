@@ -1042,7 +1042,7 @@ class PositionMonthlyResource(MainBaseResource):
                 new_data[name]['performance'] = sum(performance_list)
                 
                 new_data[name]['average_weight'] = (weight_cur + weight_pri) / 2 / 100
-                new_data[name]['performance'] = new_data[name]['average_weight'] * new_data[name]['performance']
+                new_data[name]['weighted_perf'] = new_data[name]['average_weight'] * new_data[name]['performance']
                 new_data[name]['holding__name'] = name
                 
             
