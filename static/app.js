@@ -2423,7 +2423,7 @@ console.log('summary', summary);
                     var params = '&y1=weighted_perf&fields=weight,holding,holding__name&performance=true';
                 }
             }
-            var url = '/api/positionmonthly/?title=holding__name&data_type=graph&value_date__year=' + year + '&value_date__month=' + (month  + 1) + '&fund=' + obj.fund.id + params;
+            var url = '/api/positionmonthly/?title=holding__name&data_type=graph&value_date__year=' + year + '&value_date__month=' + month + '&fund=' + obj.fund.id + params;
             console.log('w2 & w7 url', url);
             return url;
         }
@@ -2434,7 +2434,7 @@ console.log('summary', summary);
             year = moment(record).format('YYYY');
             month = from = moment(record).format('MM');
             
-            console.log('update chart w2', getUrl(type, year, month));
+            console.log('update chart w2', getUrl(type, year, month), month);
             $.getJSON(getUrl(type, year, month), function(new_data) {
 
                 var options = $('#data').data('chart-options-' + div + '_tab' + type); 
@@ -2522,6 +2522,8 @@ console.log('summary', summary);
             //var month = moment().month();
             var year = moment(latest[0].value_date).year();
             var month = moment(latest[0].value_date).month();
+            
+            console.log('LATEST MONTH', latest, month);
 
             widget.params.labels = 'rotated';
             widget.params.legend = 'false';
@@ -2533,14 +2535,14 @@ console.log('summary', summary);
             
             
             widget.qs = '';
-            widget.url = getUrl(1, year, month);
-            console.log('url1', widget.url);
+            widget.url = getUrl(1, year, parseInt(month + 1));
+            console.log(widget.key + ' url1', widget.url);
             
             barChart(obj, widget, div + '_tab1');
             
-            widget.url = getUrl(2, year, month);
+            widget.url = getUrl(2, year, parseInt(month + 1));
             
-            console.log('url2', widget.url);
+            console.log(widget.key + ' url2', widget.url);
             
             barChart(obj, widget, div + '_tab2');
             
