@@ -1021,12 +1021,13 @@ class PositionMonthlyResource(MainBaseResource):
                         weight_cur = pm_cur.weight
                     except IndexError:
                         weight_cur = 0
-                        
-                    pm_pri = PositionMonthly.objects.filter(holding__id=h2, 
-                            value_date__year=prior_year,
-                                value_date__month=prior_month) \
-                           .order_by('value_date') \
-                           .only('weight')[0]
+                      
+                    try:  
+                        pm_pri = PositionMonthly.objects.filter(holding__id=h2, 
+                                value_date__year=prior_year,
+                                    value_date__month=prior_month) \
+                               .order_by('value_date') \
+                               .only('weight')[0]
                         weight_pri = pm_pri.weight
                     except IndexError:
                         weight_pri = 0
