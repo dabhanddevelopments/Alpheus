@@ -1072,7 +1072,7 @@ class PositionMonthlyResource(MainBaseResource):
                                 
                                 average_weight = (weight + prior_weight) / 2 / 100
                                 
-                                if average_weight >= 0:
+                                if average_weight >= 0.05:
                                 
                                     new_data[name] = {
                                         'weighted_perf': (weight * h.performance) / 100,
@@ -1086,7 +1086,7 @@ class PositionMonthlyResource(MainBaseResource):
                                     
                                     #new_data[name]['average_weight'] = average_weight
                                 #new_data[name]['weighted_perf'] = weighted_perf
-                # W2
+                # W7
                 else:
                     # skip if this is a hedge fund holding
                     if p.data['holding'].id in hedge_excludes:
@@ -1096,20 +1096,53 @@ class PositionMonthlyResource(MainBaseResource):
                         weight = p.data['weight']
                     except KeyError:
                         weight = 0
-                    try:
-                        marketvaluefundcur = p.data['marketvaluefundcur']
-                    except KeyError:
-                        marketvaluefundcur = 0
+                    
+                    if weight >= 0.05:
+                            
+                        try:
+                            marketvaluefundcur = p.data['marketvaluefundcur']
+                        except KeyError:
+                            marketvaluefundcur = 0
+                    
+                        new_data[p.data['holding__name']] = {
+                            'marketvaluefundcur':marketvaluefundcur,
+                            'holding__name': p.data['holding__name'],
+                            'weight': weight,
+                        }
+                                
+                 
+            # w7 - cash positions
+            if not performance:
                 
-                    new_data[p.data['holding__name']] = {
-                        'marketvaluefundcur':marketvaluefundcur,
-                        'holding__name': p.data['holding__name'],
+                try:
+                    sum_cash = PositionMonthly.objects \
+                       .filter(
+                            fund=fund,
+                            value_date__year=year, 
+                            value_date__month=month,
+                            fund__asset_class__investment_category__description='CASH') \
+                       .exclude(purpose__id=1) \
+                       .aggregate(Sum('marketvaluefundcur'), Sum('weight'))
+                except IndexError:
+                    pass 
+                       
+                try:
+                    weight = sum_cash['weight__sum']
+                except KeyError:
+                    weight = 0
+                    
+                try:
+                    marketvaluefundcur = sum_cash['marketvaluefundcur__sum']
+                except KeyError:
+                    marketvaluefundcur = 0
+                    
+                if weight >= 0.05:
+                        
+                    new_data["Total Cash"] = {
+                        'marketvaluefundcur': marketvaluefundcur,
+                        'holding__name': 'Total Cash',
                         'weight': weight,
-                    }
-                                
-                                
-                                
-                                
+                    }         
                                 
             # convert dictionary to a list of dictionaries
             sorted_data = []

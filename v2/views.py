@@ -454,7 +454,7 @@ def fund_return_form(request):
     prior_months = []
     # check if this actually works, especially with feb
     now = datetime.now()
-    now = datetime(2013, 12, 5, 6, 22, 45, 517969) # @TODO: remove this later
+    #now = datetime(2013, 12, 5, 6, 22, 45, 517969) # @TODO: remove this later
 
     # make the 'now' date the last day of the month
     now = datetime(now.year, now.month, calendar.monthrange(now.year, now.month)[1])
@@ -489,7 +489,7 @@ def fund_return_form(request):
                                 value_date__year = prior_months[i - 1].year,
                                 value_date__month = prior_months[i - 1].month,
                                 fund__estimate_required=True,
-                            ).only('nav')
+                            )
                             prior_nav = prior_returns.nav
                             prior_shares = prior_returns.shares 
                         except:
@@ -501,6 +501,10 @@ def fund_return_form(request):
                         returns.fund = Fund.objects.get(pk=fund)
                         returns.value_date = months[i - 1]
                         returns.fund_perf = estimation
+                        try:
+                            returns.nav_per_share = returns.nav / prior_shares
+                        except:
+                            returns.nav_per_share = 0
                         try:
                             returns.shares = returns.nav / prior_shares
                         except:

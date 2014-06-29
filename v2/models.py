@@ -919,11 +919,16 @@ class HoldingMonthly(models.Model):
         db_table = 'ALP_HoldingsMonthly_TS'
 
 
+class Purpose(models.Model):
+    id = models.AutoField(primary_key=True, db_column='PurposeId')
+    name = models.CharField(max_length=200, db_column='PurposeName', blank=True, null=True)
+
 
 class HoldingPositionDaily(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     fund = models.ForeignKey(Fund, db_column='FundID')
     holding = models.ForeignKey(Holding, db_column='HoldingID')
+    purpose = models.ForeignKey(Purpose, db_column='PurposeID')
     value_date = models.DateTimeField(db_column='ValueDate')
     size = models.DecimalField(decimal_places=4, null=True, max_digits=18, db_column='Size', blank=True)
     marketpricelcl = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='MarketPriceLcl', blank=True)
@@ -940,11 +945,11 @@ class HoldingPositionDaily(models.Model):
         db_table = 'ALP_PositionsDaily'
         verbose_name_plural = 'Position Daily'
 
-
 class PositionMonthly(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     fund = models.ForeignKey(Fund, db_column='FundID')
     holding = models.ForeignKey(Holding, db_column='HoldingID')
+    purpose = models.ForeignKey(Purpose, db_column='PurposeID')
     value_date = models.DateTimeField(db_column='ValueDate')
     size1 = models.DecimalField(decimal_places=4, null=True, max_digits=18, db_column='Size', blank=True)
     marketpricelcl1 = models.DecimalField(decimal_places=6, null=True, max_digits=18, db_column='MarketPriceLcl', blank=True)

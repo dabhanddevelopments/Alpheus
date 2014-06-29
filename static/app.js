@@ -2396,11 +2396,11 @@ console.log('summary', summary);
     // W2 - Holding Performance Bar & W7 - Holding NAV Bar
     function holdingPerformance(obj, widget, div, perfType) {
     
-        // w7
+        // w2
         if(perfType != 'nav') {
             var title1 = 'Performance';
             var title2 = 'Weighted Performance';
-        // w2
+        // w7
         } else {
             var title1 = 'NAV';
             var title2 = 'Weight';
