@@ -2531,7 +2531,7 @@ console.log('summary', summary);
         }
         
         // get the date of the latest value
-        $.getJSON('/api/positionmonthly/?limit=1&order_by=-value_date&fields=value_date', function(latest) {
+        $.getJSON('/api/positionmonthly/?fund=' + obj.fund.id + '&limit=1&order_by=-value_date&fields=value_date', function(latest) {
             
             //var year = moment().year();
             //var month = moment().month();
