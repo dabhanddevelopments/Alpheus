@@ -1186,7 +1186,6 @@ class PositionMonthlyResource(MainBaseResource):
             # convert dictionary to a list of dictionaries
             sorted_data = []
             for i, new in new_data.iteritems():
-                print new['performance']
                 sorted_data.append(new)
              
             # sort by average weight
