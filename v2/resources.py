@@ -941,9 +941,12 @@ class PositionMonthlyResource(MainBaseResource):
                 prior_month = int(month) - 1
                 
             prior_pos = PositionMonthly.objects.filter(
-                value_date__year=prior_year, value_date__month=prior_month,
-                fund=fund). \
-                select_related('holding').only('holding__name', 'weight')
+                    value_date__year=prior_year, value_date__month=prior_month,
+                    fund=fund) \
+                .select_related('holding', 
+                    'holding__asset_class__investment_category') \
+                .only('holding__name', 'weight',
+                    'holding__asset_class__investment_category__description')
                 
             pos = data['objects']
             position_ids = [p.data['holding'].id for p in data['objects']]
@@ -951,28 +954,10 @@ class PositionMonthlyResource(MainBaseResource):
             data['objects'] = [] # delete old data
             new_data = {}
             
-            # set the average weight for the current month
-            """
-            for i, p in enumerate(pos):
-                for h in hm:
-                    if p.data['holding__name'] == h.holding.name:
-                        
-                        name = h.holding.name
-                        
-                        average_weight = p.data['weight']
-                            
-                        if average_weight >= 0:
-                        
-                            new_data[name] = {
-                                'weighted_perf': (p.data['weight'] * h.performance) / 100,
-                                'average_weight': (average_weight) / 100, 
-                                'performance': h.performance,
-                                'holding__name': p.data['holding__name'],
-                                'weight': p.data['weight'],
-                            }
-            """   
+
+
             
-            # look up hedge fund holdings (if any)
+            # look up HEDGE FUND HOLDINGS (if any)
             # and group them together to find out the average weight
             # totally ugly solution due to faulty db design
             hedge_objs = HoldingHedgeFund.objects \
@@ -1052,53 +1037,100 @@ class PositionMonthlyResource(MainBaseResource):
                 new_data[name]['holding__name'] = name
                 
             
-            for i, p in enumerate(pos):
+
+              
+              
+            # W2 - update the average weight for prior months (if exists)
+            if performance:
             
-                if p.data['holding__asset_class__investment_category__description'] == 'CASH':
-                    continue
-            
-                # W2 - update the average weight for prior months (if exists)
-                if performance:
+                w2_data = {}
                 
-                    for pp in prior_pos:
-                        for h in hm:
-                            if p.data['holding__name'] == h.holding.name and pp.holding.name == h.holding.name:
+                # set the prior positions
+                for pp in prior_pos:
+        
+                    # we don't display cash holdings 
+                    try:
+                        if pp.holding.asset_class.investment_category.description == 'CASH':
+                            continue
+                    except:
+                        pass
+                        
+                        # skip if this is a hedge fund holding
+                        if pp.holding.id in hedge_excludes:
+                            continue
                             
-                                # skip if this is a hedge fund holding
-                                if h.holding.id in hedge_excludes:
-                                    continue
+                        name = h.holding.name
+                        
+                        try:
+                            w2_data[name]
+                        except:
+                            w2_data[name] = {}
+                             
+                        w2_data[name]['prior_weight'] = pp.weight
+                   
+                # set the current positions               
+                for i, p in enumerate(pos):
+            
+                    # we don't display cash holdings 
+                    if p.data['holding__asset_class__investment_category__description'] == 'CASH':
+                        continue
+            
+                
+                    for h in hm:
+                        if p.data['holding__name'] == h.holding.name:
+                        
+                            # skip if this is a hedge fund holding
+                            if h.holding.id in hedge_excludes:
+                                continue    
                                 
-                                
-                                name = h.holding.name
+                            name = h.holding.name               
                             
-                                try:
-                                    weight = p.data['weight']
-                                except:
-                                    weight = 0
-                                    
-                                try:
-                                    prior_weight = pp.weight
-                                except:
-                                    prior_weight = 0
+                            try:
+                                w2_data[name]
+                            except:
+                                w2_data[name] = {}
                                 
-                                average_weight = (weight + prior_weight) / 2 / 100
-                                
-                                if average_weight >= 0.0005:
-                                
-                                    new_data[name] = {
-                                        'weighted_perf': (weight * h.performance) / 100,
-                                        'average_weight': average_weight, 
-                                        'performance': h.performance,
-                                        'holding__name': p.data['holding__name'],
-                                        'weight': weight,
-                                    }
-                                    #average_weight = (p.data['weight'] + pp.weight) / 2 / 100
-                                    #weighted_perf = (average_weight * h.performance)
-                                    
-                                    #new_data[name]['average_weight'] = average_weight
-                                #new_data[name]['weighted_perf'] = weighted_perf
-                # W7
-                else:
+                            w2_data[name]['performance'] = h.performance
+                            w2_data[name]['current_weight'] = p.data['weight']
+                            
+                
+                for name, a in w2_data.iteritems():
+                
+                    try:
+                        weight = a['current_weight']
+                    except:
+                        weight = 0
+                        
+                    try:
+                        prior_weight = a['prior_weight']
+                    except:
+                        prior_weight = 0
+                        
+                    try:
+                        performance = a['performance']
+                    except:
+                        performance = 0
+                    
+                    average_weight = (weight + prior_weight) / 2 / 100
+                    
+                    if average_weight >= 0.0005:
+                    
+                        new_data[name] = {
+                            'weighted_perf': (weight * performance) / 100,
+                            'average_weight': average_weight, 
+                            'performance': performance,
+                            'holding__name': name,
+                            'weight': weight,
+                        }
+
+            # W7
+            else:
+                for i, p in enumerate(pos):
+            
+                    # we don't display cash holdings 
+                    if p.data['holding__asset_class__investment_category__description'] == 'CASH':
+                        continue
+                        
                     # skip if this is a hedge fund holding
                     if p.data['holding'].id in hedge_excludes:
                         continue
