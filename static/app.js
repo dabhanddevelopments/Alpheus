@@ -2076,6 +2076,12 @@ console.log('summary', summary);
                 credits: {
                     enabled: false
                 },
+                navigator: {
+                    enabled: false
+                },
+                legend: {
+                    enabled: false
+                },
                 tooltip: {
                     valueSuffix: ' %',
                 },
@@ -2087,7 +2093,7 @@ console.log('summary', summary);
                     opposite: false,
                 },{
                     height: 300,
-                    top: 400,
+                    top: 390,
                     opposite: false,
                 }],
                 rangeSelector: false,

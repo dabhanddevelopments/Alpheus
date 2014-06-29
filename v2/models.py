@@ -665,7 +665,7 @@ class FundReturnDaily(models.Model):
     bench_mtd = models.DecimalField(decimal_places=6, max_digits=18, db_column='BenchMTDReturn', blank=True, null=True)
     bench_ytd = models.DecimalField(decimal_places=6, max_digits=18, db_column='BenchYTDReturn', blank=True, null=True)
     flag = models.CharField(max_length=1, db_column='Flag', blank=True, null=True)
-    end_date = models.DateTimeField(db_column='EndDate', blank=True, null=True)
+    #end_date = models.DateTimeField(db_column='EndDate', blank=True, null=True)
 
 
     class Meta:
@@ -699,7 +699,7 @@ class FundReturnMonthly(models.Model):
     estimation = models.NullBooleanField(db_column='Flag', blank=True, null=True)
     sec_bench = models.DecimalField(decimal_places=6, max_digits=18, db_column='SecBenchMonthlyReturn', blank=True, null=True)
     sec_bench_ytd = models.DecimalField(decimal_places=6, max_digits=18, db_column='SecBenchYTDReturn', blank=True, null=True)
-    end_date = models.DateTimeField(db_column='EndDate', blank=True, null=True)
+    #end_date = models.DateTimeField(db_column='EndDate', blank=True, null=True)
 
     class Meta:
         db_table = 'ALP_FundsMonthlyVals_TS'

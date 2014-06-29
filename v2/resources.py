@@ -1013,7 +1013,7 @@ class PositionMonthlyResource(MainBaseResource):
                         # get weight for this holding, then sum the results
                         # of the calcs to get the performance for w2
                         pm_cur = PositionMonthly.objects.filter(holding__id=h2, 
-                                value_date__year=year,
+                                    value_date__year=year,
                                     value_date__month=month) \
                                .order_by('value_date') \
                                .only('weight')[0]
@@ -1023,7 +1023,7 @@ class PositionMonthlyResource(MainBaseResource):
                       
                     try:  
                         pm_pri = PositionMonthly.objects.filter(holding__id=h2, 
-                                value_date__year=prior_year,
+                                    value_date__year=prior_year,
                                     value_date__month=prior_month) \
                                .order_by('value_date') \
                                .only('weight')[0]
@@ -1044,7 +1044,7 @@ class PositionMonthlyResource(MainBaseResource):
                 new_data[name]['weighted_perf'] = new_data[name]['average_weight'] * new_data[name]['performance']
                 new_data[name]['holding__name'] = name
                 
-
+            
             for i, p in enumerate(pos):
             
                 # W2 - update the average weight for prior months (if exists)
@@ -1057,6 +1057,7 @@ class PositionMonthlyResource(MainBaseResource):
                                 # skip if this is a hedge fund holding
                                 if h.holding.id in hedge_excludes:
                                     continue
+                                
                                 
                                 name = h.holding.name
                             
@@ -1072,7 +1073,10 @@ class PositionMonthlyResource(MainBaseResource):
                                 
                                 average_weight = (weight + prior_weight) / 2 / 100
                                 
+                                print average_weight
                                 if average_weight >= 0.05:
+                                
+                                    assert False
                                 
                                     new_data[name] = {
                                         'weighted_perf': (weight * h.performance) / 100,
