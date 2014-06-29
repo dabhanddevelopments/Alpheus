@@ -1037,8 +1037,6 @@ class PositionMonthlyResource(MainBaseResource):
                 new_data[name]['holding__name'] = name
                 
             
-
-              
               
             # W2 - update the average weight for prior months (if exists)
             if performance:
@@ -1162,8 +1160,8 @@ class PositionMonthlyResource(MainBaseResource):
                             value_date__year=year, 
                             value_date__month=month,
                             holding__asset_class__investment_category__description='CASH') \
-                       .exclude(purpose__id=1) \
                        .aggregate(Sum('marketvaluefundcur'), Sum('weight'))
+                    #.exclude(purpose__id=1) \
                 except IndexError:
                     pass 
                        
