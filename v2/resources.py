@@ -1106,18 +1106,18 @@ class PositionMonthlyResource(MainBaseResource):
                         prior_weight = 0
                         
                     try:
-                        performance = a['performance']
+                        current_performance = a['performance']
                     except:
-                        performance = 0
+                        current_performance = 0
                     
                     average_weight = (weight + prior_weight) / 2 / 100
                     
                     if average_weight >= 0.0005:
                     
                         new_data[name] = {
-                            'weighted_perf': (weight * performance) / 100,
+                            'weighted_perf': (weight * current_performance) / 100,
                             'average_weight': average_weight, 
-                            'performance': performance,
+                            'performance': current_performance,
                             'holding__name': name,
                             'weight': weight,
                         }
@@ -1153,7 +1153,7 @@ class PositionMonthlyResource(MainBaseResource):
                         }
                                 
             # w7 - cash positions
-            if not performance:
+            if performance == False:
                 
                 try:
                     sum_cash = PositionMonthly.objects \
@@ -1188,6 +1188,7 @@ class PositionMonthlyResource(MainBaseResource):
             # convert dictionary to a list of dictionaries
             sorted_data = []
             for i, new in new_data.iteritems():
+                print new['performance']
                 sorted_data.append(new)
              
             # sort by average weight

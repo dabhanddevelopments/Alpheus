@@ -2497,11 +2497,20 @@ console.log('summary', summary);
                                
                             }
                         };
+                        
                         options.tooltip = {
                             formatter: function() {
                                 return this.key + ' ' + Highcharts.numberFormat(this.y) + suffix;
                             },
                         };
+                        /*
+                        options.tooltip = {
+                            formatter: function() {
+                                console.log('this.series', this.points);
+                                return this.key;
+                            },
+                        };
+                        */
                     }
                     
                     options.series = [new_data[0]];
