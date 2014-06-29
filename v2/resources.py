@@ -26,8 +26,13 @@ class AlarmResource(MainBaseResource):
 class GroupResource(MainBaseResource):
     class Meta(MainBaseResource.Meta):
         queryset = AlpheusGroup.objects.all()
+        
+class InvestmentCategoryResource(MainBaseResource):
+    class Meta(MainBaseResource.Meta):
+        queryset = InvestmentCategory.objects.all()  
 
 class AssetClassResource(MainBaseResource):
+    investment_category = fields.ForeignKey(InvestmentCategoryResource, 'investment_category')
     class Meta(MainBaseResource.Meta):
         queryset = AssetClass.objects.all()
 
@@ -840,6 +845,7 @@ class FundReturnMonthlyResource3(FundReturnResource):
         queryset = FundReturnMonthly.objects.all()
 
 class HoldingResource(MainBaseResource):
+    asset_class = fields.ForeignKey(AssetClassResource, 'asset_class')
     class Meta(MainBaseResource.Meta):
         queryset = Holding.objects.all()
 
@@ -898,6 +904,7 @@ class HoldingPositionDailyResource(MainBaseResource):
 
 class PositionMonthlyResource(MainBaseResource):
     fund = fields.ForeignKey(FundResource, 'fund')
+    holding = fields.ForeignKey(HoldingResource, 'holding')
     
     class Meta(MainBaseResource.Meta):
         queryset = PositionMonthly.objects.all()
@@ -915,7 +922,7 @@ class PositionMonthlyResource(MainBaseResource):
         # Get performance from HoldingMonthly (only utilized in W2)
         # and the weight of the prior month to calculate the average weight
         if year and month and fund:
-        
+
             hm = HoldingMonthly.objects.filter(
                 value_date__year=year, value_date__month=month). \
                 select_related('holding') \
@@ -1047,6 +1054,9 @@ class PositionMonthlyResource(MainBaseResource):
             
             for i, p in enumerate(pos):
             
+                if p.data['holding__asset_class__investment_category__description'] == 'CASH':
+                    continue
+            
                 # W2 - update the average weight for prior months (if exists)
                 if performance:
                 
@@ -1122,7 +1132,7 @@ class PositionMonthlyResource(MainBaseResource):
                             fund=fund,
                             value_date__year=year, 
                             value_date__month=month,
-                            fund__asset_class__investment_category__description='CASH') \
+                            holding__asset_class__investment_category__description='CASH') \
                        .exclude(purpose__id=1) \
                        .aggregate(Sum('marketvaluefundcur'), Sum('weight'))
                 except IndexError:

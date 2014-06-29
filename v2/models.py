@@ -716,7 +716,7 @@ class Holding(models.Model):
     counterparty = models.ForeignKey(CounterParty, max_length=50, db_column='CounterPartyID', blank=True, null=True)
     exchangename = models.CharField(max_length=50, db_column='ExchangeName', blank=True, null=True)
     parentcompanyname = models.CharField(max_length=50, db_column='ParentCompanyName', blank=True, null=True)
-    assetclass = models.IntegerField(db_column='AssetClassID', blank=True, null=True)
+    asset_class = models.ForeignKey(AssetClass, db_column='AssetClassID', blank=True, null=True)
     country_ins = models.ForeignKey(Country, related_name='country_ins', db_column='CountryIID', blank=True, null=True)
     country_risk = models.ForeignKey(Country, related_name='country_risk', db_column='CountryRID', blank=True, null=True)
     industry_sector = models.ForeignKey(IndustrySector, db_column='IndustrySectorID', blank=True, null=True)
