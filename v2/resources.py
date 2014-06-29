@@ -1059,7 +1059,7 @@ class PositionMonthlyResource(MainBaseResource):
                         if pp.holding.id in hedge_excludes:
                             continue
                             
-                        name = h.holding.name
+                        name = pp.holding.name
                         
                         try:
                             w2_data[name]
@@ -1075,9 +1075,11 @@ class PositionMonthlyResource(MainBaseResource):
                     if p.data['holding__asset_class__investment_category__description'] == 'CASH':
                         continue
             
-                
                     for h in hm:
                         if p.data['holding__name'] == h.holding.name:
+                        
+                            if h.holding.id == 3956:
+                                assert False
                         
                             # skip if this is a hedge fund holding
                             if h.holding.id in hedge_excludes:
