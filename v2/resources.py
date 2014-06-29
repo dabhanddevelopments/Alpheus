@@ -1085,8 +1085,6 @@ class PositionMonthlyResource(MainBaseResource):
                                 
                                 if average_weight >= 0.0005:
                                 
-                                    assert False
-                                
                                     new_data[name] = {
                                         'weighted_perf': (weight * h.performance) / 100,
                                         'average_weight': average_weight, 
