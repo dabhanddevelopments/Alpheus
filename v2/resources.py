@@ -1073,8 +1073,7 @@ class PositionMonthlyResource(MainBaseResource):
                                 
                                 average_weight = (weight + prior_weight) / 2 / 100
                                 
-                                print average_weight
-                                if average_weight >= 0.05:
+                                if average_weight >= 0.0005:
                                 
                                     assert False
                                 
@@ -1100,7 +1099,7 @@ class PositionMonthlyResource(MainBaseResource):
                         weight = p.data['weight']
                     except KeyError:
                         weight = 0
-                    
+
                     if weight >= 0.05:
                             
                         try:
@@ -1114,7 +1113,6 @@ class PositionMonthlyResource(MainBaseResource):
                             'weight': weight,
                         }
                                 
-                 
             # w7 - cash positions
             if not performance:
                 

@@ -2417,9 +2417,9 @@ console.log('summary', summary);
             // w7
             if(perfType == 'nav') {
                 if(type === 1) {
-                    var params = '&y1=marketvaluefundcur&fields=holding,holding__name&order_by=-weight';
+                    var params = '&y1=marketvaluefundcur&fields=weight,holding,holding__name&order_by=-weight';
                 } else {
-                    var params = '&y1=weight&fields=weight&fields=holding,holding__name&order_by=-weight';
+                    var params = '&y1=weight&fields=weight,holding,holding__name&order_by=-weight';
                 } 
             // w2
             } else {   
