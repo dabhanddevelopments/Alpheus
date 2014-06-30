@@ -1071,24 +1071,26 @@ class PositionMonthlyResource(MainBaseResource):
                     # we don't display cash holdings 
                     if p.data['holding__asset_class__investment_category__description'] == 'CASH':
                         continue
+                        
+                    # skip if this is a hedge fund holding
+                    if p.data['holding'].id in hedge_excludes:
+                        continue    
+                        
+                    name = p.data['holding__name']              
+                    
+                    try:
+                        w2_data[name]
+                    except:
+                        w2_data[name] = {}
+                        
+                    w2_data[name]['performance'] = 0
+                    w2_data[name]['current_weight'] = p.data['weight']
             
                     for h in hm:
-                        if p.data['holding__name'] == h.holding.name:
+                        if name == h.holding.name:
                         
-                            # skip if this is a hedge fund holding
-                            if h.holding.id in hedge_excludes:
-                                continue    
-                                
-                            name = h.holding.name               
-                            
-                            try:
-                                w2_data[name]
-                            except:
-                                w2_data[name] = {}
-                                
                             w2_data[name]['performance'] = h.performance
-                            w2_data[name]['current_weight'] = p.data['weight']
-                            
+
                 
                 for name, a in w2_data.iteritems():
                 

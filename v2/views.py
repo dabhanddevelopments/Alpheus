@@ -506,7 +506,7 @@ def fund_return_form(request):
                         except:
                             returns.nav_per_share = 0
                         try:
-                            returns.shares = returns.nav / prior_shares
+                            returns.shares = prior_shares
                         except:
                             returns.shares = 0
                         returns.estimation = True
