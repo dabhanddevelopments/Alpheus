@@ -694,7 +694,6 @@ class FundReturnResource(MainBaseResource):
             dates = date_range(lst, date_from, freq)
             df = to_dataframe(lst, dates)
             
-            from calcs import hist
             #change to hist
             if lst:
                 h = hist(df)
