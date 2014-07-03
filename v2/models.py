@@ -641,7 +641,7 @@ class FundCharAudit(models.Model):
     auditor = models.ForeignKey(Auditor, db_column='AuditorID', blank=True, null=True)
     alarm = models.ForeignKey(Alarm, db_column='AlarmID', blank=True, null=True)
     active = models.NullBooleanField(max_length=1, db_column='Active', blank=True, null=True)
-    flash_flag = models.NullBooleanField(max_length=1, db_column='FlashFlag', default=False)
+    estimate_required = models.NullBooleanField(max_length=1, db_column='FlashFlag', default=False)
     sec_bench = models.ForeignKey('Holding', db_column='SecBenchID', default=False, blank=True, null=True)
 
     class Meta:
@@ -839,7 +839,7 @@ class HoldingHedgeFund(models.Model):
     hf = models.ForeignKey(Hf, null=True, db_column='HFID', blank=True)
     softlock = models.CharField(max_length=10, db_column='SoftLock', blank=True, null=True)
     gate = models.CharField(max_length=10, db_column='Gate', blank=True, null=True)
-    redemption_freq = models.CharField(max_length=1, db_column='RedemptionFreq', blank=True)
+    redemption_freq = models.CharField(max_length=1, db_column='RedemptionFreq', blank=True, null=True)
     redemption_noticecaldays = models.IntegerField(null=True, db_column='RedemptionNoticeCalDays', blank=True)
     redemption_noticebdays = models.IntegerField(null=True, db_column='RedemptionNoticeBDays', blank=True)
     redemption_fee12 = models.DecimalField(decimal_places=2, null=True, max_digits=18, db_column='RedemptionFee12', blank=True)
@@ -922,6 +922,12 @@ class HoldingMonthly(models.Model):
 class Purpose(models.Model):
     id = models.AutoField(primary_key=True, db_column='PurposeId')
     name = models.CharField(max_length=200, db_column='PurposeName', blank=True, null=True)
+ 
+    def __unicode__(self):
+        return self.name
+            
+    class Meta:
+        db_table = 'ALP_App_Purpose'
 
 
 class HoldingPositionDaily(models.Model):
