@@ -141,8 +141,6 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    # this needs to come first
-    'django-db-prefix',
     # admin theme. needs to come first
     'grappelli',
 
@@ -154,6 +152,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'django.contrib.humanize',
 
     # third party
     'tastypie',
@@ -163,18 +162,10 @@ INSTALLED_APPS = (
     'django_extensions',
     'tastypie_swagger',
     "compressor",
-    #'south',
-    #'fixture_magic',
 
     # custom
     'app',
-    'fund',
-    'holding',
-    'client',
-    'comparative',
-    'trade',
-    #'resources',
-    #'api_example',
+    'v2',
 )
 
 # A sample logging configuration. The only tangible logging
