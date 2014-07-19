@@ -1163,9 +1163,19 @@ class PositionMonthlyResource(MainBaseResource):
                             holding__asset_class__investment_category__description='CASH') \
                        .aggregate(Sum('marketvaluefundcur'), Sum('weight'))
                     #.exclude(purpose__id=1) \
+                    
+                    all_cash = PositionMonthly.objects.filter(
+                        fund=fund,
+                        value_date__year=year, 
+                        value_date__month=month,
+                        holding__asset_class__investment_category__description='CASH') \
+                        .values('holding__currency__name') \
+                        .annotate(Sum('marketvaluefundcur'), Sum('weight')) \
+                        .order_by('holding__currency__name')
+                        #.exclude(purpose__id=1) \
                 except IndexError:
                     pass 
-                       
+
                 try:
                     weight = sum_cash['weight__sum']
                 except KeyError:
@@ -1177,12 +1187,13 @@ class PositionMonthlyResource(MainBaseResource):
                     marketvaluefundcur = 0
                     
                 if weight >= 0.05:
-                        
+                
                     new_data["Total Cash"] = {
                         'marketvaluefundcur': marketvaluefundcur,
                         'holding__name': 'Total Cash',
                         'weight': weight,
                     }         
+                    self.extra = [a for a in all_cash]
                                 
             # convert dictionary to a list of dictionaries
             sorted_data = []

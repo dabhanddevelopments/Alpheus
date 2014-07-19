@@ -161,6 +161,13 @@ def performance_by_fund(request):
         # list of months: jan, feb, mar...
         for i in range(1,13):
             months.append(calendar.month_abbr[i].lower())
+            
+            
+        # get all funds that had the estimation required flag set this year
+        flag_objs = FundCharAudit.objects.filter(
+                end_date__year=year, estimate_required=True) \
+            .select_related('fund').distinct().only('fund__id')
+        flag_ids = [flag.id for flag in flag_objs]
          
          
         # get the months for the alpheus fund 
@@ -308,13 +315,22 @@ def performance_by_fund(request):
             try:
             
                 # get the latest value of the year
-                latest = FundReturnMonthly.objects.filter(fund__group=group, \
-                             fund__estimate_required=True, value_date__year=year) \
-                             .order_by('-value_date').only('value_date')[0]
-                
+                latest = FundReturnMonthly.objects.filter(
+                             Q(fund__id__in=flag_ids) | \
+                             Q(fund__estimate_required=True),
+                             fund__group=group, \
+                             value_date__year=year,
+                         ) \
+                         .order_by('-value_date').only('value_date')[0]
+            
                 # get the values for the latest month
-                returns = FundReturnMonthly.objects.filter(fund__group=group, \
-                   fund__estimate_required=True, value_date=latest.value_date) \
+                returns = FundReturnMonthly.objects.filter(
+                    Q(fund__id__in=flag_ids) | \
+                    Q(fund__estimate_required=True),
+                    fund__group=group, \
+                    value_date=latest.value_date,
+                       
+                    ) \
                    .only('fund__id', 'fund__name', 'nav', 'ytd',
                             'bench_ytd', 'fund__benchpeer__name')
                    

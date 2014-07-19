@@ -502,7 +502,11 @@ class MainBaseResource(SpecifiedFields):
                         'y': float(row.data[self.y1]), #@TODO: Perm fix for float bug
                         'name': ' '.join([row.data[title] for title in self.title]),
                     })
-                return [{'data': y1, 'negativeColor': '#FF0000',}]
+                try:
+                    extra = self.extra
+                except:
+                    extra = []
+                return [{'data': y1, 'negativeColor': '#FF0000', 'extra': extra}]
 
             elif self.y1 and self.date:
 

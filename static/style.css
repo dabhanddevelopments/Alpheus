@@ -646,36 +646,46 @@ table.month_table td {
 }
 
 
-   p {
-        margin:5px;
-    }
+p {
+    margin:5px;
+}
 
-    .x-tree-icon-parent  {
-        width: 0px;
-        background-image: '';
-    }
+.x-tree-icon-parent  {
+    width: 0px;
+    background-image: '';
+}
 
-    .x-tree-icon-leaf {
-        width: 0px;
-        background-image: '';
-    }
+.x-tree-icon-leaf {
+    width: 0px;
+    background-image: '';
+}
 
-    .widget_desc {
-       margin: 20px 20px 20px 20px;
-       font-size: 12px;
-       font-family: tahoma,arial,verdana,sans-serif;
-    }
+.widget_desc {
+   margin: 20px 20px 20px 20px;
+   font-size: 12px;
+   font-family: tahoma,arial,verdana,sans-serif;
+}
 
-    .widget_desc h1 {
-        margin-top: 30px;
-        margin-bottom: 10px;
-        font-size: 15px;
-        font-weight: bold;
-    }
+.widget_desc h1 {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    font-weight: bold;
+}
 
-    .widget_preview {
-        color: gray; 
-        font-weight: italic; 
-        text-align:center;
-        margin-top:40%;     
-    }
+.widget_preview {
+    color: gray; 
+    font-weight: italic; 
+    text-align:center;
+    margin-top:40%;     
+}
+
+.hr { color: #B4C0CF; background-color: #B4C0CF; border: 0px solid #B4C0CF; }
+
+.line
+{
+    display:inline-block;
+    border-bottom:2px #5B3400 solid;
+    margin-left:5px;
+    width:80%;
+}

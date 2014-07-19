@@ -2459,59 +2459,7 @@ console.log('summary', summary);
                    // var maxVal = Math.max.apply(Math, fundValues); 
                    // var minVal = Math.min.apply(Math, fundValues); 
                     
-                    if(widget.key == 'w2' || (widget.key == 'w7' && type !== 1)) {
-                        options.yAxis.labels = {
-                            formatter: function() {
-                                return this.value + '%';
-                            }
-                        };
-                    }
-                            
-                    // remove series and add percent
-                    if(jQuery.inArray(widget.key, ['w2']) !== -1) {
-                        options.tooltip = {
-                            //valueSuffix: ' %',
-                            formatter: function() {
-                                return this.key + ' ' + Highcharts.numberFormat(this.y) + ' %';
-                            },
-                        };
-                    }
-                    
-                    
-                    // always display million on y axis
-                    if(jQuery.inArray(widget.key, ['holding_nav']) !== -1) {
-                    
-                        if(type == 1) {
-                            var suffix = '';
-                        } else {
-                            var suffix = ' %';
-                        }
-                                   
-                        options.yAxis.labels = {
-                            formatter: function () {
-                                if(type == 1) {
-                                     return Highcharts.numberFormat(this.value / 1000000) + 'M';
-                                } else {
-                                     return this.value + '%';
-                                }
-                               
-                            }
-                        };
-                        
-                        options.tooltip = {
-                            formatter: function() {
-                                return this.key + ' ' + Highcharts.numberFormat(this.y) + suffix;
-                            },
-                        };
-                        /*
-                        options.tooltip = {
-                            formatter: function() {
-                                console.log('this.series', this.points);
-                                return this.key;
-                            },
-                        };
-                        */
-                    }
+      
                     
                     options.series = [new_data[0]];
                    // options.yAxis.max = maxVal;
@@ -2530,6 +2478,8 @@ console.log('summary', summary);
            });
         }
         
+ 
+    
         // get the date of the latest value
         $.getJSON('/api/positionmonthly/?fund=' + obj.fund.id + '&limit=1&order_by=-value_date&fields=value_date', function(latest) {
             
@@ -2553,13 +2503,13 @@ console.log('summary', summary);
             widget.url = getUrl(1, year, parseInt(month + 1));
             console.log(widget.key + ' url1', widget.url);
             
-            barChart(obj, widget, div + '_tab1');
+            barChart(obj, widget, div + '_tab1', perfType);
             
             widget.url = getUrl(2, year, parseInt(month + 1));
             
             console.log(widget.key + ' url2', widget.url);
             
-            barChart(obj, widget, div + '_tab2');
+            barChart(obj, widget, div + '_tab2', perfType);
             
             var data = widget;
             var tabPanel = Ext.create('Ext.tab.Panel', {
@@ -5103,7 +5053,7 @@ console.log('WIDGET', widget);
     
     
 
-    function barChart(obj, widget, div) {
+    function barChart(obj, widget, div, tab) {
 
         $.getJSON(widget.url + widget.qs, function(data) {
         
@@ -5179,7 +5129,74 @@ console.log('WIDGET', widget);
                 },
                 series: data,
             }
-
+            
+       
+            if(widget.key == 'w2' || (widget.key == 'w7' && type !== 1)) {
+                options.yAxis.labels = {
+                    formatter: function() {
+                        return this.value + '%';
+                    }
+                };
+            }
+                    
+            // remove series and add percent
+            if(jQuery.inArray(widget.key, ['w2']) !== -1) {
+                options.tooltip = {
+                    //valueSuffix: ' %',
+                    formatter: function() {
+                        return this.key + ' ' + Highcharts.numberFormat(this.y) + ' %';
+                    },
+                };
+            }
+            
+            
+            // always display million on y axis
+            if(jQuery.inArray(widget.key, ['holding_nav']) !== -1) {
+            
+                if(tab == 'nav') {
+                    var suffix = '';
+                } else {
+                    var suffix = ' %';
+                }
+                           
+                options.yAxis.labels = {
+                    formatter: function () {
+                        if(tab == 'nav') {
+                             return Highcharts.numberFormat(this.value / 1000000) + 'M';
+                        } else {
+                             return this.value + '%';
+                        }
+                       
+                    }
+                };
+                options.tooltip = {
+                    formatter: function() {
+                    
+                        var tp =  this.key + ' ' + Highcharts.numberFormat(this.y) + suffix;
+                        
+                        console.log('total cash', this.point.name);
+                        if(this.point.name == 'Total Cash') {
+                            tp += '<br /><span style="color: #B4C0CF; background-color: #B4C0CF; border: 0px solid #B4C0CF; width: 200px;"></span><br/><span style="font-weight: bold;">test</span>';
+                            $.each(data[0].extra, function(key, value) {
+                            
+                                if (tab == 'nav') {
+                                    var number = value['marketvaluefundcur__sum'];
+                                } else {
+                                    var number = value['weight__sum'];
+                                }
+                                //console.log(key, value);
+                                tp += '<span id="tooltip left">' + value['holding__currency__name'] + ' </span> ';
+                                tp += '<span id="tooltip right">' + number + '</span><br/>';
+                            });
+                        }
+                            
+                        //return this.key;                    
+                        return tp;
+                    },
+                };
+                
+            }
+            
             if(typeof widget.params.labels != 'undefined' && widget.params.labels == 'rotated') {
                 labels = {
                     rotation: 90,
@@ -5325,7 +5342,11 @@ console.log('WIDGET', widget);
                                 number = number + 'e';
                             }
                         } else {
-                            number = val;
+                            if(val.search('e') !== -1) {
+                                number = format_val + 'e';
+                            } else {
+                                number = val;
+                            }
                         }
                         
                         if (format_val == "-1000") {
