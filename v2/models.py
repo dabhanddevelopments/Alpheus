@@ -479,7 +479,7 @@ class ClientPosition(models.Model):
     #weight = models.DecimalField(max_digits=18, decimal_places=2, blank=True, null=True)
 
     class Meta:
-        db_table = 'ALP_ClientPositions_TS'
+        db_table = 'ALP_ClientPositions'
 
 
 class Client(models.Model):
@@ -503,7 +503,7 @@ class Client(models.Model):
 class ClientTransaction(models.Model):
     id = models.AutoField(primary_key=True, db_column='TransactionID')
     client = models.ForeignKey(Client, db_column='ClientID')
-    value_date = models.DateTimeField(db_column='ValueDate')
+    value_date = models.DateTimeField(db_column='RequestedDate')
     fund = models.ForeignKey('Fund', db_column='FundID', blank=True, null=True)
     holding = models.IntegerField(db_column='HoldingID', blank=True, null=True)
     confirm_flag = models.CharField(max_length=1, db_column='ConfirmFlag')
@@ -514,6 +514,8 @@ class ClientTransaction(models.Model):
     nav = models.DecimalField(decimal_places=2, max_digits=18, db_column='NAV', blank=True, null=True)
     fxrate = models.DecimalField(decimal_places=6,  max_digits=18, db_column='FXRate', blank=True, null=True)
     amount_requested = models.DecimalField(decimal_places=2, max_digits=18, db_column='AmountRequested', blank=True, null=True)
+    cash_released_date = models.DateTimeField(db_column='CashReleasedDate', null=True, blank=True)
+    cash_released = models.DecimalField(decimal_places=2, max_digits=18, db_column='CashReleased', blank=True, null=True)
     #trade_date = models.DateTimeField(db_column='TradeDate', null=True, blank=True)
     #settlement_date = models.DateTimeField(db_column='SettlementDate',null=True, blank=True)
 

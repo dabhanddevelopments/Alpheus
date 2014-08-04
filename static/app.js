@@ -21,9 +21,9 @@ Ext.define('Rx.grid.MyRowExpander', function() {
         extend: 'Ext.ux.RowExpander',
         alias: 'plugin.myrowexpander',
 
-        getHeaderConfig : function() { 
+        getHeaderConfig : function() {
             var me = this;
-        
+
             return {
                 width: 2,
                 lockable: false,
@@ -82,12 +82,12 @@ Ext.define('Ext.form.field.Month', {
             startDay: me.startDay,
             minText: format(me.minText, me.formatDate(me.minValue)),
             maxText: format(me.maxText, me.formatDate(me.maxValue)),
-            listeners: { 
-        select:        { scope: me,   fn: me.onSelect     }, 
-        monthdblclick: { scope: me,   fn: me.onOKClick     },    
+            listeners: {
+        select:        { scope: me,   fn: me.onSelect     },
+        monthdblclick: { scope: me,   fn: me.onOKClick     },
         yeardblclick:  { scope: me,   fn: me.onOKClick     },
-        OkClick:       { scope: me,   fn: me.onOKClick     },    
-        CancelClick:   { scope: me,   fn: me.onCancelClick }        
+        OkClick:       { scope: me,   fn: me.onOKClick     },
+        CancelClick:   { scope: me,   fn: me.onCancelClick }
             },
             keyNavConfig: {
                 esc: function() {
@@ -97,12 +97,12 @@ Ext.define('Ext.form.field.Month', {
         });
     },
     onCancelClick: function() {
-        var me = this;    
+        var me = this;
     me.selectMonth = null;
         me.collapse();
     },
     onOKClick: function() {
-        var me = this;    
+        var me = this;
     if( me.selectMonth ) {
                me.setValue(me.selectMonth);
             me.fireEvent('select', me, me.selectMonth);
@@ -110,10 +110,10 @@ Ext.define('Ext.form.field.Month', {
         me.collapse();
     },
     onSelect: function(m, d) {
-        var me = this;    
+        var me = this;
     me.selectMonth = new Date(( d[0]+1 ) +'/1/'+d[1]);
     }
-});  
+});
 
 function investmentNAV(div, type) {
 
@@ -324,7 +324,7 @@ function displayInnerGrid(widget, data, renderId, hideHeaders, height) {
 function refreshGraph(e, widget) {
     var start = new Date(e.min);
     var end = new Date(e.max);
-    
+
     var start_date = start.getFullYear() + '-' + (start.getMonth() + 1) + '-' + start.getDate();
     var end_date = end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate();
     var date = '&value_date__gte=' + start_date + '&value_date__lte=' + end_date;
@@ -907,12 +907,12 @@ Ext.onReady(function() {
        //console.log("ROW: " + row);
 
 
-        
+
         Ext.onReady(function(){
             var win = new Ext.Window({
                 renderTo: Ext.getBody(),
                 items: items,
-                
+
                 // is this needed?
                 listeners: {
                     'close': function(tabPanel, tab){
@@ -1135,14 +1135,14 @@ Ext.onReady(function() {
         } catch(e) {
             var pagewindow = page;
         }
-        
+
         var url = '/api/pagewindow/?page=' + pagewindow;
 
         $.ajax({
             type: "GET",
             url: url,
             success: function(data) {
-            
+
                 $('#data').data('grid_data' + page, data); // doesn't seem to be used anywhere
 
                 console.log('pagewindow', data, url);
@@ -1161,7 +1161,7 @@ Ext.onReady(function() {
 
             }
         });
-        
+
     }
 
 
@@ -1170,8 +1170,8 @@ Ext.onReady(function() {
         if(typeof obj.fund == 'undefined') {
             obj.fund = $('#data').data('fund_obj');
         }
-        
-        
+
+
         // for w18
         function createGrid(tabId, data,flex) {
 
@@ -1212,7 +1212,7 @@ Ext.onReady(function() {
         }
 
         //for w23
-        
+
         /*
         function appendGridToSubRedTab(tabId) {
            var date = tabId.split("-");
@@ -1388,7 +1388,7 @@ Ext.onReady(function() {
 
         // W15 - Fund Summary
         if(data.window.key == 'w15') {
-        
+
               var fields = 'name,manager__name,description,custodian__name,administrator__name,currency__name,auditor__name,benchpeer__name,asset_class__risk__name,country_risk__name,region_1__name&summary=true';
               $.getJSON('/api/fund/' + obj.fund.id + '/?fields=' + fields, function(summary) {
 
@@ -1425,18 +1425,20 @@ console.log('summary', summary);
                         for(i=0; i<fee.length; i++) {
                             html += '<tr><th>' + fee[i].name + '</th><td>'+ fee[i].formula + '</td></tr>';
                         }
-                   
+
                         html += '</table><table class="html_table">' +
                         '<tr><td colspan="2"><h3>User Defined Peers Section</h3></td></tr>';
-                       
-                       $.getJSON('/api/fundpeer/?fields=benchpeer__name,benchpeer__formula&fund=' + obj.fund.id + '&user=' + $('#data').data('userId'), function(peer) {
-                       
+
+                        var url = '/api/fundpeer/?fields=benchpeer__name,benchpeer__formula&fund=' + obj.fund.id + '&user=' + $.cookie('userId');
+                        console.log('fund peer url', url, obj);
+                        $.getJSON(url, function(peer) {
+
                             for(i=0; i<peer.length; i++) {
                                 html += '<tr><th>' + peer[i].benchpeer__name + '</th><td>'+ peer[i].benchpeer__formula + '</td></tr>';
                             }
                             html += '</table> </div>';
                             $(html).appendTo('#' + window_id);
-                       });
+                        });
                    });
             });
 
@@ -1611,14 +1613,14 @@ console.log('summary', summary);
             // div for tabs
 
 
-        
+
             var tab_div = 'tab-' + data.window.key + '-' + window_id;
             $('<div id="' + tab_div + '"></div>').appendTo('#' + window_id);
 
 
-        
+
         console.log('window_id', window_id);
-        
+
             var tp = new Ext.TabPanel({
                 renderTo: tab_div,
                 id: 'w23-tabs',
@@ -1696,7 +1698,7 @@ console.log('summary', summary);
         //    investmentNAV(window_id, 'fund');
         //    return widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
 
-        //} else 
+        //} else
         if(data.window.key == 'w46') {
 
             investmentNAV(window_id, 'client');
@@ -1712,7 +1714,7 @@ console.log('summary', summary);
             url: '/api/widgets/?window=' + data.window.id + '&disabled=0',
             ajaxI: i,
             success: function(widgets) {
-            
+
             //console.log('widgets', widgets);
 
                 // now I will be i asynchronously
@@ -1730,7 +1732,7 @@ console.log('summary', summary);
                     var widget_id = 'page_' + page + '_win_' + data.window.id + '_widget_' + widgets[x].id;
                     $('<div id="' + widget_id + 'top"></div>').appendTo('#' + window_id);
                     $('<div id="' + widget_id + '"></div>').appendTo('#' + window_id);
-                    
+
                     $('#data').data('window_id', window_id);
 
                     var panel = createWidget(obj, widgets[x], widget_id);
@@ -1771,7 +1773,7 @@ console.log('summary', summary);
     }
 
     function widgetWindow(key, page, title, size_x, size_y, pagewindow, window, scroll) {
-    
+
         if(typeof $('#data').data('date') !== 'undefined') {
             var date = $('#data').data('date');
         } else {
@@ -1784,7 +1786,7 @@ console.log('summary', summary);
         if(typeof  $('#data').data('fund_obj') !== 'undefined' && typeof $('#data').data('fund_obj').name !== 'undefined') {
             title = title.replace('FUND_NAME', $('#data').data('fund_obj').name);
         }
-        
+
         if(typeof  $('#data').data('client_name') != 'undefined') {
             title = title.replace('CLIENT_NAME', $('#data').data('client_name'));
         }
@@ -1793,7 +1795,7 @@ console.log('summary', summary);
         if(typeof  $('#data').data('holding_name') != 'undefined') {
             title = title.replace('HOLDING_NAME', $('#data').data('holding_name'));
         }
-        
+
 
         if(typeof scroll == 'undefined') {
             var scroll = false;
@@ -1864,16 +1866,16 @@ console.log('summary', summary);
         //if(typeof obj.fund == 'undefined') {
             obj.fund = $('#data').data('fund_obj');
         //}
-        
+
         obj.scroll = false;
-        
+
         if(typeof widget.width == 'undefined') {
             widget.width = (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 30;
-        } 
+        }
         if(typeof widget.height == 'undefined') {
             widget.height = (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)) - 30;
         }
-        
+
         // is this needed?
         obj.id = obj.fund.id;
         obj.holding__fund = obj.fund.id;
@@ -1937,51 +1939,51 @@ console.log('summary', summary);
                widget.qs += '?fields=' + widget.columns;
            }
         }
-        
-        
+
+
         //console.log('WIDGET KEY', widget.key);
-        
+
         if(widget.key == 'return_histogram') {
-        
+
             return returnHistogram(obj, widget, div);
-            
+
         } else if(widget.key == 'w55') {
-    
-            w55(obj, widget, div);                     
+
+            w55(obj, widget, div);
 
         } else if(widget.key == 'w25') {
 
-            w25(obj, div);                     
+            w25(obj, div);
 
         } else if(widget.key == 'w12') {
-           
+
             var fields = '&fields=client__name,size,avg_cost_price,market_value';
 
             $.getJSON("/api/clientposition/?&fund=" + obj.fund.id + '&column_width=100,100&data_type=table' + fields, function(data) {
-            
+
                 return dataTable(data, obj, widget, div);
-            });            
-        
+            });
+
         } else if(widget.key == 'w2') {
-        
+
             return holdingPerformance(obj, widget, div, 'performance');
-            
+
         } else if(jQuery.inArray(widget.key, ['w18', 'w151']) !==-1 ) {
-            
+
             //obj.scroll = true;
             //widget.size_x -= 0.5;
-            
+
             return fundHistoricalStats(obj, widget, div);
-        
+
         } else if(widget.key == 'holding_nav') {
-        
+
             console.log('holding NAV');
-        
+
             return holdingPerformance(obj, widget, div, 'nav');
-        
+
         } else if(widget.type == 'data_table') {
 
-            
+
             widget.qs += '&fields=estimation';
             //console.log('data table url', widget.url + widget.qs);
             $.getJSON(widget.url + widget.qs, function(data) {
@@ -1998,19 +2000,19 @@ console.log('summary', summary);
             return dataGroupTable2(obj, widget, div);
 
         } else if(widget.key == 'w16') {
-        
+
             w16(obj, widget, div);
 
         } else if(widget.type == 'w152') {
 
             var url = "/api/fundreturnmonthly/?widget=w152&fund=" + obj.fund.id;
-        
+
             //console.log('url', url);
             $.getJSON(url, function(series) {
                 return lineChart(obj, widget, div, series);
 		    });
 
-             
+
 
         } else if(widget.type == 'chart_doubley') {
 
@@ -2054,13 +2056,13 @@ console.log('summary', summary);
 
         }
     }
-    
+
     function w16(obj, widget, div) {
-    
+
         function getUrl() {
             return "/api/fundreturnmonthly/?date_type=monthly&axis=left,left,left&metric=cumulative,cumulative,delta&layer=1,1,2&plot=line,line,line&rfr=0,0,0&mar=0,0,0&step=1,21,21&window=12,12,12&sec_under=fund,fund,benchpeer&under=fund,benchpeer,fund&position=1,1,2&fund=" + obj.fund.id + "&fields=fund_perf,bench_perf,fund__name,benchperf__name&widget=w16";
         }
-        
+
         $.getJSON(getUrl(), function(data) {
             var options = {
                 chart: {
@@ -2101,17 +2103,17 @@ console.log('summary', summary);
             };
             var chart = new Highcharts.StockChart(options);
             baseParameters(chart, widget, div, getUrl);
-            Ext.getCmp(widget.key + 'datetype_combo').hide();   
+            Ext.getCmp(widget.key + 'datetype_combo').hide();
         });
-        
+
         // calling chart here does not work for some unexplainable reason
-        //chart(obj, widget, div, getUrl()); 
+        //chart(obj, widget, div, getUrl());
     }
-    
+
     function w25(obj, div) {
-    
+
         $.getJSON("/api/nav-reconciliation/?fund=" + obj.fund.id, function(data) {
-                        
+
             var store = Ext.create('Ext.data.ArrayStore', {
                 fields: [
                    {name: 'market_value',   type: 'float'},
@@ -2121,7 +2123,7 @@ console.log('summary', summary);
                 ],
                 data: data,
             });
-            
+
             var grid = Ext.create('Ext.grid.Panel', {
                 store: store,
                 columnLines: true,
@@ -2152,37 +2154,37 @@ console.log('summary', summary);
                 }],
                 renderTo: div,
             });
-        });  
-    
+        });
+
     }
-    
-    
+
+
    function w55(obj, widget, div) {
-   
+
         function fetchHtml(year) {
-    
+
            $.get('/admin/fund/performance/?year=' + year, function( html ) {
 
                 $('#w55' + year).empty();
                 $(html).appendTo('#w55' + year);
                 selectedYear = year;
-           });    
+           });
         }
-        
+
         years = [];
         items = [];
         this_year = new Date().getFullYear();
         selectedYear = this_year;
-        
+
         for(i=this_year; i>2002; i--) {
             years.push(i);
         }
-         
+
         window_id = $('#data').data('window_id');
         for(i=0; i<years.length; i++) {
-            
+
             $('<div id="w55' + years[i] + '"></div>').appendTo("#" + window_id);
-            
+
             items.push({
                 xtype: 'tabpanel',
                 title: years[i],
@@ -2191,7 +2193,7 @@ console.log('summary', summary);
                 contentEl: 'w55' + years[i],
             });
         }
-  
+
         var tabPanel = new Ext.TabPanel({
             //renderTo: div,
             id: 'w55-tabs',
@@ -2209,7 +2211,7 @@ console.log('summary', summary);
         });
 
         var print_methods = ['Year', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        
+
         Ext.create('Ext.container.Container', {
             layout: {
                 type: 'vbox'
@@ -2233,7 +2235,7 @@ console.log('summary', summary);
                     id: 'w55combo',
                     margin: '0 10 0 0',
                     value: 'Year',
-                },{                    
+                },{
                     xtype: 'button',
                     text: 'Print',
                     handler : function() {
@@ -2244,16 +2246,16 @@ console.log('summary', summary);
                 }],
             }],
         });
-        
+
         fetchHtml(selectedYear);
     }
 
-    
-    
+
+
     function w23(obj, widget, div) {
-    
+
         function createGrid(tabId, data,flex) {
-        
+
             if(typeof Ext.getCmp('grid' + tabId) == 'undefined') {
 
                 fields = [];
@@ -2288,10 +2290,10 @@ console.log('summary', summary);
                 });
             }
         }
-    
-   
+
+
         function appendGridToSubRedTab(tabId) {
-    
+
                var date = tabId.split("-");
                if (typeof date[1] == 'undefined') {
                     date[1] = 1;
@@ -2313,10 +2315,10 @@ console.log('summary', summary);
                             tab.add(table);
                         }
                     });
-               });    
+               });
         }
-        
-        
+
+
 
         this_year = new Date().getFullYear();
 
@@ -2326,7 +2328,7 @@ console.log('summary', summary);
         for(i=this_year; i>2002; i--) {
             parents.push(i);
         }
-         
+
        //console.log(parents);
         for(i=0; i<parents.length; i++) {
 
@@ -2340,7 +2342,7 @@ console.log('summary', summary);
                     layout:  {type : 'vbox', align : 'stretch' }
                 });
             }
-           
+
             items.push({
                 xtype: 'tabpanel',
                 title: parents[i],
@@ -2354,23 +2356,23 @@ console.log('summary', summary);
                     }
                 }
             });
-             
+
         }
-       
-        
+
+
        //console.log("whatever");
 
         // div for tabs
 
 
-    
+
         //var tab_div = 'tab-' + widget.key + '-' + window_id;
         //$('<div id="' + tab_div + '"></div>').appendTo('#' + window_id);
 
 
-    
+
          //console.log('window_id', window_id);
-  
+
         var tp = new Ext.TabPanel({
             renderTo: div,
             id: 'w23-tabs',
@@ -2391,17 +2393,17 @@ console.log('summary', summary);
         appendGridToSubRedTab(this_year + '-1');
         //return widgetWindow(data.window.id, page, data.window.name, data.window.size_x, data.window.size_y, data.id, window_id);
 
-    
+
     }
 
-    
 
-    
-    
-    
+
+
+
+
     // W2 - Holding Performance Bar & W7 - Holding NAV Bar
     function holdingPerformance(obj, widget, div, perfType) {
-    
+
         // w2
         if(perfType != 'nav') {
             var title1 = 'Performance';
@@ -2411,18 +2413,18 @@ console.log('summary', summary);
             var title1 = 'NAV';
             var title2 = 'Weight';
         }
-        
+
         function getUrl(type, year, month) {
-        
+
             // w7
             if(perfType == 'nav') {
                 if(type === 1) {
                     var params = '&y1=marketvaluefundcur&fields=holding__asset_class__investment_category__description,weight,holding,holding__name&order_by=-weight';
                 } else {
                     var params = '&y1=weight&fields=holding__asset_class__investment_category__description,weight,holding,holding__name&order_by=-weight';
-                } 
+                }
             // w2
-            } else {   
+            } else {
                 if(type === 1) {
                     var params = '&y1=performance&fields=holding__asset_class__investment_category__description,weight,holding,holding__name&performance=true';
                 } else {
@@ -2433,34 +2435,34 @@ console.log('summary', summary);
             console.log('w2 & w7 url', url);
             return url;
         }
-        
+
         function updateChart(record, type) {
-        
-        
+
+
             year = moment(record).format('YYYY');
             month = from = moment(record).format('MM');
-            
+
             console.log('update chart w2', getUrl(type, year, month), month);
             $.getJSON(getUrl(type, year, month), function(new_data) {
 
-                var options = $('#data').data('chart-options-' + div + '_tab' + type); 
-                
+                var options = $('#data').data('chart-options-' + div + '_tab' + type);
+
                 // disabling the fund performance line
                 //var url = '/api/fundreturnmonthly/?fund=' + $('#data').data('fund') + '&fields=fund_perf&value_date__year=' + year + '&value_date__month=' + month;
-                
+
                // console.log('dissecting line on bar', url);
                 //$.getJSON(url, function(fund) {
-                
+
                     // commented this as for now we are not displaying the fund performance if it's outside the y axis
                    // var fundValues = new Array();
                     //$.each(fund, function( index, value ) {
                    //     fundValues.push(value.fund_perf);
                    // });
-                   // var maxVal = Math.max.apply(Math, fundValues); 
-                   // var minVal = Math.min.apply(Math, fundValues); 
-                    
-      
-                    
+                   // var maxVal = Math.max.apply(Math, fundValues);
+                   // var minVal = Math.min.apply(Math, fundValues);
+
+
+
                     options.series = [new_data[0]];
                    // options.yAxis.max = maxVal;
                    // options.yAxis.min = minVal;
@@ -2477,17 +2479,17 @@ console.log('summary', summary);
                // });
            });
         }
-        
- 
-    
+
+
+
         // get the date of the latest value
         $.getJSON('/api/positionmonthly/?fund=' + obj.fund.id + '&limit=1&order_by=-value_date&fields=value_date', function(latest) {
-            
+
             //var year = moment().year();
             //var month = moment().month();
             var year = moment(latest[0].value_date).year();
             var month = moment(latest[0].value_date).month();
-            
+
             console.log('LATEST MONTH', latest, month);
 
             widget.params.labels = 'rotated';
@@ -2495,22 +2497,22 @@ console.log('summary', summary);
 
             $('<div id="' + div + '_tab1"></div>').appendTo("#" + div);
             $('<div id="' + div + '_tab2"></div>').appendTo("#" + div);
-            
+
             widget.height -= 70; // compensate for date picker
-            
-            
+
+
             widget.qs = '';
             widget.url = getUrl(1, year, parseInt(month + 1));
             console.log(widget.key + ' url1', widget.url);
-            
+
             barChart(obj, widget, div + '_tab1', perfType);
-            
+
             widget.url = getUrl(2, year, parseInt(month + 1));
-            
+
             console.log(widget.key + ' url2', widget.url);
-            
+
             barChart(obj, widget, div + '_tab2', perfType);
-            
+
             var data = widget;
             var tabPanel = Ext.create('Ext.tab.Panel', {
                 height: widget.height + 70,
@@ -2566,29 +2568,29 @@ console.log('summary', summary);
                 ],
                 renderTo: div,
             });
-            
+
             tabPanel.setActiveTab(1);
             tabPanel.setActiveTab(0);
-        });   
+        });
     }
-    
-    
+
+
     function baseParameters(chart, widget, div, url) {
-    
+
         function updateGraph(completeUrl) {
             $.getJSON(completeUrl, function(new_data) {
                 if(typeof new_data.length === 'undefined') {
                     chart.series[0].setData(new_data.data);
-                    chart.redraw(); 
+                    chart.redraw();
                 } else {
                     $.each(new_data, function(key, val) {
                         chart.series[key].setData(val.data);
                         chart.redraw();
                     });
                 }
-            });    
+            });
         }
-    
+
         var id = widget.key;
 
         var button1m = Ext.create('Ext.Button', {
@@ -2598,7 +2600,7 @@ console.log('summary', summary);
                 updateGraph(url() + '&value_date__gte=' + date);
             }
         });
-        
+
         var button3m = Ext.create('Ext.Button', {
             text: '3m',
             handler: function() {
@@ -2606,14 +2608,14 @@ console.log('summary', summary);
                 updateGraph(url() + '&value_date__gte=' + date);
             }
         });
-        
+
         var button6m = Ext.create('Ext.Button', {
             text: '6m',
             handler: function() {
                 var date = moment().subtract('months', 6).format("YYYY-MM-DD");
                 updateGraph(url() + '&value_date__gte=' + date);
             }
-        });            
+        });
 
         var button1y = Ext.create('Ext.Button', {
             text: '1y',
@@ -2622,15 +2624,15 @@ console.log('summary', summary);
                 updateGraph(url() + '&value_date__gte=' + date);
             }
         });
-        
+
         var buttonYtd = Ext.create('Ext.Button', {
             text: 'YTD',
             handler: function() {
-                var date = moment().startOf('year').format("YYYY-MM-DD"); 
+                var date = moment().startOf('year').format("YYYY-MM-DD");
                 updateGraph(url() + '&value_date__gte=' + date);
             }
         });
-        
+
         var buttonAll = Ext.create('Ext.Button', {
             text: 'All',
             handler: function() {
@@ -2643,7 +2645,7 @@ console.log('summary', summary);
             padding: 5,
             items: [button1m, button3m, button6m, button1y, buttonYtd, buttonAll],
         });
-    
+
         var dateSpan = Ext.create('Ext.form.Panel', {
             header: false,
             border: false,
@@ -2666,7 +2668,7 @@ console.log('summary', summary);
                                 to = moment(to).format('YYYY-MM-DD');
                                 updateGraph(url() + '&value_date__gte=' + from + '&value_date__lte=' + to);
                             }
-                        },                  
+                        },
                     }, {
                         xtype: 'splitter'
                     }, {
@@ -2679,13 +2681,13 @@ console.log('summary', summary);
                             select: function(combo, record, index) {
                                 to = moment(record).format('YYYY-MM-DD');
                                 from = Ext.getCmp(id + 'from_date').getValue();
-                                
+
                                 if(from) {
                                     from = moment(from).format('YYYY-MM-DD');
                                     updateGraph(url() + '&value_date__gte=' + from + '&value_date__lte=' + to);
                                 }
                             }
-                        }, 
+                        },
                     }
                 ]
              }
@@ -2700,11 +2702,11 @@ console.log('summary', summary);
                 {"id": "daily", "name": "Daily"},
             ]
         });
-        
+
         var dateTypeSelect = Ext.create('Ext.form.ComboBox', {
             store: dateTypeStore,
             id: id + 'datetype_combo',
-            padding: 5, 
+            padding: 5,
             width: 80,
             queryMode: 'local',
             displayField: 'name',
@@ -2718,10 +2720,10 @@ console.log('summary', summary);
                 }
             }
         });
-               
+
         // Set default value for drop down
         dateTypeSelect.setValue(dateTypeStore.getAt('0').get('id'));
-        
+
         // Base Parameter Container
         var upperContainer = Ext.create('Ext.container.Container', {
             renderTo: div + 'top',
@@ -2732,19 +2734,19 @@ console.log('summary', summary);
             },
             items: [buttonContainer, dateTypeSelect, dateSpan],
         });
-        
+
     }
 
-    
+
     function getReturnHistogramUrl(type) {
         var url = '/api/fundreturn' + type + '/?histogram=true&fields=fund_perf&date_type=' + type + '&fund=' + obj.fund.id;
         return url;
-    }    
-    
+    }
+
     function returnHistogram(obj, widget, div) {
-    
+
         var id = widget.key;
-    
+
         function getUrl() {
             var dateType = Ext.getCmp(widget.key + 'datetype_combo');
             if(typeof dateType !== 'undefined') {
@@ -2754,9 +2756,9 @@ console.log('summary', summary);
             }
             return getReturnHistogramUrl(type);
         }
-        
 
-        
+
+
         $.getJSON(getReturnHistogramUrl('monthly'), function(data) {
 
             var width = (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1)) - 10;
@@ -2784,7 +2786,7 @@ console.log('summary', summary);
                 },
                 scrollbar: {
                     enabled: false,
-                }, 
+                },
                 xAxis: {
                     type: 'category',
                     categories: data.columns,
@@ -2798,55 +2800,57 @@ console.log('summary', summary);
                 }],
 	        };
 	        var chart = new Highcharts.Chart(options);
-	        
+
 	        console.log('CHART1 ', chart);
-            baseParameters(chart, widget, div, getUrl);            
-                
-            // check if it has daily data, if not we don't display the data type drop down menu            
+            baseParameters(chart, widget, div, getUrl);
+
+            // check if it has daily data, if not we don't display the data type drop down menu
             $.getJSON("/api/fundreturndaily/?fields=id&fund=" + obj.fund.id, function(data) {
                 if(data.length === 0) {
                     Ext.getCmp(widget.key + 'datetype_combo').hide();
                 }
-            });    
+            });
 	    });
-    
+
     }
-    
-   
-    
+
+
+
     function fundHistoricalStats(obj, widget, div) {
-        
+
         function getUrl() {
-        
-        
-            var metricLength = Ext.getCmp(id + 'metric_panel').items.items.length;
+
+
+            //var metricLength = Ext.getCmp(id + 'metric_panel').items.items.length;
+            var metricLength = obj.metricSelection.length;
             var axis = [];
             var xAxisvals = [];
-            
+
             for(i=0; i<=metricLength - 1; i++) {
                 var pos = Ext.getCmp(id + 'position_combo_' + (i + 1));
                 var ax = Ext.getCmp(id + 'axis_combo_' + (i + 1));
+                console.log('I: ', i);
                 axis[i] = {
                    'position': pos.getValue(),
                    'opposite': ax.getValue(),
                 }
-                
+
             }
-            
+
             // sort by position
             axis = axis.sort(function(a,b) {
                 return a.position - b.position;
             });
-            
+
             widget.yAxis = [];
             ///widget.xAxis = [];
             var top = 0;
             //console.log('axis', axis);
             for(i=0; i<=(axis.length - 1); i++) {
-                
-                //widget.xAxis[i] = {}; 
+
+                //widget.xAxis[i] = {};
                 //console.log('LOOPING axis', axis[i]);
-                
+
                 // unique positions equal seperate xAxis
                 /*
                 if(jQuery.inArray(axis[i]['position'], xAxisvals) === -1) {
@@ -2882,7 +2886,7 @@ console.log('summary', summary);
                 //} else {
                 //    var top = 1000;
                 //}
-                
+
                 widget.yAxis[i] = {
                     height: 400,
                     top: top,
@@ -2897,68 +2901,70 @@ console.log('summary', summary);
                 }
                 //console.log('debug yAxis3', widget.yAxis);
             }
-        
+
             //widget.xAxis = [{height:;
-            
+
             //console.log('first yAxis', widget.yAxis);
             //console.log('first xAxis', widget.xAxis);
-            
-            var qVars = new Array('metric', 'yaxis', 'xaxis', 'layer', 'axis', 'plot', 'rfr', 'mar', 'step', 'window', 'sec_under', 'under', 'position');  
-            
+
+            var qVars = new Array('yaxis', 'xaxis', 'layer', 'axis', 'plot', 'rfr', 'mar', 'step', 'window', 'sec_under', 'under', 'position');
+
             // add date_type to qs
             var dateType = Ext.getCmp( id + 'date_type_combo').getValue();
             qs = 'date_type=' + dateType + '&';
-            
+
             // add dates to qs
             var date_from = Ext.getCmp(id + 'from_date').getValue();
             var date_to = Ext.getCmp(id + 'to_date').getValue();
-            
+
             if(date_from !== null) {
                 qs += 'value_date__gte=' + moment(date_from).format('YYYY-MM-DD') + '&';
             }
             qs += 'value_date__lte=' + moment(date_to).format('YYYY-MM-DD') + '&';
-            
+
+            qs += 'metric=' + obj.metricSelection.join(',');
+
             for(i=0; i<qVars.length; i++) {
-            
+
                 qs += '&' + qVars[i] + '=';
-            
+
                 for(m=0; m<metricLength; m++) {
-                
+
                     val = Ext.getCmp(id + qVars[i] + '_combo_' + (m + 1)).getValue();
                     qs +=  val + ',';
                 }
                 qs = qs.slice(0, -1); // remove last comma
             }
-            
+
             return '/api/fundreturn' + dateType + '/?' + qs + '&fund=' + obj.fund.id + '&fields=fund_perf,bench_perf';
-        
+
         }
-            
+
         function updateChart() {
-        
+
             if(widget.key === 'w156') {
-            
+
                 chart(obj, widget, div);
-            
+
             } else {
-        
-                
+
+
                if(jQuery.inArray(widget.key, ['w18']) !==-1 ) {
-               
+
                     $('<div id="' + div + '_stats_graph"></div>').appendTo("#" + div);
-              
+
                     var graphContainer = Ext.create('Ext.container.Container', {
                         contentEl: div + '_stats_graph',
                         title: 'Graph',
                         width: 945,
                         height: 640,
-                    });   
-                    
+                    });
+
                     var tabPanel = Ext.getCmp(div);
-                    
-                    
-                    if(typeof tabPanel === 'undefined') {       
-                  
+
+
+                    if(typeof tabPanel === 'undefined') {
+
                         tabPanel = Ext.create('Ext.tab.Panel', {
                             //height: 200, //(120 * data.size_y) + (10 * data.size_y) + (10 * (data.size_y - 1)) - 20,
                             //width:  800, //(120 * data.size_x) + (10 * data.size_x) + (10 * (data.size_x - 1)) - 20,
@@ -2968,47 +2974,47 @@ console.log('summary', summary);
                             id: div,
                             autoScroll: true,
                         });
-                        
+
                     } else {
                         // remove old panels
                         for(i=0; i<=tabPanel.items.length; i++)
                         {
                             tabPanel.remove(tabPanel.items.getAt(0));
                         }
-                        
+
                     }
 
                     widget.params.title = 'Table';
-                    
+
                     //console.log('GET URL', getUrl());
-                    
+
                     widget.url = getUrl();
                     widget.params.date_type = Ext.getCmp(id + 'date_type_combo').getValue();
-                    
-                    
-                    
+
+
+
                     var url = widget.url + '&data_type=table&order_by=value_date';
 
                     //console.log('data table url', url);
-                    
+
                     $.getJSON(url, function(data) {
-                    
-                        
+
+
                         chart(obj, widget, div + '_stats_graph');
-                        
+
                         var table = dataTable(data, obj, widget);
 
-                        tabPanel.add(graphContainer);                
+                        tabPanel.add(graphContainer);
                         tabPanel.add(table);
-                        tabPanel.doLayout(); 
+                        tabPanel.doLayout();
                         tabPanel.setActiveTab(0);
 
-                        
+
                     });
                 } else if(jQuery.inArray(widget.key, ['w151']) !==-1 ) {
-                
+
                     $('<div id="' + div + '_w151"></div>').appendTo("#" + div);
-                
+
                     var mainContainer = Ext.create('Ext.container.Container', {
                         //contentEl: div + '_metric' + tabId,
                         //contentEl: div + '_w151',
@@ -3019,8 +3025,8 @@ console.log('summary', summary);
                         style: {
                             background: 'white',
                         },
-                    }); 
-                    
+                    });
+
                     widget.xAxis = false;
                     widget.yAxis = false;
                     widget.params.zoom = false;
@@ -3028,27 +3034,46 @@ console.log('summary', summary);
                     widget.params.type = 'scatter';
                     var assdf = div + '_w151';
                     chart(obj, widget, div);
-                
+
                 }
             }
         }
-        
-        
 
-    
-        
+
+
+
+        obj.colorSelection = [];
+        obj.metricSelection = [];
+        obj.colors = [
+            ['#db061c', '#83202a', '#e3433b', '#dd313c', '#a61c33'], // red
+            ['#01017d', '#1326de', '#98a8f0', '#2d99be', '#043f81'], // blue
+            ['#1d8b29', '2dbe3c', '#174f1d', '#b4f098', '#69dd31'],  // green
+            ['#eaff0f', '#918b1d', '#f3e98c', '#d1dd31', '#e6d300'], // yellow
+            ['#ff8d0a', '#d79f56', 'eb8d4c', '#d1842e', '#c14101'],  // orange
+            ['#8c185b', '#b12ed1', '#c1015e', '#d75bcb', 'b274b9'],  // purple
+        ];
+        obj.colors = [
+            ['red', 'red'],
+            ['blue', 'blue'],
+            ['green', 'green'],
+            ['yellow', 'yellow'],
+            ['orange', 'orange'],
+            ['purple', 'purple'],
+        ];
+
+
         $('#data').data('chart-' + div, chart);
-        
-        //var dateSpan = dateSpanPicker('stats_', div, widget); 
-        
-        
-        
+
+        //var dateSpan = dateSpanPicker('stats_', div, widget);
+
+
+
         if(jQuery.inArray(widget.key, ['w18']) !==-1 ) {
             var id = 'stats_';
         } else if(jQuery.inArray(widget.key, ['w151']) !==-1 ) {
             var id = 'w151_';
         }
-        
+
         var dateSpan = Ext.create('Ext.form.Panel', {
             header: false,
             border: false,
@@ -3075,7 +3100,7 @@ console.log('summary', summary);
                                 //console.log('old to date', to);
                                 to = moment(to).format('YYYY-MM-DD');
                                 $.getJSON(url + '&value_date__gte=' + from + '&value_date__lte=' + to, function(new_data) {
-                                
+
                                     var chart = $('#data').data('chart-' + div);
                                     try {
                                        chart.series[0].setData(new_data[0].data);
@@ -3085,7 +3110,7 @@ console.log('summary', summary);
                                     chart.redraw();
                                 });
                             }
-                        },                  
+                        },
                     }, {
                         xtype: 'splitter'
                     }, {
@@ -3100,12 +3125,12 @@ console.log('summary', summary);
                                 url = getReturnHistogramUrl(Ext.getCmp('dateTypeHistogram').value);
                                 to = moment(record).format('YYYY-MM-DD');
                                 from = Ext.getCmp(id + 'from_date').getValue();
-                                
+
                                 if(from) {
                                     from = moment(from).format('YYYY-MM-DD');
-                                    
+
                                     $.getJSON(url + '&value_date__gte=' + from + '&value_date__lte=' + to, function(new_data) {
-                                    
+
                                         console.log('date to', url + '&value_date__gte=' + from + '&value_date__lte=' + to);
                                         var chart = $('#data').data('chart-' + div);
                                         try {
@@ -3117,15 +3142,15 @@ console.log('summary', summary);
                                     });
                                 }
                             }
-                        }, 
+                        },
                     }
                 ]
              }
              ]
         });
-        
+
         var dateSpanTo = dateSpan.items.items[0].items.items[0];
-        
+
         var button1m = Ext.create('Ext.Button', {
             text: '1m',
             handler: function() {
@@ -3133,7 +3158,7 @@ console.log('summary', summary);
                 dateSpanTo.setValue(date);
             }
         });
-        
+
         var button3m = Ext.create('Ext.Button', {
             text: '3m',
             handler: function() {
@@ -3141,14 +3166,14 @@ console.log('summary', summary);
                 dateSpanTo.setValue(date);
             }
         });
-        
+
         var button6m = Ext.create('Ext.Button', {
             text: '6m',
             handler: function() {
                 var date = moment().subtract('months', 6).format("YYYY-MM-DD");
                 dateSpanTo.setValue(date);
             }
-        });            
+        });
 
         var button1y = Ext.create('Ext.Button', {
             text: '1y',
@@ -3157,15 +3182,15 @@ console.log('summary', summary);
                 dateSpanTo.setValue(date);
             }
         });
-        
+
         var buttonYtd = Ext.create('Ext.Button', {
             text: 'YTD',
             handler: function() {
-                var date = moment().startOf('year').format("YYYY-MM-DD"); 
+                var date = moment().startOf('year').format("YYYY-MM-DD");
                 dateSpanTo.setValue(date);
             }
         });
-        
+
         var buttonAll = Ext.create('Ext.Button', {
             text: 'All',
             handler: function() {
@@ -3179,13 +3204,13 @@ console.log('summary', summary);
             padding: 5,
             items: [button1m, button3m, button6m, button1y, buttonYtd, buttonAll],
         });
-        
+
 
         //var FilterButtonContainer = dateFilters(chart, getUrl('monthly'));
-           
-        
+
+
         var dateType = 'monthly';
-            
+
         var dateTypeStore = Ext.create('Ext.data.Store', {
             fields: ['name'],
             data : [
@@ -3196,7 +3221,7 @@ console.log('summary', summary);
         var dateTypeSelect = Ext.create('Ext.form.ComboBox', {
             store: dateTypeStore,
             id: id + 'date_type_combo',
-            padding: 5, 
+            padding: 5,
             width: 80,
             queryMode: 'local',
             displayField: 'name',
@@ -3204,7 +3229,7 @@ console.log('summary', summary);
             listeners: {
                 'change': function(field, selectedValue) {
                    dateType = selectedValue;
-                   
+
                    /*
                     $.getJSON(urlFunc(dateType), function(new_data) {
                         chart.series[0].setData(new_data.data);
@@ -3218,38 +3243,53 @@ console.log('summary', summary);
                 }
             }
         }).hide();
-        
+
         // show dateTypeSelect for all except ...
         if(jQuery.inArray(widget.key, ['w155']) ===-1 ) {
             dateTypeSelect.show();
         }
-                           
+
         // Set default value for drop down
         dateTypeSelect.setValue(dateTypeStore.getAt('0').get('id'));
-        
+
 
         //tabPanel.setActiveTab(0);
-        
+
+        var showHideButton = Ext.create('Ext.Button', {
+            text: 'Hide Options',
+            enableToggle: true,
+            toggleHandler: function(item, pressed) {
+                if(pressed) {
+                    metricPanel.hide();
+                } else {
+                    metricPanel.show();
+                }
+            },
+        });
+
         var submitButton = Ext.create('Ext.Button', {
             text: 'Add Study',
             handler: function() {
-            
+
                 tabId = metricPanel.items.items.length + 1;
-                
+
                 var metrics = new Array();
                 for(i=0; i<=tabId - 1; i++) {
                     metrics[i] = i + 1;
                 }
-                
-                console.log('ID', id);
-                $('<div id="' + div + id + '_metric' + tabId + '"></div>').appendTo("#" + div);
-                
-                var firstRun = true;
-                
 
-                console.log('dateType', dateType);
-                
-                     
+                //console.log('ID', id);
+                $('<div id="' + div + id + '_metric' + tabId + '"></div>').appendTo("#" + div);
+
+                var firstRun = true;
+
+                //console.log('dateType', dateType);
+
+                FilterButtonContainer.hide();
+                dateTypeSelect.hide();
+                dateSpan.hide();
+                ShowHideButtonContainer.show();
+
                 // Underlying drop down
                 ///////////////////////
                 if(jQuery.inArray(widget.key, ['w151', 'w155']) !==-1 ) {
@@ -3272,7 +3312,7 @@ console.log('summary', summary);
                     id: id + 'under_combo_' + tabId,
                     //contentEl: div + '_metric' + tabId,
                     multiSelect: multiSelect,
-                    editable: false, 
+                    editable: false,
                     fieldLabel: 'Underlying',
                     labelAlign: 'top',
                     padding: '0 5 5 5',
@@ -3284,19 +3324,19 @@ console.log('summary', summary);
                         'change': function(field, selectedValue) {
                            //dateType = selectedValue;
                            //console.log('underlying changing value', selectedValue);
-                           
+
                            if(firstRun == false) {
                                updateChart();
                            }
                         }
                     }
                 });
-                
+
                 underlyingSelect.setValue(underlyingStore.getAt('0').get('id'));
-                
-                
-                
-                     
+
+
+
+
                 // Second Underlying drop down
                 ///////////////////////
                 var secUnderlyingStore = Ext.create('Ext.data.Store', {
@@ -3310,7 +3350,7 @@ console.log('summary', summary);
                 var secUnderlyingSelect = Ext.create('Ext.form.ComboBox', {
                     store: underlyingStore,
                     id: id + 'sec_under_combo_' + tabId,
-                    editable: false, 
+                    editable: false,
                     fieldLabel: 'Second Underlying',
                     labelAlign: 'top',
                     padding: '0 5 5 5',
@@ -3328,68 +3368,68 @@ console.log('summary', summary);
                         }
                     }
                 }).hide(); // hide by default
-                
+
                 secUnderlyingSelect.setValue(secUnderlyingStore.getAt('0').get('id'));
-                    
-                
+
+
                 // Add the benchmarks assigned to this fund for the underlying drop downs
                 $.getJSON("/api/fundpeer/?fields=benchpeer__holding__id,benchpeer__name&fund=" + obj.fund.id +'&user=' + obj.user, function(data) {
-                    
-                    for(i=0; i < data.length; i++) { 
+
+                    for(i=0; i < data.length; i++) {
                          underlyingStore.add({
-                            'id': data[i].benchpeer__holding__id, 
+                            'id': data[i].benchpeer__holding__id,
                             'name':  data[i].benchpeer__name
                          });
                          secUnderlyingStore.add({
-                            'id': data[i].benchpeer__holding__id, 
+                            'id': data[i].benchpeer__holding__id,
                             'name':  data[i].benchpeer__name
                          });
                     }
 
-                }); 
-                
+                });
+
                 // Add the secondary benchmarks assigned to this fund for the underlying drop downs
                 if(jQuery.inArray(widget.key, ['w155', 'w156', 'w157']) !==-1 ) {
-        
+
                      underlyingStore.add({
-                        'id': obj.fund.sec_bench.id, 
+                        'id': obj.fund.sec_bench.id,
                         'name': obj.fund.sec_bench.name
                      });
                      secUnderlyingStore.add({
-                        'id': obj.fund.sec_bench.id, 
+                        'id': obj.fund.sec_bench.id,
                         'name': obj.fund.sec_bench.name
-                     });     
-                        
+                     });
+
                 }
-                
+
                 // add the flash funds
                 if(jQuery.inArray(widget.key, ['w155', 'w156', 'w157']) !==-1 ) {
                     $.getJSON("/api/fund/?fields=name,id&estimate_required=1", function(data) {
-                        
-                        for(i=0; i < data.length; i++) { 
+
+                        for(i=0; i < data.length; i++) {
                              underlyingStore.add({
-                                'id': data[i].id, 
+                                'id': data[i].id,
                                 'name':  data[i].name
                              });
                              secUnderlyingStore.add({
-                                'id': data[i].id, 
+                                'id': data[i].id,
                                 'name':  data[i].name
                              });
                         }
 
-                    }); 
+                    });
                 }
-                
-                
-                
-                
+
+
+
+
                 // Window drop down
                 //////////////////////
                 if(dateType == 'monthly') {
                     var windowStepValues = new Array(1, 3, 6, 9, 12, 24);
                     var windowDefault = 12;
                     var stepDefault = 1;
-                } else {        
+                } else {
                     var windowStepValues = new Array(1, 5, 21, 63, 126, 252, 504);
                     var windowDefault = 252;
                     var stepDefault = 21;
@@ -3413,10 +3453,10 @@ console.log('summary', summary);
                     }
                 }).hide();  // hidden by default
                 windowSelect.setValue(windowDefault);
-                
-                
-                
-                
+
+
+
+
                 // Step drop down
                 //////////////////////
                 var stepSelect = Ext.create('Ext.form.ComboBox', {
@@ -3437,11 +3477,11 @@ console.log('summary', summary);
                     }
                 }).hide();  // hidden by default
                 stepSelect.setValue(stepDefault);
-                
-                                    
-                                       
+
+
+
                 var marRfrValues = new Array(0, 1, 2, 3, 4, 5);
-                
+
                 // Minimal Acceptable Return drop down (MAR)
                 //////////////////////
                 var marSelect = Ext.create('Ext.form.ComboBox', {
@@ -3462,8 +3502,8 @@ console.log('summary', summary);
                     }
                 }).hide();  // hidden by default
                 marSelect.setValue(0);
-                
-                                    
+
+
                 // Risk Free Rate drop down (RFR)
                 //////////////////////
                 var rfrSelect = Ext.create('Ext.form.ComboBox', {
@@ -3484,45 +3524,45 @@ console.log('summary', summary);
                     }
                 }).hide();  // hidden by default
                 rfrSelect.setValue(0);
-                
-             
-             
-                
-                // What metrics makes the drop down menus Window and Step visible 
+
+
+
+
+                // What metrics makes the drop down menus Window and Step visible
                 var windowSteps = new Array(
-                    "roll_average", "roll_deviation", "roll_cumulative", "roll_skewness", 
-                    "roll_kurtosis", "roll_annualised", "roll_volatility",  "roll_sharpe",  
-                    "roll_sortino", "roll_downside", "roll_excess", "roll_tracking", "roll_correlation"                    
+                    "roll_average", "roll_deviation", "roll_cumulative", "roll_skewness",
+                    "roll_kurtosis", "roll_annualised", "roll_volatility",  "roll_sharpe",
+                    "roll_sortino", "roll_downside", "roll_excess", "roll_tracking", "roll_correlation"
                 );
-                
-                
+
+
                 // What metrics makes the Second Underlying drop down visible
                 if(jQuery.inArray(widget.key, ['w18']) !==-1 ) {
                     var secondUnderlying = new Array(
-                        "delta", "roll_excess", 
+                        "delta", "roll_excess",
                         "roll_tracking", "roll_correlation", "roll_alpha",
                         "roll_beta",  "roll_rsq"
                     );
                 } else if(jQuery.inArray(widget.key, ['w151', 'w155']) !==-1 ) {
-                    var secondUnderlying = [                
-                        'delta_cum_returns_final_val', 'tracking_error', 
+                    var secondUnderlying = [
+                        'delta_cum_returns_final_val', 'tracking_error',
                         'correlation', 'alpha', 'beta', 'r2',
                     ];
                 }
-               
-               
-               
+
+
+
                 // What metrics makes the MAR drop down visible
                 var mar = new Array("roll_downside");
-               
+
                 // What metrics makes the RAR drop down visible
                 var rfr = new Array("roll_alpha", "roll_beta", "roll_rsq");
-                   
-                                                            
+
+
 
 
                 // Metric drop down
-                ///////////////////           
+                ///////////////////
                 if(jQuery.inArray(widget.key, ['w18']) !==-1 ) {
                     var metricData = [
                         {"id": "cumulative", "name": "Cumulative Return"},
@@ -3545,10 +3585,10 @@ console.log('summary', summary);
                         {"id": "roll_beta", "name": "Rolling Beta"},
                         //{"id": "roll_rsq", "name": "Rolling RSQ"},
                     ];
-                } else {                
-                    var metricData = [              
+                } else {
+                    var metricData = [
                         {"id": "delta_cum_returns_final_val", "name": "Excess Return"},
-                        {"id": "tracking_error", "name": "Tracking Error"},                               
+                        {"id": "tracking_error", "name": "Tracking Error"},
                         {"id": "correlation", "name": "Correlation"},
                         {"id": "alpha", "name": "Alpha"},
                         {"id": "beta", "name": "Beta"},
@@ -3566,7 +3606,7 @@ console.log('summary', summary);
                         {"id": "downside_volatility", "name": "Downside Volatility"},
                         {"id": "sortino_ratio", "name": "Sortino Ratio"},
                         {"id": "sharpe_ratio", "name": "Sharpe Ratio"},
-                    ]; 
+                    ];
                 }
                 var metricStore = Ext.create('Ext.data.Store', {
                     fields: ['name'],
@@ -3576,7 +3616,7 @@ console.log('summary', summary);
                 var metricSelect = Ext.create('Ext.form.ComboBox', {
                     store: metricStore,
                     id: id + 'metric_combo_' + tabId,
-                    editable: false, 
+                    editable: false,
                     fieldLabel: 'Metric',
                     labelAlign: 'top',
                     padding: '0 5 5 5',
@@ -3586,9 +3626,9 @@ console.log('summary', summary);
                     valueField: 'id',
                     listeners: {
                         'change': function(field, selectedValue) {
-                        
+
                             if(jQuery.inArray(widget.key, ['w18', 'w151', 'w155']) !==-1 ) {
-                                
+
                                 // show the Second Underlying drop down when certain metrics are selected
                                 if(secondUnderlying.indexOf(selectedValue) == -1) {
                                     secUnderlyingSelect.hide();
@@ -3597,7 +3637,7 @@ console.log('summary', summary);
                                 }
                             }
                             if(jQuery.inArray(widget.key, ['w18']) !==-1 ) {
-                            
+
                                 // show the Window drop down when certain metrics are selected
                                 if(windowSteps.indexOf(selectedValue) == -1) {
                                     windowSelect.hide();
@@ -3606,21 +3646,21 @@ console.log('summary', summary);
                                     windowSelect.show();
                                     stepSelect.show();
                                 }
-                                
+
                                 // show the MAR drop down when certain metrics are selected
                                 if(mar.indexOf(selectedValue) == -1) {
                                     marSelect.hide();
                                 } else {
                                     marSelect.show();
                                 }
-                                
+
                                 // show the RFR drop down when certain metrics are selected
                                 if(rfr.indexOf(selectedValue) == -1) {
                                     rfrSelect.hide();
                                 } else {
                                     rfrSelect.show();
                                 }
-                                
+
                                 // Add the open metric tabs to the underlying drop downs
                                 if(selectedValue === 'roll_average' || selectedValue == 'roll_deviation') {
                                     for(i=1; i <= tabId; i++) {
@@ -3628,29 +3668,47 @@ console.log('summary', summary);
                                          store2 = Ext.data.StoreManager.lookup('sec_under_store_' + i);
                                          for(x=1; x <= tabId; x++) {
                                              store1.add({
-                                                'id': 'metric' + x, 
+                                                'id': 'metric' + x,
                                                 'name': 'Metric ' + x
                                              });
                                              store2.add({
-                                                'id': 'metric' + x, 
+                                                'id': 'metric' + x,
                                                 'name': 'Metric ' + x
                                              });
                                          }
                                     }
                                }
-                           };
-                            
-                           if(firstRun == false) {
-                               updateChart();
-                           }
+                            };
 
+                            if(firstRun === false) {
+
+                                var metricPanel = Ext.getCmp(id + 'metric_panel');
+                                var metricLength = metricPanel.items.items.length;
+
+                                if(metricPanel.getActiveTab() === null) {
+                                    var metricId = 1;
+                                } else {
+                                    var metricId = metricPanel.getActiveTab().stateId;
+                                }
+
+                                if(obj.metricSelection.length < metricLength) {
+                                    obj.metricSelection.push(selectedValue);
+                                } else {
+                                    obj.metricSelection[metricId - 1] = selectedValue;
+                                }
+
+                                updateChart();
+
+                            } else {
+                                obj.metricSelection.push(selectedValue);
+                            }
                         }
                     }
                 }).hide();
-                
+
                 metricSelect.setValue(metricStore.getAt('0').get('id'));
-                
-                
+
+
                 // X&Y Axis Drop Down for W151 & W156
                 //////////////////////////////
                 var xAxisSelect = Ext.create('Ext.form.ComboBox', {
@@ -3673,7 +3731,7 @@ console.log('summary', summary);
                     }
                 }).hide();
                 xAxisSelect.setValue(metricStore.getAt('0').get('id'));
-                
+
                 var yAxisSelect = Ext.create('Ext.form.ComboBox', {
                     store: metricStore,
                     id: id + 'yaxis_combo_' + tabId,
@@ -3695,11 +3753,11 @@ console.log('summary', summary);
                 }).hide();
                 yAxisSelect.setValue(metricStore.getAt('0').get('id'));
 
-                
-                
-                
-                
-                
+
+
+
+
+
                 // Plot Type drop down
                 //////////////////////
                 var plotStore = Ext.create('Ext.data.Store', {
@@ -3731,10 +3789,10 @@ console.log('summary', summary);
                     }
                 });
                 plotSelect.setValue(plotStore.getAt('0').get('id'));
-                
 
-                
-                
+
+
+
                 // Axis drop down
                 //////////////////////
                 var axisStore = Ext.create('Ext.data.Store', {
@@ -3765,12 +3823,12 @@ console.log('summary', summary);
                     }
                 });
                 axisSelect.setValue(axisStore.getAt('0').get('id'));
-                
-                
-                
-                
-                
-                
+
+
+
+
+
+
                 // Position drop down
                 //////////////////////
                 var positionValues = new Array(1, 2, 3, 4, 5);
@@ -3789,14 +3847,14 @@ console.log('summary', summary);
                            }
                         }
                     }
-                });  
+                });
                 positionSelect.setValue(1);
-                
-                
-                
-                
-                
-                
+
+
+
+
+
+
                 // Layer drop down
                 //////////////////////
                 var layerStore = Ext.create('Ext.data.Store', {
@@ -3829,14 +3887,14 @@ console.log('summary', summary);
                            }
                         }
                     }
-                });  
+                });
                 layerSelect.setValue(1);
-                
-                
+
+
                 firstRun = false;
-                
-                
-                
+
+
+
                 // Show or Hide
                 if(jQuery.inArray(widget.key, ['w155']) !==-1 ) {
                     rfrSelect.show();
@@ -3852,8 +3910,8 @@ console.log('summary', summary);
                 } else if(jQuery.inArray(widget.key, ['w18']) !==-1 ) {
                     metricSelect.show();
                 }
-                
-                  
+
+
 
                 // Containers
                 //////////////
@@ -3870,8 +3928,8 @@ console.log('summary', summary);
                         layout: 'hbox',
                         items: [plotSelect, axisSelect],
                     }],
-                });    
-                
+                });
+
                 var lowerContainer = Ext.create('Ext.container.Container', {
                     layout:'column',
                     items: [{
@@ -3885,9 +3943,8 @@ console.log('summary', summary);
                         layout: 'hbox',
                         items: [positionSelect, layerSelect],
                     }],
-                });   
-                
-                console.log('ID2', id);
+                });
+
                 var mainContainer = Ext.create('Ext.container.Container', {
                     contentEl: div + id + '_metric' + tabId,
                     autoFit: true,
@@ -3896,39 +3953,60 @@ console.log('summary', summary);
                     closable: true,
                     padding: '0 5 5 5',
                     autoScroll: true,
+                    stateId: tabId,
                     style: {
                         background: 'white',
                     },
                     items: [upperContainer, lowerContainer],
-                    /*
                     listeners: {
                         'close': function(val) {
-                            var id = val['id'].replace("metric_","");
-                            console.log('CLOSE ID', id);
-                            Ext.getCmp('metric_combo_' + id).destroy();
-                            updateChart();
+                            var metricPos = parseInt(val['id'].replace("metric_",""));
+                            obj.metricSelection.splice(metricPos - 1, 1); // remove metric
+
+                            if(obj.metricSelection.length > 0) {
+
+                                updateChart();
+
+                            } else {
+
+                                FilterButtonContainer.show();
+                                dateTypeSelect.show();
+                                dateSpan.show();
+                                mainContainer.destroy();
+
+                                var tabPanel = Ext.getCmp(div);
+                                tabPanel.destroy();
+
+                                ShowHideButtonContainer.hide();
+
+                            }
                         }
                     }
-                    */
-                });   
-                
-                metricPanel.add(mainContainer).show();  
-                    
+                });
+
+                metricPanel.add(mainContainer).show();
+
                 updateChart();
-                
+
             }
         });
-        
+
         var metricPanel = Ext.create('Ext.tab.Panel', {
             id: id + 'metric_panel',
         });
-        
+
         var SubmitButtonContainer = Ext.create('Ext.container.Container', {
             padding: 5,
             items: [submitButton],
         });
-        
-        
+
+        var ShowHideButtonContainer = Ext.create('Ext.container.Container', {
+            padding: 5,
+            items: [showHideButton],
+        }).hide();
+
+
+
 
        // for(i=0; i<windowStepValues.length; i++) {
             //windowStore.add({
@@ -3936,41 +4014,41 @@ console.log('summary', summary);
             //    'name': windowStepValues[i]
             //});
        // }
-        
+
         //var asdf = Ext.create('Ext.form.FieldContainer', {
-        var upperContainer = Ext.create('Ext.container.Container', {
+        var dateFilterContainer = Ext.create('Ext.container.Container', {
             renderTo: div + 'top',
             autoFit: true,
             layout: 'hbox',
             style: {
                 background: 'white',
             },
-            items: [FilterButtonContainer, SubmitButtonContainer, dateTypeSelect, dateSpan],
+            items: [SubmitButtonContainer, ShowHideButtonContainer, FilterButtonContainer, dateTypeSelect, dateSpan],
         });
         //var upperContainer = Ext.create('Ext.container.Container', {
-        
-        
-        // check if it has daily data           
+
+
+        // check if it has daily data
         $.getJSON("/api/fundreturndaily/" + obj.fund.id + "/?fields=id&has_data=true", function(data) {
-        
-            //if it hasn't, hide the date type drop down menu 
+
+            //if it hasn't, hide the date type drop down menu
             if(data == 0) {
                 dateTypeSelect.hide();
             }
-            
-        }); 
-        
+
+        });
+
         Ext.create('Ext.container.Container', {
             renderTo: div + 'top',
             items: [metricPanel],
         });
-        
+
         // div for graph & table
         //$('<div id="' + div + '_stats_graph"></div>').appendTo("#" + div);
         //$('<div id="' + div + '_stats_table2"></div>').appendTo("#" + div);
-          
 
-        
+
+
         /*
         Ext.create('Ext.tab.Panel', {
             renderTo: div,
@@ -3992,9 +4070,9 @@ console.log('summary', summary);
         });
         */
     }
-    
+
     function lineChart(obj, widget, div, series) {
-    
+
 
         /*
         //console.log(series[0].data.length);
@@ -4002,16 +4080,16 @@ console.log('summary', summary);
         lastPoint[0] = series[0].data[series[0].data.length - 1][1];
         lastPoint[1] = series[1].data[series[1].data.length - 1][1];
         lastPoint[2] = series[2].data[series[2].data.length - 1][1];
-        
+
         if(widget.key === 'w152') {
             lastPoint[3] = series[3].data[series[3].data.length - 1][1];
             lastPoint[4] = series[4].data[series[4].data.length - 1][1];
         }
         */
         //console.log(lastPoint);
-        
 
-            
+
+
         if(widget.key === 'w152') {
             var yAxis = [{
                     height: 420,
@@ -4054,15 +4132,15 @@ console.log('summary', summary);
                     tickPositions:[lastPoint[2]] ,
                     gridLineWidth:0
                 },{
-                    top: 500,    
-                    height: 210, 
+                    top: 500,
+                    height: 210,
                     opposite:true,
                     linkedTo:1,
                     tickPositions:[lastPoint[3]],
                     gridLineWidth:0
                 },{
-                    top: 500,    
-                    height: 210, 
+                    top: 500,
+                    height: 210,
                     opposite:true,
                     linkedTo:1,
                     tickPositions:[lastPoint[4]],
@@ -4070,7 +4148,7 @@ console.log('summary', summary);
             }];
             */
         } else {
-        
+
             var yAxis = [{
                     height: 420,
                     lineWidth: 2,
@@ -4109,8 +4187,8 @@ console.log('summary', summary);
                     tickPositions:[lastPoint[1]] ,
                     gridLineWidth:0
                 },{
-                    top: 500,    
-                    height: 210, 
+                    top: 500,
+                    height: 210,
                     opposite:true,
                     linkedTo:1,
                     tickPositions:[lastPoint[2]],
@@ -4118,7 +4196,7 @@ console.log('summary', summary);
                 }];
              */
         }
-        
+
         var options = {
             chart: {
                 spacingBottom: -50, // hide the navigator
@@ -4127,8 +4205,8 @@ console.log('summary', summary);
                 height: (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)),
             },
             colors: [
-               '#01017D', 
-               '#01810E', 
+               '#01017D',
+               '#01810E',
                 '#9A5D01',
                 'red',
                 'brown',
@@ -4139,17 +4217,17 @@ console.log('summary', summary);
                 adaptToUpdatedData: false,
                 height: 0,
                 margin: 60,
-            }, 
+            },
             scrollbar: {
                 enabled: false,
-            },   
+            },
             plotOptions: {
               series: {
                 events: {
                   legendItemClick: function(event) {
                       var series = this.yAxis.series,
                           seriesLen = series.length,
-                          visible = this.visible ? 1 : -1; 
+                          visible = this.visible ? 1 : -1;
                           // +1 when visible series, because it will be changed after that callback
 
                       for(var i = 0; i < seriesLen; i++) {
@@ -4244,7 +4322,7 @@ console.log('summary', summary);
                 //        refreshGraph(e, widget);
                 //    }
                 //},
-                
+
                 opposite: true,
                 offset: -700,
                 //offset: -45,
@@ -4254,22 +4332,22 @@ console.log('summary', summary);
                         var min = this.min,
                             max = this.max,
                             chart = this.chart;
-                        
+
                         chart.xAxis[1].setExtremes(min,max);
                         refreshGraph(e, widget);
-                        
+
 
                     }
                 },
             },{
                 type: 'datetime',
-                
+
                 offset: -200,
             }],
-            
+
             series: series,
         };
-        
+
         if(jQuery.inArray(widget.key, ['w16']) !== -1) {
             options.tooltip = {
                 valueSuffix: ' %',
@@ -4284,8 +4362,8 @@ console.log('summary', summary);
 
 
     function chart(obj, widget, div, url) {
-    
-    
+
+
         //var chartDiv = div;
         //div = div + '_stats_graph';
 
@@ -4318,7 +4396,7 @@ console.log('summary', summary);
                 yAxisTitle = widget.params.yAxisTitle;
             }
         }
-        
+
         if(typeof widget.yAxis !== 'undefined') {
             var yAxis = widget.yAxis;
             for(i=0; i<widget.yAxis.length; i++) {
@@ -4334,7 +4412,7 @@ console.log('summary', summary);
                 minorTickInterval: 'auto',
             };
         }
-        
+
         if(typeof widget.xAxis === 'undefined') {
             var xAxis = {
                 type: 'datetime',
@@ -4366,25 +4444,25 @@ console.log('summary', summary);
             navigator = true;
         }
 
-        var rangeSelector = true;
-        if(typeof widget.params.rangeSelector != 'undefined' && (widget.params.rangeSelector == 'false' || widget.params.rangeSelector == false)) {
-            rangeSelector = false;
+        var rangeSelector = false;
+        if(typeof widget.params.rangeSelector != 'undefined' && (widget.params.rangeSelector == 'true' || widget.params.rangeSelector == true)) {
+            rangeSelector = true;
         }
-        
+
         //console.log('HEIGHT', (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1)));
 
 
         var colors = new Array();
-        
+
         console.log('yAxis', yAxis);
         console.log('xAxis', xAxis);
-        
-        console.log('chart call', 'http://localhost:8000' + widget.url + widget.qs);        
+
+        console.log('chart call', 'http://localhost:8000' + widget.url + widget.qs);
         $.getJSON(widget.url + widget.qs, function(data) {
-        
+
             console.log('DATA', data);
-        
-                
+
+
             /**
              * Experimental Highcharts plugin to implement chart.alignThreshold option.
              * Author: Torstein Hønsi
@@ -4441,28 +4519,100 @@ console.log('summary', summary);
                 })
             }(Highcharts));
 
-        
-            $.each(data, function( index, obj ) {
-                colors.push(obj.color);
-                
-                if(jQuery.inArray(widget.key, ['w18']) !==-1 ) {   
-                    yAxis[index]['labels'] = {
-                        formatter: function() {
-                            return this.value + obj.label;
-                        },
-                        x: -10,
-                    };
+
+
+            colors = [];
+
+            yAxisCount = [];
+            $.each(data, function( index, val) {
+                if(yAxisCount[val.yAxis] !== 'undefined') {
+                    yAxisCount[val.yAxis] += 1;
+                } else {
+                    yAxisCount[val.yAxis] = 1;
+                }
+            });
+
+            asdf = {};
+            console.log('==============');
+            $.each(data, function( index, val) {
+
+                // assign a random color shade for each metric
+                if(jQuery.inArray(widget.key, ['w18']) !==-1 ) {
+
+                    yAxisCount.push(val.yAxis);
+
+                    if(typeof obj.colorSelection[val.yAxis] !== 'undefined') {
+
+                        count = obj.colorSelection.filter(function(x){return x==val.yAxis}).length
+                        sel = obj.colorSelection[val.yAxis];
+                        color = obj.colors[sel][count - 1];
+                        color = color;
+                        color1 = color;
+                        asdf[val.yAxis] = color;
+                        yAxis[val.yAxis]['labels'] = {
+                            formatter: function() {
+                                //return this.value + obj.label;
+                                //console.log('formatter color1', color);
+                                return '<span style="fill: ' + asdf[val.yAxis] + ';">' + this.value + val.label + '</span>';
+
+                            },
+                            x: -10,
+                            color: color,
+                        };
+                        console.log('TRUE COLOR', color1, val.yAxis, asdf[val.yAxis], obj.colorSelection, obj.colorSelection[val.yAxis, obj.colors[sel][count - 1]], obj.colors, sel, count);
+
+                    } else {
+
+                        randColor = Math.floor(Math.random()*obj.colors.length);
+                        obj.colorSelection[val.yAxis] = randColor;
+                        color = obj.colors[randColor][0];
+                        color2 = color;
+                        asdf[val.yAxis] = color;
+                        yAxis[val.yAxis]['labels'] = {
+                            formatter: function() {
+                                //return this.value + obj.label;
+                                color3 = color;
+                                return '<span style="fill: ' + asdf[val.yAxis] + ';">' + this.value + val.label + '</span>';
+
+                            },
+                            x: -10,
+                            color: color,
+                        };
+                        console.log('FALSE COLOR', color2, val.yAxis, asdf[val.yAxis], obj.colorSelection, obj.colorSelection[val.yAxis]);
+
+                    }
+
+                    /*
+                // assign a random color shade for each metric
+                if(jQuery.inArray(val.name, obj.colorSelection) !==-1 ) {
+                    var color = obj.colorSelection[val.name];
+                    color = obj.colors[color][obj.colorSelection.length];
+                } else {
+                    var randColor = Math.floor(Math.random()*obj.colors.length);
+                    obj.colorSelection[val.name] = randColor;
+                    console.log('colors', obj.colorSelection.length, randColor, obj.colors, obj.colors[randColor]);
+                    color = obj.colors[randColor][0];
+                }
+                colors.push(color);
+                console.log('colors2', color);
+                    */
+
+                    colors.push(color);
+
+                    //console.log('yAxis2', yAxis);
                     yAxis[index]['minorTickInterval'] = 'auto';
                  }
-                
-                
+
+
             });
-            
+
+            console.log('Y AXIS AFTER COLOR', yAxis);
+
             // default colors
             if(colors.length === 0) {
                 colors: [
                    'orange',
-                ];           
+                ];
             }
 
 
@@ -4595,39 +4745,39 @@ console.log('summary', summary);
             } else {
 
             }
-            
 
-            if(jQuery.inArray(widget.key, ['w18', 'w16']) !==-1 ) {            
+
+            if(jQuery.inArray(widget.key, ['w18', 'w16']) !==-1 ) {
                 console.log('YAXIS');
                 options['yAxis'] = yAxis;
-            }    
-            
-            
+            }
+
+
             if(typeof $('#' + div).highcharts() !== 'undefined') {
                 $('#' + div).highcharts().destroy();
                 delete $('#' + div);
                 //$('<div id="' + div + '"></div>').appendTo("#" + chartDiv);
                 console.log('DESTROYING CHART');
             }
-            
-            if(jQuery.inArray(widget.key, ['w151', 'w156']) !==-1 ) {     
-                var chart = new Highcharts.Chart(options);  
+
+            if(jQuery.inArray(widget.key, ['w151', 'w156']) !==-1 ) {
+                var chart = new Highcharts.Chart(options);
             } else {
                 var chart = new Highcharts.StockChart(options);
             }
             //var chart = new Highcharts.Chart(options); // cannot be used with rangeSelector options
             //console.log('CREATING NEW CHART');
-            
+
             //$('#data').data(widget.key + '-chart', chart);
         });
     }
- 
+
 
     function monthTable(year, month) {
 
         var fund = $('#data').data('fund');
 
-        
+
         var title = 'FUND_NAME / MONTH YEAR / Historical Performance';
         title = title.replace('FUND_NAME', $('#data').data('fund_obj').name);
         title = title.replace('YEAR', moment(new Date(year)).format("YYYY"))
@@ -4670,7 +4820,7 @@ console.log('summary', summary);
                 day = parseInt(day, 10);
                 days[day] = data[i].fund_mtd;
             }
-            
+
             var week_count = 0;
 
             for(i=1; i<=last_day_of_month; i++) {
@@ -5048,17 +5198,17 @@ console.log('WIDGET', widget);
             });
         //});
     }
-    
-    
-    
-    
+
+
+
+
 
     function barChart(obj, widget, div, tab) {
 
         $.getJSON(widget.url + widget.qs, function(data) {
-        
+
             //console.log('bar chart data', data.data)
-        
+
             var title = false;
             if(typeof widget.params.title != 'undefined' && widget.params.title == "true") {
                 title = widget.name;
@@ -5083,8 +5233,8 @@ console.log('WIDGET', widget);
             if(typeof widget.params.scrollbar != 'undefined' && widget.params.scrollbar == "true") {
                 scrollbar = true;
             }
-            
-            
+
+
 
                    //console.log(labels);
 
@@ -5129,8 +5279,8 @@ console.log('WIDGET', widget);
                 },
                 series: data,
             }
-            
-       
+
+
             if(widget.key == 'w2' || (widget.key == 'w7' && type !== 1)) {
                 options.yAxis.labels = {
                     formatter: function() {
@@ -5138,7 +5288,7 @@ console.log('WIDGET', widget);
                     }
                 };
             }
-                    
+
             // remove series and add percent
             if(jQuery.inArray(widget.key, ['w2']) !== -1) {
                 options.tooltip = {
@@ -5148,17 +5298,17 @@ console.log('WIDGET', widget);
                     },
                 };
             }
-            
-            
+
+
             // always display million on y axis
             if(jQuery.inArray(widget.key, ['holding_nav']) !== -1) {
-            
+
                 if(tab == 'nav') {
                     var suffix = '';
                 } else {
                     var suffix = ' %';
                 }
-                           
+
                 options.yAxis.labels = {
                     formatter: function () {
                         if(tab == 'nav') {
@@ -5166,37 +5316,40 @@ console.log('WIDGET', widget);
                         } else {
                              return this.value + '%';
                         }
-                       
+
                     }
                 };
                 options.tooltip = {
                     formatter: function() {
-                    
-                        var tp =  this.key + ' ' + Highcharts.numberFormat(this.y) + suffix;
-                        
-                        console.log('total cash', this.point.name);
+
+                        var tp =  '<b>' + this.key + ' ' + Highcharts.numberFormat(this.y) + suffix + '<b><br />';
+
                         if(this.point.name == 'Total Cash') {
-                            tp += '<br /><span style="color: #B4C0CF; background-color: #B4C0CF; border: 0px solid #B4C0CF; width: 200px;"></span><br/><span style="font-weight: bold;">test</span>';
+
+                            var tp =  '<b>' + this.key + ' ' + Highcharts.numberFormat(this.y) + suffix + '<b><br />';
+
                             $.each(data[0].extra, function(key, value) {
-                            
+
                                 if (tab == 'nav') {
                                     var number = value['marketvaluefundcur__sum'];
                                 } else {
                                     var number = value['weight__sum'];
                                 }
                                 //console.log(key, value);
-                                tp += '<span id="tooltip left">' + value['holding__currency__name'] + ' </span> ';
-                                tp += '<span id="tooltip right">' + number + '</span><br/>';
+                                tp += value['holding__currency__short_name'] + ': ' + number + '<br/>';
                             });
+                        } else {
+
+                            var tp =  this.key + ' ' + Highcharts.numberFormat(this.y) + suffix;
+
                         }
-                            
-                        //return this.key;                    
+                        //return this.key;
                         return tp;
                     },
                 };
-                
+
             }
-            
+
             if(typeof widget.params.labels != 'undefined' && widget.params.labels == 'rotated') {
                 labels = {
                     rotation: 90,
@@ -5206,7 +5359,7 @@ console.log('WIDGET', widget);
                         fontFamily: 'Verdana, sans-serif'
                     },
                     formatter: function() {
-                    
+
                         if(this.value.length > 20) {
                             return this.value.substr(0, 20) + '...';
                         } else {
@@ -5216,19 +5369,19 @@ console.log('WIDGET', widget);
                 }
                 options.xAxis.labels = labels;
             }
-            
+
 
 
            //console.log(widget.window.key);
             // vertical fund performance line over bar graph
-            
-            if(widget.window.key == 'w2') { 
-            
+
+            if(widget.window.key == 'w2') {
+
                 var year = moment().year();
                 year = 2013;  // @TODO: get rid of this later
                 var month = moment().month();
                 var url = '/api/fundreturnmonthly/?fund=' + $('#data').data('fund_obj').id + '&fields=fund_perf&value_date__year=' + year + '&value_date__month=' + month;
-                
+
                 //$.getJSON(url, function(fund) {
                 //    options.yAxis.plotLines = [{
                 //        value: fund[0].fund_perf,
@@ -5240,7 +5393,7 @@ console.log('WIDGET', widget);
                 //        zIndex: 5,
                 //    }];
                     var chart = new Highcharts.Chart(options);
-                    
+
                     $('#data').data('chart-' + div, chart);
                     $('#data').data('chart-options-' + div, options);
               // });
@@ -5250,13 +5403,13 @@ console.log('WIDGET', widget);
 
             // save div for later
             $('#data').data('barchart-' + widget.window.key, div);
-            
+
             // save data
             $('#data').data('chart-' + div, chart);
-            
+
             // save options
             $('#data').data('chart-options-' + div, options);
-            
+
             return chart;
 
         });
@@ -5264,45 +5417,45 @@ console.log('WIDGET', widget);
 
 
     }
-  
-    
+
+
 
 
     function dataTable(data, obj, widget, div) {
 
         var hideHeaders = false;
         var title = false;
-        
+
         if(typeof widget.params !== 'undefined') {
-        
+
             if(typeof widget.params.column_header !== 'undefined' && widget.params.column_header == 'false'){
                 hideHeaders = true;
             }
-            
+
             if(typeof widget.params.title !== 'undefined'){
                 title = widget.params.title;
-            }  
-            
+            }
+
         }
 
-        
+
         var renderTo = false;
         if(typeof div !== 'undefined'){
             renderTo = div;
         }
-        
+
         if(typeof widget.width === 'undefined') {
             var width = (120 * widget.size_x) + (10 * widget.size_x) + (10 * (widget.size_x - 1));
         } else {
             var width = widget.width;
         }
-        
+
         if(typeof widget.height === 'undefined') {
             var height = (120 * widget.size_y) + (10 * widget.size_y) + (10 * (widget.size_y - 1));
         } else {
             var height = widget.height;
         }
-    
+
 
         // for nested header columns as well
         //console.log('data.columns', data.columns);
@@ -5310,9 +5463,9 @@ console.log('WIDGET', widget);
         //console.log('data table widget key', widget.key);
         for(i=0; i < data.columns.length; i++) {
             if(typeof data.columns[i].columns != 'undefined') {
-            
+
                // console.log('UNDEFINED');
-                
+
                 for(x=0; x < data.columns[i].columns.length; x++) {
                     arr = {};
                     row = data.columns[i].columns[x].dataIndex;
@@ -5329,13 +5482,13 @@ console.log('WIDGET', widget);
                 }
             } else {
                 row = data.columns[i].dataIndex;
-                
+
                 if(row != 'year' && row != 'date' && row != 'client__name') {
-                    
+
                     data.columns[i]['renderer'] = function(val) {
-                    
+
                         format_val = val.replace('e', '');
-                        
+
                         if(widget.window.key == 'w6') {
                             number = Ext.util.Format.number(format_val, '0,000');
                             if(val.search('e') !== -1) {
@@ -5348,7 +5501,7 @@ console.log('WIDGET', widget);
                                 number = val;
                             }
                         }
-                        
+
                         if (format_val == "-1000") {
                             return '<span style="color:black;">-';
                         } else if (format_val > 0) {
@@ -5358,11 +5511,11 @@ console.log('WIDGET', widget);
                         } else if (format_val == 0) {
                             return '<span style="color:black;">0.00';
                         }
-                        
+
                         if(val != '') {
                             //renderer = ' <span style="font-weight: normal;">';
                         }
-                        
+
                         if(widget.window.key == 'w6') {
                             return renderer +  ' </span>';
                         } else {
@@ -5391,9 +5544,9 @@ console.log('WIDGET', widget);
                     }
                 }
                 if(typeof row != 'undefined') {
-                
+
                    // console.log('UNDEFINED2');
-                    
+
                     arr = {};
                     if($.isNumeric(row)) {
                         arr['type'] = 'float';
@@ -5430,7 +5583,7 @@ console.log('WIDGET', widget);
                 }
             }
         });
-        
+
         if(widget.key === 'w18') {
             var sortProperty = 'date';
         } else if(widget.key === 'w12') {
@@ -5438,8 +5591,8 @@ console.log('WIDGET', widget);
         } else {
             var sortProperty = 'id';
         }
-        
-        
+
+
         //console.log('FIELDS', fields, data);
 
         var tableStore = Ext.create('Ext.data.Store', {
@@ -5458,9 +5611,9 @@ console.log('WIDGET', widget);
                 direction: 'ASC'
             } ],
         });
-        
+
         if(widget.window.key == 'w12') {
-    
+
             tableStore.filter([
                 {filterFn: function(item) { return item.get("size") > 0; }}
             ]);
@@ -5477,7 +5630,7 @@ console.log('WIDGET', widget);
                         name: 'size',
                         inputValue: '0',
                         id: 'size_checkbox',
-                        handler: function (field, value) { 
+                        handler: function (field, value) {
                             if(!value) {
                                 tableStore.filter([
                                     {filterFn: function(item) { return item.get("size") > 0; }}
@@ -5489,8 +5642,8 @@ console.log('WIDGET', widget);
                     }]
                 }],
                 renderTo: div + 'top',
-            });        
-        
+            });
+
         }
 
         // for innergrids
@@ -5526,7 +5679,7 @@ console.log('WIDGET', widget);
         }
 
         var isClicked = new Array();
-        
+
         var panel = Ext.create('Ext.grid.Panel', {
             title: title,
             id: div,
@@ -5559,19 +5712,19 @@ console.log('WIDGET', widget);
                     var year = dataRecord.data.year + '';
 
                     var month = columnIndex - 1;
-                 
+
                     // first column
                     if(columnIndex == 1) {
                         if(widget.window.key == 'w1' || widget.window.key == 'w1b') {
-                        
+
                             if(year.substr(0, 5) !== 'bench') {
 
                                 $.getJSON("api/fundreturnmonthly/?align=center&data_type=year&date=value_date&extra_fields=bench_ytd&fund=" + obj.fund.id + "&column_width=80,50&fields=estimation&value=bench_perf&value_date__year=" + year, function(w1) {
-                                    
+
                                     tableStore.load();
-                                    
+
                                     if(jQuery.inArray(id, isClicked) !== -1) {
-                                    
+
                                         isClicked.splice(isClicked.indexOf(id), 1);
                                         for(i=0; i<data.rows.length; i++) {
                                             if(data.rows[i]['id'] === (id + 1)) {
@@ -5596,7 +5749,7 @@ console.log('WIDGET', widget);
                             monthTable(year, month);
                         }
                     }
-                            
+
 
                     obj.page = $('#data').data('page_id');
                     obj.grid = $('#data').data('grid' + obj.page);
@@ -5674,7 +5827,7 @@ console.log('WIDGET', widget);
         });
         //Ext.getCmp('some_id').hide();
         return panel;
-    
+
     }
 
     function refreshWindow(window_key, obj, extra_params) {
@@ -6382,7 +6535,7 @@ console.log('WIDGET', widget);
             type: "GET",
             url: '/api/fund/' + id + '?fields=name,benchpeer__name,benchpeer__id,sec_bench__name,sec_bench__id',//,benchpeer__name',//,classification__id',
             success: function(data) {
-            
+
                 var fund = {
                     id: data.id,
                     name: data.name,
@@ -6417,7 +6570,7 @@ console.log('WIDGET', widget);
         }
         if(typeof height == 'undefined') {
             height = 700;
-        }        
+        }
         window.open("/admin/" + section + "/" + page + "/", "", "fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes,directories=yes,location=no,width="+width+",height="+height+",left=400,top=100");
     }
 
@@ -6555,7 +6708,7 @@ console.log('WIDGET', widget);
                             },
                             itemclick: {
                                 fn: function(view, record, item, index, event, opts) {
-                                
+
                                     var asdf = record;
 
                                    console.log('ITEM CLICKED');
@@ -6571,7 +6724,7 @@ console.log('WIDGET', widget);
                                     //console.log('record.raw', record.raw);
                                     if(typeof record.raw.fund !== 'undefined' && record.raw.fund !== null && record.raw.fund !== 0) {
                                         $('#data').data('fund', record.raw.fund);
-                                        
+
                                         // for some reason record.raw.fund gets overwritten with obj.fund
                                         // this really ugly hack solves it
                                         if(typeof record.raw.fund === 'object') {
@@ -6581,11 +6734,11 @@ console.log('WIDGET', widget);
                                         }
                                         setFund(fundId);
                                     }
-                                    
+
                                     if(typeof record.raw.benchpeer != 'undefined') {
                                         $('#data').data("benchpeer", record.raw.benchpeer);
                                     }
-                                    
+
                                     //console.log(record.raw);
                                     if(typeof record.raw.client != 'undefined') {
                                         $('#data').data('client', record.raw.client);
@@ -6713,7 +6866,7 @@ console.log('WIDGET', widget);
                                     } else if(page_id == 147) {
                                         popup('auth', 'group');
                                     }
-                                    
+
 
 
 
@@ -6886,9 +7039,10 @@ $.ajax({
                     form.submit({
                         url: '/api/user/login/',
                         success: function(form, action) {
-                        
+
                             $('#data').data('userId', action.result.user_id);
-                            
+                            $.cookie('userId', action.result.user_id);
+
                             formPanel.hide();
 
                             setGlobal('fund');

@@ -1,31 +1,9 @@
-sudo apt-get install mysql-server nginx python-pip python-dev build-essential git apache2 python-mysqldb
+### Dependencies
+	sudo apt-get install mysql-server nginx python-pip python-dev build-essential git apache2 python-mysqldb
+	sudo pip install --upgrade pip 
 
-$ sudo pip install --upgrade pip 
+	pip install django-mptt django-tastypie django-grappelli feincms django-tastypie-swagger django-compressor django-extensions mimeparse Werkzeug numpy pandas django==1.5.1
 
-### Install Django
-Some dependencies only work with Django 1.4, so that is what we use for now. Download from https:/.djangoproject.com/download/1.4.5/tarball
-
-    tar xzvf Django-1.4.5.tar.gz
-    cd Django-1.4.5
-    sudo python setup.py install
-
-### Install django-mptt
-    git clone git://github.com/django-mptt/django-mptt.git django-mptt
-    cd django-mptt
-    sudo python setup.py install
-
-### Install FeinCMS
-    sudo pip install feincms
-
-### Install Grappelli
-    sudo pip install django-grappelli
-
-
-### Install Tastypie
-    sudo apt-get install python-dateutil python-mimeparse
-    git clone https://github.com/toastdriven/django-tastypie.git
-    cd django-tastypie
-    sudo python setup.py install
 
 ### Symlinks
     sudo ln -s /usr/local/lib/python2.7/dist-packages/django_tastypie-0.9.13_beta-py2.7.egg/tastypie/ /srv/alpheus/tastypie

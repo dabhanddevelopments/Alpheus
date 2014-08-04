@@ -158,7 +158,7 @@ INSTALLED_APPS = (
     'tastypie',
     'feincms',
     'mptt',
-    'debug_toolbar',
+    #'debug_toolbar',
     'django_extensions',
     'tastypie_swagger',
     "compressor",
